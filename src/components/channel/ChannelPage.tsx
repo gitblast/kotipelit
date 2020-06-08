@@ -7,6 +7,10 @@ import HostView from './host/HostView';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    header: {
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+    },
     container: {
       padding: theme.spacing(2),
     },
@@ -21,8 +25,10 @@ const ChannelPage: React.FC<ChannelPageProps> = ({ labelText }) => {
   const classes = useStyles();
 
   return (
-    <Paper elevation={3} className={classes.container}>
-      <Typography variant="h3">{labelText}</Typography>
+    <Paper elevation={5} className={classes.container}>
+      <div className={classes.header}>
+        <Typography variant="h3">{labelText}</Typography>
+      </div>
       <Divider />
       <HostView gameRunning={false} />
     </Paper>

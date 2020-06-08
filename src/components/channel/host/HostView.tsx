@@ -13,7 +13,7 @@ interface HostViewProps {
 const HostView: React.FC<HostViewProps> = ({ gameRunning }) => {
   const classes = useStyles();
 
-  return gameRunning ? <div>peli</div> : <Dashboard />;
+  return gameRunning ? <div>pelinäkymä</div> : <Dashboard />;
 };
 
 export default HostView;

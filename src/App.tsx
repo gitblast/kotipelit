@@ -11,9 +11,11 @@ import {
 } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
+import { useDispatch } from 'react-redux';
+import { initGames } from './reducer/reducer';
+
 import FrontPage from './components/FrontPage';
 import ChannelPage from './components/channel/ChannelPage';
-import NewGame from './components/channel/host/NewGame';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,6 +31,12 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const App = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+
+  // init games
+  React.useEffect(() => {
+    dispatch(initGames());
+  }, [dispatch]);
 
   return (
     <Router>
@@ -44,9 +52,6 @@ const App = () => {
       </AppBar>
       <Container>
         <Switch>
-          <Route path="/:username/newgame">
-            <NewGame />
-          </Route>
           <Route path="/matleena">
             <ChannelPage labelText="Matun kanava" />
           </Route>

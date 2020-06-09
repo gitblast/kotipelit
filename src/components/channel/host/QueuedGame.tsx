@@ -13,6 +13,9 @@ import {
 } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { SelectableGame } from '../../../types';
+import { useDispatch } from 'react-redux';
+import { deleteGame, startGame } from '../../../reducer/reducer';
+import { useHistory, useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -37,11 +40,28 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  /** @TODO get username from params, atm hardcoded */
+  const username = useLocation().pathname;
+
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => setAnchorEl(null);
+  const handleClose = (): void => setAnchorEl(null);
+
+  const handleStart = (): void => {
+    dispatch(startGame(game.id));
+    history.push(`${username}/${game.id}`);
+  };
+
+  const handleRemove = (): void => {
+    const agree = window.confirm('Poistetaanko peli?');
+
+    if (agree) dispatch(deleteGame(game.id));
+  };
 
   return (
     <Paper elevation={2} className={classes.container}>
@@ -56,7 +76,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game }) => {
       </div>
 
       <div>
-        <Button variant="contained" color="secondary">
+        <Button variant="contained" color="secondary" onClick={handleStart}>
           Käynnistä
         </Button>
         <IconButton
@@ -77,7 +97,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game }) => {
           <MenuItem>
             <Typography>Muokkaa</Typography>
           </MenuItem>
-          <MenuItem>
+          <MenuItem onClick={handleRemove}>
             <Typography color="secondary">Poista</Typography>
           </MenuItem>
         </Menu>

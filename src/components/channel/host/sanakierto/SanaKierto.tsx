@@ -4,8 +4,15 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Paper, Typography } from '@material-ui/core';
 
 import HostPanel from './HostPanel';
+import Results from './Results';
+
 import { useSelector } from 'react-redux';
-import { State, GameStatus, GameType } from '../../../../types';
+import {
+  State,
+  GameStatus,
+  GameType,
+  SanakiertoPlayer,
+} from '../../../../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,11 +39,11 @@ const Sanakierto: React.FC = () => {
   const activeGame = useSelector((state: State) => state.activeGame);
 
   if (activeGame === null)
-    console.error('No active game found, using hard coded');
+    console.error('No active game found, using hard coded (dev)');
 
   const HARDCODED = {
     id: '1',
-    type: 'sanakierto' as GameType,
+    type: GameType.SANAKIERTO,
     players: [
       {
         id: '1',
@@ -77,13 +84,21 @@ const Sanakierto: React.FC = () => {
     turn: 0,
   };
 
+  const sortPlayersByPoints = (players: SanakiertoPlayer[]) => {
+    return players.sort((a, b) => b.points - a.points);
+  };
+
   return (
     <div className={classes.container}>
       <Paper elevation={5} className={classes.jitsiContainer}>
         <Typography>Jitsi</Typography>
       </Paper>
       <Paper elevation={5} className={classes.hostControls}>
-        <HostPanel game={activeGame ? activeGame : HARDCODED} />
+        {activeGame && activeGame.status === GameStatus.FINISHED ? (
+          <Results results={sortPlayersByPoints(activeGame.players)} />
+        ) : (
+          <HostPanel game={activeGame ? activeGame : HARDCODED} />
+        )}
       </Paper>
     </div>
   );

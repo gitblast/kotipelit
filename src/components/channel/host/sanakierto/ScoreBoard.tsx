@@ -93,8 +93,8 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({
       };
     });
 
-    handleUpdate(newPlayers);
     setCheckboxes(new Array(players.length).fill(false));
+    handleUpdate(newPlayers);
   };
 
   return (

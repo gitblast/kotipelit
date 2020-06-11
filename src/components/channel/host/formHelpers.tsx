@@ -82,6 +82,7 @@ export const initializePlayers = (): SanakiertoPlayer[] => {
     players.push({
       name: `Pelaaja ${i}`,
       words,
+      points: 0,
     });
   }
 

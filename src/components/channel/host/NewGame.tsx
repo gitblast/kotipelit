@@ -15,7 +15,7 @@ import { useHistory } from 'react-router-dom';
 import { initializePlayers, renderForm } from './formHelpers';
 import { useDispatch } from 'react-redux';
 import { addGame } from '../../../reducer/reducer';
-import { GameType } from '../../../types';
+import { GameType, GameStatus } from '../../../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -70,7 +70,8 @@ const NewGame: React.FC = () => {
             startTime: new Date(),
             type: 'sanakierto' as GameType,
             players: initializePlayers(),
-            running: false,
+            status: GameStatus.UPCOMING,
+            rounds: 3,
           }}
           onSubmit={(values, actions) => {
             console.log('values', values, 'actions', actions);

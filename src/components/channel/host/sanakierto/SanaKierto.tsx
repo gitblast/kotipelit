@@ -3,13 +3,14 @@ import React from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Paper, Typography } from '@material-ui/core';
 
+import HostPanel from './HostPanel';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       display: 'flex',
     },
     jitsiContainer: {
-      height: 400,
       width: '65%',
       padding: theme.spacing(2),
       backgroundColor: theme.palette.grey[400],
@@ -18,7 +19,6 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '35%',
       padding: theme.spacing(2),
       marginLeft: theme.spacing(1),
-      backgroundColor: theme.palette.grey[400],
     },
   })
 );
@@ -30,11 +30,11 @@ const SanaKierto: React.FC = () => {
 
   return (
     <div className={classes.container}>
-      <Paper className={classes.jitsiContainer}>
+      <Paper elevation={5} className={classes.jitsiContainer}>
         <Typography>Jitsi</Typography>
       </Paper>
-      <Paper className={classes.hostControls}>
-        <Typography>Host controls</Typography>
+      <Paper elevation={5} className={classes.hostControls}>
+        <HostPanel />
       </Paper>
     </div>
   );

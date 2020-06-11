@@ -14,7 +14,7 @@ import {
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { SelectableGame } from '../../../types';
 import { useDispatch } from 'react-redux';
-import { deleteGame, startGame } from '../../../reducer/reducer';
+import { deleteGame, launchGame } from '../../../reducer/reducer';
 import { useHistory, useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -53,7 +53,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game }) => {
   const handleClose = (): void => setAnchorEl(null);
 
   const handleStart = (): void => {
-    dispatch(startGame(game.id));
+    dispatch(launchGame(game.id));
     history.push(`${username}/${game.id}`);
   };
 

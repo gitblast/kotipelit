@@ -4,19 +4,30 @@ export interface Game {
   id: string;
   type: GameType;
   startTime: Date;
-  running: boolean;
+  status: GameStatus;
 }
 
 export interface SanakiertoPlayer {
+  id?: string;
   name: string;
   words: string[];
+  points: number;
 }
 
 export interface Sanakierto extends Game {
   players: SanakiertoPlayer[];
+  rounds: number;
+  currentRound?: number;
 }
 
 export type SelectableGame = Sanakierto; // additional games here
+
+export enum GameStatus {
+  RUNNING = 'Running',
+  WAITING = 'Waiting for players',
+  UPCOMING = 'Upcoming',
+  FINISHED = 'Finished',
+}
 
 // redux
 export interface State {
@@ -37,6 +48,6 @@ export type Action =
       payload: string; // game id
     }
   | {
-      type: 'START_GAME';
+      type: 'LAUNCH_GAME';
       payload: string; // game id
     };

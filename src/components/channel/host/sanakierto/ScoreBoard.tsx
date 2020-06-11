@@ -8,9 +8,9 @@ import {
   TableCell,
   Fab,
   Checkbox,
-  TableHead,
   TableBody,
 } from '@material-ui/core';
+import { SanakiertoPlayer } from '../../../../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,19 +31,21 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-// interface ScoreBoardProps {}
+interface ScoreBoardProps {
+  players: SanakiertoPlayer[];
+  turn: number;
+  handleUpdate: (players: SanakiertoPlayer[]) => void;
+}
 
-const hardcodedPlayers = ['Pete', 'Samu', 'Jeppe', 'Heka', 'Jykä'];
-
-const ScoreBoard: React.FC = () => {
+const ScoreBoard: React.FC<ScoreBoardProps> = ({
+  players,
+  turn,
+  handleUpdate,
+}) => {
   const classes = useStyles();
-
-  const [players, setPlayers] = React.useState(hardcodedPlayers);
   const [checkBoxes, setCheckboxes] = React.useState(
     new Array(players.length).fill(false)
   );
-
-  const playerWithTurnIndex = 0;
 
   const getPointAddition = (playerIndex: number): number => {
     const playerCount = players.length;
@@ -54,25 +56,19 @@ const ScoreBoard: React.FC = () => {
 
     switch (correctAnswers) {
       case playerCount - 1: {
-        return playerIndex === playerWithTurnIndex ? -50 : 0;
+        return playerIndex === turn ? -50 : 0;
       }
       case 0: {
-        return playerIndex === playerWithTurnIndex ? -50 : 0;
+        return playerIndex === turn ? -50 : 0;
       }
       case 1: {
-        return checkBoxes[playerIndex] || playerIndex === playerWithTurnIndex
-          ? 100
-          : 0;
+        return checkBoxes[playerIndex] || playerIndex === turn ? 100 : 0;
       }
       case 2: {
-        return checkBoxes[playerIndex] || playerIndex === playerWithTurnIndex
-          ? 30
-          : 0;
+        return checkBoxes[playerIndex] || playerIndex === turn ? 30 : 0;
       }
       case 3: {
-        return checkBoxes[playerIndex] || playerIndex === playerWithTurnIndex
-          ? 10
-          : 0;
+        return checkBoxes[playerIndex] || playerIndex === turn ? 10 : 0;
       }
     }
 
@@ -89,8 +85,16 @@ const ScoreBoard: React.FC = () => {
     return <span style={{ color }}>{valueString}</span>;
   };
 
-  const handleUpdate = (): void => {
-    console.log('shd');
+  const updateGameState = () => {
+    const newPlayers: SanakiertoPlayer[] = players.map((player, index) => {
+      return {
+        ...player,
+        points: player.points + getPointAddition(index),
+      };
+    });
+
+    handleUpdate(newPlayers);
+    setCheckboxes(new Array(players.length).fill(false));
   };
 
   return (
@@ -113,14 +117,13 @@ const ScoreBoard: React.FC = () => {
               </Typography>
             </TableCell>
           </TableRow>
-
           {players.map((player, index) => {
             return (
               <TableRow key={index}>
                 <TableCell className={classes.noPaddingX} align="center">
-                  {player}
+                  {player.name}
                 </TableCell>
-                <TableCell align="center">100</TableCell>
+                <TableCell align="center">{player.points}</TableCell>
                 <TableCell
                   align="center"
                   className={`${classes.noPaddingX} ${classes.additionBox}`}
@@ -128,13 +131,14 @@ const ScoreBoard: React.FC = () => {
                   {additionElement(getPointAddition(index))}
                 </TableCell>
                 <TableCell align="center" padding="checkbox">
-                  {index === playerWithTurnIndex ? (
+                  {index === turn ? (
                     <Typography variant="caption" color="textSecondary">
                       Kysyjä
                     </Typography>
                   ) : (
                     <Checkbox
                       value={checkBoxes[index]}
+                      checked={checkBoxes[index]}
                       onChange={() => {
                         const newValues = [...checkBoxes];
                         newValues[index] = !newValues[index];
@@ -149,7 +153,7 @@ const ScoreBoard: React.FC = () => {
         </TableBody>
       </Table>
       <div className={classes.saveBtnContainer}>
-        <Fab variant="extended" color="primary" onClick={handleUpdate}>
+        <Fab variant="extended" color="primary" onClick={updateGameState}>
           Päivitä pisteet
         </Fab>
       </div>

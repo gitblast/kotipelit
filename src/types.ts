@@ -1,4 +1,6 @@
-export type GameType = 'sanakierto';
+export enum GameType {
+  SANAKIERTO = 'Sanakierto',
+}
 
 export interface Game {
   id: string;
@@ -17,10 +19,16 @@ export interface SanakiertoPlayer {
 export interface Sanakierto extends Game {
   players: SanakiertoPlayer[];
   rounds: number;
-  currentRound?: number;
+}
+
+export interface SanakiertoActive extends Sanakierto {
+  round: number;
+  turn: number;
 }
 
 export type SelectableGame = Sanakierto; // additional games here
+
+export type ActiveGame = SanakiertoActive; // additional games here
 
 export enum GameStatus {
   RUNNING = 'Running',
@@ -32,6 +40,7 @@ export enum GameStatus {
 // redux
 export interface State {
   games: SelectableGame[];
+  activeGame: ActiveGame | null;
 }
 
 export type Action =
@@ -50,4 +59,8 @@ export type Action =
   | {
       type: 'LAUNCH_GAME';
       payload: string; // game id
+    }
+  | {
+      type: 'UPDATE_ACTIVE_GAME';
+      payload: ActiveGame; // game id
     };

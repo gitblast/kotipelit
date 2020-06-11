@@ -4,6 +4,9 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Typography, Fab } from '@material-ui/core';
 
 import ScoreBoard from './ScoreBoard';
+import { SanakiertoActive, SanakiertoPlayer } from '../../../../types';
+import { useDispatch } from 'react-redux';
+import { updateGame } from '../../../../reducer/reducer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,14 +23,39 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-// interface HostPanelProps {}
+interface HostPanelProps {
+  game: SanakiertoActive;
+}
 
-const HostPanel: React.FC = () => {
+const HostPanel: React.FC<HostPanelProps> = ({ game }) => {
   const classes = useStyles();
+
+  const dispatch = useDispatch();
+
+  const playerWithTurn = game.players[game.turn];
+
+  if (!playerWithTurn)
+    throw new Error('Something went wrong with player turns');
+
+  const handleUpdate = (players: SanakiertoPlayer[]): void => {
+    const turn = game.turn === players.length - 1 ? 0 : game.turn + 1;
+    const round = turn === 0 ? game.round + 1 : game.round;
+
+    const newGameState: SanakiertoActive = {
+      ...game,
+      players,
+      turn,
+      round,
+    };
+
+    console.log('updating with', newGameState);
+
+    dispatch(updateGame(newGameState));
+  };
 
   return (
     <div className={classes.container}>
-      <Typography variant="h6">Kierros 1</Typography>
+      <Typography variant="h6">{`Kierros ${game.round}`}</Typography>
       <div className={classes.flex}>
         <div className={classes.grow}>
           <Typography
@@ -38,7 +66,7 @@ const HostPanel: React.FC = () => {
             Vuorossa:
           </Typography>
           <Typography component="div" gutterBottom>
-            Pete
+            {playerWithTurn.name}
           </Typography>
         </div>
         <div className={classes.grow}>
@@ -50,7 +78,7 @@ const HostPanel: React.FC = () => {
             Sanat:
           </Typography>
           <Typography component="div" gutterBottom>
-            Aski / Matto / Kirja
+            {playerWithTurn.words.join(' / ')}
           </Typography>
         </div>
       </div>
@@ -69,7 +97,11 @@ const HostPanel: React.FC = () => {
           </div>
         </div>
       </div>
-      <ScoreBoard />
+      <ScoreBoard
+        players={game.players}
+        turn={game.turn}
+        handleUpdate={handleUpdate}
+      />
     </div>
   );
 };

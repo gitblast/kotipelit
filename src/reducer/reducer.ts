@@ -1,33 +1,79 @@
-import { State, Action, SelectableGame, GameType, GameStatus } from '../types';
+import {
+  State,
+  Action,
+  SelectableGame,
+  GameType,
+  GameStatus,
+  ActiveGame,
+} from '../types';
 
 const initialState = {
   games: [],
+  activeGame: null,
+};
+
+const activate = (game: SelectableGame): ActiveGame => {
+  switch (game.type) {
+    case GameType.SANAKIERTO:
+      return {
+        ...game,
+        turn: 0,
+        round: 1,
+      };
+    default: {
+      console.error(
+        'Something went wrong, expected a selectable game, got ',
+        game
+      );
+      throw new Error(
+        `Something went wrong, expected a selectable game, got ${game}`
+      );
+    }
+  }
 };
 
 const reducer = (state: State = initialState, action: Action) => {
   switch (action.type) {
     case 'INIT_GAMES': {
       return {
+        ...state,
         games: action.payload,
       };
     }
     case 'ADD_GAME': {
       return {
+        ...state,
         games: state.games.concat(action.payload),
       };
     }
     case 'DELETE_GAME': {
       return {
+        ...state,
         games: state.games.filter((game) => game.id !== action.payload),
       };
     }
     case 'LAUNCH_GAME': {
+      const gameToActivate = state.games.find(
+        (game) => game.id === action.payload
+      );
+
+      if (!gameToActivate) throw new Error(`Game not found`);
+
+      const activatedGame = activate(gameToActivate);
+
       return {
+        activeGame: activatedGame,
         games: state.games.map((game) =>
           game.id === action.payload
             ? { ...game, status: GameStatus.WAITING }
             : game
         ),
+      };
+    }
+    case 'UPDATE_ACTIVE_GAME': {
+      return {
+        ...state,
+        activeGame: action.payload,
       };
     }
     default:
@@ -38,7 +84,7 @@ const reducer = (state: State = initialState, action: Action) => {
 const hardcodedGames = [
   {
     id: '1',
-    type: 'sanakierto' as GameType,
+    type: GameType.SANAKIERTO,
     players: [
       {
         id: '1',
@@ -78,7 +124,7 @@ const hardcodedGames = [
   },
   {
     id: '2',
-    type: 'sanakierto' as GameType,
+    type: GameType.SANAKIERTO,
     players: [
       {
         id: '6',
@@ -143,6 +189,13 @@ export const launchGame = (id: string): Action => {
   return {
     type: 'LAUNCH_GAME',
     payload: id,
+  };
+};
+
+export const updateGame = (updatedGame: ActiveGame): Action => {
+  return {
+    type: 'UPDATE_ACTIVE_GAME',
+    payload: updatedGame,
   };
 };
 

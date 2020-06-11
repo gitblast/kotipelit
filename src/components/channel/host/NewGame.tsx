@@ -68,7 +68,7 @@ const NewGame: React.FC = () => {
         <Formik
           initialValues={{
             startTime: new Date(),
-            type: 'sanakierto' as GameType,
+            type: GameType.SANAKIERTO,
             players: initializePlayers(),
             status: GameStatus.UPCOMING,
             rounds: 3,

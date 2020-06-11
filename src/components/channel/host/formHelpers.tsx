@@ -21,7 +21,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import { Form, FastField, FieldArray, FormikProps } from 'formik';
 import { TextField, Select } from 'formik-material-ui';
 
-import { SanakiertoPlayer, SelectableGame } from '../../../types';
+import { SanakiertoPlayer, SelectableGame, GameType } from '../../../types';
 
 const hardcodedWords = [
   'DIABOLATRY',
@@ -204,7 +204,7 @@ export const renderForm = (
           </Typography>
           <FormControl variant="outlined">
             <FastField component={Select} name="type" disabled>
-              <MenuItem value="sanakierto">Sanakierto</MenuItem>
+              <MenuItem value={GameType.SANAKIERTO}>Sanakierto</MenuItem>
             </FastField>
           </FormControl>
         </FormGroup>
@@ -214,7 +214,7 @@ export const renderForm = (
           className={classes.marginRight}
           component="label"
           variant="h6"
-          htmlFor="startTime"
+          htmlFor="players"
         >
           Pelaajat:
         </Typography>

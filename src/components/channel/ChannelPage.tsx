@@ -6,7 +6,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import NewGame from './host/NewGame';
-import SanaKierto from './host/sanakierto/SanaKierto';
+import Sanakierto from './host/sanakierto/Sanakierto';
 import Dashboard from './host/Dashboard';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -40,7 +40,7 @@ const ChannelPage: React.FC<ChannelPageProps> = ({ labelText }) => {
             <NewGame />
           </Route>
           <Route path="/:username/:gameID">
-            <SanaKierto />
+            <Sanakierto />
           </Route>
           <Route path="/">
             <Dashboard />

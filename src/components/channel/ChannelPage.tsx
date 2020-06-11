@@ -6,7 +6,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import NewGame from './host/NewGame';
-import Sanakierto from './host/sanakierto/Sanakierto';
+import Sanakierto from './host/sanakierto/SanaKierto';
 import Dashboard from './host/Dashboard';
 
 const useStyles = makeStyles((theme: Theme) =>

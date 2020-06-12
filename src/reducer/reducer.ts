@@ -5,7 +5,10 @@ import {
   GameType,
   GameStatus,
   ActiveGame,
+  ActionType,
 } from '../types';
+
+import { hardcodedGames } from '../constants';
 
 const initialState = {
   games: [],
@@ -17,16 +20,13 @@ const activate = (game: SelectableGame): ActiveGame => {
     case GameType.SANAKIERTO:
       return {
         ...game,
+        status: GameStatus.WAITING,
         turn: 0,
         round: 1,
       };
     default: {
-      console.error(
-        'Something went wrong, expected a selectable game, got ',
-        game
-      );
       throw new Error(
-        `Something went wrong, expected a selectable game, got ${game}`
+        `Something went wrong, expected a selectable game, got ${game.type}`
       );
     }
   }
@@ -81,120 +81,38 @@ const reducer = (state: State = initialState, action: Action) => {
   }
 };
 
-const hardcodedGames = [
-  {
-    id: '1',
-    type: GameType.SANAKIERTO,
-    players: [
-      {
-        id: '1',
-        name: 'Risto',
-        words: ['jojo', 'kasvi', 'hattu'],
-        points: 0,
-      },
-      {
-        id: '2',
-        name: 'Jorma',
-        words: ['sana', 'kirja', 'väline'],
-        points: 0,
-      },
-      {
-        id: '3',
-        name: 'Kalevi',
-        words: ['kaiutin', 'kuuloke', 'lasi'],
-        points: 0,
-      },
-      {
-        id: '4',
-        name: 'Jenni',
-        words: ['johto', 'hiiri', 'puhelin'],
-        points: 0,
-      },
-      {
-        id: '5',
-        name: 'Petra',
-        words: ['rasia', 'kuppi', 'vihko'],
-        points: 0,
-      },
-    ],
-    startTime: new Date(),
-    status: GameStatus.UPCOMING,
-    rounds: 3,
-    winner: null,
-  },
-  {
-    id: '2',
-    type: GameType.SANAKIERTO,
-    players: [
-      {
-        id: '6',
-        name: 'Matti',
-        words: ['lamppu', 'pöytä', 'sohva'],
-        points: 0,
-      },
-      {
-        id: '7',
-        name: 'Pertti',
-        words: ['laulu', 'tuoli', 'peitto'],
-        points: 0,
-      },
-      {
-        id: '8',
-        name: 'Lauri',
-        words: ['naru', 'ikkuna', 'ovi'],
-        points: 0,
-      },
-      {
-        id: '9',
-        name: 'Abraham',
-        words: ['presidentti', 'päällikkö', 'lattia'],
-        points: 0,
-      },
-      {
-        id: '10',
-        name: 'Sauli',
-        words: ['sammakko', 'tikku', 'lanka'],
-        points: 0,
-      },
-    ],
-    startTime: new Date(),
-    status: GameStatus.UPCOMING,
-    rounds: 3,
-    winner: null,
-  },
-];
-
+/** @TODO fetch from backend */
 export const initGames = (): Action => {
   return {
-    type: 'INIT_GAMES',
+    type: ActionType.INIT_GAMES,
     payload: hardcodedGames,
   };
 };
 
 export const addGame = (game: SelectableGame): Action => {
   return {
-    type: 'ADD_GAME',
+    type: ActionType.ADD_GAME,
     payload: game,
   };
 };
 
 export const deleteGame = (id: string): Action => {
   return {
-    type: 'DELETE_GAME',
+    type: ActionType.DELETE_GAME,
     payload: id,
   };
 };
 
 export const launchGame = (id: string): Action => {
   return {
-    type: 'LAUNCH_GAME',
+    type: ActionType.LAUNCH_GAME,
     payload: id,
   };
 };
 
 export const updateGame = (updatedGame: ActiveGame): Action => {
   return {
-    type: 'UPDATE_ACTIVE_GAME',
+    type: ActionType.UPDATE_ACTIVE_GAME,
     payload: updatedGame,
   };
 };

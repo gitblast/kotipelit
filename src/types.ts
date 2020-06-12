@@ -43,24 +43,32 @@ export interface State {
   activeGame: ActiveGame | null;
 }
 
+export enum ActionType {
+  INIT_GAMES = 'INIT_GAMES',
+  ADD_GAME = 'ADD_GAME',
+  DELETE_GAME = 'DELETE_GAME',
+  LAUNCH_GAME = 'LAUNCH_GAME',
+  UPDATE_ACTIVE_GAME = 'UPDATE_ACTIVE_GAME',
+}
+
 export type Action =
   | {
-      type: 'INIT_GAMES';
+      type: ActionType.INIT_GAMES;
       payload: SelectableGame[];
     }
   | {
-      type: 'ADD_GAME';
+      type: ActionType.ADD_GAME;
       payload: SelectableGame;
     }
   | {
-      type: 'DELETE_GAME';
+      type: ActionType.DELETE_GAME;
       payload: string; // game id
     }
   | {
-      type: 'LAUNCH_GAME';
+      type: ActionType.LAUNCH_GAME;
       payload: string; // game id
     }
   | {
-      type: 'UPDATE_ACTIVE_GAME';
+      type: ActionType.UPDATE_ACTIVE_GAME;
       payload: ActiveGame; // game id
     };

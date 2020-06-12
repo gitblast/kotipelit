@@ -40,7 +40,7 @@ const Results: React.FC<ResultsProps> = ({ results }) => {
           {results.map((player, index) => {
             const row = (
               <TableRow key={player.name}>
-                <TableCell>{`${placement}. ${player.name}`}</TableCell>
+                <TableCell>{/** placement here? */ player.name}</TableCell>
                 <TableCell>{`${player.points} pistettä`}</TableCell>
               </TableRow>
             );

@@ -1,5 +1,5 @@
 import {
-  State,
+  GamesState,
   Action,
   SelectableGame,
   GameType,
@@ -11,7 +11,7 @@ import {
 import { hardcodedGames } from '../constants';
 
 const initialState = {
-  games: [],
+  allGames: [],
   activeGame: null,
 };
 
@@ -32,28 +32,28 @@ const activate = (game: SelectableGame): ActiveGame => {
   }
 };
 
-const reducer = (state: State = initialState, action: Action) => {
+const reducer = (state: GamesState = initialState, action: Action) => {
   switch (action.type) {
     case 'INIT_GAMES': {
       return {
         ...state,
-        games: action.payload,
+        allGames: action.payload,
       };
     }
     case 'ADD_GAME': {
       return {
         ...state,
-        games: state.games.concat(action.payload),
+        allGames: state.allGames.concat(action.payload),
       };
     }
     case 'DELETE_GAME': {
       return {
         ...state,
-        games: state.games.filter((game) => game.id !== action.payload),
+        allGames: state.allGames.filter((game) => game.id !== action.payload),
       };
     }
     case 'LAUNCH_GAME': {
-      const gameToActivate = state.games.find(
+      const gameToActivate = state.allGames.find(
         (game) => game.id === action.payload
       );
 
@@ -63,7 +63,7 @@ const reducer = (state: State = initialState, action: Action) => {
 
       return {
         activeGame: activatedGame,
-        games: state.games.map((game) =>
+        allGames: state.allGames.map((game) =>
           game.id === action.payload
             ? { ...game, status: GameStatus.WAITING }
             : game

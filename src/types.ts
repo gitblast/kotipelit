@@ -39,16 +39,35 @@ export enum GameStatus {
 
 // redux
 export interface State {
-  games: SelectableGame[];
+  games: GamesState;
+  user: User;
+}
+
+export interface GamesState {
+  allGames: SelectableGame[];
   activeGame: ActiveGame | null;
 }
 
+export interface UserObject {
+  username: string;
+  id: string;
+  token: string;
+}
+
+export type User = UserObject | null;
+
 export enum ActionType {
+  // game actions
   INIT_GAMES = 'INIT_GAMES',
   ADD_GAME = 'ADD_GAME',
   DELETE_GAME = 'DELETE_GAME',
   LAUNCH_GAME = 'LAUNCH_GAME',
   UPDATE_ACTIVE_GAME = 'UPDATE_ACTIVE_GAME',
+  // user actions
+  LOGIN_REQUEST = 'LOGIN_REQUEST',
+  LOGIN_SUCCESS = 'LOGIN_SUCCESS',
+  LOGIN_FAILURE = 'LOGIN_FAILURE',
+  LOGOUT = 'LOGOUT',
 }
 
 export type Action =
@@ -71,4 +90,16 @@ export type Action =
   | {
       type: ActionType.UPDATE_ACTIVE_GAME;
       payload: ActiveGame; // game id
+    }
+  | {
+      type: ActionType.LOGIN_REQUEST;
+    }
+  | {
+      type: ActionType.LOGIN_SUCCESS;
+    }
+  | {
+      type: ActionType.LOGIN_FAILURE;
+    }
+  | {
+      type: ActionType.LOGOUT;
     };

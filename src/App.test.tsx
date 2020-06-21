@@ -4,7 +4,7 @@ import { render } from '@testing-library/react';
 import App from './App';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-import reducer from './reducer/reducer';
+import reducer from './reducers/games.reducer';
 
 const store = createStore(reducer);
 

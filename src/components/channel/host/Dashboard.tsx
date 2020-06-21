@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const Dashboard: React.FC = () => {
   const classes = useStyles();
 
-  const games = useSelector((state: State) => state.games);
+  const games = useSelector((state: State) => state.games.allGames);
 
   /** @TODO fetch username for link from logged user */
   return (

@@ -12,7 +12,7 @@ import {
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import { useDispatch } from 'react-redux';
-import { initGames } from './reducer/reducer';
+import { initGames } from './reducers/games.reducer';
 
 import FrontPage from './components/FrontPage';
 import ChannelPage from './components/channel/ChannelPage';

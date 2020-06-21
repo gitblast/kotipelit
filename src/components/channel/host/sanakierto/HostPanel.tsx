@@ -10,7 +10,7 @@ import {
   GameStatus,
 } from '../../../../types';
 import { useDispatch } from 'react-redux';
-import { updateGame } from '../../../../reducer/reducer';
+import { updateGame } from '../../../../reducers/games.reducer';
 import useInterval from '../../../../hooks/useInterval';
 
 const useStyles = makeStyles((theme: Theme) =>

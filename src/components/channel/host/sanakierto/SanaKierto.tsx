@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Sanakierto: React.FC = () => {
   const classes = useStyles();
-  const activeGame = useSelector((state: State) => state.activeGame);
+  const activeGame = useSelector((state: State) => state.games.activeGame);
 
   if (activeGame === null)
     console.error('No active game found, using hard coded (dev)');

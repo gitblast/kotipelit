@@ -1,5 +1,5 @@
-import reducer from './reducer';
-import * as actions from './reducer';
+import reducer from './games.reducer';
+import * as actions from './games.reducer';
 import { hardcodedGames } from '../constants';
 
 import {
@@ -8,7 +8,7 @@ import {
   SelectableGame,
   Action,
   ActionType,
-  State,
+  GamesState,
 } from '../types';
 
 const newGame: SelectableGame = {
@@ -28,14 +28,14 @@ const newGame: SelectableGame = {
 };
 
 const initializedState = {
-  games: [newGame],
+  allGames: [newGame],
   activeGame: null,
 };
 
 describe('Reducer', () => {
   it('should return initial state', () => {
     const initialState = {
-      games: [],
+      allGames: [],
       activeGame: null,
     };
 
@@ -49,7 +49,7 @@ describe('Reducer', () => {
     };
 
     const expectedState = {
-      games: hardcodedGames,
+      allGames: hardcodedGames,
       activeGame: null,
     };
 
@@ -63,7 +63,7 @@ describe('Reducer', () => {
     };
 
     const expectedState = {
-      games: [newGame],
+      allGames: [newGame],
       activeGame: null,
     };
 
@@ -79,7 +79,7 @@ describe('Reducer', () => {
     };
 
     const expectedState = {
-      games: [],
+      allGames: [],
       activeGame: null,
     };
 
@@ -95,11 +95,11 @@ describe('Reducer', () => {
     expect(() => reducer(undefined, action)).toThrow('Game not found');
 
     const invalidState = {
-      games: [{ ...newGame, type: 'INVALID_TYPE' }],
+      allGames: [{ ...newGame, type: 'INVALID_TYPE' }],
       activeGame: null,
     };
 
-    expect(() => reducer(invalidState as State, action)).toThrow(
+    expect(() => reducer(invalidState as GamesState, action)).toThrow(
       `Something went wrong, expected a selectable game, got INVALID_TYPE`
     );
 

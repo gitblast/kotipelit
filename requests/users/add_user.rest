@@ -1,0 +1,9 @@
+POST http://localhost:3333/api/users
+Content-Type: application/json
+
+{
+  "username": "user",
+  "password": "pass",
+  "email": "email@email.email",
+  "channelName": "users channel"
+}

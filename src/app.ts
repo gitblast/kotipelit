@@ -13,6 +13,7 @@ import errorHandler from './utils/errorHandler';
 // routes
 import loginRouter from './routes/login';
 import userRouter from './routes/users';
+import gameRouter from './routes/games';
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use(cors());
 app.use(express.static('build'));
 app.use('/api/login', loginRouter);
 app.use('/api/users', userRouter);
+app.use('/api/games', gameRouter);
 
 app.use(errorHandler);
 

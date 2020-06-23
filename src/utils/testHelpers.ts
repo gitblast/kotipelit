@@ -1,9 +1,43 @@
 import User, { UserModel } from '../models/user';
 import bcrypt from 'bcryptjs';
 import { NewUser } from '../types';
+import Game, { GameModel } from '../models/game';
 
 const usersInDb = async (): Promise<UserModel[]> => {
   return await User.find({});
+};
+
+const gamesInDb = async (): Promise<GameModel[]> => {
+  return await Game.find({});
+};
+
+const addDummyGame = async (): Promise<GameModel> => {
+  const user = await addDummyUser();
+
+  const dummyGame = {
+    type: 'sanakierto',
+    players: [
+      {
+        id: 'id1',
+        name: 'player1',
+      },
+      {
+        id: 'id2',
+        name: 'player2',
+      },
+    ],
+    startTime: new Date(),
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    host: user._id,
+  };
+
+  const game = new Game({
+    ...dummyGame,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    host: user._id,
+  });
+
+  return await game.save();
 };
 
 const addDummyUser = async (
@@ -35,4 +69,6 @@ const addDummyUser = async (
 export default {
   usersInDb,
   addDummyUser,
+  gamesInDb,
+  addDummyGame,
 };

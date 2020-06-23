@@ -24,11 +24,8 @@ const errorHandler: ErrorRequestHandler = (error, _request, response, next) => {
     response.status(401).json(createError(message));
   }
 
-  // invalid field in user object
-  if (
-    message.startsWith('Invalid fied') ||
-    message.startsWith('Missing field')
-  ) {
+  // missing or invalid field in request
+  if (message.startsWith('Invalid') || message.startsWith('Missing')) {
     response.status(400).json(createError(message));
   }
 

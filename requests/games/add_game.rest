@@ -1,0 +1,17 @@
+POST http://localhost:3333/api/games
+Content-Type: application/json
+
+{
+  "type": "sanakierto",
+  "players": [
+    {
+      "id": "id1",
+      "name": "player1"
+    },
+    {
+      "id": "id2",
+      "name": "player2"
+    }
+  ],
+  "startTime": "2020-06-23T13:28:39.600Z"
+}

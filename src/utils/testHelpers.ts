@@ -8,13 +8,15 @@ const usersInDb = async (): Promise<UserModel[]> => {
 
 const addDummyUser = async (
   username: string = Date.now().toString(),
-  password: string = Date.now().toString()
+  password: string = Date.now().toString(),
+  email: string = Date.now().toString(),
+  channelName: string = Date.now().toString()
 ): Promise<UserModel> => {
   const newUser: NewUser = {
     username,
     password,
-    email: username + Date.now().toString(),
-    channelName: username + Date.now().toString(),
+    email,
+    channelName,
   };
 
   const passwordHash = await bcrypt.hash(newUser.password, 10);
@@ -29,6 +31,7 @@ const addDummyUser = async (
 
   return await user.save();
 };
+
 export default {
   usersInDb,
   addDummyUser,

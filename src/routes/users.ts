@@ -17,7 +17,7 @@ router.get('/', async (_req, res) => {
 
 /** @TODO handle duplicate fields with existing users */
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
   const newUser: NewUser = toNewUser(req.body);
 
   const passwordHash = await bcrypt.hash(newUser.password, 10);
@@ -30,9 +30,12 @@ router.post('/', async (req, res) => {
     joinDate: new Date(),
   });
 
-  const savedUser = await user.save();
-
-  res.json(savedUser);
+  try {
+    const savedUser = await user.save();
+    res.json(savedUser);
+  } catch (error) {
+    next(error);
+  }
 });
 
 export default router;

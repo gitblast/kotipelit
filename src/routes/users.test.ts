@@ -40,6 +40,24 @@ describe('user router', () => {
     expect(usersAtEnd.map((user) => user.username)).toContain(newUser.username);
   });
 
+  it('should not add duplicate usernames or emails', async () => {
+    await testHelpers.addDummyUser(dummy.username, dummy.email);
+
+    const uniqueUser = {
+      username: Date.now.toString(),
+      email: Date.now.toString(),
+    };
+
+    await api
+      .post(baseUrl)
+      .send({ ...uniqueUser, username: dummy.username })
+      .expect(400);
+    await api
+      .post(baseUrl)
+      .send({ ...uniqueUser, email: dummy.email })
+      .expect(400);
+  });
+
   it('should return all users as json', async () => {
     const beforeAdd = await testHelpers.usersInDb();
 
@@ -55,8 +73,6 @@ describe('user router', () => {
     const afterAdd = await testHelpers.usersInDb();
     expect(afterAdd.length).toBe(beforeAdd.length + 3);
   });
-
-  /** @TODO add error codes and test with invalid input */
 
   it('should return 400 with invalid user objects', async () => {
     const noUsername = {

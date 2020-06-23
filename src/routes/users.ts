@@ -15,6 +15,8 @@ router.get('/', async (_req, res) => {
   res.json(allUsers);
 });
 
+/** @TODO handle duplicate fields with existing users */
+
 router.post('/', async (req, res) => {
   const newUser: NewUser = toNewUser(req.body);
 
@@ -25,6 +27,7 @@ router.post('/', async (req, res) => {
     email: newUser.email,
     channelName: newUser.channelName,
     passwordHash,
+    joinDate: new Date(),
   });
 
   const savedUser = await user.save();

@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
-interface UserModel extends Document {
+export interface UserModel extends Document {
   username: string;
   email: string;
   passwordHash: string;
@@ -14,8 +14,8 @@ const userSchema: Schema = new Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   passwordHash: { type: String, required: true },
-  channelName: String,
-  joinDate: Date,
+  channelName: { type: String, required: true },
+  joinDate: { type: String, required: true },
 });
 
 userSchema.set('toJSON', {

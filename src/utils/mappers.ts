@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NewUser } from '../types';
+import { NewUser, UserCredentials } from '../types';
 
 const isString = (text: any): text is string => {
   return typeof text === 'string' || text instanceof String;
@@ -24,4 +24,18 @@ export const toNewUser = (object: any): NewUser => {
     email: parseString(object.email, 'email'),
     channelName: parseString(object.channelName, 'channel name'),
   };
+};
+
+export const toCredentials = (object: any): UserCredentials => {
+  return {
+    username: parseString(object.username, 'username'),
+    password: parseString(object.password, 'password'),
+  };
+};
+
+export const toErrorMessage = (message: any): string => {
+  if (!message) throw new Error('Error message missing');
+  if (!isString(message)) throw new Error('Error message invalid');
+
+  return message;
 };

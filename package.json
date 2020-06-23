@@ -8,11 +8,12 @@
     "dev": " cross-env NODE_ENV=development ts-node-dev src/index.ts",
     "tsc": "tsc",
     "lint": "eslint --ext .ts .",
-    "test": "cross-env NODE_ENV=test jest --verbose"
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand"
   },
   "author": "Jarkko Mämmelä",
   "license": "ISC",
   "dependencies": {
+    "@types/jsonwebtoken": "^8.5.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
@@ -31,12 +32,14 @@
     "@types/mongoose": "^5.7.27",
     "@types/morgan": "^1.9.1",
     "@types/socket.io": "^2.1.8",
+    "@types/supertest": "^2.0.9",
     "@typescript-eslint/eslint-plugin": "^3.3.0",
     "@typescript-eslint/parser": "^3.3.0",
     "cross-env": "^7.0.2",
     "eslint": "^7.3.0",
     "jest": "^26.0.1",
     "supertest": "^4.0.2",
+    "ts-jest": "^26.1.1",
     "ts-node-dev": "^1.0.0-pre.49",
     "typescript": "^3.9.5"
   },
@@ -44,6 +47,10 @@
     "singleQuote": true
   },
   "jest": {
-    "testEnvironment": "node"
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
   }
 }

@@ -8,7 +8,7 @@ export interface GameModel extends Document {
   type: GameType;
   startTime: Date;
   players: GamePlayer[];
-  host: UserModel;
+  host: UserModel['_id'];
   createDate: Date;
 }
 

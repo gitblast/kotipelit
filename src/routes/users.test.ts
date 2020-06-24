@@ -1,6 +1,7 @@
 import supertest from 'supertest';
 
 import app from '../app';
+import config from '../utils/config';
 import User from '../models/user';
 import dbConnection from '../utils/connection';
 import testHelpers from '../utils/testHelpers';
@@ -18,12 +19,31 @@ const dummy: NewUser = {
   channelName: 'channel',
 };
 
+let adminToken: string;
+
 describe('user router', () => {
+  beforeAll(async () => {
+    const user = await testHelpers.addDummyUser();
+    adminToken = testHelpers.getValidToken(user, config.ADMIN_SECRET);
+  });
+
   beforeEach(async () => {
     await User.deleteMany({});
   });
 
-  it('should add a valid user', async () => {
+  it('should return 401 without valid admin token', async () => {
+    const user = await testHelpers.addDummyUser();
+    const hostToken = testHelpers.getValidToken(user, config.SECRET);
+
+    await api.post(baseUrl).send(dummy).expect(401);
+    await api
+      .post(baseUrl)
+      .send(dummy)
+      .set('Authorization', `bearer ${hostToken}`)
+      .expect(401);
+  });
+
+  it('should add a valid user with valid admin token', async () => {
     const newUser = { ...dummy };
 
     const initialUsers = await testHelpers.usersInDb();
@@ -31,6 +51,7 @@ describe('user router', () => {
     await api
       .post(baseUrl)
       .send(newUser)
+      .set('Authorization', `bearer ${adminToken}`)
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
@@ -40,7 +61,7 @@ describe('user router', () => {
     expect(usersAtEnd.map((user) => user.username)).toContain(newUser.username);
   });
 
-  it('should not add duplicate usernames or emails', async () => {
+  it('should not add duplicate usernames or emails with valid admin token', async () => {
     await testHelpers.addDummyUser(dummy.username, dummy.email);
 
     const uniqueUser = {
@@ -51,10 +72,12 @@ describe('user router', () => {
     await api
       .post(baseUrl)
       .send({ ...uniqueUser, username: dummy.username })
+      .set('Authorization', `bearer ${adminToken}`)
       .expect(400);
     await api
       .post(baseUrl)
       .send({ ...uniqueUser, email: dummy.email })
+      .set('Authorization', `bearer ${adminToken}`)
       .expect(400);
   });
 
@@ -74,7 +97,7 @@ describe('user router', () => {
     expect(afterAdd.length).toBe(beforeAdd.length + 3);
   });
 
-  it('should return 400 with invalid user objects', async () => {
+  it('should return 400 with invalid user objects using valid token', async () => {
     const noUsername = {
       ...dummy,
       username: undefined,
@@ -95,10 +118,26 @@ describe('user router', () => {
       password: undefined,
     };
 
-    await api.post(baseUrl).send(noUsername).expect(400);
-    await api.post(baseUrl).send(noPassword).expect(400);
-    await api.post(baseUrl).send(noEmail).expect(400);
-    await api.post(baseUrl).send(noChannelName).expect(400);
+    await api
+      .post(baseUrl)
+      .send(noUsername)
+      .set('Authorization', `bearer ${adminToken}`)
+      .expect(400);
+    await api
+      .post(baseUrl)
+      .send(noPassword)
+      .set('Authorization', `bearer ${adminToken}`)
+      .expect(400);
+    await api
+      .post(baseUrl)
+      .send(noEmail)
+      .set('Authorization', `bearer ${adminToken}`)
+      .expect(400);
+    await api
+      .post(baseUrl)
+      .send(noChannelName)
+      .set('Authorization', `bearer ${adminToken}`)
+      .expect(400);
   });
 
   afterAll(async () => {

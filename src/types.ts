@@ -11,7 +11,6 @@ export interface NewUser extends UserCredentials {
 export interface NewGame {
   players: GamePlayer[];
   startTime: Date;
-  host: string; // host id
   type: GameType;
 }
 

@@ -1,5 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import User, { UserModel } from '../models/user';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+
 import { NewUser } from '../types';
 import Game, { GameModel } from '../models/game';
 
@@ -11,9 +14,7 @@ const gamesInDb = async (): Promise<GameModel[]> => {
   return await Game.find({});
 };
 
-const addDummyGame = async (): Promise<GameModel> => {
-  const user = await addDummyUser();
-
+const addDummyGame = async (user: UserModel): Promise<GameModel> => {
   const dummyGame = {
     type: 'sanakierto',
     players: [
@@ -27,15 +28,11 @@ const addDummyGame = async (): Promise<GameModel> => {
       },
     ],
     startTime: new Date(),
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     host: user._id,
+    createDate: new Date(),
   };
 
-  const game = new Game({
-    ...dummyGame,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    host: user._id,
-  });
+  const game = new Game(dummyGame);
 
   return await game.save();
 };
@@ -66,9 +63,19 @@ const addDummyUser = async (
   return await user.save();
 };
 
+const getValidToken = (user: UserModel, secret: string): string => {
+  const tokenUser = {
+    username: user.username,
+    id: user._id,
+  };
+
+  return jwt.sign(tokenUser, secret);
+};
+
 export default {
   usersInDb,
   addDummyUser,
   gamesInDb,
   addDummyGame,
+  getValidToken,
 };

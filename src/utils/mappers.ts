@@ -8,7 +8,8 @@ import {
   GameType,
   GamePlayer,
 } from '../types';
-import { Error } from 'mongoose';
+import mongoose, { Error } from 'mongoose';
+import { GameModel } from '../models/game';
 
 const isString = (text: any): text is string => {
   return typeof text === 'string' || text instanceof String;
@@ -88,8 +89,26 @@ export const toNewGame = (object: any): NewGame => {
     type: parseGameType(object.type),
     startTime: parseDate(object.startTime),
     players: parsePlayers(object.players),
-    host: parseString(object.host, 'host id'),
   };
+};
+
+interface DecodedToken {
+  username: string;
+  id: mongoose.Types.ObjectId;
+}
+
+export const toAuthenticatedUser = (request: any): DecodedToken => {
+  if (
+    !request ||
+    !request.user ||
+    !request.user.username ||
+    !request.user.id ||
+    !isString(request.user.username) ||
+    !isString(request.user.id)
+  )
+    throw new Error('Request user invalid or missing');
+
+  return request.user as DecodedToken;
 };
 
 export const toCredentials = (object: any): UserCredentials => {
@@ -97,6 +116,27 @@ export const toCredentials = (object: any): UserCredentials => {
     username: parseString(object.username, 'username'),
     password: parseString(object.password, 'password'),
   };
+};
+
+export const validateGameHost = (
+  game: GameModel | null,
+  id: string
+): GameModel => {
+  if (!game) throw new Error('Missing game');
+  if (!game.host || !game.host.toString) {
+    throw new Error('Missing or invalid game host');
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  if (game.host.toString() !== id) {
+    throw new Error('Invalid request, cannot remove games added by others');
+  }
+
+  return game;
+};
+
+export const toID = (object: any): string => {
+  return parseString(object, 'game id');
 };
 
 interface ErrorToHandle {

@@ -13,14 +13,14 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { initGames } from './reducers/games.reducer';
-import { loginUser } from './reducers/user.reducer';
+import { loginUser, logout } from './reducers/user.reducer';
 import { initChannels } from './reducers/channels.reducer';
 
 import FrontPage from './components/FrontPage';
 import TempFrontPage from './components/TempFrontPage';
 
 import ChannelPage from './components/channel/ChannelPage';
-import { State, HostChannel } from './types';
+import { State, HostChannel, User } from './types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -58,12 +58,31 @@ const App = () => {
     dispatch(loginUser('username', 'password'));
   };
 
-  const channelRoutes = () => {
-    return channels.map((channel: HostChannel) => (
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
+  const channelRoutes = (channels: HostChannel[]) => {
+    return channels.map((channel) => (
       <Route key={channel.username} path={`/${channel.username}`}>
         <ChannelPage labelText={channel.channelName} />
       </Route>
     ));
+  };
+
+  const userControls = (user: User) => {
+    if (!user || !user.loggedIn)
+      return (
+        <Button color="inherit" onClick={handleLogin}>
+          <Typography>Kirjaudu</Typography>
+        </Button>
+      );
+
+    return (
+      <Button color="inherit" onClick={handleLogout}>
+        <Typography>{`Kirjaa ulos ${user.username}`}</Typography>
+      </Button>
+    );
   };
 
   return (
@@ -73,14 +92,12 @@ const App = () => {
           <Button color="inherit" component={Link} to="/">
             <Typography variant="h6">Kotipelit.com</Typography>
           </Button>
-          <Button color="inherit" onClick={handleLogin}>
-            <Typography>Kirjaudu</Typography>
-          </Button>
+          {userControls(user)}
         </Toolbar>
       </AppBar>
       <Container>
         <Switch>
-          {channelRoutes()}
+          {channelRoutes(channels)}
           <Route path="/">
             <TempFrontPage />
           </Route>

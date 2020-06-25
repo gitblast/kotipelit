@@ -14,6 +14,8 @@ import {
   Fab,
 } from '@material-ui/core';
 
+import { v4 as uuidv4 } from 'uuid';
+
 import { KeyboardDateTimePicker } from '@material-ui/pickers';
 
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -80,6 +82,7 @@ export const initializePlayers = (): SanakiertoPlayer[] => {
     }
 
     players.push({
+      id: uuidv4(),
       name: `Pelaaja ${i}`,
       words,
       points: 0,

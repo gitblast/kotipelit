@@ -1,7 +1,7 @@
 // GAMES
 
 export enum GameType {
-  SANAKIERTO = 'Sanakierto',
+  SANAKIERTO = 'sanakierto',
 }
 
 export interface Game {
@@ -88,8 +88,15 @@ export enum ActionType {
   INIT_GAMES_FAILURE = 'INIT_GAMES_FAILURE',
 
   // add game
-  ADD_GAME = 'ADD_GAME',
-  DELETE_GAME = 'DELETE_GAME',
+  ADD_GAME_REQUEST = 'ADD_GAME_REQUEST',
+  ADD_GAME_SUCCESS = 'ADD_GAME_SUCCESS',
+  ADD_GAME_FAILURE = 'ADD_GAME_FAILURE',
+
+  // delete game
+  DELETE_GAME_REQUEST = 'DELETE_GAME_REQUEST',
+  DELETE_GAME_SUCCESS = 'DELETE_GAME_SUCCESS',
+  DELETE_GAME_FAILURE = 'DELETE_GAME_FAILURE',
+
   LAUNCH_GAME = 'LAUNCH_GAME',
   UPDATE_ACTIVE_GAME = 'UPDATE_ACTIVE_GAME',
 
@@ -119,14 +126,32 @@ export type Action =
   | {
       type: ActionType.INIT_GAMES_FAILURE;
     }
+
+  // ADD GAME
   | {
-      type: ActionType.ADD_GAME;
+      type: ActionType.ADD_GAME_REQUEST;
+    }
+  | {
+      type: ActionType.ADD_GAME_SUCCESS;
       payload: SelectableGame;
     }
   | {
-      type: ActionType.DELETE_GAME;
+      type: ActionType.ADD_GAME_FAILURE;
+    }
+
+  // DELETE GAME
+  | {
+      type: ActionType.DELETE_GAME_REQUEST;
+    }
+  | {
+      type: ActionType.DELETE_GAME_SUCCESS;
       payload: string; // game id
     }
+  | {
+      type: ActionType.DELETE_GAME_FAILURE;
+    }
+
+  // LAUNCH GAME
   | {
       type: ActionType.LAUNCH_GAME;
       payload: string; // game id
@@ -135,6 +160,7 @@ export type Action =
       type: ActionType.UPDATE_ACTIVE_GAME;
       payload: ActiveGame; // game id
     }
+
   // INIT CHANNELS
   | {
       type: ActionType.INIT_CHANNELS_REQUEST;

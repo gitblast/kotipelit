@@ -8,6 +8,8 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import NewGame from './host/NewGame';
 import Sanakierto from './host/sanakierto/SanaKierto';
 import Dashboard from './host/Dashboard';
+import { useSelector } from 'react-redux';
+import { State, LoggedUser, User } from '../../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -24,9 +26,19 @@ interface ChannelPageProps {
   labelText: string;
 }
 
+const checkLogIn = (userToValidate: User): LoggedUser | null => {
+  if (userToValidate && userToValidate.loggedIn) return userToValidate;
+
+  return null;
+};
+
 /** @TODO guestview */
 const ChannelPage: React.FC<ChannelPageProps> = ({ labelText }) => {
   const classes = useStyles();
+
+  const user = useSelector((state: State) => state.user);
+
+  const loggedInUser = checkLogIn(user);
 
   return (
     <Router>
@@ -37,13 +49,13 @@ const ChannelPage: React.FC<ChannelPageProps> = ({ labelText }) => {
         <Divider className={classes.marginBottom} />
         <Switch>
           <Route path="/:username/newgame">
-            <NewGame />
+            {loggedInUser ? <NewGame /> : null}
           </Route>
           <Route path="/:username/:gameID">
             <Sanakierto />
           </Route>
           <Route path="/">
-            <Dashboard />
+            {loggedInUser ? <Dashboard user={loggedInUser} /> : null}
           </Route>
         </Switch>
       </Paper>

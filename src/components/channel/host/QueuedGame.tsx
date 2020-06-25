@@ -66,7 +66,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game }) => {
   return (
     <Paper elevation={2} className={classes.container}>
       <div>
-        <Typography>{game.startTime.toUTCString()}</Typography>
+        <Typography>{new Date(game.startTime).toUTCString()}</Typography>
       </div>
       <div>
         <Typography>{capitalize(game.type)}</Typography>

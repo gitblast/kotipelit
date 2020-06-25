@@ -75,9 +75,8 @@ const NewGame: React.FC = () => {
           }}
           onSubmit={(values, actions) => {
             console.log('values', values, 'actions', actions);
-            const id = Date.now().toString();
-            console.log('adding new game with random id', id);
-            dispatch(addGame({ ...values, id }));
+            console.log('adding new game');
+            dispatch(addGame(values));
             handleReturn();
           }}
         >

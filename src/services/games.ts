@@ -3,7 +3,7 @@ import axios from 'axios';
 import userService from './users';
 import { SelectableGame } from '../types';
 
-const baseUrl = 'api/games';
+const baseUrl = '/api/games';
 
 const getAll = async (): Promise<SelectableGame[]> => {
   const config = {
@@ -15,6 +15,30 @@ const getAll = async (): Promise<SelectableGame[]> => {
   return response.data;
 };
 
+const addNew = async (
+  gameToAdd: Omit<SelectableGame, 'id'>
+): Promise<SelectableGame> => {
+  const config = {
+    headers: { Authorization: userService.getAuthHeader() },
+  };
+
+  console.log('adding', gameToAdd);
+
+  const response = await axios.post(baseUrl, gameToAdd, config);
+
+  return response.data;
+};
+
+const deleteGame = async (id: string): Promise<void> => {
+  const config = {
+    headers: { Authorization: userService.getAuthHeader() },
+  };
+
+  await axios.delete(`${baseUrl}/${id}`, config);
+};
+
 export default {
   getAll,
+  addNew,
+  deleteGame,
 };

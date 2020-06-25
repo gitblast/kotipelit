@@ -7,8 +7,8 @@ import { Fab, Typography } from '@material-ui/core';
 
 import QueuedGame from './QueuedGame';
 
-import { State } from '../../../types';
-import { useSelector, shallowEqual } from 'react-redux';
+import { State, LoggedUser } from '../../../types';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -16,13 +16,16 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-// interface DashboardProps {}
+interface DashboardProps {
+  user: LoggedUser;
+}
 
-const Dashboard: React.FC = () => {
+const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   const classes = useStyles();
 
   const games = useSelector((state: State) => state.games.allGames);
-  const user = useSelector((state: State) => state.user, shallowEqual);
+
+  console.log('GAMES', games);
 
   /** @TODO fetch username for link from logged user */
   return (
@@ -38,7 +41,7 @@ const Dashboard: React.FC = () => {
           color="primary"
           variant="extended"
           component={Link}
-          to="/matleena/newgame"
+          to={`/${user.username}/newgame`}
         >
           LUO PELI
         </Fab>

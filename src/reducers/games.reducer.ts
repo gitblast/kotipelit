@@ -58,16 +58,42 @@ const reducer = (state: GamesState = initialState, action: Action) => {
         loading: false,
       };
     }
-    case 'ADD_GAME': {
+    case ActionType.ADD_GAME_REQUEST: {
+      return {
+        ...state,
+        loading: true,
+      };
+    }
+    case ActionType.ADD_GAME_SUCCESS: {
       return {
         ...state,
         allGames: state.allGames.concat(action.payload),
+        loading: false,
       };
     }
-    case 'DELETE_GAME': {
+    case ActionType.ADD_GAME_FAILURE: {
+      return {
+        ...state,
+        loading: false,
+      };
+    }
+    case ActionType.DELETE_GAME_REQUEST: {
+      return {
+        ...state,
+        loading: true,
+      };
+    }
+    case ActionType.DELETE_GAME_SUCCESS: {
       return {
         ...state,
         allGames: state.allGames.filter((game) => game.id !== action.payload),
+        loading: false,
+      };
+    }
+    case ActionType.DELETE_GAME_FAILURE: {
+      return {
+        ...state,
+        loading: false,
       };
     }
     case 'LAUNCH_GAME': {
@@ -124,17 +150,57 @@ export const initGames = (): ThunkAction<void, State, null, Action> => {
   };
 };
 
-export const addGame = (game: SelectableGame): Action => {
-  return {
-    type: ActionType.ADD_GAME,
-    payload: game,
+export const addGame = (
+  game: Omit<SelectableGame, 'id'>
+): ThunkAction<void, State, null, Action> => {
+  const request = (): Action => {
+    return { type: ActionType.ADD_GAME_REQUEST };
+  };
+
+  const success = (gameToAdd: SelectableGame): Action => {
+    return { type: ActionType.ADD_GAME_SUCCESS, payload: gameToAdd };
+  };
+
+  const failure = (): Action => {
+    return { type: ActionType.ADD_GAME_FAILURE };
+  };
+
+  return async (dispatch) => {
+    dispatch(request());
+
+    try {
+      const addedGame = await gameService.addNew(game);
+      dispatch(success(addedGame));
+    } catch (error) {
+      dispatch(failure());
+    }
   };
 };
 
-export const deleteGame = (id: string): Action => {
-  return {
-    type: ActionType.DELETE_GAME,
-    payload: id,
+export const deleteGame = (
+  idToRemove: string
+): ThunkAction<void, State, null, Action> => {
+  const request = (): Action => {
+    return { type: ActionType.DELETE_GAME_REQUEST };
+  };
+
+  const success = (id: string): Action => {
+    return { type: ActionType.DELETE_GAME_SUCCESS, payload: id };
+  };
+
+  const failure = (): Action => {
+    return { type: ActionType.DELETE_GAME_FAILURE };
+  };
+
+  return async (dispatch) => {
+    dispatch(request());
+
+    try {
+      await gameService.deleteGame(idToRemove);
+      dispatch(success(idToRemove));
+    } catch (error) {
+      dispatch(failure());
+    }
   };
 };
 

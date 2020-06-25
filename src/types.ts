@@ -1,3 +1,5 @@
+// GAMES
+
 export enum GameType {
   SANAKIERTO = 'Sanakierto',
 }
@@ -37,7 +39,22 @@ export enum GameStatus {
   FINISHED = 'Finished',
 }
 
-// redux
+// USERS & AUTH
+
+interface BaseUser {
+  username: string;
+}
+
+export interface LoggedUser extends BaseUser {
+  token: string;
+}
+
+export interface LoggingUser extends BaseUser {
+  loggingIn: true;
+}
+
+// REDUX
+
 export interface State {
   games: GamesState;
   user: User;
@@ -48,13 +65,7 @@ export interface GamesState {
   activeGame: ActiveGame | null;
 }
 
-export interface UserObject {
-  username: string;
-  id: string;
-  token: string;
-}
-
-export type User = UserObject | null;
+export type User = LoggedUser | LoggingUser | null;
 
 export enum ActionType {
   // game actions
@@ -93,9 +104,11 @@ export type Action =
     }
   | {
       type: ActionType.LOGIN_REQUEST;
+      payload: string; // username
     }
   | {
       type: ActionType.LOGIN_SUCCESS;
+      payload: LoggedUser;
     }
   | {
       type: ActionType.LOGIN_FAILURE;

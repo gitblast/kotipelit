@@ -32,7 +32,7 @@ const initializedState = {
   activeGame: null,
 };
 
-describe('Reducer', () => {
+describe('games reducer', () => {
   it('should return initial state', () => {
     const initialState = {
       allGames: [],
@@ -106,7 +106,7 @@ describe('Reducer', () => {
     const newState = reducer(initializedState, action);
 
     const expectedState = {
-      games: [{ ...newGame, status: GameStatus.WAITING }],
+      allGames: [{ ...newGame, status: GameStatus.WAITING }],
       activeGame: { ...newGame, status: GameStatus.WAITING, round: 1, turn: 0 },
     };
 

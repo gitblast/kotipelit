@@ -6,13 +6,18 @@ import {
   GameStatus,
   ActiveGame,
   ActionType,
+  State,
 } from '../types';
 
-import { hardcodedGames } from '../constants';
+import gameService from '../services/games';
 
-const initialState = {
+import { hardcodedGames } from '../constants';
+import { ThunkAction } from 'redux-thunk';
+
+const initialState: GamesState = {
   allGames: [],
   activeGame: null,
+  loading: false,
 };
 
 const activate = (game: SelectableGame): ActiveGame => {
@@ -34,10 +39,23 @@ const activate = (game: SelectableGame): ActiveGame => {
 
 const reducer = (state: GamesState = initialState, action: Action) => {
   switch (action.type) {
-    case 'INIT_GAMES': {
+    case ActionType.INIT_GAMES_REQUEST: {
+      return {
+        ...state,
+        loading: true,
+      };
+    }
+    case ActionType.INIT_GAMES_SUCCESS: {
       return {
         ...state,
         allGames: action.payload,
+        loading: false,
+      };
+    }
+    case ActionType.INIT_GAMES_FAILURE: {
+      return {
+        ...state,
+        loading: false,
       };
     }
     case 'ADD_GAME': {
@@ -81,11 +99,28 @@ const reducer = (state: GamesState = initialState, action: Action) => {
   }
 };
 
-/** @TODO fetch from backend */
-export const initGames = (): Action => {
-  return {
-    type: ActionType.INIT_GAMES,
-    payload: hardcodedGames,
+export const initGames = (): ThunkAction<void, State, null, Action> => {
+  const request = (): Action => {
+    return { type: ActionType.INIT_GAMES_REQUEST };
+  };
+
+  const success = (games: SelectableGame[]): Action => {
+    return { type: ActionType.INIT_GAMES_SUCCESS, payload: games };
+  };
+
+  const failure = (): Action => {
+    return { type: ActionType.INIT_GAMES_FAILURE };
+  };
+
+  return async (dispatch) => {
+    dispatch(request());
+
+    try {
+      const games = await gameService.getAll();
+      dispatch(success(games));
+    } catch (error) {
+      dispatch(failure());
+    }
   };
 };
 

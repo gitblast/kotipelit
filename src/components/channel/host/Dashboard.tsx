@@ -8,7 +8,7 @@ import { Fab, Typography } from '@material-ui/core';
 import QueuedGame from './QueuedGame';
 
 import { State } from '../../../types';
-import { useSelector } from 'react-redux';
+import { useSelector, shallowEqual } from 'react-redux';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,6 +22,7 @@ const Dashboard: React.FC = () => {
   const classes = useStyles();
 
   const games = useSelector((state: State) => state.games.allGames);
+  const user = useSelector((state: State) => state.user, shallowEqual);
 
   /** @TODO fetch username for link from logged user */
   return (

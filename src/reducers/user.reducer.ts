@@ -1,18 +1,23 @@
 import { ThunkAction } from 'redux-thunk';
-import loginService from '../services/users';
+import userService from '../services/users';
 
 import { Action, User, ActionType, State, LoggedUser } from '../types';
+
+/** @TODO handle errors */
 
 const reducer = (state: User = null, action: Action) => {
   switch (action.type) {
     case ActionType.LOGIN_REQUEST: {
       return {
         username: action.payload,
-        loggingIn: true,
+        loggedIn: false,
       };
     }
     case ActionType.LOGIN_SUCCESS: {
-      return action.payload;
+      return {
+        ...action.payload,
+        loggedIn: true,
+      };
     }
     case ActionType.LOGIN_FAILURE: {
       return null;
@@ -23,6 +28,10 @@ const reducer = (state: User = null, action: Action) => {
     default:
       return state;
   }
+};
+
+export const logout = (): Action => {
+  return { type: ActionType.LOGOUT };
 };
 
 export const loginUser = (
@@ -45,7 +54,8 @@ export const loginUser = (
     dispatch(request(username));
 
     try {
-      const user = await loginService.login(username, password);
+      const user = await userService.login(username, password);
+      userService.setToken(user.token);
       dispatch(success(user));
     } catch (error) {
       dispatch(failure());

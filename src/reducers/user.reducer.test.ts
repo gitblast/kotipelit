@@ -1,5 +1,5 @@
 import reducer from './user.reducer';
-import { Action, ActionType } from '../types';
+import { Action, ActionType, LoggedUser } from '../types';
 
 describe('games reducer', () => {
   it('should return initial state null', () => {
@@ -14,7 +14,7 @@ describe('games reducer', () => {
 
     const expectedState = {
       username: 'username',
-      loggingIn: true,
+      loggedIn: false,
     };
 
     expect(reducer(undefined, action)).toEqual(expectedState);
@@ -29,9 +29,10 @@ describe('games reducer', () => {
   });
 
   it('should handle LOGIN_SUCCESS', () => {
-    const user = {
+    const user: LoggedUser = {
       username: 'username',
       token: 'token',
+      loggedIn: true,
     };
 
     const action: Action = {

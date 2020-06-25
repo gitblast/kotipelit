@@ -11,11 +11,16 @@ import {
 } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { initGames } from './reducers/games.reducer';
+import { loginUser } from './reducers/user.reducer';
+import { initChannels } from './reducers/channels.reducer';
 
 import FrontPage from './components/FrontPage';
+import TempFrontPage from './components/TempFrontPage';
+
 import ChannelPage from './components/channel/ChannelPage';
+import { State, HostChannel } from './types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,10 +38,33 @@ const App = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
+  const user = useSelector((state: State) => state.user, shallowEqual);
+  const channels = useSelector(
+    (state: State) => state.channels.allChannels,
+    shallowEqual
+  );
+
+  // init channels
+  React.useEffect(() => {
+    dispatch(initChannels());
+  }, [dispatch]);
+
   // init games
   React.useEffect(() => {
-    dispatch(initGames());
-  }, [dispatch]);
+    if (user && user.loggedIn) dispatch(initGames());
+  }, [dispatch, user]);
+
+  const handleLogin = () => {
+    dispatch(loginUser('username', 'password'));
+  };
+
+  const channelRoutes = () => {
+    return channels.map((channel: HostChannel) => (
+      <Route key={channel.username} path={`/${channel.username}`}>
+        <ChannelPage labelText={channel.channelName} />
+      </Route>
+    ));
+  };
 
   return (
     <Router>
@@ -45,18 +73,16 @@ const App = () => {
           <Button color="inherit" component={Link} to="/">
             <Typography variant="h6">Kotipelit.com</Typography>
           </Button>
-          <Button color="inherit">
+          <Button color="inherit" onClick={handleLogin}>
             <Typography>Kirjaudu</Typography>
           </Button>
         </Toolbar>
       </AppBar>
       <Container>
         <Switch>
-          <Route path="/matleena">
-            <ChannelPage labelText="Matun kanava" />
-          </Route>
+          {channelRoutes()}
           <Route path="/">
-            <FrontPage />
+            <TempFrontPage />
           </Route>
         </Switch>
       </Container>

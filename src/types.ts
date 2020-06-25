@@ -46,11 +46,16 @@ interface BaseUser {
 }
 
 export interface LoggedUser extends BaseUser {
+  loggedIn: true;
   token: string;
 }
 
 export interface LoggingUser extends BaseUser {
-  loggingIn: true;
+  loggedIn: false;
+}
+
+export interface HostChannel extends BaseUser {
+  channelName: string;
 }
 
 // REDUX
@@ -58,33 +63,61 @@ export interface LoggingUser extends BaseUser {
 export interface State {
   games: GamesState;
   user: User;
+  channels: ChannelsState;
 }
 
 export interface GamesState {
   allGames: SelectableGame[];
   activeGame: ActiveGame | null;
+  loading: boolean;
+}
+
+export interface ChannelsState {
+  allChannels: HostChannel[];
+  loading: boolean;
 }
 
 export type User = LoggedUser | LoggingUser | null;
 
 export enum ActionType {
-  // game actions
-  INIT_GAMES = 'INIT_GAMES',
+  // GAME ACTIONS
+
+  // init games
+  INIT_GAMES_REQUEST = 'INIT_GAMES_REQUEST',
+  INIT_GAMES_SUCCESS = 'INIT_GAMES_SUCCESS',
+  INIT_GAMES_FAILURE = 'INIT_GAMES_FAILURE',
+
+  // add game
   ADD_GAME = 'ADD_GAME',
   DELETE_GAME = 'DELETE_GAME',
   LAUNCH_GAME = 'LAUNCH_GAME',
   UPDATE_ACTIVE_GAME = 'UPDATE_ACTIVE_GAME',
-  // user actions
+
+  // USER ACTIONS
+
+  // login & logout
   LOGIN_REQUEST = 'LOGIN_REQUEST',
   LOGIN_SUCCESS = 'LOGIN_SUCCESS',
   LOGIN_FAILURE = 'LOGIN_FAILURE',
   LOGOUT = 'LOGOUT',
+
+  // init channels
+  INIT_CHANNELS_REQUEST = 'INIT_CHANNELS_REQUEST',
+  INIT_CHANNELS_SUCCESS = 'INIT_CHANNELS_SUCCESS',
+  INIT_CHANNELS_FAILURE = 'INIT_CHANNELS_FAILURE',
 }
 
 export type Action =
+  // INIT GAMES
   | {
-      type: ActionType.INIT_GAMES;
+      type: ActionType.INIT_GAMES_REQUEST;
+    }
+  | {
+      type: ActionType.INIT_GAMES_SUCCESS;
       payload: SelectableGame[];
+    }
+  | {
+      type: ActionType.INIT_GAMES_FAILURE;
     }
   | {
       type: ActionType.ADD_GAME;
@@ -102,6 +135,18 @@ export type Action =
       type: ActionType.UPDATE_ACTIVE_GAME;
       payload: ActiveGame; // game id
     }
+  // INIT CHANNELS
+  | {
+      type: ActionType.INIT_CHANNELS_REQUEST;
+    }
+  | {
+      type: ActionType.INIT_CHANNELS_SUCCESS;
+      payload: HostChannel[];
+    }
+  | {
+      type: ActionType.INIT_CHANNELS_FAILURE;
+    }
+  // LOGIN
   | {
       type: ActionType.LOGIN_REQUEST;
       payload: string; // username

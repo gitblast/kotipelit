@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import supertest from 'supertest';
 
 import app from '../app';
@@ -88,13 +90,21 @@ describe('user router', () => {
     await testHelpers.addDummyUser();
     await testHelpers.addDummyUser();
 
-    await api
+    const response = await api
       .get(baseUrl)
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
     const afterAdd = await testHelpers.usersInDb();
     expect(afterAdd.length).toBe(beforeAdd.length + 3);
+
+    expect(response.body).toBeDefined();
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    response.body.forEach((channel: any) => {
+      expect(channel).not.toHaveProperty('passwordHash');
+      expect(channel).not.toHaveProperty('email');
+    });
   });
 
   it('should return 400 with invalid user objects using valid token', async () => {

@@ -14,7 +14,7 @@ describe('login router', () => {
     await User.deleteMany({});
   });
 
-  it('should recieve token with valid credentials', async () => {
+  it('should return a token with valid credentials', async () => {
     await testHelpers.addDummyUser('username', 'password');
 
     const credentials = {

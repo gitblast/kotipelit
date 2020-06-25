@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import mongoose, { Schema, Document } from 'mongoose';
 import { GameType, GamePlayer } from '../types';
 import { UserModel } from './user';
@@ -24,6 +27,8 @@ const gameSchema: Schema = new Schema({
 
 gameSchema.set('toJSON', {
   transform: (_document, returnedObject: GameModel) => {
+    returnedObject.id = returnedObject._id.toString();
+    delete returnedObject._id;
     delete returnedObject.__v;
   },
 });

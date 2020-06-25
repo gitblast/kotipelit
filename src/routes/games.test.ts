@@ -95,7 +95,7 @@ describe('games router', () => {
     expect(gamesAtEnd.length).toBe(initialGames.length + 1);
     expect(response.body).toBeDefined();
     expect(response.body).toHaveProperty('createDate');
-    expect(response.body).toHaveProperty('_id');
+    expect(response.body).toHaveProperty('id');
   });
 
   it('should add token id as host id when adding new game', async () => {

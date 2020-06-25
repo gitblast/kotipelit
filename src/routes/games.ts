@@ -39,11 +39,11 @@ router.post('/', async (req, res, next) => {
 });
 
 router.delete('/:id', async (req, res, next) => {
-  const id = toID(req.params.id);
+  const gameId = toID(req.params.id);
   const user = toAuthenticatedUser(req);
 
   try {
-    const game = await Game.findById(id);
+    const game = await Game.findById(gameId);
 
     const validatedGame = validateGameHost(game, user.id.toString());
 

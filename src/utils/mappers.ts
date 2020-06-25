@@ -118,6 +118,11 @@ export const toCredentials = (object: any): UserCredentials => {
   };
 };
 
+/**
+ * Checks if the game's host field matches given id. Throws error if not.
+ * @param game - game returned from mongodb
+ * @param id - id to match against game's host
+ */
 export const validateGameHost = (
   game: GameModel | null,
   id: string

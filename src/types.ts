@@ -172,7 +172,8 @@ export type Action =
   | {
       type: ActionType.INIT_CHANNELS_FAILURE;
     }
-  // LOGIN
+
+  // LOGIN & USER
   | {
       type: ActionType.LOGIN_REQUEST;
       payload: string; // username

@@ -73,6 +73,20 @@ describe('games reducer', () => {
     expect(reducer(undefined, action)).toEqual(expectedState);
   });
 
+  it('should handle INIT_GAMES_FAILURE', () => {
+    const action: Action = {
+      type: ActionType.INIT_GAMES_FAILURE,
+    };
+
+    const expectedState: GamesState = {
+      allGames: [],
+      activeGame: null,
+      loading: false,
+    };
+
+    expect(reducer(undefined, action)).toEqual(expectedState);
+  });
+
   it('should handle ADD_GAME_REQUEST', () => {
     const action: Action = {
       type: ActionType.ADD_GAME_REQUEST,

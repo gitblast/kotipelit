@@ -1,7 +1,7 @@
 import reducer from './user.reducer';
 import { Action, ActionType, LoggedUser } from '../types';
 
-describe('games reducer', () => {
+describe('user reducer', () => {
   it('should return initial state null', () => {
     expect(reducer(undefined, {} as Action)).toEqual(null);
   });

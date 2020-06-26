@@ -11,7 +11,6 @@ import {
 
 import gameService from '../services/games';
 
-import { hardcodedGames } from '../constants';
 import { ThunkAction } from 'redux-thunk';
 
 const initialState: GamesState = {

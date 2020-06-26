@@ -30,10 +30,39 @@ const reducer = (state: User = null, action: Action) => {
   }
 };
 
+/**
+ * Checks for a logged user in localStrorage. If found, sets it as user and sets token for userservice
+ */
+export const checkForUser = (): ThunkAction<void, State, null, Action> => {
+  return (dispatch) => {
+    const loggedUser = window.localStorage.getItem('kotipelitUser');
+
+    if (loggedUser) {
+      const parsedUser: LoggedUser = JSON.parse(loggedUser);
+
+      userService.setToken(parsedUser.token);
+
+      dispatch({
+        type: ActionType.LOGIN_SUCCESS,
+        payload: parsedUser,
+      });
+    }
+  };
+};
+
+/**
+ * Clears user from localStorage and sets user to null
+ */
 export const logout = (): Action => {
+  window.localStorage.removeItem('kotipelitUser');
   return { type: ActionType.LOGOUT };
 };
 
+/**
+ * Logs in user. If succesful, sets token to userservice and saves user in localStorage.
+ * @param username
+ * @param password
+ */
 export const loginUser = (
   username: string,
   password: string
@@ -56,6 +85,9 @@ export const loginUser = (
     try {
       const user = await userService.login(username, password);
       userService.setToken(user.token);
+
+      window.localStorage.setItem('kotipelitUser', JSON.stringify(user));
+
       dispatch(success(user));
     } catch (error) {
       dispatch(failure());

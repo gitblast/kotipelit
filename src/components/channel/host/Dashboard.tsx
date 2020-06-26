@@ -25,9 +25,6 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
 
   const games = useSelector((state: State) => state.games.allGames);
 
-  console.log('GAMES', games);
-
-  /** @TODO fetch username for link from logged user */
   return (
     <div>
       <div>

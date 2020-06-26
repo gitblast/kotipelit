@@ -13,14 +13,15 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { initGames } from './reducers/games.reducer';
-import { loginUser, logout } from './reducers/user.reducer';
+import { checkForUser } from './reducers/user.reducer';
 import { initChannels } from './reducers/channels.reducer';
 
 import FrontPage from './components/FrontPage';
 import TempFrontPage from './components/TempFrontPage';
+import UserControls from './components/UserControls';
 
 import ChannelPage from './components/channel/ChannelPage';
-import { State, HostChannel, User } from './types';
+import { State, HostChannel } from './types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -44,8 +45,9 @@ const App = () => {
     shallowEqual
   );
 
-  // init channels
+  // init channels and check local storage for user
   React.useEffect(() => {
+    dispatch(checkForUser());
     dispatch(initChannels());
   }, [dispatch]);
 
@@ -53,14 +55,6 @@ const App = () => {
   React.useEffect(() => {
     if (user && user.loggedIn) dispatch(initGames());
   }, [dispatch, user]);
-
-  const handleLogin = () => {
-    dispatch(loginUser('username', 'password'));
-  };
-
-  const handleLogout = () => {
-    dispatch(logout());
-  };
 
   const channelRoutes = (channels: HostChannel[]) => {
     return channels.map((channel) => (
@@ -70,21 +64,6 @@ const App = () => {
     ));
   };
 
-  const userControls = (user: User) => {
-    if (!user || !user.loggedIn)
-      return (
-        <Button color="inherit" onClick={handleLogin}>
-          <Typography>Kirjaudu</Typography>
-        </Button>
-      );
-
-    return (
-      <Button color="inherit" onClick={handleLogout}>
-        <Typography>{`Kirjaa ulos ${user.username}`}</Typography>
-      </Button>
-    );
-  };
-
   return (
     <Router>
       <AppBar position="static" className={classes.navbar}>
@@ -92,7 +71,7 @@ const App = () => {
           <Button color="inherit" component={Link} to="/">
             <Typography variant="h6">Kotipelit.com</Typography>
           </Button>
-          {userControls(user)}
+          <UserControls user={user} />
         </Toolbar>
       </AppBar>
       <Container>

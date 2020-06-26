@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import mongoose, { Schema, Document } from 'mongoose';
-import { GameType, GamePlayer } from '../types';
+import { GameType, GamePlayer, GameStatus } from '../types';
 import { UserModel } from './user';
 
 /** @TODO types for all fields */
@@ -11,8 +11,10 @@ export interface GameModel extends Document {
   type: GameType;
   startTime: Date;
   players: GamePlayer[];
+  status: GameStatus;
   host: UserModel['_id'];
   createDate: Date;
+  rounds?: number;
 }
 
 /** @TODO winner? rating? url? name? jitsiroom? */
@@ -21,8 +23,10 @@ const gameSchema: Schema = new Schema({
   type: { type: String, required: true },
   startTime: { type: Date, required: true },
   players: { type: Array, required: true },
+  status: { type: GameStatus, required: true },
   host: { type: mongoose.Types.ObjectId, required: true },
   createDate: { type: Date, required: true },
+  rounds: Number,
 });
 
 gameSchema.set('toJSON', {

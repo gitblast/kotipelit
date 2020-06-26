@@ -21,13 +21,12 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res, next) => {
-  const newGame = toNewGame(req.body);
   const user = toAuthenticatedUser(req);
+  const newGame = toNewGame(req.body, user.id);
 
   const game = new Game({
     ...newGame,
     createDate: new Date(),
-    host: user.id,
   });
 
   try {

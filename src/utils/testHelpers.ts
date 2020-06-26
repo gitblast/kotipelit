@@ -3,7 +3,7 @@ import User, { UserModel } from '../models/user';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-import { NewUser } from '../types';
+import { NewUser, NewGame, GameStatus } from '../types';
 import Game, { GameModel } from '../models/game';
 
 const usersInDb = async (): Promise<UserModel[]> => {
@@ -15,7 +15,7 @@ const gamesInDb = async (): Promise<GameModel[]> => {
 };
 
 const addDummyGame = async (user: UserModel): Promise<GameModel> => {
-  const dummyGame = {
+  const dummyGame: NewGame = {
     type: 'sanakierto',
     players: [
       {
@@ -29,10 +29,10 @@ const addDummyGame = async (user: UserModel): Promise<GameModel> => {
     ],
     startTime: new Date(),
     host: user._id,
-    createDate: new Date(),
+    status: GameStatus.UPCOMING,
   };
 
-  const game = new Game(dummyGame);
+  const game = new Game({ ...dummyGame, createDate: new Date() });
 
   return await game.save();
 };

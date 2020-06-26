@@ -9,12 +9,13 @@ import Game from '../models/game';
 import dbConnection from '../utils/connection';
 import testHelpers from '../utils/testHelpers';
 import { UserModel } from '../models/user';
+import { NewGame, GameStatus } from '../types';
 
 const api = supertest(app);
 
 const baseUrl = '/api/games';
 
-const dummyGame = {
+const dummyGame: Omit<NewGame, 'host'> = {
   type: 'sanakierto',
   players: [
     {
@@ -27,6 +28,7 @@ const dummyGame = {
     },
   ],
   startTime: new Date(),
+  status: GameStatus.UPCOMING,
 };
 
 let user: UserModel;

@@ -7,8 +7,9 @@ import {
   NewGame,
   GameType,
   GamePlayer,
+  GameStatus,
 } from '../types';
-import mongoose, { Error } from 'mongoose';
+import mongoose, { Error, Types } from 'mongoose';
 import { GameModel } from '../models/game';
 
 const isString = (text: any): text is string => {
@@ -40,6 +41,18 @@ const isGamePlayer = (player: any): player is GamePlayer => {
   );
 };
 
+const isGameStatus = (status: any): status is GameStatus => {
+  return Object.values(GameStatus).includes(status);
+};
+
+const isNumber = (number: any): number is number => {
+  const casted = Number(number);
+
+  if (!casted) return false;
+
+  return true;
+};
+
 const parseString = (str: any, fieldName: string): string => {
   if (!str) throw new Error(`Missing field '${fieldName}'`);
   if (!isString(str))
@@ -64,6 +77,21 @@ const parseDate = (date: any): Date => {
   return date as Date;
 };
 
+const parseStatus = (status: any): GameStatus => {
+  if (!status) throw new Error('Missing game status');
+  if (!isString(status) || !isGameStatus(status))
+    throw new Error('Missing game status');
+
+  return status;
+};
+
+const parseRounds = (rounds: any): number | undefined => {
+  if (!rounds) return;
+  if (!isNumber(rounds)) throw new Error('Invalid rounds');
+
+  return Number(rounds);
+};
+
 const parsePlayers = (players: any): GamePlayer[] => {
   if (!players) throw new Error('Missing players');
   if (!isArray(players)) throw new Error('Invalid players');
@@ -84,11 +112,14 @@ export const toNewUser = (object: any): NewUser => {
   };
 };
 
-export const toNewGame = (object: any): NewGame => {
+export const toNewGame = (object: any, hostId: Types.ObjectId): NewGame => {
   return {
     type: parseGameType(object.type),
     startTime: parseDate(object.startTime),
     players: parsePlayers(object.players),
+    status: parseStatus(object.status),
+    host: hostId,
+    rounds: parseRounds(object.rounds),
   };
 };
 

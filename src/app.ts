@@ -20,6 +20,7 @@ const app = express();
 
 void dbConnection.connect(config.MONGODB_URI);
 
+// logger
 if (process.env.NODE_ENV !== 'test') app.use(morgan('tiny'));
 
 app.use(express.json());
@@ -27,7 +28,7 @@ app.use(cors());
 
 app.use(express.static('build'));
 
-// unprotected routes
+// public routes
 app.use('/api/login', loginRouter);
 app.use('/api/users', userRouter);
 

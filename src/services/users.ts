@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { LoggedUser, HostChannel } from '../types';
 
-const baseUrl = 'api/users';
+const baseUrl = '/api/users';
 let token: string | null = null;
 
 const login = async (
@@ -11,13 +11,15 @@ const login = async (
 ): Promise<Omit<LoggedUser, 'loggedIn'>> => {
   const credentials = { username, password };
 
-  const response = await axios.post('api/login', credentials);
+  const response = await axios.post('/api/login', credentials);
   return response.data;
 };
 
-const setToken = (userToken: string) => {
+const setToken = (userToken: string | null) => {
   token = userToken;
 };
+
+const getToken = () => token;
 
 const getAuthHeader = (): string => {
   if (!token) throw new Error('Käyttäjän token puuttuu');
@@ -27,7 +29,6 @@ const getAuthHeader = (): string => {
 
 const getAll = async (): Promise<HostChannel[]> => {
   const response = await axios.get(baseUrl);
-  console.log('all', response.data);
   return response.data;
 };
 
@@ -36,4 +37,5 @@ export default {
   setToken,
   getAuthHeader,
   getAll,
+  getToken,
 };

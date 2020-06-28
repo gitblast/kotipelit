@@ -6,12 +6,11 @@ import {
   GameStatus,
   ActiveGame,
   ActionType,
-  State,
 } from '../types';
 
-import gameService from '../services/games';
+import { Dispatch } from 'redux';
 
-import { ThunkAction } from 'redux-thunk';
+import gameService from '../services/games';
 
 const initialState: GamesState = {
   allGames: [],
@@ -124,81 +123,85 @@ const reducer = (state: GamesState = initialState, action: Action) => {
   }
 };
 
-export const initGames = (): ThunkAction<void, State, null, Action> => {
-  const request = (): Action => {
-    return { type: ActionType.INIT_GAMES_REQUEST };
-  };
+// init games
 
-  const success = (games: SelectableGame[]): Action => {
-    return { type: ActionType.INIT_GAMES_SUCCESS, payload: games };
-  };
+export const initRequest = (): Action => ({
+  type: ActionType.INIT_GAMES_REQUEST,
+});
 
-  const failure = (): Action => {
-    return { type: ActionType.INIT_GAMES_FAILURE };
-  };
+export const initSuccess = (games: SelectableGame[]): Action => ({
+  type: ActionType.INIT_GAMES_SUCCESS,
+  payload: games,
+});
 
-  return async (dispatch) => {
-    dispatch(request());
+export const initFailure = (): Action => ({
+  type: ActionType.INIT_GAMES_FAILURE,
+});
+
+export const initGames = () => {
+  return async (dispatch: Dispatch) => {
+    dispatch(initRequest());
 
     try {
       const games = await gameService.getAll();
-      dispatch(success(games));
+      dispatch(initSuccess(games));
     } catch (error) {
-      dispatch(failure());
+      dispatch(initFailure());
     }
   };
 };
 
-export const addGame = (
-  game: Omit<SelectableGame, 'id'>
-): ThunkAction<void, State, null, Action> => {
-  const request = (): Action => {
-    return { type: ActionType.ADD_GAME_REQUEST };
-  };
+// add game
 
-  const success = (gameToAdd: SelectableGame): Action => {
-    return { type: ActionType.ADD_GAME_SUCCESS, payload: gameToAdd };
-  };
+export const addRequest = (): Action => {
+  return { type: ActionType.ADD_GAME_REQUEST };
+};
 
-  const failure = (): Action => {
-    return { type: ActionType.ADD_GAME_FAILURE };
-  };
+export const addSuccess = (gameToAdd: SelectableGame): Action => {
+  return { type: ActionType.ADD_GAME_SUCCESS, payload: gameToAdd };
+};
 
-  return async (dispatch) => {
-    dispatch(request());
+export const addFailure = (): Action => {
+  return { type: ActionType.ADD_GAME_FAILURE };
+};
+
+export const addGame = (game: Omit<SelectableGame, 'id'>) => {
+  return async (dispatch: Dispatch) => {
+    dispatch(addRequest());
 
     try {
       const addedGame = await gameService.addNew(game);
-      dispatch(success(addedGame));
+      dispatch(addSuccess(addedGame));
     } catch (error) {
-      dispatch(failure());
+      dispatch(addFailure());
     }
   };
 };
 
-export const deleteGame = (
-  idToRemove: string
-): ThunkAction<void, State, null, Action> => {
-  const request = (): Action => {
-    return { type: ActionType.DELETE_GAME_REQUEST };
-  };
+// delete game
 
-  const success = (id: string): Action => {
-    return { type: ActionType.DELETE_GAME_SUCCESS, payload: id };
-  };
+export const deleteRequest = (): Action => ({
+  type: ActionType.DELETE_GAME_REQUEST,
+});
 
-  const failure = (): Action => {
-    return { type: ActionType.DELETE_GAME_FAILURE };
-  };
+export const deleteSuccess = (id: string): Action => ({
+  type: ActionType.DELETE_GAME_SUCCESS,
+  payload: id,
+});
 
-  return async (dispatch) => {
-    dispatch(request());
+export const deleteFailure = (): Action => ({
+  type: ActionType.DELETE_GAME_FAILURE,
+});
+
+export const deleteGame = (idToRemove: string) => {
+  return async (dispatch: Dispatch) => {
+    dispatch(deleteRequest());
 
     try {
       await gameService.deleteGame(idToRemove);
-      dispatch(success(idToRemove));
+      dispatch(deleteSuccess(idToRemove));
     } catch (error) {
-      dispatch(failure());
+      dispatch(deleteFailure());
     }
   };
 };

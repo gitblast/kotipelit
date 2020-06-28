@@ -2,6 +2,8 @@ import reducer from './games.reducer';
 import * as actions from './games.reducer';
 import { hardcodedGames } from '../constants';
 
+import gameService from '../services/games';
+
 import {
   GameType,
   GameStatus,
@@ -32,6 +34,16 @@ const initializedState = {
   activeGame: null,
   loading: false,
 };
+
+jest.mock('../services/games', () => ({
+  getAll: jest.fn(),
+  addNew: jest.fn(),
+  deleteGame: jest.fn(),
+}));
+
+const getAll: jest.Mock = gameService.getAll as jest.Mock;
+const addNew: jest.Mock = gameService.addNew as jest.Mock;
+const deleteGame: jest.Mock = gameService.deleteGame as jest.Mock;
 
 describe('games reducer', () => {
   it('should return initial state', () => {
@@ -229,35 +241,6 @@ describe('games reducer', () => {
 });
 
 describe('action creators', () => {
-  /** @TODO test async action creators */
-  it.skip('should create an action to init games', () => {
-    const expectedAction = {
-      type: 'INIT_GAMES',
-      payload: hardcodedGames,
-    };
-
-    expect(actions.initGames()).toEqual(expectedAction);
-  });
-
-  it.skip('should create an action to add game', () => {
-    const expectedAction = {
-      type: 'ADD_GAME',
-      payload: newGame,
-    };
-
-    expect(actions.addGame(newGame)).toEqual(expectedAction);
-  });
-
-  it.skip('should create an action to delete game', () => {
-    const id = '123';
-    const expectedAction = {
-      type: 'DELETE_GAME',
-      payload: id,
-    };
-
-    expect(actions.deleteGame(id)).toEqual(expectedAction);
-  });
-
   it('should create an action to launch game', () => {
     const id = '123';
     const expectedAction = {
@@ -280,5 +263,98 @@ describe('action creators', () => {
     };
 
     expect(actions.updateGame(updatedGame)).toEqual(expectedAction);
+  });
+
+  describe('async actions', () => {
+    let dispatch = jest.fn();
+
+    beforeEach(() => (dispatch = jest.fn()));
+
+    describe('init games', () => {
+      it('should dispatch init request', async () => {
+        await actions.initGames()(dispatch);
+        expect(dispatch).toHaveBeenCalledWith(actions.initRequest());
+      });
+
+      describe('when init succeeds', () => {
+        beforeEach(() => getAll.mockResolvedValue(hardcodedGames));
+
+        it('should dispatch success with received games', async () => {
+          await actions.initGames()(dispatch);
+          expect(dispatch).toHaveBeenLastCalledWith(
+            actions.initSuccess(hardcodedGames)
+          );
+        });
+      });
+
+      describe('when init fails', () => {
+        const error = new Error('error!');
+
+        beforeEach(() => getAll.mockRejectedValue(error));
+
+        it('should dispatch failure', async () => {
+          await actions.initGames()(dispatch);
+          expect(dispatch).toHaveBeenLastCalledWith(actions.initFailure());
+        });
+      });
+    });
+
+    describe('add game', () => {
+      it('should dispatch add request', async () => {
+        await actions.addGame(newGame)(dispatch);
+        expect(dispatch).toHaveBeenCalledWith(actions.addRequest());
+      });
+
+      describe('when add succeeds', () => {
+        beforeEach(() => addNew.mockResolvedValue({ ...newGame, id: 'id' }));
+
+        it('should dispatch success with received games', async () => {
+          await actions.addGame(newGame)(dispatch);
+          expect(dispatch).toHaveBeenLastCalledWith(
+            actions.addSuccess({ ...newGame, id: 'id' })
+          );
+        });
+      });
+
+      describe('when add fails', () => {
+        const error = new Error('error!');
+
+        beforeEach(() => addNew.mockRejectedValue(error));
+
+        it('should dispatch failure', async () => {
+          await actions.addGame(newGame)(dispatch);
+          expect(dispatch).toHaveBeenLastCalledWith(actions.addFailure());
+        });
+      });
+    });
+
+    describe('delete game', () => {
+      it('should dispatch delete request', async () => {
+        await actions.deleteGame('id')(dispatch);
+        expect(dispatch).toHaveBeenCalledWith(actions.deleteRequest());
+      });
+
+      describe('when delete succeeds', () => {
+        beforeEach(() => deleteGame.mockResolvedValue(null));
+
+        it('should dispatch success', async () => {
+          await actions.deleteGame('id')(dispatch);
+          expect(dispatch).toHaveBeenLastCalledWith(
+            actions.deleteSuccess('id')
+          );
+        });
+      });
+
+      describe('when delete fails', () => {
+        const error = new Error('error!');
+
+        beforeEach(() => deleteGame.mockRejectedValue(error));
+
+        it('should dispatch failure', async () => {
+          await actions.deleteGame('id')(dispatch);
+          expect(dispatch).toHaveBeenLastCalledWith(actions.deleteFailure());
+        });
+      });
+    });
   });
 });

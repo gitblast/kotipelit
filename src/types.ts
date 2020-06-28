@@ -180,7 +180,7 @@ export type Action =
     }
   | {
       type: ActionType.LOGIN_SUCCESS;
-      payload: LoggedUser;
+      payload: Omit<LoggedUser, 'loggedIn'>;
     }
   | {
       type: ActionType.LOGIN_FAILURE;

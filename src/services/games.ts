@@ -22,8 +22,6 @@ const addNew = async (
     headers: { Authorization: userService.getAuthHeader() },
   };
 
-  console.log('adding', gameToAdd);
-
   const response = await axios.post(baseUrl, gameToAdd, config);
 
   return response.data;

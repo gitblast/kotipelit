@@ -1,7 +1,7 @@
-import { ThunkAction } from 'redux-thunk';
+import { Dispatch } from 'redux';
 import userService from '../services/users';
 
-import { Action, User, ActionType, State, LoggedUser } from '../types';
+import { Action, User, ActionType, LoggedUser } from '../types';
 
 /** @TODO handle errors */
 
@@ -33,8 +33,8 @@ const reducer = (state: User = null, action: Action) => {
 /**
  * Checks for a logged user in localStrorage. If found, sets it as user and sets token for userservice
  */
-export const checkForUser = (): ThunkAction<void, State, null, Action> => {
-  return (dispatch) => {
+export const checkForUser = () => {
+  return (dispatch: Dispatch) => {
     const loggedUser = window.localStorage.getItem('kotipelitUser');
 
     if (loggedUser) {
@@ -58,29 +58,26 @@ export const logout = (): Action => {
   return { type: ActionType.LOGOUT };
 };
 
+export const loginRequest = (username: string): Action => ({
+  type: ActionType.LOGIN_REQUEST,
+  payload: username,
+});
+
+export const loginSuccess = (user: Omit<LoggedUser, 'loggedIn'>): Action => ({
+  type: ActionType.LOGIN_SUCCESS,
+  payload: user,
+});
+
+export const loginFailure = (): Action => ({ type: ActionType.LOGIN_FAILURE });
+
 /**
  * Logs in user. If succesful, sets token to userservice and saves user in localStorage.
  * @param username
  * @param password
  */
-export const loginUser = (
-  username: string,
-  password: string
-): ThunkAction<void, State, null, Action> => {
-  const request = (username: string): Action => {
-    return { type: ActionType.LOGIN_REQUEST, payload: username };
-  };
-
-  const success = (user: LoggedUser): Action => {
-    return { type: ActionType.LOGIN_SUCCESS, payload: user };
-  };
-
-  const failure = (): Action => {
-    return { type: ActionType.LOGIN_FAILURE };
-  };
-
-  return async (dispatch) => {
-    dispatch(request(username));
+export const loginUser = (username: string, password: string) => {
+  return async (dispatch: Dispatch) => {
+    dispatch(loginRequest(username));
 
     try {
       const user = await userService.login(username, password);
@@ -88,9 +85,9 @@ export const loginUser = (
 
       window.localStorage.setItem('kotipelitUser', JSON.stringify(user));
 
-      dispatch(success(user));
+      dispatch(loginSuccess(user));
     } catch (error) {
-      dispatch(failure());
+      dispatch(loginFailure());
     }
   };
 };

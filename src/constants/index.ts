@@ -1,6 +1,6 @@
-import { GameStatus, GameType } from '../types';
+import { GameStatus, GameType, HostChannel, SelectableGame } from '../types';
 
-export const hardcodedGames = [
+export const hardcodedGames: SelectableGame[] = [
   {
     id: '1',
     type: GameType.SANAKIERTO,
@@ -39,7 +39,6 @@ export const hardcodedGames = [
     startTime: new Date(),
     status: GameStatus.UPCOMING,
     rounds: 3,
-    winner: null,
   },
   {
     id: '2',
@@ -79,6 +78,20 @@ export const hardcodedGames = [
     startTime: new Date(),
     status: GameStatus.UPCOMING,
     rounds: 3,
-    winner: null,
+  },
+];
+
+export const hardcodedChannels: HostChannel[] = [
+  {
+    username: 'user1',
+    channelName: 'channel1',
+  },
+  {
+    username: 'user2',
+    channelName: 'channel2',
+  },
+  {
+    username: 'user3',
+    channelName: 'channel3',
   },
 ];

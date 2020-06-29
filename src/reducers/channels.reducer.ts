@@ -1,13 +1,7 @@
-import { ThunkAction } from 'redux-thunk';
 import userService from '../services/users';
 
-import {
-  Action,
-  ActionType,
-  State,
-  HostChannel,
-  ChannelsState,
-} from '../types';
+import { Action, ActionType, HostChannel, ChannelsState } from '../types';
+import { Dispatch } from 'redux';
 
 const initialState: ChannelsState = {
   allChannels: [],
@@ -30,27 +24,27 @@ const reducer = (state: ChannelsState = initialState, action: Action) => {
   }
 };
 
-export const initChannels = (): ThunkAction<void, State, null, Action> => {
-  const request = (): Action => {
-    return { type: ActionType.INIT_CHANNELS_REQUEST };
-  };
+export const initRequest = (): Action => ({
+  type: ActionType.INIT_CHANNELS_REQUEST,
+});
 
-  const success = (channels: HostChannel[]): Action => {
-    return { type: ActionType.INIT_CHANNELS_SUCCESS, payload: channels };
-  };
+export const initSuccess = (channels: HostChannel[]): Action => ({
+  type: ActionType.INIT_CHANNELS_SUCCESS,
+  payload: channels,
+});
+export const initFailure = (): Action => ({
+  type: ActionType.INIT_CHANNELS_FAILURE,
+});
 
-  const failure = (): Action => {
-    return { type: ActionType.INIT_CHANNELS_FAILURE };
-  };
-
-  return async (dispatch) => {
-    dispatch(request());
+export const initChannels = () => {
+  return async (dispatch: Dispatch) => {
+    dispatch(initRequest());
 
     try {
       const channels = await userService.getAll();
-      dispatch(success(channels));
+      dispatch(initSuccess(channels));
     } catch (error) {
-      dispatch(failure());
+      dispatch(initFailure());
     }
   };
 };

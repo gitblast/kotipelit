@@ -54,7 +54,7 @@ describe('game service', () => {
   });
 
   describe('with token set', () => {
-    let headers = null;
+    let headers: {} | null = null;
 
     beforeAll(() => {
       userService.setToken('token');

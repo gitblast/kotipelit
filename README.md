@@ -1,6 +1,6 @@
 # kotipelit.com-backend
 
-Express + mongoDB + socketIO backend for [kotipelit.com](https://github.com/gitblast/kotipelit.com). Written in Typescript.
+Express + MongoDB + SocketIO backend for [kotipelit.com](https://github.com/gitblast/kotipelit.com). Written in Typescript.
 
 ## Scripts:
 

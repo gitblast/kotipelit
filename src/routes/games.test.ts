@@ -8,8 +8,7 @@ import config from '../utils/config';
 import Game from '../models/game';
 import dbConnection from '../utils/connection';
 import testHelpers from '../utils/testHelpers';
-import { UserModel } from '../models/user';
-import { NewGame, GameStatus } from '../types';
+import { NewGame, GameStatus, UserModel } from '../types';
 
 const api = supertest(app);
 

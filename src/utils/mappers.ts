@@ -8,9 +8,9 @@ import {
   GameType,
   GamePlayer,
   GameStatus,
+  GameModel,
 } from '../types';
 import mongoose, { Error, Types } from 'mongoose';
-import { GameModel } from '../models/game';
 
 const isString = (text: any): text is string => {
   return typeof text === 'string' || text instanceof String;

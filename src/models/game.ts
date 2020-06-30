@@ -1,21 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import mongoose, { Schema, Document } from 'mongoose';
-import { GameType, GamePlayer, GameStatus } from '../types';
-import { UserModel } from './user';
-
-/** @TODO types for all fields */
-
-export interface GameModel extends Document {
-  type: GameType;
-  startTime: Date;
-  players: GamePlayer[];
-  status: GameStatus;
-  host: UserModel['_id'];
-  createDate: Date;
-  rounds?: number;
-}
+import mongoose, { Schema } from 'mongoose';
+import { GameStatus, GameModel } from '../types';
 
 /** @TODO winner? rating? url? name? jitsiroom? */
 

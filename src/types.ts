@@ -1,4 +1,29 @@
-import { UserModel } from './models/user';
+import { Socket } from 'socket.io';
+import { Document } from 'mongoose';
+
+export interface GameModel extends NewGame, Document {
+  createDate: Date;
+}
+
+export interface BaseGame {
+  type: GameType;
+  status: GameStatus;
+  startTime: Date;
+}
+
+export interface NewGame extends BaseGame {
+  players: GamePlayer[];
+  host: UserModel['_id'];
+  rounds?: number;
+}
+
+export interface UserModel extends Document {
+  username: string;
+  email: string;
+  passwordHash: string;
+  channelName: string;
+  joinDate: Date;
+}
 
 export interface UserCredentials {
   username: string;
@@ -17,18 +42,63 @@ export enum GameStatus {
   FINISHED = 'Finished',
 }
 
-export interface NewGame {
-  players: GamePlayer[];
-  startTime: Date;
-  type: GameType;
-  status: GameStatus;
-  host: UserModel['_id'];
-  rounds?: number;
-}
-
 export type GameType = 'sanakierto';
 
 export interface GamePlayer {
   name: string;
   id: string;
 }
+
+export interface ActiveGamePlayer extends GamePlayer {
+  socket: null | Socket;
+}
+
+export interface ActiveGame extends BaseGame {
+  id: string;
+  players: ActiveGamePlayer[];
+  status: GameStatus.WAITING | GameStatus.RUNNING;
+}
+
+export interface GameRoom {
+  id: string;
+  hostSocket: string;
+  game: ActiveGame;
+}
+
+export interface CreateRoomData {
+  gameId: string;
+  hostName: string;
+}
+
+export enum EventType {
+  // emitted
+  CREATE_SUCCESS = 'create success',
+  CREATE_FAILURE = 'create failure',
+
+  // recieved
+  CREATE_ROOM = 'create room',
+}
+
+export type EmittedEvent =
+  | {
+      event: EventType.CREATE_SUCCESS;
+      data: string; // jitsi token
+    }
+  | {
+      event: EventType.CREATE_FAILURE;
+      data: {
+        error: string;
+      };
+    };
+
+export type RecievedEvent =
+  | {
+      event: EventType.CREATE_ROOM;
+      data: CreateRoomData;
+    }
+  | {
+      event: EventType.CREATE_FAILURE;
+      data: {
+        error: string;
+      };
+    };

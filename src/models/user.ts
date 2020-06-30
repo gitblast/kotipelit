@@ -1,12 +1,5 @@
-import mongoose, { Schema, Document } from 'mongoose';
-
-export interface UserModel extends Document {
-  username: string;
-  email: string;
-  passwordHash: string;
-  channelName: string;
-  joinDate: Date;
-}
+import mongoose, { Schema } from 'mongoose';
+import { UserModel } from '../types';
 
 /** @TODO games ? */
 

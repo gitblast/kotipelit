@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import User, { UserModel } from '../models/user';
+import User from '../models/user';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-import { NewUser, NewGame, GameStatus } from '../types';
-import Game, { GameModel } from '../models/game';
+import { NewUser, NewGame, GameStatus, UserModel, GameModel } from '../types';
+import Game from '../models/game';
 
 const usersInDb = async (): Promise<UserModel[]> => {
   return await User.find({});
@@ -72,10 +72,33 @@ const getValidToken = (user: UserModel, secret: string): string => {
   return jwt.sign(tokenUser, secret);
 };
 
+interface SocketIOParams {
+  path: string;
+  options: {
+    'reconnection delay': 0;
+    'reopen delay': 0;
+    'force new connection': true;
+    transports: ['websocket'];
+    reconnection: false;
+  };
+}
+
+const getSocketIOParams = (address: string, port: string): SocketIOParams => ({
+  path: `http://[${address}]:${port}`,
+  options: {
+    'reconnection delay': 0,
+    'reopen delay': 0,
+    'force new connection': true,
+    reconnection: false,
+    transports: ['websocket'],
+  },
+});
+
 export default {
   usersInDb,
   addDummyUser,
   gamesInDb,
   addDummyGame,
   getValidToken,
+  getSocketIOParams,
 };

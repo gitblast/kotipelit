@@ -67,7 +67,6 @@ export interface GameRoom {
 
 export interface CreateRoomData {
   gameId: string;
-  hostName: string;
 }
 
 export enum EventType {
@@ -102,3 +101,18 @@ export type RecievedEvent =
         error: string;
       };
     };
+
+export enum Role {
+  HOST = 'HOST',
+  PLAYER = 'PLAYER',
+}
+
+export interface SocketIOAuthToken {
+  id: string;
+  username: string;
+  role: Role;
+}
+
+export interface SocketWithToken extends SocketIO.Socket {
+  decoded_token: SocketIOAuthToken;
+}

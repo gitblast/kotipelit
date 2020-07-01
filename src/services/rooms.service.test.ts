@@ -71,7 +71,7 @@ describe('rooms service', () => {
       ).toThrowError(`Game with id 'gameId' not found`);
     });
 
-    it('should throw error if game with id not found', () => {
+    it('should throw error if player with id not found', () => {
       const mock: Record<string, GameRoom> = {
         gameId: {
           game: {
@@ -107,11 +107,11 @@ describe('rooms service', () => {
       const room = roomService.getRooms()['gameId'];
       expect(room).toBeDefined();
 
-      let playerFirst = room.game.players.find((p) => p.id === 'playerId');
+      let player = room.game.players.find((p) => p.id === 'playerId');
 
-      expect(playerFirst).toBeDefined();
-      playerFirst = playerFirst as ActiveGamePlayer;
-      expect(playerFirst.socket).toBeNull();
+      expect(player).toBeDefined();
+      player = player as ActiveGamePlayer;
+      expect(player.socket).toBeNull();
 
       const socket = { ...socketMock };
 
@@ -121,13 +121,8 @@ describe('rooms service', () => {
         (socket as unknown) as SocketIO.Socket
       );
 
-      let playerNow = room.game.players.find((p) => p.id === 'playerId');
-
-      expect(playerNow).toBeDefined();
-
-      playerNow = playerNow as ActiveGamePlayer;
-      expect(playerNow.socket).not.toBeNull();
-      expect(playerNow.socket).toEqual({ ...socket, clicks: 1 });
+      expect(player.socket).not.toBeNull();
+      expect(player.socket).toEqual(socket);
     });
   });
 });

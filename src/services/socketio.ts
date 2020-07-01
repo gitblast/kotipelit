@@ -4,32 +4,28 @@
 import Game from '../models/game';
 
 import { Server, Socket } from 'socket.io';
+import socketioJwt from 'socketio-jwt';
+import config from '../utils/config';
+import jwt from 'jsonwebtoken';
+
 import {
-  GameRoom,
   CreateRoomData,
   GameStatus,
   ActiveGame,
   EmittedEvent,
   EventType,
+  SocketWithToken,
+  Role,
 } from '../types';
 
-let rooms: GameRoom[] = [];
+import roomService from './rooms';
 
-export const setRooms = (newRooms: GameRoom[]): void => {
-  rooms = newRooms;
-};
-
-export const getRooms = (): GameRoom[] => rooms;
-
-export const initGameForRoom = async (
-  socket: Socket,
-  gameId: string,
-  hostName: string
+export const initRoom = async (
+  socket: SocketWithToken,
+  gameId: string
 ): Promise<string> => {
-  console.log('joining room', hostName);
-  socket.join(gameId);
-
-  console.log('creating', gameId, 'host:', hostName);
+  if (socket.decoded_token.role !== Role.HOST)
+    throw new Error('Not authorized');
 
   const game = await Game.findById(gameId);
 
@@ -50,18 +46,9 @@ export const initGameForRoom = async (
     })),
   };
 
-  const newRoom: GameRoom = {
-    id: gameId,
-    hostSocket: socket.id,
-    game: roomGame,
-  };
+  roomService.createRoom(gameId, socket, roomGame);
 
-  rooms.push(newRoom);
-
-  console.log('rooms after:', rooms);
-  console.log('TODO! create jitsi token here or in routes');
-
-  return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb250ZXh0Ijp7InVzZXIiOnsibmFtZSI6InVzZXJuYW1lIn19LCJhdWQiOiJrb3RpcGVsaXQuY29tIiwiaXNzIjoia290aXBlbGl0LmNvbSIsInN1YiI6Im1lZXQua290aXBlbGl0LmNvbSIsInJvb20iOiJ1c2VybmFtZSIsImlhdCI6MTUxNjIzOTAyMn0.t1eAkoPrgPTPyTDeUVGfVwJ3xWV_tCEwOxWihexY5hE';
+  return jwt.sign('TODO', 'TODO');
 };
 
 export const createSuccess = (jitsiToken: string): EmittedEvent => ({
@@ -80,16 +67,37 @@ const emit = (socket: Socket, eventObj: EmittedEvent): void => {
 };
 
 const handler = (io: Server): void => {
-  io.on('connection', (socket: Socket) => {
-    console.log('connection from', socket.id);
-    console.log('TODO: proof recieved data');
+  io.on(
+    'connection',
+    socketioJwt.authorize({
+      secret: config.SECRET,
+      timeout: 10000,
+    })
+  ).on('authenticated', (socket: SocketWithToken) => {
+    switch (socket.decoded_token.role) {
+      // host specific listeners
+      case Role.HOST: {
+        socket.on(EventType.CREATE_ROOM, (data: CreateRoomData) => {
+          initRoom(socket, data.gameId)
+            .then((token: string) => {
+              roomService.addSocketToRoom(data.gameId, socket);
+              emit(socket, createSuccess(token));
+            })
+            .catch(() => emit(socket, createFailure()));
+        });
 
-    socket.on(EventType.CREATE_ROOM, (data: CreateRoomData) => {
-      console.log('TODO: authenticate socket io');
-      initGameForRoom(socket, data.gameId, data.hostName)
-        .then((token: string) => emit(socket, createSuccess(token)))
-        .catch(() => emit(socket, createFailure()));
-    });
+        break;
+      }
+      // player specific listeners
+      case Role.PLAYER: {
+        console.log('a player connected');
+        break;
+      }
+      default:
+        throw new Error('Token role invalid or missing');
+    }
+
+    // common listeners
   });
 };
 

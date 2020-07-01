@@ -27,7 +27,6 @@ const createRoom = (
   };
 
   rooms[id] = newRoom;
-  addSocketToRoom(id, socket);
 
   return newRoom;
 };
@@ -49,11 +48,11 @@ const joinRoom = (
     throw new Error(`Player with id '${playerId}' not found`);
 
   playerForSocket.socket = socket;
-  addSocketToRoom(gameId, socket);
 };
 
 export default {
   getRooms,
   joinRoom,
   createRoom,
+  addSocketToRoom,
 };

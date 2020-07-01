@@ -72,7 +72,7 @@ const getValidToken = (user: UserModel, secret: string): string => {
   return jwt.sign(tokenUser, secret);
 };
 
-interface SocketIOParams {
+export interface SocketIOParams {
   path: string;
   options: {
     'reconnection delay': 0;

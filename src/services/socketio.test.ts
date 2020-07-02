@@ -21,18 +21,27 @@ import {
   CreateRoomData,
   GameModel,
   Role,
+  JitsiReadyData,
+  TestEventType,
+  // ActiveGame,
+  // ActiveGamePlayer,
 } from '../types';
 import { UnauthorizedError } from 'socketio-jwt';
 
 const hostToken = jwt.sign(
-  { username: 'username', id: 'id', role: Role.HOST },
+  { username: 'host', id: 'hostid', gameId: 'hostgameID', role: Role.HOST },
   config.SECRET
 );
 
-/** const playerToken = jwt.sign(
-  { username: 'username', id: 'id', role: Role.PLAYER },
+const playerToken = jwt.sign(
+  {
+    username: 'player',
+    id: 'playerid',
+    gameId: 'playergameID',
+    role: Role.PLAYER,
+  },
   config.SECRET
-); */
+);
 
 let ioServer: Server;
 let httpServer: http.Server;
@@ -64,21 +73,23 @@ describe('socket.io', () => {
         },
       };
 
-      expect(ioService.createFailure()).toEqual(expectedEvent);
+      expect(ioService.createFailure('error message')).toEqual(expectedEvent);
     });
   });
 
   describe('handler', () => {
-    const setupSocket = (token: string): void => {
-      socket = ioClient(path, options);
+    const setupSocket = (token: string): SocketIOClient.Socket => {
+      const newSocket = ioClient(path, options);
 
-      socket.once('connect', () => {
-        socket
-          .emit('authenticate', { token })
-          .once('unauthorized', (error: UnauthorizedError) => {
+      newSocket.once('connect', () => {
+        newSocket
+          .emit(EventType.AUTH, { token })
+          .once(EventType.UNAUTHORIZED, (error: UnauthorizedError) => {
             throw new Error(error.message);
           });
       });
+
+      return newSocket;
     };
 
     beforeAll(async () => {
@@ -120,16 +131,62 @@ describe('socket.io', () => {
       socket.removeAllListeners();
     });
 
-    it('test server and socket should work', () => {
-      setupSocket(hostToken);
-
-      ioServer.emit('test', 'hello');
-      socket.once('test', (message: string) => {
-        expect(message).toBe('hello');
+    describe('test listeners', () => {
+      beforeEach(() => {
+        socket = setupSocket(hostToken);
       });
 
-      ioServer.once('connection', (socket: SocketIOClient.Socket) => {
-        expect(socket).toBeDefined();
+      it('test server and socket should work', () => {
+        ioServer.emit('test', 'hello');
+        socket.once('test', (message: string) => {
+          expect(message).toBe('hello');
+        });
+
+        ioServer.once('connection', (socket: SocketIOClient.Socket) => {
+          expect(socket).toBeDefined();
+        });
+      });
+
+      it('should return the backend socket rooms with "get socket rooms"', (done) => {
+        socket.emit(TestEventType.GET_ROOMS);
+        socket.once(TestEventType.ROOMS_RECEIVED, (data: string[]) => {
+          expect(data).toBeDefined();
+          expect(Array.isArray(data)).toBe(true);
+          done();
+        });
+      });
+
+      it('should join room with "join room"', (done) => {
+        socket.emit(TestEventType.JOIN_ROOM, 'testroom');
+
+        socket.once(TestEventType.ROOM_JOINED, (room: string) => {
+          expect(room).toBe('testroom');
+          socket.emit(TestEventType.GET_ROOMS);
+        });
+
+        socket.once(TestEventType.ROOMS_RECEIVED, (rooms: string[]) => {
+          expect(rooms).toContain('testroom');
+
+          done();
+        });
+      });
+
+      it('should broadcast to room with "broadcast to"', (done) => {
+        const other = setupSocket(hostToken);
+        other.emit(TestEventType.JOIN_ROOM, 'testroom');
+
+        other.once(TestEventType.ROOM_JOINED, (room: string) => {
+          socket.emit(TestEventType.BROADCAST_TO, {
+            room,
+            event: 'testing',
+            message: 'hello hello',
+          });
+        });
+
+        other.once('testing', (message: string) => {
+          expect(message).toBe('hello hello');
+          done();
+        });
       });
     });
 
@@ -139,8 +196,8 @@ describe('socket.io', () => {
 
       socket.once('connect', () => {
         socket
-          .emit('authenticate', { token: 'INVALID_TOKEN' })
-          .once('unauthorized', (error: UnauthorizedError) => {
+          .emit(EventType.AUTH, { token: 'INVALID_TOKEN' })
+          .once(EventType.UNAUTHORIZED, (error: UnauthorizedError) => {
             expect(error).toBeDefined();
             expect(error.data.type).toBe('UnauthorizedError');
             expect(error.data.code).toBe('invalid_token');
@@ -149,7 +206,92 @@ describe('socket.io', () => {
       });
     });
 
+    describe('with player token', () => {
+      beforeEach(() => {
+        // set socket to auth with player token
+        socket = setupSocket(playerToken);
+      });
+
+      describe('join room', () => {
+        it('should join socket to socket.io channel from token', (done) => {
+          socket.emit(EventType.JOIN_GAME);
+
+          socket.once(TestEventType.ROOMS_RECEIVED, (rooms: string[]) => {
+            expect(rooms).toContain('playergameID');
+            done();
+          });
+
+          socket.once(EventType.JOIN_FAILURE, () => {
+            socket.emit(TestEventType.GET_ROOMS);
+          });
+
+          socket.once(EventType.JOIN_SUCCESS, () => {
+            socket.emit(TestEventType.GET_ROOMS);
+          });
+        });
+
+        /**describe('on success', () => {
+          it('should return the active game', (done) => {
+            const mockGame = ({
+              testGame: true,
+              players: [
+                {
+                  id: 'playerid',
+                  socket: null,
+                },
+              ] as ActiveGamePlayer[],
+            } as unknown) as ActiveGame;
+
+            roomService.createRoom('playergameID', 'hostID', mockGame);
+
+            socket.emit(EventType.JOIN_GAME);
+
+            socket.once(EventType.JOIN_SUCCESS, (game: ActiveGame) => {
+              expect(game).toEqual(mockGame);
+              done();
+            });
+
+            socket.once(EventType.JOIN_FAILURE, (data: { error: string }) => {
+              fail(`expected join success, got join fail: ${data.error}`);
+            });
+          });
+        }); */
+
+        // describe('on failure', () => {});
+      });
+    });
+
     describe('with host token', () => {
+      beforeEach(() => {
+        // set socket to auth with host token
+        socket = setupSocket(hostToken);
+      });
+
+      describe('jitsi ready', () => {
+        it('should broadcast "game ready" to room', (done) => {
+          const data: JitsiReadyData = {
+            gameId: 'gameID',
+            jitsiRoom: 'jitsi room name',
+          };
+
+          const anotherSocket = setupSocket(hostToken);
+
+          socket.emit('join room', 'gameID');
+
+          socket.once('room joined', () => {
+            anotherSocket.emit('join room', 'gameID');
+            anotherSocket.once('room joined', () => {
+              socket.emit(EventType.JITSI_READY, data);
+            });
+
+            anotherSocket.once(EventType.GAME_READY, (data: string) => {
+              expect(data).toBe('jitsi room name');
+              done();
+            });
+          });
+        });
+      });
+
       describe('create room', () => {
         let game: GameModel;
         let dataToSend: CreateRoomData;
@@ -164,7 +306,6 @@ describe('socket.io', () => {
         });
 
         it('should set game status to waiting and send back jitsi token', (done) => {
-          setupSocket(hostToken);
           expect(game.status).toBe(GameStatus.UPCOMING);
 
           socket.emit(EventType.CREATE_ROOM, dataToSend);
@@ -183,7 +324,6 @@ describe('socket.io', () => {
         });
 
         it('should create a room with game and hostSocket defined', (done) => {
-          setupSocket(hostToken);
           setRooms({});
 
           const roomsBefore = Object.keys(roomService.getRooms()).length;
@@ -205,7 +345,6 @@ describe('socket.io', () => {
         });
 
         it('should join socket to socket.io channel matching game id', (done) => {
-          setupSocket(hostToken);
           setRooms({});
           socket.emit(EventType.CREATE_ROOM, dataToSend);
 

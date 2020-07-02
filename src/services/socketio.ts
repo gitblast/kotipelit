@@ -16,6 +16,9 @@ import {
   EventType,
   SocketWithToken,
   Role,
+  JitsiReadyData,
+  BroadcastedEvent,
+  TestEventType,
 } from '../types';
 
 import roomService from './rooms';
@@ -46,7 +49,7 @@ export const initRoom = async (
     })),
   };
 
-  roomService.createRoom(gameId, socket, roomGame);
+  roomService.createRoom(gameId, socket.id, roomGame);
 
   return jwt.sign('TODO', 'TODO');
 };
@@ -56,14 +59,57 @@ export const createSuccess = (jitsiToken: string): EmittedEvent => ({
   data: jitsiToken,
 });
 
-export const createFailure = (): EmittedEvent => ({
+export const createFailure = (message: string): EmittedEvent => ({
   event: EventType.CREATE_FAILURE,
-  data: { error: 'error message' },
+  data: { error: message },
 });
+
+export const joinSuccess = (game: ActiveGame): EmittedEvent => ({
+  event: EventType.JOIN_SUCCESS,
+  data: game,
+});
+
+export const joinFailure = (message: string): EmittedEvent => ({
+  event: EventType.JOIN_FAILURE,
+  data: { error: message },
+});
+
+export const gameReady = (jitsiRoom: string): BroadcastedEvent => ({
+  event: EventType.GAME_READY,
+  data: jitsiRoom,
+});
+
+const attachTestListeners = (socket: SocketWithToken): void => {
+  socket.on(TestEventType.JOIN_ROOM, (room: string) => {
+    socket.join(room);
+    socket.emit(TestEventType.ROOM_JOINED, room);
+  });
+
+  socket.on(TestEventType.GET_ROOMS, () => {
+    socket.emit(TestEventType.ROOMS_RECEIVED, Object.keys(socket.rooms));
+  });
+
+  socket.on(
+    TestEventType.BROADCAST_TO,
+    (data: { room: string; event: string; message: string }) => {
+      socket.to(data.room).emit(data.event, data.message);
+    }
+  );
+};
 
 const emit = (socket: Socket, eventObj: EmittedEvent): void => {
   const { event, data } = eventObj;
+
   socket.emit(event, data);
+};
+
+const broadcast = (
+  socket: Socket,
+  room: string,
+  eventObj: BroadcastedEvent
+): void => {
+  const { event, data } = eventObj;
+  socket.to(room).emit(event, data);
 };
 
 const handler = (io: Server): void => {
@@ -74,23 +120,45 @@ const handler = (io: Server): void => {
       timeout: 10000,
     })
   ).on('authenticated', (socket: SocketWithToken) => {
-    switch (socket.decoded_token.role) {
+    const decodedToken = socket.decoded_token;
+
+    // for testing
+    if (process.env.NODE_ENV === 'test') attachTestListeners(socket);
+
+    switch (decodedToken.role) {
       // host specific listeners
       case Role.HOST: {
+        socket.on(EventType.JITSI_READY, (data: JitsiReadyData) => {
+          broadcast(socket, data.gameId, gameReady(data.jitsiRoom));
+        });
+
         socket.on(EventType.CREATE_ROOM, (data: CreateRoomData) => {
           initRoom(socket, data.gameId)
             .then((token: string) => {
               roomService.addSocketToRoom(data.gameId, socket);
               emit(socket, createSuccess(token));
             })
-            .catch(() => emit(socket, createFailure()));
+            .catch((error) => emit(socket, createFailure(error.message)));
         });
 
         break;
       }
       // player specific listeners
       case Role.PLAYER: {
-        console.log('a player connected');
+        socket.on(EventType.JOIN_GAME, () => {
+          const { gameId, id } = decodedToken;
+
+          roomService.addSocketToRoom(gameId, socket);
+
+          try {
+            const game = roomService.joinRoom(gameId, id, socket);
+            console.log(game);
+            emit(socket, joinSuccess({} as ActiveGame));
+          } catch (error) {
+            emit(socket, joinFailure(error.message));
+          }
+        });
+
         break;
       }
       default:

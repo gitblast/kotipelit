@@ -69,14 +69,53 @@ export interface CreateRoomData {
   gameId: string;
 }
 
+export interface JitsiReadyData {
+  gameId: string;
+  jitsiRoom: string;
+}
+
+export enum TestEventType {
+  GET_ROOMS = 'get socket rooms',
+  JOIN_ROOM = 'join room',
+  BROADCAST_TO = 'broadcast to',
+
+  ROOM_JOINED = 'room joined',
+  ROOMS_RECEIVED = 'socket rooms',
+}
+
 export enum EventType {
-  // emitted
+  // EMITTED
+  AUTH = 'authenticate',
+
   CREATE_SUCCESS = 'create success',
   CREATE_FAILURE = 'create failure',
 
-  // recieved
+  JOIN_SUCCESS = 'join success',
+  JOIN_FAILURE = 'join failure',
+
+  GAME_READY = 'game ready',
+
+  // RECIEVED
+
+  UNAUTHORIZED = 'unauthorized',
+
+  // host
   CREATE_ROOM = 'create room',
+  JITSI_READY = 'jitsi ready',
+
+  // player
+  JOIN_GAME = 'join game',
 }
+
+export type BroadcastedEvent =
+  | {
+      event: EventType.GAME_READY;
+      data: string; // jitsi room name
+    }
+  | {
+      event: EventType.GAME_READY;
+      data: string; // jitsi room name
+    };
 
 export type EmittedEvent =
   | {
@@ -88,6 +127,16 @@ export type EmittedEvent =
       data: {
         error: string;
       };
+    }
+  | {
+      event: EventType.JOIN_SUCCESS;
+      data: ActiveGame;
+    }
+  | {
+      event: EventType.JOIN_FAILURE;
+      data: {
+        error: string;
+      };
     };
 
 export type RecievedEvent =
@@ -96,10 +145,10 @@ export type RecievedEvent =
       data: CreateRoomData;
     }
   | {
-      event: EventType.CREATE_FAILURE;
-      data: {
-        error: string;
-      };
+      event: EventType.JITSI_READY;
+    }
+  | {
+      event: EventType.JOIN_GAME;
     };
 
 export enum Role {
@@ -111,6 +160,7 @@ export interface SocketIOAuthToken {
   id: string;
   username: string;
   role: Role;
+  gameId: string;
 }
 
 export interface SocketWithToken extends SocketIO.Socket {

@@ -17,12 +17,12 @@ const getRooms = (): Record<string, GameRoom> => rooms;
 
 const createRoom = (
   id: string,
-  socket: SocketIO.Socket,
+  hostSocketID: string,
   game: ActiveGame
 ): GameRoom => {
   const newRoom: GameRoom = {
     id,
-    hostSocket: socket.id,
+    hostSocket: hostSocketID,
     game,
   };
 
@@ -35,7 +35,7 @@ const joinRoom = (
   gameId: string,
   playerId: string,
   socket: SocketIO.Socket
-): void => {
+): ActiveGame => {
   const room = rooms[gameId];
 
   if (!room) throw new Error(`Game with id '${gameId}' not found`);
@@ -48,6 +48,8 @@ const joinRoom = (
     throw new Error(`Player with id '${playerId}' not found`);
 
   playerForSocket.socket = socket;
+
+  return room.game;
 };
 
 export default {

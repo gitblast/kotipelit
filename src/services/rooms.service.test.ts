@@ -36,18 +36,12 @@ describe('rooms service', () => {
 
     expect(roomService.getRooms()).toEqual({});
 
-    const socket = { ...socketMock };
-
-    roomService.createRoom(
-      'test_room_id',
-      (socket as unknown) as SocketIO.Socket,
-      {} as ActiveGame
-    );
+    roomService.createRoom('test_room_id', 'hostSocketId', {} as ActiveGame);
 
     expect(roomService.getRooms()).toEqual({
       test_room_id: {
         id: 'test_room_id',
-        hostSocket: 'testIDfromSocket',
+        hostSocket: 'hostSocketId',
         game: {},
       },
     });
@@ -93,10 +87,11 @@ describe('rooms service', () => {
       ).toThrowError(`Player with id 'playerId' not found`);
     });
 
-    it('should add socket to player if game and player are found', () => {
+    it('should add socket to player and return room game if no errors', () => {
       const mock: Record<string, GameRoom> = {
         gameId: {
           game: {
+            id: 'TEST_GAME',
             players: [{ id: 'playerId', socket: null } as ActiveGamePlayer],
           } as ActiveGame,
         } as GameRoom,
@@ -115,7 +110,7 @@ describe('rooms service', () => {
 
       const socket = { ...socketMock };
 
-      roomService.joinRoom(
+      const game = roomService.joinRoom(
         'gameId',
         'playerId',
         (socket as unknown) as SocketIO.Socket
@@ -123,6 +118,7 @@ describe('rooms service', () => {
 
       expect(player.socket).not.toBeNull();
       expect(player.socket).toEqual(socket);
+      expect(game).toEqual(room.game);
     });
   });
 });

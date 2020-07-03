@@ -5,31 +5,68 @@ import {
   toAuthenticatedUser,
   toID,
   validateGameHost,
+  validateGamePlayer,
 } from '../utils/mappers';
 
+import expressJwt from 'express-jwt';
+import jwt from 'jsonwebtoken';
+import config from '../utils/config';
 import Game from '../models/game';
+import { Role } from '../types';
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+/** public routes */
+
+router.get('/:id', async (req, res, next) => {
+  try {
+    const gameId = toID(req.params.id);
+    const playerId = toID(req.query.pelaaja);
+
+    const game = await Game.findOne({ _id: gameId });
+    const player = validateGamePlayer(game, playerId);
+
+    const payload = {
+      username: player.name,
+      id: player.id,
+      role: Role.PLAYER,
+      gameId,
+    };
+
+    const token = jwt.sign(payload, config.SECRET);
+
+    res.json(token);
+  } catch (error) {
+    next(error);
+  }
+});
+
+/** token protected routes */
+router.use(expressJwt({ secret: config.SECRET }));
+
+router.get('/', async (req, res, next) => {
   /** return all games where host id matches user token id */
 
-  const user = toAuthenticatedUser(req);
-  const allGames = await Game.find({ host: user.id });
+  try {
+    const user = toAuthenticatedUser(req);
+    const allGames = await Game.find({ host: user.id });
 
-  res.json(allGames);
+    res.json(allGames);
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.post('/', async (req, res, next) => {
-  const user = toAuthenticatedUser(req);
-  const newGame = toNewGame(req.body, user.id);
-
-  const game = new Game({
-    ...newGame,
-    createDate: new Date(),
-  });
-
   try {
+    const user = toAuthenticatedUser(req);
+    const newGame = toNewGame(req.body, user.id);
+
+    const game = new Game({
+      ...newGame,
+      createDate: new Date(),
+    });
+
     const savedGame = await game.save();
     res.json(savedGame);
   } catch (error) {
@@ -38,10 +75,10 @@ router.post('/', async (req, res, next) => {
 });
 
 router.delete('/:id', async (req, res, next) => {
-  const gameId = toID(req.params.id);
-  const user = toAuthenticatedUser(req);
-
   try {
+    const gameId = toID(req.params.id);
+    const user = toAuthenticatedUser(req);
+
     const game = await Game.findById(gameId);
 
     const validatedGame = validateGameHost(game, user.id.toString());

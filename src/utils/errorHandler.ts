@@ -19,6 +19,10 @@ const errorHandler: ErrorRequestHandler = (error, _request, response, next) => {
       response.status(400).json(createError('Duplicate fields'));
   }
 
+  if (name === 'CastError') {
+    response.status(400).json(createError('Invalid game id'));
+  }
+
   // credentials wrong
   if (message === 'Invalid username or password') {
     response.status(401).json(createError(message));

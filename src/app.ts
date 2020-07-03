@@ -9,7 +9,6 @@ import dbConnection from './utils/connection';
 import cors from 'cors';
 import morgan from 'morgan';
 import errorHandler from './utils/errorHandler';
-import jwt from 'express-jwt';
 
 // routes
 import loginRouter from './routes/login';
@@ -28,12 +27,10 @@ app.use(cors());
 
 app.use(express.static('build'));
 
-// public routes
+// routes
 app.use('/api/login', loginRouter);
 app.use('/api/users', userRouter);
-
-// protected routes
-app.use('/api/games', jwt({ secret: config.SECRET }), gameRouter);
+app.use('/api/games', gameRouter);
 
 app.use(errorHandler);
 

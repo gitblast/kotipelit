@@ -3,12 +3,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import supertest from 'supertest';
 
+import jwt from 'jsonwebtoken';
 import app from '../app';
 import config from '../utils/config';
 import Game from '../models/game';
 import dbConnection from '../utils/connection';
 import testHelpers from '../utils/testHelpers';
-import { NewGame, GameStatus, UserModel } from '../types';
+import { NewGame, GameStatus, UserModel, Role } from '../types';
 
 const api = supertest(app);
 
@@ -43,132 +44,186 @@ describe('games router', () => {
     await Game.deleteMany({});
   });
 
-  it('should return 401 without valid token', async () => {
+  it('should return 401 without valid token on protected routes', async () => {
     await api.post(baseUrl).send(dummyGame).expect(401);
+    await api.get(baseUrl).expect(401);
+    await api.delete(`${baseUrl}/id`).expect(401);
   });
 
-  it('should return only games added by host matching with token', async () => {
-    const anotherUser = await testHelpers.addDummyUser();
+  describe('GET /:id', () => {
+    it('should return a player token if player matching params is found', async () => {
+      const game = await testHelpers.addDummyGame(user);
+      const gameId: string = game._id.toString();
 
-    const initialGames = await testHelpers.gamesInDb();
+      const player = dummyGame.players[0];
 
-    await testHelpers.addDummyGame(anotherUser);
-    await testHelpers.addDummyGame(anotherUser);
-    await testHelpers.addDummyGame(user);
-    await testHelpers.addDummyGame(user);
+      const response = await api
+        .get(`${baseUrl}/${gameId}?pelaaja=${player.id}`)
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
 
-    const gamesAtEnd = await testHelpers.gamesInDb();
+      const expectedPayload = {
+        username: player.name,
+        id: player.id,
+        gameId: gameId,
+        role: Role.PLAYER,
+      };
 
-    expect(gamesAtEnd.length).toBe(initialGames.length + 4);
+      expect(response.body).toBeDefined();
 
-    const response = await api
-      .get(baseUrl)
-      .set('Authorization', `bearer ${token}`)
-      .expect(200)
-      .expect('Content-Type', /application\/json/);
+      const decodedToken = jwt.verify(response.body, config.SECRET) as Record<
+        string,
+        string
+      >;
 
-    expect(response.body).toBeDefined();
-    expect(response.body.length).toBe(2);
+      // remove iat field
+      delete decodedToken.iat;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    response.body.forEach((game: any) => {
-      expect(game.host).toBeDefined();
-      expect(game.host).toBe(user._id.toString());
+      expect(decodedToken).toEqual(expectedPayload);
+    });
+
+    it('should return 400 if game or player not found', async () => {
+      const game = await testHelpers.addDummyGame(user);
+      const gameId: string = game._id.toString();
+
+      await api
+        .get(`${baseUrl}/${gameId}?pelaaja=UNKNOWN_PLAYER_ID`)
+        .expect(400);
+
+      await api
+        .get(`${baseUrl}/UNKNOWNID?pelaaja=UNKNOWN_PLAYER_ID`)
+        .expect(400);
     });
   });
 
-  it('should add a valid game with valid token', async () => {
-    const initialGames = await testHelpers.gamesInDb();
+  describe('GET /', () => {
+    it('should return only games added by host matching with token', async () => {
+      const anotherUser = await testHelpers.addDummyUser();
 
-    const newGame = {
-      ...dummyGame,
-    };
+      const initialGames = await testHelpers.gamesInDb();
 
-    const response = await api
-      .post(baseUrl)
-      .send(newGame)
-      .set('Authorization', `bearer ${token}`)
-      .expect(200)
-      .expect('Content-Type', /application\/json/);
+      await testHelpers.addDummyGame(anotherUser);
+      await testHelpers.addDummyGame(anotherUser);
+      await testHelpers.addDummyGame(user);
+      await testHelpers.addDummyGame(user);
 
-    const gamesAtEnd = await testHelpers.gamesInDb();
+      const gamesAtEnd = await testHelpers.gamesInDb();
 
-    expect(gamesAtEnd.length).toBe(initialGames.length + 1);
-    expect(response.body).toBeDefined();
-    expect(response.body).toHaveProperty('createDate');
-    expect(response.body).toHaveProperty('id');
+      expect(gamesAtEnd.length).toBe(initialGames.length + 4);
+
+      const response = await api
+        .get(baseUrl)
+        .set('Authorization', `bearer ${token}`)
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
+
+      expect(response.body).toBeDefined();
+      expect(response.body.length).toBe(2);
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      response.body.forEach((game: any) => {
+        expect(game.host).toBeDefined();
+        expect(game.host).toBe(user._id.toString());
+      });
+    });
   });
 
-  it('should add token id as host id when adding new game', async () => {
-    const id = user._id;
+  describe('POST /', () => {
+    it('should add a valid game with valid token', async () => {
+      const initialGames = await testHelpers.gamesInDb();
 
-    const response = await api
-      .post(baseUrl)
-      .send(dummyGame)
-      .set('Authorization', `bearer ${token}`)
-      .expect(200)
-      .expect('Content-Type', /application\/json/);
+      const newGame = {
+        ...dummyGame,
+      };
 
-    expect(response.body).toBeDefined();
-    expect(response.body).toHaveProperty('host');
-    expect(response.body.host).toBe(id.toString());
+      const response = await api
+        .post(baseUrl)
+        .send(newGame)
+        .set('Authorization', `bearer ${token}`)
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
+
+      const gamesAtEnd = await testHelpers.gamesInDb();
+
+      expect(gamesAtEnd.length).toBe(initialGames.length + 1);
+      expect(response.body).toBeDefined();
+      expect(response.body).toHaveProperty('createDate');
+      expect(response.body).toHaveProperty('id');
+    });
+
+    it('should add token id as host id when adding new game', async () => {
+      const id = user._id;
+
+      const response = await api
+        .post(baseUrl)
+        .send(dummyGame)
+        .set('Authorization', `bearer ${token}`)
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
+
+      expect(response.body).toBeDefined();
+      expect(response.body).toHaveProperty('host');
+      expect(response.body.host).toBe(id.toString());
+    });
+
+    it('should return 400 with invalid game object using valid token', async () => {
+      await api
+        .post(baseUrl)
+        .send({ ...dummyGame, players: undefined })
+        .set('Authorization', `bearer ${token}`)
+        .expect(400);
+      await api
+        .post(baseUrl)
+        .send({ ...dummyGame, type: undefined })
+        .set('Authorization', `bearer ${token}`)
+        .expect(400);
+      await api
+        .post(baseUrl)
+        .send({ ...dummyGame, startTime: undefined })
+        .set('Authorization', `bearer ${token}`)
+        .expect(400);
+    });
   });
 
-  it('should return 400 with invalid game object using valid token', async () => {
-    await api
-      .post(baseUrl)
-      .send({ ...dummyGame, players: undefined })
-      .set('Authorization', `bearer ${token}`)
-      .expect(400);
-    await api
-      .post(baseUrl)
-      .send({ ...dummyGame, type: undefined })
-      .set('Authorization', `bearer ${token}`)
-      .expect(400);
-    await api
-      .post(baseUrl)
-      .send({ ...dummyGame, startTime: undefined })
-      .set('Authorization', `bearer ${token}`)
-      .expect(400);
-  });
+  describe('DELETE /:id', () => {
+    it('should allow deleting games added by id matching token', async () => {
+      const initialGames = await testHelpers.gamesInDb();
 
-  it('should allow deleting games added by id matching token', async () => {
-    const initialGames = await testHelpers.gamesInDb();
+      const game = await testHelpers.addDummyGame(user);
 
-    const game = await testHelpers.addDummyGame(user);
+      const tempGames = await testHelpers.gamesInDb();
 
-    const tempGames = await testHelpers.gamesInDb();
+      expect(tempGames.length).toBe(initialGames.length + 1);
 
-    expect(tempGames.length).toBe(initialGames.length + 1);
+      const id: string = game._id.toString();
 
-    const id: string = game._id.toString();
+      await api
+        .delete(`${baseUrl}/${id}`)
+        .set('Authorization', `bearer ${token}`)
+        .expect(204);
 
-    await api
-      .delete(`${baseUrl}/${id}`)
-      .set('Authorization', `bearer ${token}`)
-      .expect(204);
+      const gamesAfterDelete = await testHelpers.gamesInDb();
 
-    const gamesAfterDelete = await testHelpers.gamesInDb();
+      expect(gamesAfterDelete.length).toBe(tempGames.length - 1);
+    });
 
-    expect(gamesAfterDelete.length).toBe(tempGames.length - 1);
-  });
+    it('should not allow deleting games added by others', async () => {
+      const anotherUser = await testHelpers.addDummyUser();
 
-  it('should not allow deleting games added by others', async () => {
-    const anotherUser = await testHelpers.addDummyUser();
+      const anotherGame = await testHelpers.addDummyGame(anotherUser);
+      const anotherId: string = anotherGame._id.toString();
 
-    const anotherGame = await testHelpers.addDummyGame(anotherUser);
-    const anotherId: string = anotherGame._id.toString();
+      const gamesAfterAdd = await testHelpers.gamesInDb();
 
-    const gamesAfterAdd = await testHelpers.gamesInDb();
+      await api
+        .delete(`${baseUrl}/${anotherId}`)
+        .set('Authorization', `bearer ${token}`)
+        .expect(400);
 
-    await api
-      .delete(`${baseUrl}/${anotherId}`)
-      .set('Authorization', `bearer ${token}`)
-      .expect(400);
+      const gamesAfterDelete = await testHelpers.gamesInDb();
 
-    const gamesAfterDelete = await testHelpers.gamesInDb();
-
-    expect(gamesAfterDelete).toEqual(gamesAfterAdd);
+      expect(gamesAfterDelete).toEqual(gamesAfterAdd);
+    });
   });
 
   afterAll(async () => {

@@ -152,11 +152,13 @@ export const toCredentials = (object: any): UserCredentials => {
 /**
  * Checks if the game's host field matches given id. Throws error if not.
  * @param game - game returned from mongodb
- * @param id - id to match against game's host
+ * @param hostId - id to match against game's host
+ *
+ * @returns validated game
  */
 export const validateGameHost = (
   game: GameModel | null,
-  id: string
+  hostId: string
 ): GameModel => {
   if (!game) throw new Error('Missing game');
   if (!game.host || !game.host.toString) {
@@ -164,11 +166,32 @@ export const validateGameHost = (
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  if (game.host.toString() !== id) {
+  if (game.host.toString() !== hostId) {
     throw new Error('Invalid request, cannot remove games added by others');
   }
 
   return game;
+};
+
+/**
+ * Checks if a player matching given id is found from the given game. If not, throws error.
+ * @param game - game returned from mongodb
+ * @param playerId - id to check for in game players
+ *
+ * @returns player matching id
+ */
+export const validateGamePlayer = (
+  game: GameModel | null,
+  playerId: string
+): GamePlayer => {
+  if (!game) throw new Error('Missing game');
+
+  const matchingPlayer = game.players.find((player) => player.id === playerId);
+
+  if (!matchingPlayer)
+    throw new Error(`Invalid request, no player found with id ${playerId}`);
+
+  return matchingPlayer;
 };
 
 export const toID = (object: any): string => {

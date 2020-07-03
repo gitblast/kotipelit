@@ -5,7 +5,7 @@ import { Action, User, ActionType, LoggedUser } from '../types';
 
 /** @TODO handle errors */
 
-const reducer = (state: User = null, action: Action) => {
+const reducer = (state: User = { loggedIn: false }, action: Action) => {
   switch (action.type) {
     case ActionType.LOGIN_REQUEST: {
       return {
@@ -20,10 +20,10 @@ const reducer = (state: User = null, action: Action) => {
       };
     }
     case ActionType.LOGIN_FAILURE: {
-      return null;
+      return { loggedIn: false };
     }
     case ActionType.LOGOUT: {
-      return null;
+      return { loggedIn: false };
     }
     default:
       return state;

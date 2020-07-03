@@ -12,7 +12,7 @@ export interface Game {
 }
 
 export interface SanakiertoPlayer {
-  id?: string;
+  id: string;
   name: string;
   words: string[];
   points: number;
@@ -42,16 +42,17 @@ export enum GameStatus {
 // USERS & AUTH
 
 interface BaseUser {
-  username: string;
+  loggedIn: false;
 }
 
-export interface LoggedUser extends BaseUser {
+export interface LoggedUser {
+  username: string;
   loggedIn: true;
   token: string;
 }
 
 export interface LoggingUser extends BaseUser {
-  loggedIn: false;
+  username: string;
 }
 
 export interface HostChannel extends BaseUser {
@@ -77,7 +78,7 @@ export interface ChannelsState {
   loading: boolean;
 }
 
-export type User = LoggedUser | LoggingUser | null;
+export type User = LoggedUser | LoggingUser | BaseUser;
 
 export enum ActionType {
   // GAME ACTIONS
@@ -188,3 +189,40 @@ export type Action =
   | {
       type: ActionType.LOGOUT;
     };
+
+// SOCKET IO EVENTS
+
+export enum PlayerEvent {
+  JOIN_GAME = 'join game',
+
+  JOIN_SUCCESS = 'join success',
+  JOIN_FAILURE = 'join failure',
+
+  GAME_READY = 'game ready',
+  GAME_STARTING = 'game starting',
+}
+
+export enum HostEvent {
+  CREATE_GAME = 'create game',
+
+  CREATE_SUCCESS = 'create success',
+  CREATE_FAILURE = 'create failure',
+  START_SUCCESS = 'start success',
+  START_FAILURE = 'start failure',
+}
+
+export enum CommonEvent {
+  AUTH_REQUEST = 'authenticate',
+  AUTHENTICATED = 'authenticated',
+  UNAUTHORIZED = 'unauthorized',
+
+  CONNECT = 'connect',
+  PLAYER_JOINED = 'player joined',
+}
+
+export interface MockSocket {
+  listeners: Record<string, Function>;
+  emitted: Record<string, object>;
+  on: Function;
+  emit: Function;
+}

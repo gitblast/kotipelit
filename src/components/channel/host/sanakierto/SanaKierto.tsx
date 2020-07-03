@@ -1,18 +1,19 @@
 import React from 'react';
 
+import socketIO from 'socket.io-client';
+
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Paper, Typography } from '@material-ui/core';
+import { Paper } from '@material-ui/core';
 
 import HostPanel from './HostPanel';
 import Results from './Results';
 
-import { useSelector } from 'react-redux';
-import {
-  State,
-  GameStatus,
-  GameType,
-  SanakiertoPlayer,
-} from '../../../../types';
+import { useSelector, shallowEqual } from 'react-redux';
+import { State, GameStatus, SanakiertoPlayer } from '../../../../types';
+
+import { hardcodedActiveSanakierto as HARDCODED } from '../../../../constants';
+import { useParams } from 'react-router-dom';
+import JitsiFrame from '../../../JitsiFrame';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,55 +35,46 @@ const useStyles = makeStyles((theme: Theme) =>
 
 // interface SanakiertoProps {}
 
+interface ParamTypes {
+  username: string;
+  gameID: string;
+}
+
 const Sanakierto: React.FC = () => {
   const classes = useStyles();
+  const [jitsiToken, setJitsiToken] = React.useState<null | string>(null);
   const activeGame = useSelector((state: State) => state.games.activeGame);
+  const params = useParams<ParamTypes>();
+  const user = useSelector((state: State) => state.user, shallowEqual);
+
+  /** @TODO find out if socket io always uses encrypted connection and manage auth (insecure to send token if not) */
+  React.useEffect(() => {
+    if (!params || !params.gameID)
+      throw new Error('Missing parameter "gameID"');
+
+    const socket = socketIO();
+
+    socket.on('create success', (data: string) => {
+      setJitsiToken(data);
+    });
+
+    if (user.loggedIn) {
+      socket.emit('create room', {
+        gameId: params.gameID,
+        hostName: user.username,
+      });
+    }
+  }, []);
+
+  const jitsiContent = () =>
+    jitsiToken && user.loggedIn ? (
+      <JitsiFrame token={jitsiToken} roomName={user.username} dev />
+    ) : (
+      <h4>Loading</h4>
+    );
 
   if (activeGame === null)
     console.error('No active game found, using hard coded (dev)');
-
-  const HARDCODED = {
-    id: '1',
-    type: GameType.SANAKIERTO,
-    players: [
-      {
-        id: '1',
-        name: 'Risto',
-        words: ['jojo', 'kasvi', 'hattu'],
-        points: 0,
-      },
-      {
-        id: '2',
-        name: 'Jorma',
-        words: ['sana', 'kirja', 'väline'],
-        points: 0,
-      },
-      {
-        id: '3',
-        name: 'Kalevi',
-        words: ['kaiutin', 'kuuloke', 'lasi'],
-        points: 0,
-      },
-      {
-        id: '4',
-        name: 'Jenni',
-        words: ['johto', 'hiiri', 'puhelin'],
-        points: 0,
-      },
-      {
-        id: '5',
-        name: 'Petra',
-        words: ['rasia', 'kuppi', 'vihko'],
-        points: 0,
-      },
-    ],
-    startTime: new Date(),
-    status: GameStatus.UPCOMING,
-    rounds: 3,
-    winner: null,
-    round: 1,
-    turn: 0,
-  };
 
   const sortPlayersByPoints = (players: SanakiertoPlayer[]) => {
     return players.sort((a, b) => b.points - a.points);
@@ -91,7 +83,7 @@ const Sanakierto: React.FC = () => {
   return (
     <div className={classes.container}>
       <Paper elevation={5} className={classes.jitsiContainer}>
-        <Typography>Jitsi</Typography>
+        {jitsiContent()}
       </Paper>
       <Paper elevation={5} className={classes.hostControls}>
         {activeGame && activeGame.status === GameStatus.FINISHED ? (

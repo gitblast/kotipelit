@@ -2,15 +2,19 @@ import React from 'react';
 import Jitsi from 'react-jitsi';
 
 interface JitsiFrameProps {
-  props: null;
+  token: string;
+  roomName: string;
+  dev?: boolean;
 }
 
-const JitsiFrame: React.FC<JitsiFrameProps> = () => {
+const JitsiFrame: React.FC<JitsiFrameProps> = ({ token, roomName, dev }) => {
+  if (dev) return <div>Jitsi will render here</div>;
+
   return (
     <Jitsi
-      roomName="testroom123"
+      roomName={roomName} // must match room name set in token
       domain="meet.kotipelit.com"
-      jwt={undefined} // needs a valid token to auth, see readme
+      jwt={token} // needs a valid token to auth, see readme
     />
   );
 };

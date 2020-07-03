@@ -1,4 +1,10 @@
-import { GameStatus, GameType, HostChannel, SelectableGame } from '../types';
+import {
+  GameStatus,
+  GameType,
+  HostChannel,
+  SelectableGame,
+  SanakiertoActive,
+} from '../types';
 
 export const hardcodedGames: SelectableGame[] = [
   {
@@ -95,3 +101,45 @@ export const hardcodedChannels: HostChannel[] = [
     channelName: 'channel3',
   },
 ];
+
+export const hardcodedActiveSanakierto: SanakiertoActive = {
+  id: '1',
+  type: GameType.SANAKIERTO,
+  players: [
+    {
+      id: '1',
+      name: 'Risto',
+      words: ['jojo', 'kasvi', 'hattu'],
+      points: 0,
+    },
+    {
+      id: '2',
+      name: 'Jorma',
+      words: ['sana', 'kirja', 'väline'],
+      points: 0,
+    },
+    {
+      id: '3',
+      name: 'Kalevi',
+      words: ['kaiutin', 'kuuloke', 'lasi'],
+      points: 0,
+    },
+    {
+      id: '4',
+      name: 'Jenni',
+      words: ['johto', 'hiiri', 'puhelin'],
+      points: 0,
+    },
+    {
+      id: '5',
+      name: 'Petra',
+      words: ['rasia', 'kuppi', 'vihko'],
+      points: 0,
+    },
+  ],
+  startTime: new Date(),
+  status: GameStatus.UPCOMING,
+  rounds: 3,
+  round: 1,
+  turn: 0,
+};

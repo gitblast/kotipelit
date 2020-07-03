@@ -60,15 +60,14 @@ Embedded jitsi needs to be provided a valid JWT -token in order to create a new 
 
 ```
 {
-  "context": { // info about the user, only name -field is required
-    name: "John Doe", // name that will be shown to other participants
-    avatar: "https://url.to.avatar",
-    id: "123456",
-    email: "email@johndoe.com"
+  "context": {
+    "user": {
+      "name": "John Doe", // name that will be shown to other participants
+    }
   },
-  "aud": kotipelit.com,
-  "iss": kotipelit.com,
-  "sub": meet.kotipelit.com,
+  "aud": "kotipelit.com",
+  "iss": "kotipelit.com",
+  "sub": "meet.kotipelit.com",
   "room": <roomname>, // token will only be valid with roomname provided here
   "iat": <issued at>, // token issue time, optional
   "exp": <expires> // token expire time, optional

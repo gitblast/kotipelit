@@ -13,7 +13,7 @@ jest.mock('../services/users', () => ({
 
 describe('user reducer', () => {
   it('should return initial state null', () => {
-    expect(reducer(undefined, {} as Action)).toEqual(null);
+    expect(reducer(undefined, {} as Action)).toEqual({ loggedIn: false });
   });
 
   it('should handle LOGIN_REQUEST', () => {
@@ -35,7 +35,7 @@ describe('user reducer', () => {
       type: ActionType.LOGIN_FAILURE,
     };
 
-    expect(reducer(undefined, action)).toEqual(null);
+    expect(reducer(undefined, action)).toEqual({ loggedIn: false });
   });
 
   it('should handle LOGIN_SUCCESS', () => {
@@ -58,7 +58,7 @@ describe('user reducer', () => {
       type: ActionType.LOGOUT,
     };
 
-    expect(reducer(undefined, action)).toEqual(null);
+    expect(reducer(undefined, action)).toEqual({ loggedIn: false });
   });
 
   describe('checkForUser -function', () => {

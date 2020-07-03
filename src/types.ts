@@ -53,10 +53,18 @@ export interface ActiveGamePlayer extends GamePlayer {
   socket: null | Socket;
 }
 
+export interface GamePlayerWithStatus extends GamePlayer {
+  online: boolean;
+}
+
 export interface ActiveGame extends BaseGame {
   id: string;
   players: ActiveGamePlayer[];
   status: GameStatus.WAITING | GameStatus.RUNNING;
+}
+
+export interface ActiveGameWithoutSockets extends Omit<ActiveGame, 'players'> {
+  players: GamePlayerWithStatus[];
 }
 
 export interface GameRoom {
@@ -93,7 +101,14 @@ export enum EventType {
   JOIN_SUCCESS = 'join success',
   JOIN_FAILURE = 'join failure',
 
+  START_SUCCESS = 'start success',
+  START_FAILURE = 'start failure',
+
+  // BROADCASTED
+
+  PLAYER_JOINED = 'player joined',
   GAME_READY = 'game ready',
+  GAME_STARTING = 'game starting',
 
   // RECIEVED
 
@@ -102,6 +117,7 @@ export enum EventType {
   // host
   CREATE_ROOM = 'create room',
   JITSI_READY = 'jitsi ready',
+  START_GAME = 'start game',
 
   // player
   JOIN_GAME = 'join game',
@@ -113,8 +129,12 @@ export type BroadcastedEvent =
       data: string; // jitsi room name
     }
   | {
-      event: EventType.GAME_READY;
-      data: string; // jitsi room name
+      event: EventType.PLAYER_JOINED;
+      data: string; // player id
+    }
+  | {
+      event: EventType.GAME_STARTING;
+      data: null;
     };
 
 export type EmittedEvent =
@@ -130,10 +150,20 @@ export type EmittedEvent =
     }
   | {
       event: EventType.JOIN_SUCCESS;
-      data: ActiveGame;
+      data: ActiveGameWithoutSockets;
     }
   | {
       event: EventType.JOIN_FAILURE;
+      data: {
+        error: string;
+      };
+    }
+  | {
+      event: EventType.START_SUCCESS;
+      data: null;
+    }
+  | {
+      event: EventType.START_FAILURE;
       data: {
         error: string;
       };

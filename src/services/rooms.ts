@@ -1,4 +1,9 @@
-import { GameRoom, ActiveGame } from '../types';
+import {
+  GameRoom,
+  ActiveGame,
+  ActiveGameWithoutSockets,
+  GamePlayerWithStatus,
+} from '../types';
 
 export let rooms: Record<string, GameRoom> = {};
 
@@ -31,11 +36,27 @@ const createRoom = (
   return newRoom;
 };
 
+const getRoomGame = (roomId: string): ActiveGame => {
+  const room = rooms[roomId];
+
+  if (!room) throw new Error(`Room with id '${roomId}' not found`);
+
+  return room.game;
+};
+
+const updateRoomGame = (roomId: string, newGame: ActiveGame): void => {
+  const room = rooms[roomId];
+
+  if (!room) throw new Error(`Room with id '${roomId}' not found`);
+
+  room.game = newGame;
+};
+
 const joinRoom = (
   gameId: string,
   playerId: string,
   socket: SocketIO.Socket
-): ActiveGame => {
+): ActiveGameWithoutSockets => {
   const room = rooms[gameId];
 
   if (!room) throw new Error(`Game with id '${gameId}' not found`);
@@ -49,7 +70,15 @@ const joinRoom = (
 
   playerForSocket.socket = socket;
 
-  return room.game;
+  const playersWithoutSockets: GamePlayerWithStatus[] = room.game.players.map(
+    (player) => ({
+      id: player.id,
+      name: player.name,
+      online: !!player.socket,
+    })
+  );
+
+  return { ...room.game, players: playersWithoutSockets };
 };
 
 export default {
@@ -57,4 +86,6 @@ export default {
   joinRoom,
   createRoom,
   addSocketToRoom,
+  updateRoomGame,
+  getRoomGame,
 };

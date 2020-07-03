@@ -56,6 +56,63 @@ describe('rooms service', () => {
     expect(mock.lastCalledWith).toBe('gameId');
   });
 
+  describe('getRoomGame', () => {
+    it('should return rooms game if room found', () => {
+      setRooms({});
+      const game = {
+        testRoom: true,
+      };
+
+      const room = roomService.createRoom(
+        'test_room_id',
+        'hostSocketId',
+        (game as unknown) as ActiveGame
+      );
+
+      expect(roomService.getRoomGame('test_room_id')).toBe(room.game);
+    });
+
+    it('should throw error if room not found', () => {
+      setRooms({});
+      expect(() => roomService.getRoomGame('invalid_id')).toThrowError(
+        `Room with id 'invalid_id' not found`
+      );
+    });
+  });
+
+  describe('updateRoomGame', () => {
+    it('should replace current game if room found', () => {
+      setRooms({});
+      const initialGame = {
+        testRoom: true,
+      };
+
+      const room = roomService.createRoom(
+        'test_room_id',
+        'hostSocketId',
+        (initialGame as unknown) as ActiveGame
+      );
+
+      expect(room.game).toEqual(initialGame);
+
+      const newGame = { newGame: true };
+
+      roomService.updateRoomGame(
+        'test_room_id',
+        (newGame as unknown) as ActiveGame
+      );
+
+      expect(room.game).toEqual(newGame);
+    });
+
+    it('should throw error if room not found', () => {
+      setRooms({});
+      expect(() =>
+        roomService.updateRoomGame('invalid_id', {} as ActiveGame)
+      ).toThrowError(`Room with id 'invalid_id' not found`);
+    });
+  });
+
   describe('joinRoom', () => {
     it('should throw error if game with id not found', () => {
       setRooms({});
@@ -92,7 +149,13 @@ describe('rooms service', () => {
         gameId: {
           game: {
             id: 'TEST_GAME',
-            players: [{ id: 'playerId', socket: null } as ActiveGamePlayer],
+            players: [
+              {
+                id: 'playerId',
+                socket: null,
+                name: 'name',
+              } as ActiveGamePlayer,
+            ],
           } as ActiveGame,
         } as GameRoom,
       };
@@ -116,9 +179,18 @@ describe('rooms service', () => {
         (socket as unknown) as SocketIO.Socket
       );
 
+      const gameWithoutSockets = {
+        ...mock.gameId.game,
+        players: mock.gameId.game.players.map((p) => ({
+          id: p.id,
+          name: p.name,
+          online: !!p.socket,
+        })),
+      };
+
       expect(player.socket).not.toBeNull();
       expect(player.socket).toEqual(socket);
-      expect(game).toEqual(room.game);
+      expect(game).toEqual(gameWithoutSockets);
     });
   });
 });

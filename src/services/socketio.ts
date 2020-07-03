@@ -9,7 +9,6 @@ import config from '../utils/config';
 import jwt from 'jsonwebtoken';
 
 import {
-  CreateRoomData,
   GameStatus,
   ActiveGame,
   EmittedEvent,
@@ -19,6 +18,8 @@ import {
   JitsiReadyData,
   BroadcastedEvent,
   TestEventType,
+  ActiveGameWithoutSockets,
+  GameModel,
 } from '../types';
 
 import roomService from './rooms';
@@ -30,13 +31,7 @@ export const initRoom = async (
   if (socket.decoded_token.role !== Role.HOST)
     throw new Error('Not authorized');
 
-  const game = await Game.findById(gameId);
-
-  if (!game) throw new Error(`No game found with id ${gameId}`);
-
-  game.status = GameStatus.WAITING;
-
-  await game.save();
+  const game = await setGameStatus(gameId, GameStatus.WAITING);
 
   const roomGame: ActiveGame = {
     id: game._id.toString(),
@@ -54,6 +49,19 @@ export const initRoom = async (
   return jwt.sign('TODO', 'TODO');
 };
 
+const setGameStatus = async (
+  gameId: string,
+  newStatus: GameStatus
+): Promise<GameModel> => {
+  const game = await Game.findById(gameId);
+
+  if (!game) throw new Error(`No game found with id ${gameId}`);
+
+  game.status = newStatus;
+
+  return await game.save();
+};
+
 export const createSuccess = (jitsiToken: string): EmittedEvent => ({
   event: EventType.CREATE_SUCCESS,
   data: jitsiToken,
@@ -64,7 +72,17 @@ export const createFailure = (message: string): EmittedEvent => ({
   data: { error: message },
 });
 
-export const joinSuccess = (game: ActiveGame): EmittedEvent => ({
+export const startSuccess = (): EmittedEvent => ({
+  event: EventType.START_SUCCESS,
+  data: null,
+});
+
+export const startFailure = (message: string): EmittedEvent => ({
+  event: EventType.START_FAILURE,
+  data: { error: message },
+});
+
+export const joinSuccess = (game: ActiveGameWithoutSockets): EmittedEvent => ({
   event: EventType.JOIN_SUCCESS,
   data: game,
 });
@@ -77,6 +95,16 @@ export const joinFailure = (message: string): EmittedEvent => ({
 export const gameReady = (jitsiRoom: string): BroadcastedEvent => ({
   event: EventType.GAME_READY,
   data: jitsiRoom,
+});
+
+export const playerJoined = (id: string): BroadcastedEvent => ({
+  event: EventType.PLAYER_JOINED,
+  data: id,
+});
+
+export const gameStarting = (): BroadcastedEvent => ({
+  event: EventType.GAME_STARTING,
+  data: null,
 });
 
 const attachTestListeners = (socket: SocketWithToken): void => {
@@ -120,25 +148,45 @@ const handler = (io: Server): void => {
       timeout: 10000,
     })
   ).on('authenticated', (socket: SocketWithToken) => {
-    const decodedToken = socket.decoded_token;
+    const { gameId, id, role } = socket.decoded_token;
 
     // for testing
     if (process.env.NODE_ENV === 'test') attachTestListeners(socket);
 
-    switch (decodedToken.role) {
+    switch (role) {
       // host specific listeners
       case Role.HOST: {
         socket.on(EventType.JITSI_READY, (data: JitsiReadyData) => {
           broadcast(socket, data.gameId, gameReady(data.jitsiRoom));
         });
 
-        socket.on(EventType.CREATE_ROOM, (data: CreateRoomData) => {
-          initRoom(socket, data.gameId)
+        socket.on(EventType.CREATE_ROOM, () => {
+          initRoom(socket, gameId)
             .then((token: string) => {
-              roomService.addSocketToRoom(data.gameId, socket);
+              roomService.addSocketToRoom(gameId, socket);
               emit(socket, createSuccess(token));
             })
             .catch((error) => emit(socket, createFailure(error.message)));
+        });
+
+        socket.on(EventType.START_GAME, () => {
+          setGameStatus(gameId, GameStatus.RUNNING)
+            .then(() => {
+              const game = roomService.getRoomGame(gameId);
+
+              if (!game) throw new Error(`No game found for room '${gameId}'`);
+
+              roomService.updateRoomGame(gameId, {
+                ...game,
+                status: GameStatus.RUNNING,
+              });
+
+              broadcast(socket, gameId, gameStarting());
+              emit(socket, startSuccess());
+            })
+            .catch((error) => {
+              emit(socket, startFailure(error.message));
+            });
         });
 
         break;
@@ -146,14 +194,12 @@ const handler = (io: Server): void => {
       // player specific listeners
       case Role.PLAYER: {
         socket.on(EventType.JOIN_GAME, () => {
-          const { gameId, id } = decodedToken;
-
           roomService.addSocketToRoom(gameId, socket);
 
           try {
             const game = roomService.joinRoom(gameId, id, socket);
-            console.log(game);
-            emit(socket, joinSuccess({} as ActiveGame));
+            broadcast(socket, gameId, playerJoined(id));
+            emit(socket, joinSuccess(game));
           } catch (error) {
             emit(socket, joinFailure(error.message));
           }

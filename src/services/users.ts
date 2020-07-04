@@ -8,7 +8,7 @@ let token: string | null = null;
 const login = async (
   username: string,
   password: string
-): Promise<Omit<LoggedUser, 'loggedIn'>> => {
+): Promise<Pick<LoggedUser, 'username' | 'token'>> => {
   const credentials = { username, password };
 
   const response = await axios.post('/api/login', credentials);

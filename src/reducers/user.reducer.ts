@@ -25,6 +25,12 @@ const reducer = (state: User = { loggedIn: false }, action: Action) => {
     case ActionType.LOGOUT: {
       return { loggedIn: false };
     }
+    case ActionType.SET_JITSI_TOKEN: {
+      return {
+        ...state,
+        jitsiToken: action.payload,
+      };
+    }
     default:
       return state;
   }
@@ -85,11 +91,16 @@ export const loginUser = (username: string, password: string) => {
 
       window.localStorage.setItem('kotipelitUser', JSON.stringify(user));
 
-      dispatch(loginSuccess(user));
+      dispatch(loginSuccess({ ...user, jitsiToken: null }));
     } catch (error) {
       dispatch(loginFailure());
     }
   };
 };
+
+export const setJitsiToken = (token: string): Action => ({
+  type: ActionType.SET_JITSI_TOKEN,
+  payload: token,
+});
 
 export default reducer;

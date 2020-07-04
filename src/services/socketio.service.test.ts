@@ -93,7 +93,7 @@ describe('socketio service', () => {
 
   describe('getAuthenticatedSocket', () => {
     it('should call callback on "connect"', () => {
-      socketService.authenticateSocket(socket, 'TOKEN', false);
+      socketService.authenticateSocket(socket, 'TOKEN', () => null);
 
       expect(socketAsMock.listeners[CommonEvent.CONNECT]).toEqual(
         expect.any(Function)

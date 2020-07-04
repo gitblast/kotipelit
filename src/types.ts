@@ -49,13 +49,15 @@ export interface LoggedUser {
   username: string;
   loggedIn: true;
   token: string;
+  jitsiToken: string | null;
 }
 
 export interface LoggingUser extends BaseUser {
   username: string;
 }
 
-export interface HostChannel extends BaseUser {
+export interface HostChannel {
+  username: string;
   channelName: string;
 }
 
@@ -83,6 +85,8 @@ export type User = LoggedUser | LoggingUser | BaseUser;
 export enum ActionType {
   // GAME ACTIONS
 
+  SET_ACTIVE_GAME = 'SET_ACTIVE_GAME',
+
   // init games
   INIT_GAMES_REQUEST = 'INIT_GAMES_REQUEST',
   INIT_GAMES_SUCCESS = 'INIT_GAMES_SUCCESS',
@@ -108,6 +112,7 @@ export enum ActionType {
   LOGIN_SUCCESS = 'LOGIN_SUCCESS',
   LOGIN_FAILURE = 'LOGIN_FAILURE',
   LOGOUT = 'LOGOUT',
+  SET_JITSI_TOKEN = 'SET_JITSI_TOKEN',
 
   // init channels
   INIT_CHANNELS_REQUEST = 'INIT_CHANNELS_REQUEST',
@@ -116,6 +121,10 @@ export enum ActionType {
 }
 
 export type Action =
+  | {
+      type: ActionType.SET_ACTIVE_GAME;
+      payload: ActiveGame;
+    }
   // INIT GAMES
   | {
       type: ActionType.INIT_GAMES_REQUEST;
@@ -188,9 +197,18 @@ export type Action =
     }
   | {
       type: ActionType.LOGOUT;
+    }
+  | {
+      type: ActionType.SET_JITSI_TOKEN;
+      payload: string; // jitsi token
     };
 
 // SOCKET IO EVENTS
+
+export interface CreateSuccessResponse {
+  game: ActiveGame;
+  jitsiToken: string;
+}
 
 export enum PlayerEvent {
   JOIN_GAME = 'join game',
@@ -203,10 +221,12 @@ export enum PlayerEvent {
 }
 
 export enum HostEvent {
-  CREATE_GAME = 'create game',
+  JITSI_READY = 'jitsi ready',
+  CREATE_ROOM = 'create room',
 
   CREATE_SUCCESS = 'create success',
   CREATE_FAILURE = 'create failure',
+
   START_SUCCESS = 'start success',
   START_FAILURE = 'start failure',
 }
@@ -219,6 +239,29 @@ export enum CommonEvent {
   CONNECT = 'connect',
   PLAYER_JOINED = 'player joined',
 }
+
+export type EmittedEvent =
+  | {
+      event: HostEvent.CREATE_ROOM;
+      data: string; // game id
+    }
+  | {
+      event: PlayerEvent.JOIN_GAME;
+      data: null;
+    }
+  | {
+      event: HostEvent.JITSI_READY;
+      data: {
+        gameId: string;
+        jitsiRoom: string;
+      };
+    };
+
+export interface RecievedError {
+  error: string;
+}
+
+// TESTING
 
 export interface MockSocket {
   listeners: Record<string, Function>;

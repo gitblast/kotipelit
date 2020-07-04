@@ -1,34 +1,63 @@
-import { CommonEvent, PlayerEvent } from '../types';
-import { attachListeners } from './socketio';
+import {
+  CommonEvent,
+  PlayerEvent,
+  HostEvent,
+  RecievedError,
+  CreateSuccessResponse,
+} from '../types';
+import { log } from '../utils/logger';
+import store from '../store';
+import { setJitsiToken } from '../reducers/user.reducer';
+import { setActiveGame } from '../reducers/games.reducer';
 
 export const connect = (
   socket: SocketIOClient.Socket,
   token: string,
-  isHost: boolean
+  callback: Function
 ) => {
   return () => {
     socket
       .emit(CommonEvent.AUTH_REQUEST, { token })
       .on(CommonEvent.AUTHENTICATED, () => {
-        attachListeners(socket, isHost);
-        socket.emit(PlayerEvent.JOIN_GAME);
+        log('socketio authorized');
+
+        callback(socket);
       })
       .on(CommonEvent.UNAUTHORIZED, (error: { message: string }) => {
+        log('socketio unauthorized');
+
         throw new Error(error.message);
       });
   };
 };
 
-export const playerJoined = () => () => console.log('todo');
+export const playerJoined = () => () =>
+  log(`recieved ${CommonEvent.PLAYER_JOINED}`);
 
-export const createSuccess = () => () => console.log('todo');
-export const createFailure = () => () => console.log('todo');
+export const createSuccess = (data: CreateSuccessResponse) => {
+  log(`recieved ${HostEvent.CREATE_SUCCESS}`);
 
-export const startSuccess = () => () => console.log('todo');
-export const startFailure = () => () => console.log('todo');
+  store.dispatch(setActiveGame(data.game));
+  store.dispatch(setJitsiToken(data.jitsiToken));
+};
 
-export const joinSuccess = () => () => console.log('todo');
-export const joinFailure = () => () => console.log('todo');
+export const createFailure = (data: RecievedError) =>
+  log(`recieved ${HostEvent.CREATE_FAILURE}: ${data.error}`);
 
-export const gameReady = () => () => console.log('todo');
-export const gameStarting = () => () => console.log('todo');
+export const startSuccess = () => () =>
+  log(`recieved ${HostEvent.START_SUCCESS}`);
+export const startFailure = (data: RecievedError) =>
+  log(`recieved ${HostEvent.START_FAILURE}: ${data.error}`);
+
+export const joinSuccess = () => () =>
+  log(`recieved ${PlayerEvent.JOIN_SUCCESS}`);
+export const joinFailure = (data: RecievedError) =>
+  log(`recieved ${PlayerEvent.JOIN_FAILURE}: ${data.error}`);
+
+export const gameReady = (jitsiRoom: string) => {
+  log(`recieved ${PlayerEvent.GAME_READY}`);
+
+  console.log('jitsi room:', jitsiRoom);
+};
+export const gameStarting = () => () =>
+  log(`recieved ${PlayerEvent.GAME_STARTING}`);

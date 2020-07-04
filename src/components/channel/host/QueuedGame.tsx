@@ -102,10 +102,9 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game }) => {
     hostPath: string,
     player: SanakiertoPlayer
   ): void => {
-    console.log(
-      'TODO: copy to clipboard',
-      getInviteText(game, hostPath, player)
-    );
+    console.log('TODO: copy to clipboard?');
+
+    setInviteText(getInviteText(game, hostPath, player));
   };
 
   return (
@@ -166,7 +165,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game }) => {
                 color="primary"
                 onClick={() => handleCopy(game, currentPath, player)}
               >
-                Kopioi kutsuteksti
+                Näytä kutsuteksti
               </Button>
             </div>
           </div>

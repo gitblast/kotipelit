@@ -1,5 +1,5 @@
 import * as callbacks from './socketio.callbacks';
-import { CommonEvent, PlayerEvent, MockSocket } from '../types';
+import { CommonEvent, MockSocket } from '../types';
 
 const mockSocket: MockSocket = {
   listeners: {},
@@ -25,7 +25,10 @@ describe('callbacks', () => {
 
   describe('connect', () => {
     beforeEach(() => {
-      callbacks.connect(socket, 'TOKEN', false)();
+      const callback = (socket: SocketIOClient.Socket) =>
+        socket.emit('callback fired', 'yes');
+
+      callbacks.connect(socket, 'TOKEN', callback)();
     });
 
     it('should emit "authorize" with token', () => {
@@ -44,20 +47,16 @@ describe('callbacks', () => {
       ).toThrowError();
     });
 
-    it('should listen to "authenticated" and emit "join game" when received', () => {
+    it('should listen to "authenticated" and call callback when recieved', () => {
       expect(socketAsMock.listeners[CommonEvent.AUTHENTICATED]).toEqual(
         expect.any(Function)
       );
 
-      expect(Object.keys(socketAsMock.emitted)).not.toContain(
-        PlayerEvent.JOIN_GAME
-      );
+      expect(socketAsMock.emitted['callback fired']).not.toBeDefined();
 
       socketAsMock.listeners[CommonEvent.AUTHENTICATED]();
 
-      expect(Object.keys(socketAsMock.emitted)).toContain(
-        PlayerEvent.JOIN_GAME
-      );
+      expect(socketAsMock.emitted['callback fired']).toBeDefined();
     });
   });
 });

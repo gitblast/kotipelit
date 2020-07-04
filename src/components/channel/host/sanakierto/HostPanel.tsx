@@ -32,8 +32,6 @@ interface HostPanelProps {
   game: SanakiertoActive;
 }
 
-/** @TODO set game status running */
-
 const HostPanel: React.FC<HostPanelProps> = ({ game }) => {
   const classes = useStyles();
 
@@ -52,6 +50,21 @@ const HostPanel: React.FC<HostPanelProps> = ({ game }) => {
     },
     timerRunning ? 1000 : null
   );
+
+  if (game.status === GameStatus.WAITING) {
+    return (
+      <div>
+        <div>
+          <Fab variant="extended">Aloita peli</Fab>
+        </div>
+        <div>
+          {game.players.map((p) => (
+            <div key={p.id}>{p.name}</div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   const playerWithTurn = game.players[game.turn];
 

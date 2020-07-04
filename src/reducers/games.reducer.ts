@@ -94,6 +94,12 @@ const reducer = (state: GamesState = initialState, action: Action) => {
         loading: false,
       };
     }
+    case ActionType.SET_ACTIVE_GAME: {
+      return {
+        ...state,
+        activeGame: action.payload,
+      };
+    }
     case 'LAUNCH_GAME': {
       const gameToActivate = state.allGames.find(
         (game) => game.id === action.payload
@@ -122,8 +128,6 @@ const reducer = (state: GamesState = initialState, action: Action) => {
       return state;
   }
 };
-
-// init games
 
 export const initRequest = (): Action => ({
   type: ActionType.INIT_GAMES_REQUEST,
@@ -205,6 +209,11 @@ export const deleteGame = (idToRemove: string) => {
     }
   };
 };
+
+export const setActiveGame = (game: ActiveGame): Action => ({
+  type: ActionType.SET_ACTIVE_GAME,
+  payload: game,
+});
 
 export const launchGame = (id: string): Action => {
   return {

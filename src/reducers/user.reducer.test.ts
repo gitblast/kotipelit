@@ -43,6 +43,7 @@ describe('user reducer', () => {
       username: 'username',
       token: 'token',
       loggedIn: true,
+      jitsiToken: null,
     };
 
     const action: Action = {
@@ -61,9 +62,25 @@ describe('user reducer', () => {
     expect(reducer(undefined, action)).toEqual({ loggedIn: false });
   });
 
+  it('should handle SET_JITSI_TOKEN', () => {
+    const action: Action = {
+      type: ActionType.SET_JITSI_TOKEN,
+      payload: 'JITSI_TOKEN!',
+    };
+
+    expect(reducer(undefined, action)).toEqual({
+      loggedIn: false,
+      jitsiToken: 'JITSI_TOKEN!',
+    });
+  });
+
   describe('checkForUser -function', () => {
     it('should set token and dispatch login success if saved user found in localStorage', () => {
-      const user = { username: 'username', token: 'tokenFromStorage' };
+      const user = {
+        username: 'username',
+        token: 'tokenFromStorage',
+        jitsiToken: null,
+      };
       window.localStorage.setItem('kotipelitUser', JSON.stringify(user));
 
       const dispatch = jest.fn();
@@ -103,7 +120,11 @@ describe('user reducer', () => {
     });
 
     describe('when login succeeds', () => {
-      const returnedUser = { username: 'username', token: 'token' };
+      const returnedUser = {
+        username: 'username',
+        token: 'token',
+        jitsiToken: null,
+      };
 
       beforeEach(() => login.mockResolvedValue(returnedUser));
 

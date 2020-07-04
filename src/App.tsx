@@ -53,8 +53,8 @@ const App = () => {
 
   // init games
   React.useEffect(() => {
-    if (user && user.loggedIn) dispatch(initGames());
-  }, [dispatch, user]);
+    dispatch(initGames());
+  }, [dispatch]);
 
   const channelRoutes = (channels: HostChannel[]) => {
     return channels.map((channel) => (

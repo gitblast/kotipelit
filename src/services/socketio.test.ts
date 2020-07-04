@@ -12,7 +12,7 @@ import jwt from 'jsonwebtoken';
 import { AddressInfo } from 'net';
 
 import * as ioService from './socketio';
-import { EmittedEvent, EventType, Role, TestEventType } from '../types';
+import { EventType, Role, TestEventType } from '../types';
 import { UnauthorizedError } from 'socketio-jwt';
 
 const hostToken = jwt.sign(
@@ -76,28 +76,6 @@ describe('socket.io', () => {
     setTimeout(() => {
       done();
     }, 1000);
-  });
-
-  describe('event creators', () => {
-    it('should create event for succesful room creation', () => {
-      const expectedEvent: EmittedEvent = {
-        event: EventType.CREATE_SUCCESS,
-        data: 'token for jitsi',
-      };
-
-      expect(ioService.createSuccess('token for jitsi')).toEqual(expectedEvent);
-    });
-
-    it('should create event for failure of room creation', () => {
-      const expectedEvent: EmittedEvent = {
-        event: EventType.CREATE_FAILURE,
-        data: {
-          error: 'error message',
-        },
-      };
-
-      expect(ioService.createFailure('error message')).toEqual(expectedEvent);
-    });
   });
 
   describe('handler', () => {
@@ -166,9 +144,12 @@ describe('socket.io', () => {
       });
     });
 
-    // times out if valid token is given
     it('should not connect without a valid token', (done) => {
       socket = ioClient(path, options);
+
+      socket.once(EventType.AUTHENTICATED, () => {
+        fail('expected auth to fail');
+      });
 
       socket.once('connect', () => {
         socket

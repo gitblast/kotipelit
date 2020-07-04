@@ -30,7 +30,6 @@ import roomService from './rooms';
 const tokenPayload = {
   username: 'host',
   id: 'hostid',
-  gameId: 'hostgameID',
   role: Role.HOST,
 };
 
@@ -136,28 +135,19 @@ describe('socket.io with host token', () => {
     describe('on success', () => {
       let game: GameModel;
       let room: GameRoom;
+      let gameId: string;
       const mockGame = { status: GameStatus.WAITING };
 
       beforeAll(async () => {
         const user = await testHelpers.addDummyUser();
         game = await testHelpers.addDummyGame(user);
+        gameId = game._id.toString();
       });
 
       beforeEach(() => {
         setRooms({});
 
-        room = roomService.createRoom(
-          game._id.toString(),
-          'hostID',
-          mockGame as ActiveGame
-        );
-
-        socket = setupSocket(
-          jwt.sign(
-            { ...tokenPayload, gameId: game._id.toString() },
-            config.SECRET
-          )
-        );
+        room = roomService.createRoom(gameId, 'hostID', mockGame as ActiveGame);
 
         socket.once(EventType.START_FAILURE, (data: { error: string }) => {
           fail(`expected start success, got start fail: ${data.error}`);
@@ -167,11 +157,11 @@ describe('socket.io with host token', () => {
       it('should broadcast "game starting" to room', (done) => {
         const other = setupSocket(hostToken);
 
-        other.emit(TestEventType.JOIN_ROOM, game._id.toString());
+        other.emit(TestEventType.JOIN_ROOM, gameId);
 
         other.once(TestEventType.ROOM_JOINED, (room: string) => {
-          expect(room).toBe(game._id.toString());
-          socket.emit(EventType.START_GAME);
+          expect(room).toBe(gameId);
+          socket.emit(EventType.START_GAME, gameId);
         });
 
         other.once(EventType.GAME_STARTING, () => {
@@ -180,7 +170,7 @@ describe('socket.io with host token', () => {
       });
 
       it('should set game status to "STARTED" in room and db', (done) => {
-        socket.emit(EventType.START_GAME);
+        socket.emit(EventType.START_GAME, gameId);
 
         socket.once(EventType.START_SUCCESS, async () => {
           const gameNow = (await Game.findById(game._id)) as GameModel;
@@ -190,33 +180,29 @@ describe('socket.io with host token', () => {
           expect(room.game.status).toBe(GameStatus.RUNNING);
           done();
         });
-
-        socket.once(EventType.START_FAILURE, (data: { error: string }) => {
-          fail(`expected join success, got join fail: ${data.error}`);
-        });
       });
     });
   });
 
   describe('create room', () => {
     let game: GameModel;
+    let gameId: string;
 
     beforeEach(async () => {
       await Game.deleteMany({});
       const user = await testHelpers.addDummyUser();
       game = await testHelpers.addDummyGame(user);
-      socket = setupSocket(
-        jwt.sign(
-          { ...tokenPayload, gameId: game._id.toString() },
-          config.SECRET
-        )
-      );
+      gameId = game._id.toString();
+
+      socket.once(EventType.CREATE_FAILURE, (data: { error: string }) => {
+        fail(`Expected success, got fail with error: ${data.error}`);
+      });
     });
 
     it('should set game status to waiting and send back jitsi token', (done) => {
       expect(game.status).toBe(GameStatus.UPCOMING);
 
-      socket.emit(EventType.CREATE_ROOM);
+      socket.emit(EventType.CREATE_ROOM, gameId);
 
       socket.once(EventType.CREATE_SUCCESS, async (data: string) => {
         expect(data).toBeDefined();
@@ -238,7 +224,7 @@ describe('socket.io with host token', () => {
 
       expect(roomsBefore).toBe(0);
 
-      socket.emit(EventType.CREATE_ROOM);
+      socket.emit(EventType.CREATE_ROOM, gameId);
 
       socket.once(EventType.CREATE_SUCCESS, () => {
         const roomsNow = roomService.getRooms();
@@ -254,7 +240,7 @@ describe('socket.io with host token', () => {
 
     it('should join socket to socket.io channel matching game id', (done) => {
       setRooms({});
-      socket.emit(EventType.CREATE_ROOM);
+      socket.emit(EventType.CREATE_ROOM, gameId);
 
       socket.once(EventType.CREATE_SUCCESS, () => {
         ioServer

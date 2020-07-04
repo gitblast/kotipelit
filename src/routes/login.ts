@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -6,6 +9,7 @@ import config from '../utils/config';
 import { toCredentials } from '../utils/mappers';
 
 import User from '../models/user';
+import { Role } from '../types';
 
 const router = express.Router();
 
@@ -20,8 +24,8 @@ router.post('/', async (req, res) => {
 
   const userForToken = {
     username,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    id: user._id,
+    id: user._id.toString(),
+    role: Role.HOST,
   };
 
   const token = jwt.sign(userForToken, config.SECRET);

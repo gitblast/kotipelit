@@ -3,22 +3,21 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import Game from '../models/game';
 
-import { Server, Socket } from 'socket.io';
+import { Server } from 'socket.io';
 import socketioJwt from 'socketio-jwt';
 import config from '../utils/config';
+import { log } from '../utils/logger';
 import jwt from 'jsonwebtoken';
+import * as callbacks from './socketio.callbacks';
 
 import {
   GameStatus,
   ActiveGame,
-  EmittedEvent,
   EventType,
   SocketWithToken,
   Role,
   JitsiReadyData,
-  BroadcastedEvent,
   TestEventType,
-  ActiveGameWithoutSockets,
   GameModel,
 } from '../types';
 
@@ -30,6 +29,8 @@ export const initRoom = async (
 ): Promise<string> => {
   if (socket.decoded_token.role !== Role.HOST)
     throw new Error('Not authorized');
+
+  console.log('todo: check if room is already created');
 
   const game = await setGameStatus(gameId, GameStatus.WAITING);
 
@@ -49,7 +50,7 @@ export const initRoom = async (
   return jwt.sign('TODO', 'TODO');
 };
 
-const setGameStatus = async (
+export const setGameStatus = async (
   gameId: string,
   newStatus: GameStatus
 ): Promise<GameModel> => {
@@ -61,51 +62,6 @@ const setGameStatus = async (
 
   return await game.save();
 };
-
-export const createSuccess = (jitsiToken: string): EmittedEvent => ({
-  event: EventType.CREATE_SUCCESS,
-  data: jitsiToken,
-});
-
-export const createFailure = (message: string): EmittedEvent => ({
-  event: EventType.CREATE_FAILURE,
-  data: { error: message },
-});
-
-export const startSuccess = (): EmittedEvent => ({
-  event: EventType.START_SUCCESS,
-  data: null,
-});
-
-export const startFailure = (message: string): EmittedEvent => ({
-  event: EventType.START_FAILURE,
-  data: { error: message },
-});
-
-export const joinSuccess = (game: ActiveGameWithoutSockets): EmittedEvent => ({
-  event: EventType.JOIN_SUCCESS,
-  data: game,
-});
-
-export const joinFailure = (message: string): EmittedEvent => ({
-  event: EventType.JOIN_FAILURE,
-  data: { error: message },
-});
-
-export const gameReady = (jitsiRoom: string): BroadcastedEvent => ({
-  event: EventType.GAME_READY,
-  data: jitsiRoom,
-});
-
-export const playerJoined = (id: string): BroadcastedEvent => ({
-  event: EventType.PLAYER_JOINED,
-  data: id,
-});
-
-export const gameStarting = (): BroadcastedEvent => ({
-  event: EventType.GAME_STARTING,
-  data: null,
-});
 
 const attachTestListeners = (socket: SocketWithToken): void => {
   socket.on(TestEventType.JOIN_ROOM, (room: string) => {
@@ -125,30 +81,21 @@ const attachTestListeners = (socket: SocketWithToken): void => {
   );
 };
 
-const emit = (socket: Socket, eventObj: EmittedEvent): void => {
-  const { event, data } = eventObj;
-
-  socket.emit(event, data);
-};
-
-const broadcast = (
-  socket: Socket,
-  room: string,
-  eventObj: BroadcastedEvent
-): void => {
-  const { event, data } = eventObj;
-  socket.to(room).emit(event, data);
-};
-
 const handler = (io: Server): void => {
   io.on(
-    'connection',
+    EventType.CONNECTION,
     socketioJwt.authorize({
       secret: config.SECRET,
       timeout: 10000,
     })
-  ).on('authenticated', (socket: SocketWithToken) => {
-    const { gameId, id, role } = socket.decoded_token;
+  ).on(EventType.AUTHENTICATED, (socket: SocketWithToken) => {
+    log('user connected');
+
+    const { id, role } = socket.decoded_token;
+
+    if (!id || !role) {
+      console.error(`PlayerID and Role must be defined, got ${id}, ${role}`);
+    }
 
     // for testing
     if (process.env.NODE_ENV === 'test') attachTestListeners(socket);
@@ -156,59 +103,34 @@ const handler = (io: Server): void => {
     switch (role) {
       // host specific listeners
       case Role.HOST: {
-        socket.on(EventType.JITSI_READY, (data: JitsiReadyData) => {
-          broadcast(socket, data.gameId, gameReady(data.jitsiRoom));
-        });
+        socket.on(EventType.JITSI_READY, (data: JitsiReadyData) =>
+          callbacks.jitsiReady(socket, data)
+        );
 
-        socket.on(EventType.CREATE_ROOM, () => {
-          initRoom(socket, gameId)
-            .then((token: string) => {
-              roomService.addSocketToRoom(gameId, socket);
-              emit(socket, createSuccess(token));
-            })
-            .catch((error) => emit(socket, createFailure(error.message)));
-        });
+        socket.on(EventType.CREATE_ROOM, (data: string) =>
+          callbacks.createRoom(socket, data)
+        );
 
-        socket.on(EventType.START_GAME, () => {
-          setGameStatus(gameId, GameStatus.RUNNING)
-            .then(() => {
-              const game = roomService.getRoomGame(gameId);
-
-              if (!game) throw new Error(`No game found for room '${gameId}'`);
-
-              roomService.updateRoomGame(gameId, {
-                ...game,
-                status: GameStatus.RUNNING,
-              });
-
-              broadcast(socket, gameId, gameStarting());
-              emit(socket, startSuccess());
-            })
-            .catch((error) => {
-              emit(socket, startFailure(error.message));
-            });
-        });
+        socket.on(EventType.START_GAME, (gameId: string) =>
+          callbacks.startGame(socket, gameId)
+        );
 
         break;
       }
       // player specific listeners
       case Role.PLAYER: {
-        socket.on(EventType.JOIN_GAME, () => {
-          roomService.addSocketToRoom(gameId, socket);
+        const { gameId } = socket.decoded_token;
 
-          try {
-            const game = roomService.joinRoom(gameId, id, socket);
-            broadcast(socket, gameId, playerJoined(id));
-            emit(socket, joinSuccess(game));
-          } catch (error) {
-            emit(socket, joinFailure(error.message));
-          }
-        });
+        if (!gameId) console.error('Token gameId not defined');
+
+        socket.on(EventType.JOIN_GAME, () =>
+          callbacks.joinGame(socket, gameId, id)
+        );
 
         break;
       }
       default:
-        throw new Error('Token role invalid or missing');
+        console.error('Token role invalid or missing');
     }
 
     // common listeners

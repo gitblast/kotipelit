@@ -112,6 +112,8 @@ export enum EventType {
 
   // RECIEVED
 
+  CONNECTION = 'connection',
+  AUTHENTICATED = 'authenticated',
   UNAUTHORIZED = 'unauthorized',
 
   // host

@@ -19,6 +19,8 @@ import {
   JitsiReadyData,
   TestEventType,
   GameModel,
+  CreateRoomResponse,
+  GamePlayerWithStatus,
 } from '../types';
 
 import roomService from './rooms';
@@ -26,7 +28,7 @@ import roomService from './rooms';
 export const initRoom = async (
   socket: SocketWithToken,
   gameId: string
-): Promise<string> => {
+): Promise<CreateRoomResponse> => {
   if (socket.decoded_token.role !== Role.HOST)
     throw new Error('Not authorized');
 
@@ -47,7 +49,18 @@ export const initRoom = async (
 
   roomService.createRoom(gameId, socket.id, roomGame);
 
-  return jwt.sign('TODO', 'TODO');
+  const playersWithoutSockets: GamePlayerWithStatus[] = roomGame.players.map(
+    (player) => ({
+      id: player.id,
+      name: player.name,
+      online: !!player.socket,
+    })
+  );
+
+  return {
+    jitsiToken: jwt.sign('TODO', 'TODO'),
+    game: { ...roomGame, players: playersWithoutSockets },
+  };
 };
 
 export const setGameStatus = async (
@@ -107,8 +120,8 @@ const handler = (io: Server): void => {
           callbacks.jitsiReady(socket, data)
         );
 
-        socket.on(EventType.CREATE_ROOM, (data: string) =>
-          callbacks.createRoom(socket, data)
+        socket.on(EventType.CREATE_ROOM, (gameId: string) =>
+          callbacks.createRoom(socket, gameId)
         );
 
         socket.on(EventType.START_GAME, (gameId: string) =>

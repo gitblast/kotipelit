@@ -2,12 +2,18 @@ import {
   EventType,
   BroadcastedEvent,
   EmittedEvent,
-  ActiveGameWithoutSockets,
+  ReturnedGame,
 } from '../types';
 
-export const createSuccess = (jitsiToken: string): EmittedEvent => ({
+export const createSuccess = (
+  game: ReturnedGame,
+  jitsiToken: string
+): EmittedEvent => ({
   event: EventType.CREATE_SUCCESS,
-  data: jitsiToken,
+  data: {
+    game,
+    jitsiToken,
+  },
 });
 
 export const createFailure = (message: string): EmittedEvent => ({
@@ -25,9 +31,15 @@ export const startFailure = (message: string): EmittedEvent => ({
   data: { error: message },
 });
 
-export const joinSuccess = (game: ActiveGameWithoutSockets): EmittedEvent => ({
+export const joinSuccess = (
+  game: ReturnedGame,
+  jitsiRoom: string
+): EmittedEvent => ({
   event: EventType.JOIN_SUCCESS,
-  data: game,
+  data: {
+    game,
+    jitsiRoom,
+  },
 });
 
 export const joinFailure = (message: string): EmittedEvent => ({

@@ -1,9 +1,11 @@
 import {
   GameRoom,
   ActiveGame,
-  ActiveGameWithoutSockets,
   GamePlayerWithStatus,
+  ReturnedGame,
 } from '../types';
+
+import { log } from '../utils/logger';
 
 export let rooms: Record<string, GameRoom> = {};
 
@@ -12,10 +14,11 @@ export const setRooms = (newRooms: Record<string, GameRoom>): void => {
 };
 
 export const addSocketToRoom = (
-  gameId: string,
+  roomId: string,
   socket: SocketIO.Socket
 ): void => {
-  socket.join(gameId);
+  log(`adding ${socket.id} to socket.io room ${roomId}`);
+  socket.join(roomId);
 };
 
 const getRooms = (): Record<string, GameRoom> => rooms;
@@ -29,6 +32,7 @@ const createRoom = (
     id,
     hostSocket: hostSocketID,
     game,
+    jitsiRoom: null,
   };
 
   rooms[id] = newRoom;
@@ -52,11 +56,28 @@ const updateRoomGame = (roomId: string, newGame: ActiveGame): void => {
   room.game = newGame;
 };
 
+const getJitsiRoomByRoomId = (roomId: string): string => {
+  const room = rooms[roomId];
+
+  if (!room) throw new Error(`Room with id '${roomId}' not found`);
+  if (!room.jitsiRoom) throw new Error(`Room '${roomId}' has no jitsiRoom set`);
+
+  return room.jitsiRoom;
+};
+
+const setJitsiRoom = (roomId: string, jitsiRoom: string): void => {
+  const room = rooms[roomId];
+
+  if (!room) throw new Error(`Room with id '${roomId}' not found`);
+
+  room.jitsiRoom = jitsiRoom;
+};
+
 const joinRoom = (
   gameId: string,
   playerId: string,
   socket: SocketIO.Socket
-): ActiveGameWithoutSockets => {
+): ReturnedGame => {
   const room = rooms[gameId];
 
   if (!room) throw new Error(`Game with id '${gameId}' not found`);
@@ -88,4 +109,6 @@ export default {
   addSocketToRoom,
   updateRoomGame,
   getRoomGame,
+  setJitsiRoom,
+  getJitsiRoomByRoomId,
 };

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   JitsiReadyData,
   EventType,
@@ -5,6 +6,7 @@ import {
   BroadcastedEvent,
   SocketWithToken,
   GameStatus,
+  CreateRoomResponse,
 } from '../types';
 import { log } from '../utils/logger';
 import { Socket } from 'socket.io';
@@ -37,15 +39,20 @@ export const jitsiReady = (
   data: JitsiReadyData
 ): void => {
   log(`Recieved ${EventType.JITSI_READY}`);
-  broadcast(socket, data.gameId, events.gameReady(data.jitsiRoom));
+  try {
+    roomService.setJitsiRoom(data.gameId, data.jitsiRoom);
+    broadcast(socket, data.gameId, events.gameReady(data.jitsiRoom));
+  } catch (error) {
+    console.error(error.message);
+  }
 };
 
 export const createRoom = (socket: SocketWithToken, roomId: string): void => {
   log(`Recieved ${EventType.CREATE_ROOM}`);
   initRoom(socket, roomId)
-    .then((token: string) => {
+    .then((data: CreateRoomResponse) => {
       roomService.addSocketToRoom(roomId, socket);
-      emit(socket, events.createSuccess(token));
+      emit(socket, events.createSuccess(data.game, data.jitsiToken));
     })
     .catch((error: Error) => emit(socket, events.createFailure(error.message)));
 };
@@ -86,10 +93,10 @@ export const joinGame = (
 
   try {
     const game = roomService.joinRoom(gameId, playerId, socket);
+    const jitsiRoom = roomService.getJitsiRoomByRoomId(gameId);
     broadcast(socket, gameId, events.playerJoined(playerId));
-    emit(socket, events.joinSuccess(game));
+    emit(socket, events.joinSuccess(game, jitsiRoom));
   } catch (error) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     emit(socket, events.joinFailure(error.message));
   }
 };

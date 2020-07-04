@@ -63,14 +63,20 @@ export interface ActiveGame extends BaseGame {
   status: GameStatus.WAITING | GameStatus.RUNNING;
 }
 
-export interface ActiveGameWithoutSockets extends Omit<ActiveGame, 'players'> {
+export interface ReturnedGame extends Omit<ActiveGame, 'players'> {
   players: GamePlayerWithStatus[];
+}
+
+export interface CreateRoomResponse {
+  jitsiToken: string;
+  game: ReturnedGame;
 }
 
 export interface GameRoom {
   id: string;
   hostSocket: string;
   game: ActiveGame;
+  jitsiRoom: string | null;
 }
 
 export interface CreateRoomData {
@@ -142,7 +148,7 @@ export type BroadcastedEvent =
 export type EmittedEvent =
   | {
       event: EventType.CREATE_SUCCESS;
-      data: string; // jitsi token
+      data: CreateRoomResponse;
     }
   | {
       event: EventType.CREATE_FAILURE;
@@ -152,7 +158,10 @@ export type EmittedEvent =
     }
   | {
       event: EventType.JOIN_SUCCESS;
-      data: ActiveGameWithoutSockets;
+      data: {
+        game: ReturnedGame;
+        jitsiRoom: string;
+      };
     }
   | {
       event: EventType.JOIN_FAILURE;
@@ -178,6 +187,7 @@ export type RecievedEvent =
     }
   | {
       event: EventType.JITSI_READY;
+      data: string; // jitsi room
     }
   | {
       event: EventType.JOIN_GAME;

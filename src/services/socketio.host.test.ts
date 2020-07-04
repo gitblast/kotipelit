@@ -11,6 +11,7 @@ import {
   TestEventType,
   ActiveGame,
   GameRoom,
+  CreateRoomResponse,
 } from '../types';
 
 import { AddressInfo } from 'net';
@@ -113,6 +114,9 @@ describe('socket.io with host token', () => {
         jitsiRoom: 'jitsi room name',
       };
 
+      roomService.createRoom(data.gameId, 'host', {} as ActiveGame);
+      roomService.setJitsiRoom(data.gameId, 'jitsi room');
+
       const anotherSocket = setupSocket(hostToken);
 
       socket.emit(TestEventType.JOIN_ROOM, 'gameID');
@@ -204,17 +208,20 @@ describe('socket.io with host token', () => {
 
       socket.emit(EventType.CREATE_ROOM, gameId);
 
-      socket.once(EventType.CREATE_SUCCESS, async (data: string) => {
-        expect(data).toBeDefined();
-        expect(data).toBe(jwt.sign('TODO', 'TODO'));
+      socket.once(
+        EventType.CREATE_SUCCESS,
+        async (data: CreateRoomResponse) => {
+          expect(data.jitsiToken).toBe(jwt.sign('TODO', 'TODO'));
+          expect(data.game).toBeDefined();
 
-        let gameNow = await Game.findById(game._id);
-        expect(gameNow).not.toBe(null);
+          let gameNow = await Game.findById(game._id);
+          expect(gameNow).not.toBe(null);
 
-        gameNow = gameNow as GameModel;
-        expect(gameNow.status).toBe(GameStatus.WAITING);
-        done();
-      });
+          gameNow = gameNow as GameModel;
+          expect(gameNow.status).toBe(GameStatus.WAITING);
+          done();
+        }
+      );
     });
 
     it('should create a room with game and hostSocket defined', (done) => {

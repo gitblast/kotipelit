@@ -11,7 +11,7 @@ import {
   TestEventType,
   ActiveGame,
   ActiveGamePlayer,
-  ActiveGameWithoutSockets,
+  ReturnedGame,
 } from '../types';
 
 import { AddressInfo } from 'net';
@@ -137,6 +137,7 @@ describe('socket.io with player token', () => {
       beforeEach(() => {
         setRooms({});
         roomService.createRoom(tokenPayload.gameId, 'hostID', mockGame);
+        roomService.setJitsiRoom(tokenPayload.gameId, 'TEST_ROOM!');
         socket.once(EventType.JOIN_FAILURE, (data: { error: string }) => {
           fail(`expected join success, got join fail: ${data.error}`);
         });
@@ -156,9 +157,9 @@ describe('socket.io with player token', () => {
 
         socket.once(
           EventType.JOIN_SUCCESS,
-          (game: ActiveGameWithoutSockets) => {
-            expect(game).toBeDefined();
-            expect(game).toEqual(expectedGame);
+          (data: { game: ReturnedGame; jitsiRoom: string }) => {
+            expect(data.game).toEqual(expectedGame);
+            expect(data.jitsiRoom).toBe('TEST_ROOM!');
             done();
           }
         );

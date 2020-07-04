@@ -43,8 +43,38 @@ describe('rooms service', () => {
         id: 'test_room_id',
         hostSocket: 'hostSocketId',
         game: {},
+        jitsiRoom: null,
       },
     });
+  });
+
+  it('should set room jitsiRoom with setJitsiRoom', () => {
+    setRooms({});
+
+    roomService.createRoom('test_room_id', 'hostSocketId', {} as ActiveGame);
+
+    roomService.setJitsiRoom('test_room_id', 'JITSI_ROOM!');
+
+    expect(roomService.getRooms()).toEqual({
+      test_room_id: {
+        id: 'test_room_id',
+        hostSocket: 'hostSocketId',
+        game: {},
+        jitsiRoom: 'JITSI_ROOM!',
+      },
+    });
+  });
+
+  it('should return jitsiRoom with getJitsiRoomByRoomId', () => {
+    setRooms({});
+
+    roomService.createRoom('test_room_id', 'hostSocketId', {} as ActiveGame);
+
+    roomService.setJitsiRoom('test_room_id', 'JITSI_ROOM!');
+
+    expect(roomService.getJitsiRoomByRoomId('test_room_id')).toBe(
+      'JITSI_ROOM!'
+    );
   });
 
   it('should add socket to room with addSocketToRoom', () => {

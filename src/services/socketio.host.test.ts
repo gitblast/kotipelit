@@ -9,9 +9,11 @@ import {
   GameModel,
   GameStatus,
   TestEventType,
-  ActiveGame,
   GameRoom,
   CreateRoomResponse,
+  WaitingGame,
+  GameType,
+  RunningGame,
 } from '../types';
 
 import { AddressInfo } from 'net';
@@ -114,7 +116,7 @@ describe('socket.io with host token', () => {
         jitsiRoom: 'jitsi room name',
       };
 
-      roomService.createRoom(data.gameId, 'host', {} as ActiveGame);
+      roomService.createRoom(data.gameId, 'host', {} as WaitingGame);
       roomService.setJitsiRoom(data.gameId, 'jitsi room');
 
       const anotherSocket = setupSocket(hostToken);
@@ -140,9 +142,14 @@ describe('socket.io with host token', () => {
       let game: GameModel;
       let room: GameRoom;
       let gameId: string;
-      const mockGame = { status: GameStatus.WAITING };
+      const mockGame = {
+        status: GameStatus.WAITING,
+        type: GameType.SANAKIERTO,
+        players: [{ id: 'first player id' }],
+      };
 
       beforeAll(async () => {
+        setRooms({});
         const user = await testHelpers.addDummyUser();
         game = await testHelpers.addDummyGame(user);
         gameId = game._id.toString();
@@ -151,7 +158,11 @@ describe('socket.io with host token', () => {
       beforeEach(() => {
         setRooms({});
 
-        room = roomService.createRoom(gameId, 'hostID', mockGame as ActiveGame);
+        room = roomService.createRoom(
+          gameId,
+          'hostID',
+          mockGame as WaitingGame
+        );
 
         socket.once(EventType.START_FAILURE, (data: { error: string }) => {
           fail(`expected start success, got start fail: ${data.error}`);
@@ -173,7 +184,7 @@ describe('socket.io with host token', () => {
         });
       });
 
-      it('should set game status to "STARTED" in room and db', (done) => {
+      it('should set game status to "RUNNING" in room and db and initiate info -object', (done) => {
         socket.emit(EventType.START_GAME, gameId);
 
         socket.once(EventType.START_SUCCESS, async () => {
@@ -182,7 +193,19 @@ describe('socket.io with host token', () => {
           expect(gameNow.status).toBe(GameStatus.RUNNING);
 
           expect(room.game.status).toBe(GameStatus.RUNNING);
+          expect(room.game.info).toBeDefined();
+          expect(room.game.info).not.toBeNull();
           done();
+        });
+      });
+
+      it('should return the initiated game', () => {
+        socket.emit(EventType.START_GAME, gameId);
+
+        socket.once(EventType.START_SUCCESS, (game: RunningGame) => {
+          expect(game.status).toBe(GameStatus.RUNNING);
+          expect(game.info).toBeDefined();
+          expect(game.info).not.toBeNull();
         });
       });
     });
@@ -203,7 +226,7 @@ describe('socket.io with host token', () => {
       });
     });
 
-    it('should set game status to waiting and send back jitsi token', (done) => {
+    it('should set game status to waiting and send back game and jitsi token', (done) => {
       expect(game.status).toBe(GameStatus.UPCOMING);
 
       socket.emit(EventType.CREATE_ROOM, gameId);

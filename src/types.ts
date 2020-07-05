@@ -9,12 +9,12 @@ export interface BaseGame {
   type: GameType;
   status: GameStatus;
   startTime: Date;
+  rounds: number;
 }
 
 export interface NewGame extends BaseGame {
   players: GamePlayer[];
   host: UserModel['_id'];
-  rounds?: number;
 }
 
 export interface UserModel extends Document {
@@ -42,7 +42,9 @@ export enum GameStatus {
   FINISHED = 'Finished',
 }
 
-export type GameType = 'sanakierto';
+export enum GameType {
+  SANAKIERTO = 'sanakierto',
+}
 
 export interface GamePlayer {
   name: string;
@@ -57,10 +59,28 @@ export interface GamePlayerWithStatus extends GamePlayer {
   online: boolean;
 }
 
-export interface ActiveGame extends BaseGame {
+export interface SanakiertoInfo {
+  round: number;
+  turn: string; // player id
+}
+
+export type GameInfo = SanakiertoInfo;
+
+export type ActiveGame = WaitingGame | RunningGame;
+
+export interface BaseActiveGame extends BaseGame {
   id: string;
   players: ActiveGamePlayer[];
-  status: GameStatus.WAITING | GameStatus.RUNNING;
+}
+
+export interface WaitingGame extends BaseActiveGame {
+  status: GameStatus.WAITING;
+  info: null;
+}
+
+export interface RunningGame extends BaseActiveGame {
+  status: GameStatus.RUNNING;
+  info: GameInfo;
 }
 
 export interface ReturnedGame extends Omit<ActiveGame, 'players'> {
@@ -142,7 +162,7 @@ export type BroadcastedEvent =
     }
   | {
       event: EventType.GAME_STARTING;
-      data: null;
+      data: ReturnedGame;
     };
 
 export type EmittedEvent =
@@ -171,7 +191,7 @@ export type EmittedEvent =
     }
   | {
       event: EventType.START_SUCCESS;
-      data: null;
+      data: ReturnedGame;
     }
   | {
       event: EventType.START_FAILURE;

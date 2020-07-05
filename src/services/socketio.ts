@@ -16,11 +16,10 @@ import {
   EventType,
   SocketWithToken,
   Role,
-  JitsiReadyData,
-  TestEventType,
   GameModel,
   CreateRoomResponse,
-  GamePlayerWithStatus,
+  JitsiReadyData,
+  TestEventType,
 } from '../types';
 
 import roomService from './rooms';
@@ -32,7 +31,7 @@ export const initRoom = async (
   if (socket.decoded_token.role !== Role.HOST)
     throw new Error('Not authorized');
 
-  console.log('todo: check if room is already created');
+  log('todo: check if room is already created');
 
   const game = await setGameStatus(gameId, GameStatus.WAITING);
 
@@ -45,21 +44,15 @@ export const initRoom = async (
       ...player,
       socket: null,
     })),
+    info: null, // different game types will have different info objects
+    rounds: game.rounds,
   };
 
   roomService.createRoom(gameId, socket.id, roomGame);
 
-  const playersWithoutSockets: GamePlayerWithStatus[] = roomGame.players.map(
-    (player) => ({
-      id: player.id,
-      name: player.name,
-      online: !!player.socket,
-    })
-  );
-
   return {
     jitsiToken: jwt.sign('TODO', 'TODO'),
-    game: { ...roomGame, players: playersWithoutSockets },
+    game: roomService.mapActiveGameToReturnedGame(roomGame),
   };
 };
 
@@ -94,6 +87,56 @@ const attachTestListeners = (socket: SocketWithToken): void => {
   );
 };
 
+export const attachListeners = (socket: SocketWithToken): void => {
+  log('user connected');
+
+  const { id, role } = socket.decoded_token;
+
+  if (!id || !role) {
+    console.error(`ID and Role must be defined, got ${id}, ${role}`);
+  }
+
+  // for testing
+  if (process.env.NODE_ENV === 'test') attachTestListeners(socket);
+
+  switch (role) {
+    // host specific listeners
+    case Role.HOST: {
+      socket.on(EventType.JITSI_READY, (data: JitsiReadyData) =>
+        callbacks.jitsiReady(socket, data)
+      );
+
+      socket.on(EventType.CREATE_ROOM, (gameId: string) =>
+        callbacks.createRoom(socket, gameId)
+      );
+
+      socket.on(EventType.START_GAME, (gameId: string) =>
+        callbacks.startGame(socket, gameId)
+      );
+
+      break;
+    }
+    // player specific listeners
+    case Role.PLAYER: {
+      const { gameId } = socket.decoded_token;
+
+      if (!gameId) console.error('Token gameId not defined');
+
+      socket.on(EventType.JOIN_GAME, () =>
+        callbacks.joinGame(socket, gameId, id)
+      );
+
+      break;
+    }
+    default:
+      console.error('Token role invalid or missing');
+  }
+};
+
+/**
+ * Authenticates connection and attaches listeners to socket on success
+ * @param io - socket.io socket
+ */
 const handler = (io: Server): void => {
   io.on(
     EventType.CONNECTION,
@@ -101,53 +144,9 @@ const handler = (io: Server): void => {
       secret: config.SECRET,
       timeout: 10000,
     })
-  ).on(EventType.AUTHENTICATED, (socket: SocketWithToken) => {
-    log('user connected');
-
-    const { id, role } = socket.decoded_token;
-
-    if (!id || !role) {
-      console.error(`PlayerID and Role must be defined, got ${id}, ${role}`);
-    }
-
-    // for testing
-    if (process.env.NODE_ENV === 'test') attachTestListeners(socket);
-
-    switch (role) {
-      // host specific listeners
-      case Role.HOST: {
-        socket.on(EventType.JITSI_READY, (data: JitsiReadyData) =>
-          callbacks.jitsiReady(socket, data)
-        );
-
-        socket.on(EventType.CREATE_ROOM, (gameId: string) =>
-          callbacks.createRoom(socket, gameId)
-        );
-
-        socket.on(EventType.START_GAME, (gameId: string) =>
-          callbacks.startGame(socket, gameId)
-        );
-
-        break;
-      }
-      // player specific listeners
-      case Role.PLAYER: {
-        const { gameId } = socket.decoded_token;
-
-        if (!gameId) console.error('Token gameId not defined');
-
-        socket.on(EventType.JOIN_GAME, () =>
-          callbacks.joinGame(socket, gameId, id)
-        );
-
-        break;
-      }
-      default:
-        console.error('Token role invalid or missing');
-    }
-
-    // common listeners
-  });
+  ).on(EventType.AUTHENTICATED, (socket: SocketWithToken) =>
+    attachListeners(socket)
+  );
 };
 
 export default handler;

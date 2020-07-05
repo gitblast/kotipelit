@@ -9,9 +9,9 @@ import {
   EventType,
   Role,
   TestEventType,
-  ActiveGame,
   ActiveGamePlayer,
   ReturnedGame,
+  WaitingGame,
 } from '../types';
 
 import { AddressInfo } from 'net';
@@ -132,7 +132,7 @@ describe('socket.io with player token', () => {
             socket: null,
           },
         ] as ActiveGamePlayer[],
-      } as unknown) as ActiveGame;
+      } as unknown) as WaitingGame;
 
       beforeEach(() => {
         setRooms({});

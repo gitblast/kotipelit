@@ -1,5 +1,5 @@
 import roomService, { rooms, setRooms, addSocketToRoom } from './rooms';
-import { GameRoom, ActiveGame, ActiveGamePlayer } from '../types';
+import { GameRoom, ActiveGame, ActiveGamePlayer, WaitingGame } from '../types';
 
 const socketMock = {
   id: 'testIDfromSocket',
@@ -36,7 +36,7 @@ describe('rooms service', () => {
 
     expect(roomService.getRooms()).toEqual({});
 
-    roomService.createRoom('test_room_id', 'hostSocketId', {} as ActiveGame);
+    roomService.createRoom('test_room_id', 'hostSocketId', {} as WaitingGame);
 
     expect(roomService.getRooms()).toEqual({
       test_room_id: {
@@ -51,7 +51,7 @@ describe('rooms service', () => {
   it('should set room jitsiRoom with setJitsiRoom', () => {
     setRooms({});
 
-    roomService.createRoom('test_room_id', 'hostSocketId', {} as ActiveGame);
+    roomService.createRoom('test_room_id', 'hostSocketId', {} as WaitingGame);
 
     roomService.setJitsiRoom('test_room_id', 'JITSI_ROOM!');
 
@@ -68,7 +68,7 @@ describe('rooms service', () => {
   it('should return jitsiRoom with getJitsiRoomByRoomId', () => {
     setRooms({});
 
-    roomService.createRoom('test_room_id', 'hostSocketId', {} as ActiveGame);
+    roomService.createRoom('test_room_id', 'hostSocketId', {} as WaitingGame);
 
     roomService.setJitsiRoom('test_room_id', 'JITSI_ROOM!');
 
@@ -96,7 +96,7 @@ describe('rooms service', () => {
       const room = roomService.createRoom(
         'test_room_id',
         'hostSocketId',
-        (game as unknown) as ActiveGame
+        (game as unknown) as WaitingGame
       );
 
       expect(roomService.getRoomGame('test_room_id')).toBe(room.game);
@@ -120,7 +120,7 @@ describe('rooms service', () => {
       const room = roomService.createRoom(
         'test_room_id',
         'hostSocketId',
-        (initialGame as unknown) as ActiveGame
+        (initialGame as unknown) as WaitingGame
       );
 
       expect(room.game).toEqual(initialGame);
@@ -149,7 +149,7 @@ describe('rooms service', () => {
 
       expect(() =>
         roomService.joinRoom('gameId', 'playerId', {} as SocketIO.Socket)
-      ).toThrowError(`Game with id 'gameId' not found`);
+      ).toThrowError(`Room with id 'gameId' not found`);
     });
 
     it('should throw error if player with id not found', () => {

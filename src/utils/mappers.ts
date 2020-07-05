@@ -85,8 +85,8 @@ const parseStatus = (status: any): GameStatus => {
   return status;
 };
 
-const parseRounds = (rounds: any): number | undefined => {
-  if (!rounds) return;
+const parseRounds = (rounds: any): number => {
+  if (!rounds) throw new Error('Missing rounds');
   if (!isNumber(rounds)) throw new Error('Invalid rounds');
 
   return Number(rounds);

@@ -21,9 +21,9 @@ export const createFailure = (message: string): EmittedEvent => ({
   data: { error: message },
 });
 
-export const startSuccess = (): EmittedEvent => ({
+export const startSuccess = (game: ReturnedGame): EmittedEvent => ({
   event: EventType.START_SUCCESS,
-  data: null,
+  data: game,
 });
 
 export const startFailure = (message: string): EmittedEvent => ({
@@ -57,7 +57,7 @@ export const playerJoined = (id: string): BroadcastedEvent => ({
   data: id,
 });
 
-export const gameStarting = (): BroadcastedEvent => ({
+export const gameStarting = (game: ReturnedGame): BroadcastedEvent => ({
   event: EventType.GAME_STARTING,
-  data: null,
+  data: game,
 });

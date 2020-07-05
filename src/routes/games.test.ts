@@ -9,14 +9,14 @@ import config from '../utils/config';
 import Game from '../models/game';
 import dbConnection from '../utils/connection';
 import testHelpers from '../utils/testHelpers';
-import { NewGame, GameStatus, UserModel, Role } from '../types';
+import { NewGame, GameStatus, UserModel, Role, GameType } from '../types';
 
 const api = supertest(app);
 
 const baseUrl = '/api/games';
 
 const dummyGame: Omit<NewGame, 'host'> = {
-  type: 'sanakierto',
+  type: GameType.SANAKIERTO,
   players: [
     {
       id: 'id1',
@@ -29,6 +29,7 @@ const dummyGame: Omit<NewGame, 'host'> = {
   ],
   startTime: new Date(),
   status: GameStatus.UPCOMING,
+  rounds: 3,
 };
 
 let user: UserModel;

@@ -7,6 +7,9 @@ import {
   SocketWithToken,
   GameStatus,
   CreateRoomResponse,
+  GameType,
+  GameInfo,
+  ActiveGame,
 } from '../types';
 import { log } from '../utils/logger';
 import { Socket } from 'socket.io';
@@ -57,6 +60,27 @@ export const createRoom = (socket: SocketWithToken, roomId: string): void => {
     .catch((error: Error) => emit(socket, events.createFailure(error.message)));
 };
 
+const getInitialInfo = (game: ActiveGame): GameInfo => {
+  /** handle different game types here */
+  switch (game.type) {
+    case GameType.SANAKIERTO: {
+      if (!game.players || !game.players.length)
+        throw new Error('Game has no players set');
+
+      const playerWithTurn = game.players[0];
+
+      return {
+        round: 1,
+        turn: playerWithTurn.id,
+      };
+    }
+    default: {
+      const gameType: string = game.type;
+      throw new Error(`Invalid game type: ${gameType}`);
+    }
+  }
+};
+
 export const startGame = (socket: SocketWithToken, gameId: string): void => {
   log(`Recieved ${EventType.START_GAME}`);
   setGameStatus(gameId, GameStatus.RUNNING)
@@ -65,15 +89,18 @@ export const startGame = (socket: SocketWithToken, gameId: string): void => {
 
       if (!game) throw new Error(`No game found for room '${gameId}'`);
       if (game.status === GameStatus.RUNNING)
-        throw new Error(`Game with id '${gameId}' already running!`);
+        console.error(`Game with id '${gameId}' already running!`);
 
-      roomService.updateRoomGame(gameId, {
+      const startedGame = roomService.updateRoomGame(gameId, {
         ...game,
         status: GameStatus.RUNNING,
+        info: getInitialInfo(game),
       });
 
-      broadcast(socket, gameId, events.gameStarting());
-      emit(socket, events.startSuccess());
+      const gameToReturn = roomService.mapActiveGameToReturnedGame(startedGame);
+
+      broadcast(socket, gameId, events.gameStarting(gameToReturn));
+      emit(socket, events.startSuccess(gameToReturn));
     })
     .catch((error: Error) => {
       emit(socket, events.startFailure(error.message));
@@ -86,8 +113,6 @@ export const joinGame = (
   playerId: string
 ): void => {
   log(`Recieved ${EventType.JOIN_GAME}`);
-
-  console.log('TODO: check for duplicate joins');
 
   roomService.addSocketToRoom(gameId, socket);
 

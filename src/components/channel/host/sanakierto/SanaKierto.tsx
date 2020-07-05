@@ -72,7 +72,14 @@ const Sanakierto: React.FC = () => {
           .catch((error) => console.error(error.message));
       }
     }
-  });
+  }, []);
+
+  const handleStartGame = (
+    socket: SocketIOClient.Socket,
+    gameId: string
+  ): void => {
+    actions.startGame(socket, gameId);
+  };
 
   const handleJitsiLoaded = (
     socket: SocketIOClient.Socket,
@@ -105,12 +112,17 @@ const Sanakierto: React.FC = () => {
   };
 
   const sideBar = () => {
+    if (!socket) return <div>Yhdistetään...</div>;
+
     if (!user.loggedIn) return <div>Player sidebar</div>;
 
     return activeGame && activeGame.status === GameStatus.FINISHED ? (
       <Results results={sortPlayersByPoints(activeGame.players)} />
     ) : (
-      <HostPanel game={activeGame ? activeGame : HARDCODED} />
+      <HostPanel
+        game={activeGame ? activeGame : HARDCODED}
+        handleStart={() => handleStartGame(socket, gameID)}
+      />
     );
   };
 

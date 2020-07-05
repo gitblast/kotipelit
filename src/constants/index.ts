@@ -140,6 +140,8 @@ export const hardcodedActiveSanakierto: SanakiertoActive = {
   startTime: new Date(),
   status: GameStatus.UPCOMING,
   rounds: 3,
-  round: 1,
-  turn: 0,
+  info: {
+    turn: '1',
+    round: 1,
+  },
 };

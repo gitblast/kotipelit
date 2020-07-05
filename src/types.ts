@@ -24,8 +24,10 @@ export interface Sanakierto extends Game {
 }
 
 export interface SanakiertoActive extends Sanakierto {
-  round: number;
-  turn: number;
+  info: {
+    turn: string; // player id
+    round: number;
+  };
 }
 
 export type SelectableGame = Sanakierto; // additional games here
@@ -210,6 +212,11 @@ export interface CreateSuccessResponse {
   jitsiToken: string;
 }
 
+export interface JoinSuccessResponse {
+  game: ActiveGame;
+  jitsiRoom: string;
+}
+
 export enum PlayerEvent {
   JOIN_GAME = 'join game',
 
@@ -223,6 +230,8 @@ export enum PlayerEvent {
 export enum HostEvent {
   JITSI_READY = 'jitsi ready',
   CREATE_ROOM = 'create room',
+  START_GAME = 'start game',
+  UPDATE_GAME = 'update game',
 
   CREATE_SUCCESS = 'create success',
   CREATE_FAILURE = 'create failure',
@@ -242,12 +251,12 @@ export enum CommonEvent {
 
 export type EmittedEvent =
   | {
-      event: HostEvent.CREATE_ROOM;
-      data: string; // game id
-    }
-  | {
       event: PlayerEvent.JOIN_GAME;
       data: null;
+    }
+  | {
+      event: HostEvent.CREATE_ROOM;
+      data: string; // game id
     }
   | {
       event: HostEvent.JITSI_READY;
@@ -255,6 +264,14 @@ export type EmittedEvent =
         gameId: string;
         jitsiRoom: string;
       };
+    }
+  | {
+      event: HostEvent.START_GAME;
+      data: string; // game id
+    }
+  | {
+      event: HostEvent.UPDATE_GAME;
+      data: ActiveGame; // game id
     };
 
 export interface RecievedError {

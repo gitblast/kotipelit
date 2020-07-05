@@ -24,8 +24,10 @@ const activate = (game: SelectableGame): ActiveGame => {
       return {
         ...game,
         status: GameStatus.WAITING,
-        turn: 0,
-        round: 1,
+        info: {
+          turn: 'TODO',
+          round: 1,
+        },
       };
     default: {
       throw new Error(

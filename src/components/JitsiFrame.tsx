@@ -14,9 +14,15 @@ const JitsiFrame: React.FC<JitsiFrameProps> = ({
   handleLoaded,
   dev,
 }) => {
+  React.useEffect(() => {
+    if (dev) {
+      console.log('triggering jitsi api loaded');
+      handleLoaded();
+    }
+  }, []);
+
   if (dev) {
-    handleLoaded();
-    return <div>Jitsi will render here, triggered onAPIload.</div>;
+    return <div>Jitsi will render here</div>;
   }
 
   return (

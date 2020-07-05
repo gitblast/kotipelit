@@ -8,6 +8,8 @@ import {
   EmittedEvent,
   RecievedError,
   CreateSuccessResponse,
+  ActiveGame,
+  JoinSuccessResponse,
 } from '../types';
 
 import * as callbacks from './socketio.callbacks';
@@ -19,7 +21,9 @@ export const attachListeners = (
 ) => {
   // default listeners
 
-  socket.on(CommonEvent.PLAYER_JOINED, callbacks.playerJoined());
+  socket.on(CommonEvent.PLAYER_JOINED, (data: string) =>
+    callbacks.playerJoined(data)
+  );
 
   if (isHost) {
     // host listeners
@@ -31,14 +35,18 @@ export const attachListeners = (
       callbacks.createFailure(data)
     );
 
-    socket.on(HostEvent.START_SUCCESS, callbacks.startSuccess());
+    socket.on(HostEvent.START_SUCCESS, (game: ActiveGame) => {
+      callbacks.startSuccess(game);
+    });
     socket.on(HostEvent.START_FAILURE, (data: RecievedError) =>
       callbacks.startFailure(data)
     );
   } else {
     // player listeners
 
-    socket.on(PlayerEvent.JOIN_SUCCESS, callbacks.joinSuccess());
+    socket.on(PlayerEvent.JOIN_SUCCESS, (data: JoinSuccessResponse) =>
+      callbacks.joinSuccess(data)
+    );
     socket.on(PlayerEvent.JOIN_FAILURE, (data: RecievedError) =>
       callbacks.joinFailure(data)
     );
@@ -46,7 +54,9 @@ export const attachListeners = (
     socket.on(PlayerEvent.GAME_READY, (jitsiRoom: string) =>
       callbacks.gameReady(jitsiRoom)
     );
-    socket.on(PlayerEvent.GAME_STARTING, callbacks.gameStarting());
+    socket.on(PlayerEvent.GAME_STARTING, (game: ActiveGame) =>
+      callbacks.gameStarting(game)
+    );
   }
 };
 

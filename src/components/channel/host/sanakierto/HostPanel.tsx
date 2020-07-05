@@ -2,7 +2,6 @@ import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Typography, Fab } from '@material-ui/core';
-
 import ScoreBoard from './ScoreBoard';
 import {
   SanakiertoActive,
@@ -12,6 +11,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { updateGame } from '../../../../reducers/games.reducer';
 import useInterval from '../../../../hooks/useInterval';
+import { indexOf } from 'lodash';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,9 +30,10 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface HostPanelProps {
   game: SanakiertoActive;
+  handleStart: () => void;
 }
 
-const HostPanel: React.FC<HostPanelProps> = ({ game }) => {
+const HostPanel: React.FC<HostPanelProps> = ({ game, handleStart }) => {
   const classes = useStyles();
 
   const [timerRunning, setTimerRunning] = React.useState<boolean>(false);
@@ -55,7 +56,9 @@ const HostPanel: React.FC<HostPanelProps> = ({ game }) => {
     return (
       <div>
         <div>
-          <Fab variant="extended">Aloita peli</Fab>
+          <Fab variant="extended" onClick={handleStart}>
+            Aloita peli
+          </Fab>
         </div>
         <div>
           {game.players.map((p) => (
@@ -66,16 +69,19 @@ const HostPanel: React.FC<HostPanelProps> = ({ game }) => {
     );
   }
 
-  const playerWithTurn = game.players[game.turn];
+  const playerWithTurn = game.players.find(
+    (player) => player.id === game.info.turn
+  );
 
   if (!playerWithTurn)
     throw new Error('Something went wrong with player turns');
 
   const handleUpdate = (players: SanakiertoPlayer[]): void => {
-    const turn = game.turn === players.length - 1 ? 0 : game.turn + 1;
-    const round = turn === 0 ? game.round + 1 : game.round;
+    const currentTurnIndex = game.players.indexOf(playerWithTurn);
 
-    const newGameState: SanakiertoActive = {
+    console.log('turn', currentTurnIndex);
+
+    /** const newGameState: SanakiertoActive = {
       ...game,
       players,
       turn,
@@ -87,7 +93,7 @@ const HostPanel: React.FC<HostPanelProps> = ({ game }) => {
 
     dispatch(updateGame(newGameState));
     if (timerRunning) setTimerRunning(false);
-    setTimer(90);
+    setTimer(90); */
   };
 
   const startTimer = () => {
@@ -98,7 +104,7 @@ const HostPanel: React.FC<HostPanelProps> = ({ game }) => {
 
   return (
     <div className={classes.container}>
-      <Typography variant="h6">{`Kierros ${game.round}`}</Typography>
+      <Typography variant="h6">{`Kierros ${game.info.round}`}</Typography>
       <div className={classes.flex}>
         <div className={classes.grow}>
           <Typography
@@ -152,7 +158,7 @@ const HostPanel: React.FC<HostPanelProps> = ({ game }) => {
       </div>
       <ScoreBoard
         players={game.players}
-        turn={game.turn}
+        turn={game.players.indexOf(playerWithTurn)}
         handleUpdate={handleUpdate}
       />
     </div>

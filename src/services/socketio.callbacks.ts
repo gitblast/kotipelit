@@ -43,7 +43,6 @@ export const jitsiReady = (
 ): void => {
   log(`Recieved ${EventType.JITSI_READY}`);
   try {
-    roomService.setJitsiRoom(data.gameId, data.jitsiRoom);
     broadcast(socket, data.gameId, events.gameReady(data.jitsiRoom));
   } catch (error) {
     console.error(error.message);
@@ -55,7 +54,10 @@ export const createRoom = (socket: SocketWithToken, roomId: string): void => {
   initRoom(socket, roomId)
     .then((data: CreateRoomResponse) => {
       roomService.addSocketToRoom(roomId, socket);
-      emit(socket, events.createSuccess(data.game, data.jitsiToken));
+      emit(
+        socket,
+        events.createSuccess(data.game, data.jitsiToken, data.jitsiRoom)
+      );
     })
     .catch((error: Error) => emit(socket, events.createFailure(error.message)));
 };
@@ -97,14 +99,24 @@ export const startGame = (socket: SocketWithToken, gameId: string): void => {
         info: getInitialInfo(game),
       });
 
-      const gameToReturn = roomService.mapActiveGameToReturnedGame(startedGame);
-
-      broadcast(socket, gameId, events.gameStarting(gameToReturn));
-      emit(socket, events.startSuccess(gameToReturn));
+      broadcast(socket, gameId, events.gameStarting(startedGame));
+      emit(socket, events.startSuccess(startedGame));
     })
     .catch((error: Error) => {
       emit(socket, events.startFailure(error.message));
     });
+};
+
+export const updateGame = (socket: SocketWithToken, game: ActiveGame): void => {
+  log(`Recieved ${EventType.UPDATE_GAME}`);
+
+  try {
+    const updated = roomService.updateRoomGame(game.id, game);
+    broadcast(socket, game.id, events.gameUpdated(game));
+    emit(socket, events.updateSuccess(updated));
+  } catch (error) {
+    emit(socket, events.updateFailure(error.message));
+  }
 };
 
 export const joinGame = (
@@ -114,13 +126,12 @@ export const joinGame = (
 ): void => {
   log(`Recieved ${EventType.JOIN_GAME}`);
 
-  roomService.addSocketToRoom(gameId, socket);
-
   try {
-    const game = roomService.joinRoom(gameId, playerId, socket);
+    roomService.addSocketToRoom(gameId, socket);
+    const game = roomService.joinRoom(gameId, playerId, socket.id);
     const jitsiRoom = roomService.getJitsiRoomByRoomId(gameId);
-    broadcast(socket, gameId, events.playerJoined(playerId));
     emit(socket, events.joinSuccess(game, jitsiRoom));
+    broadcast(socket, gameId, events.playerJoined(playerId));
   } catch (error) {
     emit(socket, events.joinFailure(error.message));
   }

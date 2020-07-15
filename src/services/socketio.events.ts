@@ -2,17 +2,19 @@ import {
   EventType,
   BroadcastedEvent,
   EmittedEvent,
-  ReturnedGame,
+  ActiveGame,
 } from '../types';
 
 export const createSuccess = (
-  game: ReturnedGame,
-  jitsiToken: string
+  game: ActiveGame,
+  jitsiToken: string,
+  jitsiRoom: string
 ): EmittedEvent => ({
   event: EventType.CREATE_SUCCESS,
   data: {
     game,
     jitsiToken,
+    jitsiRoom,
   },
 });
 
@@ -21,7 +23,7 @@ export const createFailure = (message: string): EmittedEvent => ({
   data: { error: message },
 });
 
-export const startSuccess = (game: ReturnedGame): EmittedEvent => ({
+export const startSuccess = (game: ActiveGame): EmittedEvent => ({
   event: EventType.START_SUCCESS,
   data: game,
 });
@@ -32,7 +34,7 @@ export const startFailure = (message: string): EmittedEvent => ({
 });
 
 export const joinSuccess = (
-  game: ReturnedGame,
+  game: ActiveGame,
   jitsiRoom: string
 ): EmittedEvent => ({
   event: EventType.JOIN_SUCCESS,
@@ -47,6 +49,16 @@ export const joinFailure = (message: string): EmittedEvent => ({
   data: { error: message },
 });
 
+export const updateSuccess = (game: ActiveGame): EmittedEvent => ({
+  event: EventType.UPDATE_SUCCESS,
+  data: game,
+});
+
+export const updateFailure = (message: string): EmittedEvent => ({
+  event: EventType.UPDATE_FAILURE,
+  data: { error: message },
+});
+
 export const gameReady = (jitsiRoom: string): BroadcastedEvent => ({
   event: EventType.GAME_READY,
   data: jitsiRoom,
@@ -57,7 +69,12 @@ export const playerJoined = (id: string): BroadcastedEvent => ({
   data: id,
 });
 
-export const gameStarting = (game: ReturnedGame): BroadcastedEvent => ({
+export const gameStarting = (game: ActiveGame): BroadcastedEvent => ({
   event: EventType.GAME_STARTING,
+  data: game,
+});
+
+export const gameUpdated = (game: ActiveGame): BroadcastedEvent => ({
+  event: EventType.GAME_UPDATED,
   data: game,
 });

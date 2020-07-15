@@ -36,14 +36,19 @@ describe('rooms service', () => {
 
     expect(roomService.getRooms()).toEqual({});
 
-    roomService.createRoom('test_room_id', 'hostSocketId', {} as WaitingGame);
+    roomService.createRoom(
+      'test_room_id',
+      'hostSocketId',
+      {} as WaitingGame,
+      'jitsiRoom'
+    );
 
     expect(roomService.getRooms()).toEqual({
       test_room_id: {
         id: 'test_room_id',
         hostSocket: 'hostSocketId',
         game: {},
-        jitsiRoom: null,
+        jitsiRoom: 'jitsiRoom',
       },
     });
   });
@@ -51,7 +56,12 @@ describe('rooms service', () => {
   it('should set room jitsiRoom with setJitsiRoom', () => {
     setRooms({});
 
-    roomService.createRoom('test_room_id', 'hostSocketId', {} as WaitingGame);
+    roomService.createRoom(
+      'test_room_id',
+      'hostSocketId',
+      {} as WaitingGame,
+      'jitsiRoom'
+    );
 
     roomService.setJitsiRoom('test_room_id', 'JITSI_ROOM!');
 
@@ -68,7 +78,12 @@ describe('rooms service', () => {
   it('should return jitsiRoom with getJitsiRoomByRoomId', () => {
     setRooms({});
 
-    roomService.createRoom('test_room_id', 'hostSocketId', {} as WaitingGame);
+    roomService.createRoom(
+      'test_room_id',
+      'hostSocketId',
+      {} as WaitingGame,
+      'jitsiRoom'
+    );
 
     roomService.setJitsiRoom('test_room_id', 'JITSI_ROOM!');
 
@@ -96,7 +111,8 @@ describe('rooms service', () => {
       const room = roomService.createRoom(
         'test_room_id',
         'hostSocketId',
-        (game as unknown) as WaitingGame
+        (game as unknown) as WaitingGame,
+        'jitsiRoom'
       );
 
       expect(roomService.getRoomGame('test_room_id')).toBe(room.game);
@@ -120,7 +136,8 @@ describe('rooms service', () => {
       const room = roomService.createRoom(
         'test_room_id',
         'hostSocketId',
-        (initialGame as unknown) as WaitingGame
+        (initialGame as unknown) as WaitingGame,
+        'jitsiRoom'
       );
 
       expect(room.game).toEqual(initialGame);
@@ -144,83 +161,68 @@ describe('rooms service', () => {
   });
 
   describe('joinRoom', () => {
-    it('should throw error if game with id not found', () => {
-      setRooms({});
+    describe('on success', () => {
+      it('should add socket to player, mark as online and return room game', () => {
+        const mock: Record<string, GameRoom> = {
+          gameId: {
+            game: {
+              id: 'TEST_GAME',
+              players: [
+                {
+                  id: 'playerId',
+                  socket: null,
+                  online: false,
+                  name: 'name',
+                } as ActiveGamePlayer,
+              ],
+            } as ActiveGame,
+          } as GameRoom,
+        };
 
-      expect(() =>
-        roomService.joinRoom('gameId', 'playerId', {} as SocketIO.Socket)
-      ).toThrowError(`Room with id 'gameId' not found`);
+        setRooms(mock);
+
+        const room = roomService.getRooms()['gameId'];
+        expect(room).toBeDefined();
+
+        let player = room.game.players.find((p) => p.id === 'playerId');
+
+        expect(player).toBeDefined();
+        player = player as ActiveGamePlayer;
+        expect(player.socket).toBeNull();
+        expect(player.online).toBe(false);
+
+        const game = roomService.joinRoom('gameId', 'playerId', 'socketId');
+
+        expect(player.socket).toEqual('socketId');
+        expect(player.online).toBe(true);
+        expect(game).toEqual(mock.gameId.game);
+      });
     });
 
-    it('should throw error if player with id not found', () => {
-      const mock: Record<string, GameRoom> = {
-        gameId: {
-          game: {
-            players: [{ id: 'notMatching' } as ActiveGamePlayer],
-          } as ActiveGame,
-        } as GameRoom,
-      };
+    describe('on fail', () => {
+      it('should throw error if game with id not found', () => {
+        setRooms({});
 
-      setRooms(mock);
+        expect(() =>
+          roomService.joinRoom('gameId', 'playerId', 'socketId')
+        ).toThrowError(`Room with id 'gameId' not found`);
+      });
 
-      const socket = { ...socketMock };
+      it('should throw error if player with id not found', () => {
+        const mock: Record<string, GameRoom> = {
+          gameId: {
+            game: {
+              players: [{ id: 'notMatching' } as ActiveGamePlayer],
+            } as ActiveGame,
+          } as GameRoom,
+        };
 
-      expect(() =>
-        roomService.joinRoom(
-          'gameId',
-          'playerId',
-          (socket as unknown) as SocketIO.Socket
-        )
-      ).toThrowError(`Player with id 'playerId' not found`);
-    });
+        setRooms(mock);
 
-    it('should add socket to player and return room game if no errors', () => {
-      const mock: Record<string, GameRoom> = {
-        gameId: {
-          game: {
-            id: 'TEST_GAME',
-            players: [
-              {
-                id: 'playerId',
-                socket: null,
-                name: 'name',
-              } as ActiveGamePlayer,
-            ],
-          } as ActiveGame,
-        } as GameRoom,
-      };
-
-      setRooms(mock);
-
-      const room = roomService.getRooms()['gameId'];
-      expect(room).toBeDefined();
-
-      let player = room.game.players.find((p) => p.id === 'playerId');
-
-      expect(player).toBeDefined();
-      player = player as ActiveGamePlayer;
-      expect(player.socket).toBeNull();
-
-      const socket = { ...socketMock };
-
-      const game = roomService.joinRoom(
-        'gameId',
-        'playerId',
-        (socket as unknown) as SocketIO.Socket
-      );
-
-      const gameWithoutSockets = {
-        ...mock.gameId.game,
-        players: mock.gameId.game.players.map((p) => ({
-          id: p.id,
-          name: p.name,
-          online: !!p.socket,
-        })),
-      };
-
-      expect(player.socket).not.toBeNull();
-      expect(player.socket).toEqual(socket);
-      expect(game).toEqual(gameWithoutSockets);
+        expect(() =>
+          roomService.joinRoom('gameId', 'playerId', 'socketId')
+        ).toThrowError(`Player with id 'playerId' not found`);
+      });
     });
   });
 });

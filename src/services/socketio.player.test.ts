@@ -10,7 +10,7 @@ import {
   Role,
   TestEventType,
   ActiveGamePlayer,
-  ReturnedGame,
+  ActiveGame,
   WaitingGame,
 } from '../types';
 
@@ -130,13 +130,19 @@ describe('socket.io with player token', () => {
             id: 'playerid',
             name: 'playername',
             socket: null,
+            online: false,
           },
         ] as ActiveGamePlayer[],
       } as unknown) as WaitingGame;
 
       beforeEach(() => {
         setRooms({});
-        roomService.createRoom(tokenPayload.gameId, 'hostID', mockGame);
+        roomService.createRoom(
+          tokenPayload.gameId,
+          'hostID',
+          mockGame,
+          'jitsiRoom'
+        );
         roomService.setJitsiRoom(tokenPayload.gameId, 'TEST_ROOM!');
         socket.once(EventType.JOIN_FAILURE, (data: { error: string }) => {
           fail(`expected join success, got join fail: ${data.error}`);
@@ -150,6 +156,7 @@ describe('socket.io with player token', () => {
             id: p.id,
             name: p.name,
             online: true,
+            socket: expect.any(String),
           })),
         };
 
@@ -157,7 +164,7 @@ describe('socket.io with player token', () => {
 
         socket.once(
           EventType.JOIN_SUCCESS,
-          (data: { game: ReturnedGame; jitsiRoom: string }) => {
+          (data: { game: ActiveGame; jitsiRoom: string }) => {
             expect(data.game).toEqual(expectedGame);
             expect(data.jitsiRoom).toBe('TEST_ROOM!');
             done();

@@ -33,6 +33,7 @@ The app requires a .env -file with the following fields defined:
 - TEST_MONGODB_URI
 - SECRET
 - ADMIN_SECRET
+- JITSI_SECRET (set in prosody settings)
 
 ## Routes:
 

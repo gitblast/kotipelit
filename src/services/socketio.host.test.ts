@@ -116,7 +116,12 @@ describe('socket.io with host token', () => {
         jitsiRoom: 'jitsi room name',
       };
 
-      roomService.createRoom(data.gameId, 'host', {} as WaitingGame);
+      roomService.createRoom(
+        data.gameId,
+        'host',
+        {} as WaitingGame,
+        'jitsiRoom'
+      );
       roomService.setJitsiRoom(data.gameId, 'jitsi room');
 
       const anotherSocket = setupSocket(hostToken);
@@ -161,7 +166,8 @@ describe('socket.io with host token', () => {
         room = roomService.createRoom(
           gameId,
           'hostID',
-          mockGame as WaitingGame
+          mockGame as WaitingGame,
+          'jitsiRoom'
         );
 
         socket.once(EventType.START_FAILURE, (data: { error: string }) => {
@@ -234,8 +240,9 @@ describe('socket.io with host token', () => {
       socket.once(
         EventType.CREATE_SUCCESS,
         async (data: CreateRoomResponse) => {
-          expect(data.jitsiToken).toBe(jwt.sign('TODO', 'TODO'));
+          expect(data.jitsiToken).toBeDefined();
           expect(data.game).toBeDefined();
+          expect(data.jitsiRoom).toBeDefined();
 
           let gameNow = await Game.findById(game._id);
           expect(gameNow).not.toBe(null);

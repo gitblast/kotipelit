@@ -9,6 +9,7 @@ import config from '../utils/config';
 import { log } from '../utils/logger';
 import jwt from 'jsonwebtoken';
 import * as callbacks from './socketio.callbacks';
+import { v4 as uuidv4 } from 'uuid';
 
 import {
   GameStatus,
@@ -28,8 +29,9 @@ export const initRoom = async (
   socket: SocketWithToken,
   gameId: string
 ): Promise<CreateRoomResponse> => {
-  if (socket.decoded_token.role !== Role.HOST)
-    throw new Error('Not authorized');
+  const token = socket.decoded_token;
+
+  if (token.role !== Role.HOST) throw new Error('Not authorized');
 
   log('todo: check if room is already created');
 
@@ -43,16 +45,32 @@ export const initRoom = async (
     players: game.players.map((player) => ({
       ...player,
       socket: null,
+      online: false,
     })),
     info: null, // different game types will have different info objects
     rounds: game.rounds,
   };
 
-  roomService.createRoom(gameId, socket.id, roomGame);
+  const jitsiRoom = uuidv4();
+
+  roomService.createRoom(gameId, socket.id, roomGame, jitsiRoom);
+
+  const tokenPayload = {
+    context: {
+      user: {
+        name: token.username,
+      },
+    },
+    aud: 'kotipelit.com',
+    iss: 'kotipelit.com',
+    sub: 'meet.kotipelit.com',
+    room: jitsiRoom,
+  };
 
   return {
-    jitsiToken: jwt.sign('TODO', 'TODO'),
-    game: roomService.mapActiveGameToReturnedGame(roomGame),
+    jitsiToken: jwt.sign(tokenPayload, config.JITSI_SECRET),
+    game: roomGame,
+    jitsiRoom,
   };
 };
 
@@ -99,6 +117,8 @@ export const attachListeners = (socket: SocketWithToken): void => {
   // for testing
   if (process.env.NODE_ENV === 'test') attachTestListeners(socket);
 
+  log('todo: socket on disconnect');
+
   switch (role) {
     // host specific listeners
     case Role.HOST: {
@@ -113,6 +133,10 @@ export const attachListeners = (socket: SocketWithToken): void => {
       socket.on(EventType.START_GAME, (gameId: string) =>
         callbacks.startGame(socket, gameId)
       );
+
+      socket.on(EventType.UPDATE_GAME, (game: ActiveGame) => {
+        callbacks.updateGame(socket, game);
+      });
 
       break;
     }

@@ -1,4 +1,3 @@
-import { Socket } from 'socket.io';
 import { Document } from 'mongoose';
 
 export interface GameModel extends NewGame, Document {
@@ -52,10 +51,7 @@ export interface GamePlayer {
 }
 
 export interface ActiveGamePlayer extends GamePlayer {
-  socket: null | Socket;
-}
-
-export interface GamePlayerWithStatus extends GamePlayer {
+  socket: null | string;
   online: boolean;
 }
 
@@ -83,13 +79,10 @@ export interface RunningGame extends BaseActiveGame {
   info: GameInfo;
 }
 
-export interface ReturnedGame extends Omit<ActiveGame, 'players'> {
-  players: GamePlayerWithStatus[];
-}
-
 export interface CreateRoomResponse {
   jitsiToken: string;
-  game: ReturnedGame;
+  jitsiRoom: string;
+  game: ActiveGame;
 }
 
 export interface GameRoom {
@@ -124,6 +117,9 @@ export enum EventType {
   CREATE_SUCCESS = 'create success',
   CREATE_FAILURE = 'create failure',
 
+  UPDATE_SUCCESS = 'update success',
+  UPDATE_FAILURE = 'update failure',
+
   JOIN_SUCCESS = 'join success',
   JOIN_FAILURE = 'join failure',
 
@@ -146,6 +142,8 @@ export enum EventType {
   CREATE_ROOM = 'create room',
   JITSI_READY = 'jitsi ready',
   START_GAME = 'start game',
+  UPDATE_GAME = 'update game',
+  GAME_UPDATED = 'game updated',
 
   // player
   JOIN_GAME = 'join game',
@@ -162,7 +160,11 @@ export type BroadcastedEvent =
     }
   | {
       event: EventType.GAME_STARTING;
-      data: ReturnedGame;
+      data: ActiveGame;
+    }
+  | {
+      event: EventType.GAME_UPDATED;
+      data: ActiveGame;
     };
 
 export type EmittedEvent =
@@ -177,9 +179,19 @@ export type EmittedEvent =
       };
     }
   | {
+      event: EventType.UPDATE_SUCCESS;
+      data: ActiveGame;
+    }
+  | {
+      event: EventType.UPDATE_FAILURE;
+      data: {
+        error: string;
+      };
+    }
+  | {
       event: EventType.JOIN_SUCCESS;
       data: {
-        game: ReturnedGame;
+        game: ActiveGame;
         jitsiRoom: string;
       };
     }
@@ -191,7 +203,7 @@ export type EmittedEvent =
     }
   | {
       event: EventType.START_SUCCESS;
-      data: ReturnedGame;
+      data: ActiveGame;
     }
   | {
       event: EventType.START_FAILURE;

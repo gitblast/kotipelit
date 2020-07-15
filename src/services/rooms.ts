@@ -1,10 +1,4 @@
-import {
-  GameRoom,
-  ActiveGame,
-  GamePlayerWithStatus,
-  ReturnedGame,
-  WaitingGame,
-} from '../types';
+import { GameRoom, ActiveGame, WaitingGame } from '../types';
 
 import { log } from '../utils/logger';
 
@@ -27,13 +21,14 @@ const getRooms = (): Record<string, GameRoom> => rooms;
 const createRoom = (
   id: string,
   hostSocketID: string,
-  game: WaitingGame
+  game: WaitingGame,
+  jitsiRoom: string
 ): GameRoom => {
   const newRoom: GameRoom = {
     id,
     hostSocket: hostSocketID,
     game,
-    jitsiRoom: null,
+    jitsiRoom,
   };
 
   rooms[id] = newRoom;
@@ -79,8 +74,8 @@ const setJitsiRoom = (roomId: string, jitsiRoom: string): void => {
 const joinRoom = (
   roomId: string,
   playerId: string,
-  socket: SocketIO.Socket
-): ReturnedGame => {
+  socketId: string
+): ActiveGame => {
   const room = rooms[roomId];
 
   if (!room) throw new Error(`Room with id '${roomId}' not found`);
@@ -93,23 +88,12 @@ const joinRoom = (
     throw new Error(`Player with id '${playerId}' not found`);
 
   if (playerForSocket.socket)
-    log(`Player already has socket set: ${playerForSocket.socket.id}`);
+    log(`Player already has socket set: ${playerForSocket.socket}`);
 
-  playerForSocket.socket = socket;
+  playerForSocket.socket = socketId;
+  playerForSocket.online = true;
 
-  return mapActiveGameToReturnedGame(room.game);
-};
-
-const mapActiveGameToReturnedGame = (game: ActiveGame): ReturnedGame => {
-  const playersWithoutSockets: GamePlayerWithStatus[] = game.players.map(
-    (player) => ({
-      ...player,
-      socket: undefined,
-      online: !!player.socket,
-    })
-  );
-
-  return { ...game, players: playersWithoutSockets };
+  return room.game;
 };
 
 export default {
@@ -121,5 +105,4 @@ export default {
   getRoomGame,
   setJitsiRoom,
   getJitsiRoomByRoomId,
-  mapActiveGameToReturnedGame,
 };

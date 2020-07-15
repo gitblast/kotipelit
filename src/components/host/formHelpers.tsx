@@ -23,7 +23,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import { Form, FastField, FieldArray, FormikProps } from 'formik';
 import { TextField, Select } from 'formik-material-ui';
 
-import { SanakiertoPlayer, SelectableGame, GameType } from '../../../types';
+import { SanakiertoPlayer, SelectableGame, GameType } from '../../types';
 
 const hardcodedWords = [
   'DIABOLATRY',

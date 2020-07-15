@@ -7,7 +7,7 @@ import { Fab, Typography } from '@material-ui/core';
 
 import QueuedGame from './QueuedGame';
 
-import { State, LoggedUser } from '../../../types';
+import { State, LoggedUser } from '../../types';
 import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme: Theme) =>

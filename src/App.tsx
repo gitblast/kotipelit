@@ -20,7 +20,7 @@ import FrontPage from './components/FrontPage';
 import TempFrontPage from './components/TempFrontPage';
 import UserControls from './components/UserControls';
 
-import ChannelPage from './components/channel/ChannelPage';
+import ChannelPage from './components/ChannelPage';
 import { State, HostChannel } from './types';
 
 const useStyles = makeStyles((theme: Theme) =>

@@ -10,7 +10,7 @@ import {
   Checkbox,
   TableBody,
 } from '@material-ui/core';
-import { SanakiertoPlayer } from '../../../../types';
+import { SanakiertoPlayer } from '../../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

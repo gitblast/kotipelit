@@ -14,8 +14,8 @@ import { useHistory } from 'react-router-dom';
 
 import { initializePlayers, renderForm } from './formHelpers';
 import { useDispatch } from 'react-redux';
-import { addGame } from '../../../reducers/games.reducer';
-import { GameType, GameStatus } from '../../../types';
+import { addGame } from '../../reducers/games.reducer';
+import { GameType, GameStatus } from '../../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

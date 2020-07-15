@@ -2,7 +2,7 @@ import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
-import { SanakiertoPlayer } from '../../../types';
+import { SanakiertoPlayer } from '../../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({ container: { padding: theme.spacing(1) } })

@@ -12,9 +12,9 @@ import {
   MenuItem,
 } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { SelectableGame, Sanakierto, SanakiertoPlayer } from '../../../types';
+import { SelectableGame, Sanakierto, SanakiertoPlayer } from '../../types';
 import { useDispatch } from 'react-redux';
-import { deleteGame, launchGame } from '../../../reducers/games.reducer';
+import { deleteGame, launchGame } from '../../reducers/games.reducer';
 import { useHistory, useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) =>

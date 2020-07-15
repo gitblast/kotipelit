@@ -1,23 +1,23 @@
 import React from 'react';
 
-import { log } from '../../../../utils/logger';
-import * as actions from '../../../../services/socketio.actions';
-import socketService from '../../../../services/socketio';
+import { log } from '../../utils/logger';
+import * as actions from '../../services/socketio.actions';
+import socketService from '../../services/socketio';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Paper, Typography } from '@material-ui/core';
 
 import HostPanel from './HostPanel';
 import Results from './Results';
-import PlayerSidePanel from '../../player/PlayerSidePanel';
+import PlayerSidePanel from './PlayerSidePanel';
 
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
-import { State, GameStatus, SanakiertoPlayer } from '../../../../types';
+import { State, GameStatus, SanakiertoPlayer } from '../../types';
 
 import { useParams, useLocation } from 'react-router-dom';
-import JitsiFrame from '../../../JitsiFrame';
-import WaitingRoom from '../../../sanakierto/WaitingRoom';
-import { setSocket } from '../../../../reducers/user.reducer';
+import JitsiFrame from '../JitsiFrame';
+import WaitingRoom from './WaitingRoom';
+import { setSocket } from '../../reducers/user.reducer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

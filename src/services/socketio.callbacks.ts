@@ -50,9 +50,6 @@ export const playerJoined = (playerId: string) => {
     return player.id === playerId ? { ...player, online: true } : player;
   });
 
-  console.log('before update:', currentGame.players);
-  console.log('after: ', newPlayers);
-
   store.dispatch(
     setActiveGame({
       ...currentGame,

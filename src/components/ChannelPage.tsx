@@ -6,10 +6,10 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import NewGame from './host/NewGame';
-import Sanakierto from './host/sanakierto/SanaKierto';
+import Sanakierto from './sanakierto/SanaKierto';
 import Dashboard from './host/Dashboard';
 import { useSelector } from 'react-redux';
-import { State, LoggedUser, User } from '../../types';
+import { State, LoggedUser, User } from '../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

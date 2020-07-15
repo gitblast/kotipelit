@@ -2,7 +2,7 @@ import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
-import { SanakiertoPlayer } from '../../../../types';
+import { SanakiertoPlayer } from '../../types';
 import {
   Typography,
   Table,

@@ -13,7 +13,11 @@ jest.mock('../services/users', () => ({
 
 describe('user reducer', () => {
   it('should return initial state null', () => {
-    expect(reducer(undefined, {} as Action)).toEqual({ loggedIn: false });
+    expect(reducer(undefined, {} as Action)).toEqual({
+      loggedIn: false,
+      jitsiRoom: null,
+      socket: null,
+    });
   });
 
   it('should handle LOGIN_REQUEST', () => {
@@ -25,6 +29,8 @@ describe('user reducer', () => {
     const expectedState = {
       username: 'username',
       loggedIn: false,
+      jitsiRoom: null,
+      socket: null,
     };
 
     expect(reducer(undefined, action)).toEqual(expectedState);
@@ -35,7 +41,11 @@ describe('user reducer', () => {
       type: ActionType.LOGIN_FAILURE,
     };
 
-    expect(reducer(undefined, action)).toEqual({ loggedIn: false });
+    expect(reducer(undefined, action)).toEqual({
+      loggedIn: false,
+      jitsiRoom: null,
+      socket: null,
+    });
   });
 
   it('should handle LOGIN_SUCCESS', () => {
@@ -44,6 +54,8 @@ describe('user reducer', () => {
       token: 'token',
       loggedIn: true,
       jitsiToken: null,
+      jitsiRoom: null,
+      socket: null,
     };
 
     const action: Action = {
@@ -59,7 +71,11 @@ describe('user reducer', () => {
       type: ActionType.LOGOUT,
     };
 
-    expect(reducer(undefined, action)).toEqual({ loggedIn: false });
+    expect(reducer(undefined, action)).toEqual({
+      loggedIn: false,
+      jitsiRoom: null,
+      socket: null,
+    });
   });
 
   it('should handle SET_JITSI_TOKEN', () => {
@@ -71,6 +87,8 @@ describe('user reducer', () => {
     expect(reducer(undefined, action)).toEqual({
       loggedIn: false,
       jitsiToken: 'JITSI_TOKEN!',
+      jitsiRoom: null,
+      socket: null,
     });
   });
 
@@ -80,7 +98,10 @@ describe('user reducer', () => {
         username: 'username',
         token: 'tokenFromStorage',
         jitsiToken: null,
+        jitsiRoom: null,
+        socket: null,
       };
+
       window.localStorage.setItem('kotipelitUser', JSON.stringify(user));
 
       const dispatch = jest.fn();

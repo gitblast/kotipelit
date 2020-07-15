@@ -1,7 +1,7 @@
 import userService from '../services/users';
 
 import { Action, ActionType, HostChannel, ChannelsState } from '../types';
-import { Dispatch } from 'redux';
+import { Dispatch, Reducer } from 'redux';
 
 const initialState: ChannelsState = {
   allChannels: [],
@@ -10,7 +10,10 @@ const initialState: ChannelsState = {
 
 /** @TODO handle errors */
 
-const reducer = (state: ChannelsState = initialState, action: Action) => {
+const reducer: Reducer<ChannelsState, Action> = (
+  state: ChannelsState = initialState,
+  action: Action
+) => {
   switch (action.type) {
     case ActionType.INIT_CHANNELS_REQUEST:
       return { ...state, loading: true };

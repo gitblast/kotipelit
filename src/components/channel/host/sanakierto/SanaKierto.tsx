@@ -5,17 +5,19 @@ import * as actions from '../../../../services/socketio.actions';
 import socketService from '../../../../services/socketio';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Paper } from '@material-ui/core';
+import { Paper, Typography } from '@material-ui/core';
 
 import HostPanel from './HostPanel';
 import Results from './Results';
+import PlayerSidePanel from '../../player/PlayerSidePanel';
 
-import { useSelector, shallowEqual } from 'react-redux';
+import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { State, GameStatus, SanakiertoPlayer } from '../../../../types';
 
-import { hardcodedActiveSanakierto as HARDCODED } from '../../../../constants';
 import { useParams, useLocation } from 'react-router-dom';
 import JitsiFrame from '../../../JitsiFrame';
+import WaitingRoom from '../../../sanakierto/WaitingRoom';
+import { setSocket } from '../../../../reducers/user.reducer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -50,13 +52,13 @@ interface ParamTypes {
 
 const Sanakierto: React.FC = () => {
   const classes = useStyles();
-  const [socket, setSocket] = React.useState<SocketIOClient.Socket | null>(
-    null
-  );
   const activeGame = useSelector((state: State) => state.games.activeGame);
   const { gameID } = useParams<ParamTypes>();
   const user = useSelector((state: State) => state.user, shallowEqual);
+  const socket = useSelector((state: State) => state.user.socket);
+  const jitsiRoom = useSelector((state: State) => state.user.jitsiRoom);
   const location = useLocation();
+  const dispatch = useDispatch();
 
   /** @TODO find out if socket io always uses encrypted connection and manage auth (insecure to send token if not) */
   React.useEffect(() => {
@@ -64,66 +66,68 @@ const Sanakierto: React.FC = () => {
       log('initializing socket');
 
       if (user.loggedIn) {
-        setSocket(socketService.initHostSocket(user, gameID));
+        dispatch(setSocket(socketService.initHostSocket(user, gameID)));
       } else {
         socketService
           .initPlayerSocket(gameID, getPlayerIDFromQuery(location))
-          .then((authedSocket) => setSocket(authedSocket))
+          .then((authedSocket) => dispatch(setSocket(authedSocket)))
           .catch((error) => console.error(error.message));
       }
     }
   }, []);
 
-  const handleStartGame = (
-    socket: SocketIOClient.Socket,
-    gameId: string
-  ): void => {
-    actions.startGame(socket, gameId);
+  const handleStartGame = (gameId: string): void => {
+    actions.startGame(gameId);
   };
 
-  const handleJitsiLoaded = (
-    socket: SocketIOClient.Socket,
-    gameId: string,
-    jitsiRoom: string
-  ): void => {
-    actions.emitJitsiReady(socket, gameId, jitsiRoom);
+  const handleJitsiLoaded = (gameId: string, jitsiRoom: string): void => {
+    actions.emitJitsiReady(gameId, jitsiRoom);
   };
 
   const jitsiContent = () => {
-    return user.loggedIn && user.jitsiToken && socket && gameID ? (
+    if (!gameID || !jitsiRoom) {
+      if (user.loggedIn) {
+        return <Typography>Ladataan...</Typography>;
+      }
+
+      return <Typography>Odotetaan, että host käynnistää pelin...</Typography>;
+    }
+
+    return (
       <JitsiFrame
-        token={user.jitsiToken}
-        roomName={`${user.username}/${gameID}`}
-        handleLoaded={() =>
-          handleJitsiLoaded(socket, gameID, `${user.username}/${gameID}`)
-        }
+        token={user.loggedIn ? user.jitsiToken : null}
+        roomName={jitsiRoom}
+        handleLoaded={() => handleJitsiLoaded(gameID, jitsiRoom)}
         dev
       />
-    ) : (
-      <h4>Loading</h4>
     );
   };
-
-  if (activeGame === null)
-    console.error('No active game found, using hard coded (dev)');
 
   const sortPlayersByPoints = (players: SanakiertoPlayer[]) => {
     return players.sort((a, b) => b.points - a.points);
   };
 
   const sideBar = () => {
-    if (!socket) return <div>Yhdistetään...</div>;
+    if (!socket || !activeGame) return <Typography>Yhdistetään...</Typography>;
 
-    if (!user.loggedIn) return <div>Player sidebar</div>;
+    if (activeGame.status === GameStatus.WAITING) {
+      return (
+        <WaitingRoom
+          game={activeGame}
+          handleStart={user.loggedIn ? () => handleStartGame(gameID) : null}
+        />
+      );
+    }
 
-    return activeGame && activeGame.status === GameStatus.FINISHED ? (
-      <Results results={sortPlayersByPoints(activeGame.players)} />
-    ) : (
-      <HostPanel
-        game={activeGame ? activeGame : HARDCODED}
-        handleStart={() => handleStartGame(socket, gameID)}
-      />
-    );
+    if (activeGame.status === GameStatus.RUNNING) {
+      return user.loggedIn ? (
+        <HostPanel game={activeGame} />
+      ) : (
+        <PlayerSidePanel players={activeGame.players} />
+      );
+    }
+
+    return <Results results={sortPlayersByPoints(activeGame.players)} />;
   };
 
   return (

@@ -1,14 +1,24 @@
-import { Dispatch } from 'redux';
+import { Dispatch, Reducer } from 'redux';
 import userService from '../services/users';
 
-import { Action, User, ActionType, LoggedUser } from '../types';
+import { Action, User, ActionType, LoggedUser, BaseUser } from '../types';
 
 /** @TODO handle errors */
 
-const reducer = (state: User = { loggedIn: false }, action: Action) => {
+const initialUser: BaseUser = {
+  loggedIn: false,
+  socket: null,
+  jitsiRoom: null,
+};
+
+const reducer: Reducer<User, Action> = (
+  state: User = initialUser,
+  action: Action
+) => {
   switch (action.type) {
     case ActionType.LOGIN_REQUEST: {
       return {
+        ...state,
         username: action.payload,
         loggedIn: false,
       };
@@ -17,18 +27,33 @@ const reducer = (state: User = { loggedIn: false }, action: Action) => {
       return {
         ...action.payload,
         loggedIn: true,
+        jitsiToken: null,
+        socket: null,
+        jitsiRoom: null,
       };
     }
     case ActionType.LOGIN_FAILURE: {
-      return { loggedIn: false };
+      return { loggedIn: false, socket: null, jitsiRoom: null };
     }
     case ActionType.LOGOUT: {
-      return { loggedIn: false };
+      return { loggedIn: false, socket: null, jitsiRoom: null };
     }
     case ActionType.SET_JITSI_TOKEN: {
       return {
         ...state,
         jitsiToken: action.payload,
+      };
+    }
+    case ActionType.SET_JITSI_ROOM: {
+      return {
+        ...state,
+        jitsiRoom: action.payload,
+      };
+    }
+    case ActionType.SET_SOCKET: {
+      return {
+        ...state,
+        socket: action.payload,
       };
     }
     default:
@@ -69,7 +94,9 @@ export const loginRequest = (username: string): Action => ({
   payload: username,
 });
 
-export const loginSuccess = (user: Omit<LoggedUser, 'loggedIn'>): Action => ({
+export const loginSuccess = (
+  user: Pick<LoggedUser, 'username' | 'token'>
+): Action => ({
   type: ActionType.LOGIN_SUCCESS,
   payload: user,
 });
@@ -89,9 +116,13 @@ export const loginUser = (username: string, password: string) => {
       const user = await userService.login(username, password);
       userService.setToken(user.token);
 
-      window.localStorage.setItem('kotipelitUser', JSON.stringify(user));
+      const loggedUser = {
+        ...user,
+      };
 
-      dispatch(loginSuccess({ ...user, jitsiToken: null }));
+      window.localStorage.setItem('kotipelitUser', JSON.stringify(loggedUser));
+
+      dispatch(loginSuccess(loggedUser));
     } catch (error) {
       dispatch(loginFailure());
     }
@@ -101,6 +132,16 @@ export const loginUser = (username: string, password: string) => {
 export const setJitsiToken = (token: string): Action => ({
   type: ActionType.SET_JITSI_TOKEN,
   payload: token,
+});
+
+export const setJitsiRoom = (roomName: string): Action => ({
+  type: ActionType.SET_JITSI_ROOM,
+  payload: roomName,
+});
+
+export const setSocket = (socket: SocketIOClient.Socket): Action => ({
+  type: ActionType.SET_SOCKET,
+  payload: socket,
 });
 
 export default reducer;

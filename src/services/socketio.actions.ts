@@ -1,25 +1,40 @@
+import store from '../store';
 import { emit } from './socketio';
 import * as events from './socketio.events';
-import store from '../store';
 import { ActiveGame } from '../types';
-import { setActiveGame } from '../reducers/games.reducer';
 
-export const emitJitsiReady = (
-  socket: SocketIOClient.Socket,
-  gameId: string,
-  jitsiRoom: string
-): void => {
-  emit(socket, events.jitsiReady(gameId, jitsiRoom));
+export const emitJitsiReady = (gameId: string, jitsiRoom: string): void => {
+  try {
+    const socket = store.getState().user.socket;
+
+    if (!socket) throw new Error('Socket not set for user');
+
+    emit(socket, events.jitsiReady(gameId, jitsiRoom));
+  } catch (error) {
+    console.error(error.message);
+  }
 };
 
-export const startGame = (
-  socket: SocketIOClient.Socket,
-  gameId: string
-): void => {
-  emit(socket, events.startGame(gameId));
+export const startGame = (gameId: string): void => {
+  try {
+    const socket = store.getState().user.socket;
+
+    if (!socket) throw new Error('Socket not set for user');
+
+    emit(socket, events.startGame(gameId));
+  } catch (error) {
+    console.error(error.message);
+  }
 };
 
-export const updateGame = (socket: SocketIOClient.Socket, game: ActiveGame) => {
-  store.dispatch(setActiveGame(game));
-  emit(socket, events.updateGame(game));
+export const updateGame = (game: ActiveGame) => {
+  try {
+    const socket = store.getState().user.socket;
+
+    if (!socket) throw new Error('Socket not set for user');
+
+    emit(socket, events.updateGame(game));
+  } catch (error) {
+    console.error(error.message);
+  }
 };

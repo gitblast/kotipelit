@@ -8,7 +8,7 @@ import {
   ActionType,
 } from '../types';
 
-import { Dispatch } from 'redux';
+import { Dispatch, Reducer } from 'redux';
 
 import gameService from '../services/games';
 
@@ -37,7 +37,10 @@ const activate = (game: SelectableGame): ActiveGame => {
   }
 };
 
-const reducer = (state: GamesState = initialState, action: Action) => {
+const reducer: Reducer<GamesState, Action> = (
+  state: GamesState = initialState,
+  action: Action
+) => {
   switch (action.type) {
     case ActionType.INIT_GAMES_REQUEST: {
       return {
@@ -112,6 +115,7 @@ const reducer = (state: GamesState = initialState, action: Action) => {
       const activatedGame = activate(gameToActivate);
 
       return {
+        ...state,
         activeGame: activatedGame,
         allGames: state.allGames.map((game) =>
           game.id === action.payload

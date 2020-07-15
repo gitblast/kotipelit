@@ -7,11 +7,11 @@ import {
   SanakiertoActive,
   SanakiertoPlayer,
   GameStatus,
+  State,
 } from '../../../../types';
-import { useDispatch } from 'react-redux';
-import { updateGame } from '../../../../reducers/games.reducer';
+import { useSelector } from 'react-redux';
 import useInterval from '../../../../hooks/useInterval';
-import { indexOf } from 'lodash';
+import { updateGame } from '../../../../services/socketio.actions';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,16 +30,14 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface HostPanelProps {
   game: SanakiertoActive;
-  handleStart: () => void;
 }
 
-const HostPanel: React.FC<HostPanelProps> = ({ game, handleStart }) => {
+const HostPanel: React.FC<HostPanelProps> = ({ game }) => {
   const classes = useStyles();
+  const socket = useSelector((state: State) => state.user.socket);
 
   const [timerRunning, setTimerRunning] = React.useState<boolean>(false);
   const [timer, setTimer] = React.useState<number>(90);
-
-  const dispatch = useDispatch();
 
   useInterval(
     () => {
@@ -52,48 +50,50 @@ const HostPanel: React.FC<HostPanelProps> = ({ game, handleStart }) => {
     timerRunning ? 1000 : null
   );
 
-  if (game.status === GameStatus.WAITING) {
-    return (
-      <div>
-        <div>
-          <Fab variant="extended" onClick={handleStart}>
-            Aloita peli
-          </Fab>
-        </div>
-        <div>
-          {game.players.map((p) => (
-            <div key={p.id}>{p.name}</div>
-          ))}
-        </div>
-      </div>
-    );
-  }
+  if (!socket) return <div>Yhdistetään...</div>;
 
-  const playerWithTurn = game.players.find(
-    (player) => player.id === game.info.turn
+  const { players, info } = game;
+
+  const playerInTurnIndex = players.findIndex(
+    (player) => player.id === info.turn
   );
 
-  if (!playerWithTurn)
+  if (playerInTurnIndex < 0)
     throw new Error('Something went wrong with player turns');
 
+  const playerWithTurn = players[playerInTurnIndex];
+
   const handleUpdate = (players: SanakiertoPlayer[]): void => {
-    const currentTurnIndex = game.players.indexOf(playerWithTurn);
+    console.log('current turn', playerInTurnIndex);
 
-    console.log('turn', currentTurnIndex);
+    let round: number;
+    let turn: string;
 
-    /** const newGameState: SanakiertoActive = {
+    if (playerInTurnIndex === players.length - 1) {
+      round = game.info.round + 1;
+      turn = players[0].id;
+    } else {
+      round = game.info.round;
+      turn = players[playerInTurnIndex + 1].id;
+    }
+
+    console.log('turn now', turn);
+
+    const newGameState: SanakiertoActive = {
       ...game,
       players,
-      turn,
-      round,
+      info: {
+        round,
+        turn,
+      },
       status: round > game.rounds ? GameStatus.FINISHED : GameStatus.RUNNING,
     };
 
     console.log('updating with', newGameState);
 
-    dispatch(updateGame(newGameState));
+    updateGame(newGameState);
     if (timerRunning) setTimerRunning(false);
-    setTimer(90); */
+    setTimer(90);
   };
 
   const startTimer = () => {

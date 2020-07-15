@@ -25,6 +25,7 @@ const newGame: SelectableGame = {
       name: 'Risto',
       words: ['jojo', 'kasvi', 'hattu'],
       points: 0,
+      online: false,
     },
   ],
 };

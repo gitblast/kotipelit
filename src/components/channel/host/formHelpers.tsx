@@ -86,6 +86,7 @@ export const initializePlayers = (): SanakiertoPlayer[] => {
       name: `Pelaaja ${i}`,
       words,
       points: 0,
+      online: false,
     });
   }
 

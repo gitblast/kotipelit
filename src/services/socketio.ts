@@ -14,6 +14,7 @@ import {
 
 import * as callbacks from './socketio.callbacks';
 import * as events from './socketio.events';
+import { log } from '../utils/logger';
 
 export const attachListeners = (
   socket: SocketIOClient.Socket,
@@ -41,6 +42,13 @@ export const attachListeners = (
     socket.on(HostEvent.START_FAILURE, (data: RecievedError) =>
       callbacks.startFailure(data)
     );
+
+    socket.on(HostEvent.UPDATE_SUCCESS, (game: ActiveGame) =>
+      callbacks.updateSuccess(game)
+    );
+    socket.on(HostEvent.UPDATE_FAILURE, (data: RecievedError) =>
+      callbacks.updateFailure(data)
+    );
   } else {
     // player listeners
 
@@ -57,6 +65,10 @@ export const attachListeners = (
     socket.on(PlayerEvent.GAME_STARTING, (game: ActiveGame) =>
       callbacks.gameStarting(game)
     );
+
+    socket.on(PlayerEvent.GAME_UPDATED, (game: ActiveGame) =>
+      callbacks.gameUpdated(game)
+    );
   }
 };
 
@@ -66,7 +78,12 @@ export const emit = (
 ): void => {
   const { event, data } = eventObj;
 
-  console.log(`Emitting ${event}`);
+  log(`Emitting ${event}`);
+
+  if (data) {
+    log('Data:');
+    log(data);
+  }
 
   socket.emit(event, data);
 };

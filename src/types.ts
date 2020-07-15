@@ -16,6 +16,7 @@ export interface SanakiertoPlayer {
   name: string;
   words: string[];
   points: number;
+  online: boolean;
 }
 
 export interface Sanakierto extends Game {
@@ -43,8 +44,10 @@ export enum GameStatus {
 
 // USERS & AUTH
 
-interface BaseUser {
+export interface BaseUser {
   loggedIn: false;
+  socket: null | SocketIOClient.Socket;
+  jitsiRoom: null | string;
 }
 
 export interface LoggedUser {
@@ -52,6 +55,8 @@ export interface LoggedUser {
   loggedIn: true;
   token: string;
   jitsiToken: string | null;
+  socket: null | SocketIOClient.Socket;
+  jitsiRoom: null | string;
 }
 
 export interface LoggingUser extends BaseUser {
@@ -114,7 +119,11 @@ export enum ActionType {
   LOGIN_SUCCESS = 'LOGIN_SUCCESS',
   LOGIN_FAILURE = 'LOGIN_FAILURE',
   LOGOUT = 'LOGOUT',
+
+  // user handling
   SET_JITSI_TOKEN = 'SET_JITSI_TOKEN',
+  SET_JITSI_ROOM = 'SET_JITSI_ROOM',
+  SET_SOCKET = 'SET_SOCKET',
 
   // init channels
   INIT_CHANNELS_REQUEST = 'INIT_CHANNELS_REQUEST',
@@ -192,7 +201,7 @@ export type Action =
     }
   | {
       type: ActionType.LOGIN_SUCCESS;
-      payload: Omit<LoggedUser, 'loggedIn'>;
+      payload: Pick<LoggedUser, 'username' | 'token'>;
     }
   | {
       type: ActionType.LOGIN_FAILURE;
@@ -203,6 +212,14 @@ export type Action =
   | {
       type: ActionType.SET_JITSI_TOKEN;
       payload: string; // jitsi token
+    }
+  | {
+      type: ActionType.SET_JITSI_ROOM;
+      payload: string; // jitsi room
+    }
+  | {
+      type: ActionType.SET_SOCKET;
+      payload: SocketIOClient.Socket;
     };
 
 // SOCKET IO EVENTS
@@ -225,6 +242,7 @@ export enum PlayerEvent {
 
   GAME_READY = 'game ready',
   GAME_STARTING = 'game starting',
+  GAME_UPDATED = 'game updated',
 }
 
 export enum HostEvent {
@@ -238,6 +256,9 @@ export enum HostEvent {
 
   START_SUCCESS = 'start success',
   START_FAILURE = 'start failure',
+
+  UPDATE_SUCCESS = 'update success',
+  UPDATE_FAILURE = 'update failure',
 }
 
 export enum CommonEvent {

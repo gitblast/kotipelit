@@ -45,15 +45,11 @@ const App = () => {
     shallowEqual
   );
 
-  // init channels and check local storage for user
+  // init channels, games and check local storage for user
   React.useEffect(() => {
     dispatch(checkForUser());
-    dispatch(initChannels());
-  }, [dispatch]);
-
-  // init games
-  React.useEffect(() => {
     dispatch(initGames());
+    dispatch(initChannels());
   }, [dispatch]);
 
   const channelRoutes = (channels: HostChannel[]) => {

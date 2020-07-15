@@ -4,11 +4,12 @@
   "description": "Backend for www.kotipelit.com",
   "main": "index.js",
   "scripts": {
-    "start": "yarn tsc && cross-env NODE_ENV=production node dist/index.js",
+    "start": "cross-env NODE_ENV=production node dist/index.js",
     "dev": " cross-env NODE_ENV=development ts-node-dev src/index.ts",
-    "tsc": "tsc",
+    "build": "tsc",
     "lint": "eslint --ext .ts .",
-    "test": "cross-env NODE_ENV=test jest --verbose --runInBand"
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
+    "postinstall": "yarn run build"
   },
   "author": "Jarkko Mämmelä",
   "license": "ISC",

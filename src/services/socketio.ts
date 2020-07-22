@@ -1,10 +1,8 @@
 import axios from 'axios';
-import socketIO from 'socket.io-client';
 import {
   CommonEvent,
   HostEvent,
   PlayerEvent,
-  LoggedUser,
   EmittedEvent,
   RecievedError,
   CreateSuccessResponse,
@@ -13,13 +11,9 @@ import {
 } from '../types';
 
 import * as callbacks from './socketio.callbacks';
-import * as events from './socketio.events';
 import { log } from '../utils/logger';
 
-export const attachListeners = (
-  socket: SocketIOClient.Socket,
-  isHost: boolean
-) => {
+const attachListeners = (socket: SocketIOClient.Socket, isHost: boolean) => {
   // default listeners
 
   socket.on(CommonEvent.PLAYER_JOINED, (data: string) =>
@@ -72,10 +66,7 @@ export const attachListeners = (
   }
 };
 
-export const emit = (
-  socket: SocketIOClient.Socket,
-  eventObj: EmittedEvent
-): void => {
+const emit = (socket: SocketIOClient.Socket, eventObj: EmittedEvent): void => {
   const { event, data } = eventObj;
 
   log(`Emitting ${event}`);
@@ -106,39 +97,9 @@ const authenticateSocket = (
   return socket;
 };
 
-const initHostSocket = (
-  user: LoggedUser,
-  gameId: string
-): SocketIOClient.Socket => {
-  if (!gameId) throw new Error(`Must provide game ID`);
-
-  const callback = (socket: SocketIOClient.Socket) => {
-    attachListeners(socket, true);
-    emit(socket, events.createRoom(gameId));
-  };
-
-  return authenticateSocket(socketIO(), user.token, callback);
-};
-
-const initPlayerSocket = async (
-  gameId: string,
-  playerId: string | null
-): Promise<SocketIOClient.Socket> => {
-  if (!playerId) throw new Error('Pelaajan id puuttuu');
-
-  const token = await getTokenForSocket(gameId, playerId);
-
-  const callback = (socket: SocketIOClient.Socket) => {
-    attachListeners(socket, false);
-    emit(socket, events.joinGame());
-  };
-
-  return authenticateSocket(socketIO(), token, callback);
-};
-
 export default {
   getTokenForSocket,
   authenticateSocket,
-  initHostSocket,
-  initPlayerSocket,
+  attachListeners,
+  emit,
 };

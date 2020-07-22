@@ -69,7 +69,6 @@ Embedded jitsi needs to be provided a valid JWT -token in order to create a new 
   "iss": "kotipelit.com",
   "sub": "meet.kotipelit.com",
   "room": <roomname>, // token will only be valid with roomname provided here
-  "iat": <issued at>, // token issue time, optional
   "exp": <expires> // token expire time, optional
 }
 ```

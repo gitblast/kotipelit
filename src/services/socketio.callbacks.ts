@@ -12,8 +12,7 @@ import { log } from '../utils/logger';
 import store from '../store';
 import { setJitsiToken, setJitsiRoom } from '../reducers/user.reducer';
 import { setActiveGame } from '../reducers/games.reducer';
-import { v4 as uuidv4 } from 'uuid';
-import { emit } from './socketio';
+import socketService from './socketio';
 import * as events from './socketio.events';
 
 export const connect = (
@@ -64,7 +63,7 @@ export const createSuccess = (data: CreateSuccessResponse) => {
   log(`recieved ${HostEvent.CREATE_SUCCESS}, data:`);
   log(data);
 
-  store.dispatch(setJitsiRoom(uuidv4()));
+  store.dispatch(setJitsiRoom(data.jitsiRoom));
   store.dispatch(setActiveGame(data.game));
   store.dispatch(setJitsiToken(data.jitsiToken));
 };
@@ -115,7 +114,7 @@ export const gameReady = (jitsiRoom: string) => {
 
     if (!socket) throw new Error('No socket set for user');
 
-    emit(socket, events.joinGame());
+    socketService.emit(socket, events.joinGame());
   } catch (error) {
     console.error(error.message);
   }

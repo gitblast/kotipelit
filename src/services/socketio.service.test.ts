@@ -1,10 +1,12 @@
-import socketService, { attachListeners } from './socketio';
+import socketService from './socketio';
 import axios, { AxiosResponse } from 'axios';
-import { CommonEvent, MockSocket, PlayerEvent, HostEvent } from '../types';
-
-jest.mock('axios');
-
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+import {
+  CommonEvent,
+  MockSocket,
+  PlayerEvent,
+  HostEvent,
+  EmittedEvent,
+} from '../types';
 
 const response: AxiosResponse = {
   data: 'token',
@@ -27,6 +29,13 @@ const mockSocket: MockSocket = {
   },
 };
 
+// mock axios
+jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+
+// make socketio client return mocksocket
+jest.mock('socket.io-client', () => () => mockSocket);
+
 let socket: SocketIOClient.Socket;
 let socketAsMock: MockSocket;
 
@@ -38,7 +47,7 @@ describe('socketio service', () => {
 
   describe('attachListeners', () => {
     it('should set common and player listeners for player', () => {
-      attachListeners(socket, false);
+      socketService.attachListeners(socket, false);
 
       expect(socketAsMock.listeners[PlayerEvent.JOIN_SUCCESS]).toEqual(
         expect.any(Function)
@@ -58,7 +67,7 @@ describe('socketio service', () => {
     });
 
     it('should set common and host listeners for host', () => {
-      attachListeners(socket, true);
+      socketService.attachListeners(socket, true);
 
       expect(socketAsMock.listeners[HostEvent.CREATE_SUCCESS]).toEqual(
         expect.any(Function)
@@ -91,13 +100,25 @@ describe('socketio service', () => {
     });
   });
 
-  describe('getAuthenticatedSocket', () => {
+  describe('authenticateSocket', () => {
     it('should call callback on "connect"', () => {
       socketService.authenticateSocket(socket, 'TOKEN', () => null);
 
       expect(socketAsMock.listeners[CommonEvent.CONNECT]).toEqual(
         expect.any(Function)
       );
+    });
+  });
+
+  describe('emit', () => {
+    it('should emit given object with given socket', () => {
+      const testObj = ({
+        event: 'test',
+        data: { test: true },
+      } as unknown) as EmittedEvent;
+
+      socketService.emit(socket, testObj);
+      expect(socketAsMock.emitted['test']).toEqual({ test: true });
     });
   });
 });

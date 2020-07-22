@@ -25,11 +25,12 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
     },
     jitsiContainer: {
+      boxSizing: 'border-box',
       width: '65%',
-      padding: theme.spacing(2),
       backgroundColor: theme.palette.grey[400],
     },
     hostControls: {
+      boxSizing: 'border-box',
       width: '35%',
       padding: theme.spacing(2),
       marginLeft: theme.spacing(1),
@@ -123,7 +124,7 @@ const Sanakierto: React.FC = () => {
       return user.loggedIn ? (
         <HostPanel game={activeGame} />
       ) : (
-        <PlayerSidePanel players={activeGame.players} />
+        <PlayerSidePanel game={activeGame} />
       );
     }
 

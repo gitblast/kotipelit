@@ -227,6 +227,7 @@ export type Action =
 export interface CreateSuccessResponse {
   game: ActiveGame;
   jitsiToken: string;
+  jitsiRoom: string;
 }
 
 export interface JoinSuccessResponse {

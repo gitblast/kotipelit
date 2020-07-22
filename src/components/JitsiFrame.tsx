@@ -16,6 +16,8 @@ interface JitsiFrameProps {
   dev?: boolean;
 }
 
+/** @TODO teardown jitsi? */
+
 const JitsiFrame: React.FC<JitsiFrameProps> = ({
   token,
   roomName,

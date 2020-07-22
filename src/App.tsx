@@ -12,7 +12,6 @@ import {
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { initGames } from './reducers/games.reducer';
 import { checkForUser } from './reducers/user.reducer';
 import { initChannels } from './reducers/channels.reducer';
 
@@ -35,20 +34,22 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+/** @TODO catch 404 */
+
 const App = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
   const user = useSelector((state: State) => state.user, shallowEqual);
+
   const channels = useSelector(
     (state: State) => state.channels.allChannels,
     shallowEqual
   );
 
-  // init channels, games and check local storage for user
+  // init channels and check local storage for user
   React.useEffect(() => {
     dispatch(checkForUser());
-    dispatch(initGames());
     dispatch(initChannels());
   }, [dispatch]);
 

@@ -121,7 +121,13 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({
             return (
               <TableRow key={index}>
                 <TableCell className={classes.noPaddingX} align="center">
-                  {player.name}
+                  <span>{player.name}</span>
+                  {player.online ? null : (
+                    <Typography
+                      variant="caption"
+                      color="error"
+                    >{` (offline)`}</Typography>
+                  )}
                 </TableCell>
                 <TableCell align="center">{player.points}</TableCell>
                 <TableCell

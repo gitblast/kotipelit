@@ -14,8 +14,8 @@ import {
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { SelectableGame, Sanakierto, SanakiertoPlayer } from '../../types';
 import { useDispatch } from 'react-redux';
-import { deleteGame, launchGame } from '../../reducers/games.reducer';
-import { useHistory, useLocation } from 'react-router-dom';
+import { deleteGame } from '../../reducers/games.reducer';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -72,13 +72,14 @@ interface QueuedGameProps {
 
 const QueuedGame: React.FC<QueuedGameProps> = ({ game }) => {
   const classes = useStyles();
-  const currentPath = useLocation().pathname;
+
+  const history = useHistory();
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [inviteText, setInviteText] = React.useState(
-    getInviteText(game, currentPath)
+    getInviteText(game, history.location.pathname)
   );
   const dispatch = useDispatch();
-  const history = useHistory();
 
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -87,8 +88,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game }) => {
   const handleClose = (): void => setAnchorEl(null);
 
   const handleStart = (): void => {
-    dispatch(launchGame(game.id));
-    history.push(`${currentPath}/${game.id}`);
+    history.push(`${history.location.pathname}/${game.id}`);
   };
 
   const handleRemove = (): void => {
@@ -163,7 +163,9 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game }) => {
               <Button
                 variant="outlined"
                 color="primary"
-                onClick={() => handleCopy(game, currentPath, player)}
+                onClick={() =>
+                  handleCopy(game, history.location.pathname, player)
+                }
               >
                 Näytä kutsuteksti
               </Button>

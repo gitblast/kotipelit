@@ -50,7 +50,7 @@ const HostPanel: React.FC<HostPanelProps> = ({ game }) => {
     timerRunning ? 1000 : null
   );
 
-  if (!socket) return <div>Yhdistetään...</div>;
+  if (!socket) return <Typography>Yhdistetään...</Typography>;
 
   const { players, info } = game;
 
@@ -64,8 +64,6 @@ const HostPanel: React.FC<HostPanelProps> = ({ game }) => {
   const playerWithTurn = players[playerInTurnIndex];
 
   const handleUpdate = (players: SanakiertoPlayer[]): void => {
-    console.log('current turn', playerInTurnIndex);
-
     let round: number;
     let turn: string;
 
@@ -77,8 +75,6 @@ const HostPanel: React.FC<HostPanelProps> = ({ game }) => {
       turn = players[playerInTurnIndex + 1].id;
     }
 
-    console.log('turn now', turn);
-
     const newGameState: SanakiertoActive = {
       ...game,
       players,
@@ -88,8 +84,6 @@ const HostPanel: React.FC<HostPanelProps> = ({ game }) => {
       },
       status: round > game.rounds ? GameStatus.FINISHED : GameStatus.RUNNING,
     };
-
-    console.log('updating with', newGameState);
 
     updateGame(newGameState);
     if (timerRunning) setTimerRunning(false);

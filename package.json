@@ -4,7 +4,7 @@
   "description": "Backend for www.kotipelit.com",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production yarn build && cross-env NODE_ENV=production node dist/index.js",
+    "start": "cross-env NODE_ENV=production node dist/index.js",
     "dev": " cross-env NODE_ENV=development ts-node-dev src/index.ts",
     "build": "tsc",
     "lint": "eslint --ext .ts .",

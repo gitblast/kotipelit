@@ -52,7 +52,7 @@ describe('games router', () => {
   });
 
   describe('GET /:id', () => {
-    it('should return a player token if player matching params is found', async () => {
+    it('should return object with token and display name if player matching params is found', async () => {
       const game = await testHelpers.addDummyGame(user);
       const gameId: string = game._id.toString();
 
@@ -70,17 +70,16 @@ describe('games router', () => {
         role: Role.PLAYER,
       };
 
-      expect(response.body).toBeDefined();
-
-      const decodedToken = jwt.verify(response.body, config.SECRET) as Record<
-        string,
-        string
-      >;
+      const decodedToken = jwt.verify(
+        response.body.token,
+        config.SECRET
+      ) as Record<string, string>;
 
       // remove iat field
       delete decodedToken.iat;
 
       expect(decodedToken).toEqual(expectedPayload);
+      expect(response.body.displayName).toBe(player.name);
     });
 
     it('should return 400 if game or player not found', async () => {

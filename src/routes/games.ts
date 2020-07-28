@@ -35,7 +35,9 @@ router.get('/:id', async (req, res, next) => {
 
     const token = jwt.sign(payload, config.SECRET);
 
-    res.json(token);
+    const response = { token, displayName: player.name };
+
+    res.json(response);
   } catch (error) {
     next(error);
   }

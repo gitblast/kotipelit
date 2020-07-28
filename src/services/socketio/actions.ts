@@ -1,8 +1,10 @@
 import socketIO from 'socket.io-client';
 import store from '../../store';
+import { setDisplayName } from '../../reducers/user.reducer';
 import socketService from './service';
 import * as events from './events';
 import { ActiveGame, LoggedUser } from '../../types';
+import { log } from '../../utils/logger';
 
 export const emitJitsiReady = (gameId: string, jitsiRoom: string): void => {
   try {
@@ -73,11 +75,14 @@ export const initPlayerSocket = async (
 ): Promise<SocketIOClient.Socket> => {
   if (!playerId) throw new Error('Pelaajan id puuttuu');
 
-  const token = await socketService.getTokenForSocket(gameId, playerId);
+  const data = await socketService.getTokenForSocket(gameId, playerId);
+
+  log(`Setting display name to '${data.displayName}'`);
+  store.dispatch(setDisplayName(data.displayName));
 
   return socketService.authenticateSocket(
     socketIO(),
-    token,
+    data.token,
     getAuthCallback(null)
   );
 };

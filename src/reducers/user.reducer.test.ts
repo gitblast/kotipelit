@@ -17,20 +17,21 @@ describe('user reducer', () => {
       loggedIn: false,
       jitsiRoom: null,
       socket: null,
+      displayName: null,
     });
   });
 
   it('should handle LOGIN_REQUEST', () => {
     const action: Action = {
       type: ActionType.LOGIN_REQUEST,
-      payload: 'username',
     };
 
     const expectedState = {
-      username: 'username',
       loggedIn: false,
+      loggingIn: true,
       jitsiRoom: null,
       socket: null,
+      displayName: null,
     };
 
     expect(reducer(undefined, action)).toEqual(expectedState);
@@ -45,6 +46,7 @@ describe('user reducer', () => {
       loggedIn: false,
       jitsiRoom: null,
       socket: null,
+      displayName: null,
     });
   });
 
@@ -75,6 +77,7 @@ describe('user reducer', () => {
       loggedIn: false,
       jitsiRoom: null,
       socket: null,
+      displayName: null,
     });
   });
 
@@ -89,6 +92,21 @@ describe('user reducer', () => {
       jitsiToken: 'JITSI_TOKEN!',
       jitsiRoom: null,
       socket: null,
+      displayName: null,
+    });
+  });
+
+  it('should handle SET_DISPLAYNAME', () => {
+    const action: Action = {
+      type: ActionType.SET_DISPLAYNAME,
+      payload: 'DISPLAYNAME',
+    };
+
+    expect(reducer(undefined, action)).toEqual({
+      loggedIn: false,
+      jitsiRoom: null,
+      socket: null,
+      displayName: 'DISPLAYNAME',
     });
   });
 
@@ -124,7 +142,7 @@ describe('user reducer', () => {
     it('should dispatch login request', async () => {
       const dispatch = jest.fn();
       await actions.loginUser('username', 'password')(dispatch);
-      expect(dispatch).toHaveBeenCalledWith(actions.loginRequest('username'));
+      expect(dispatch).toHaveBeenCalledWith(actions.loginRequest());
     });
 
     it('should clear localStorage and dispatch logout on logout', () => {

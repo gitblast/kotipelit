@@ -1,3 +1,10 @@
+// JITSI
+
+export interface JitsiApi {
+  on: (event: string, listener: () => void) => void;
+  dispose: () => void;
+}
+
 // GAMES
 
 export enum GameType {
@@ -48,6 +55,7 @@ export interface BaseUser {
   loggedIn: false;
   socket: null | SocketIOClient.Socket;
   jitsiRoom: null | string;
+  displayName: null | string;
 }
 
 export interface LoggedUser {
@@ -60,7 +68,7 @@ export interface LoggedUser {
 }
 
 export interface LoggingUser extends BaseUser {
-  username: string;
+  loggingIn: true;
 }
 
 export interface HostChannel {
@@ -124,6 +132,7 @@ export enum ActionType {
   SET_JITSI_TOKEN = 'SET_JITSI_TOKEN',
   SET_JITSI_ROOM = 'SET_JITSI_ROOM',
   SET_SOCKET = 'SET_SOCKET',
+  SET_DISPLAYNAME = 'SET_DISPLAYNAME',
 
   // init channels
   INIT_CHANNELS_REQUEST = 'INIT_CHANNELS_REQUEST',
@@ -197,7 +206,6 @@ export type Action =
   // LOGIN & USER
   | {
       type: ActionType.LOGIN_REQUEST;
-      payload: string; // username
     }
   | {
       type: ActionType.LOGIN_SUCCESS;
@@ -220,6 +228,10 @@ export type Action =
   | {
       type: ActionType.SET_SOCKET;
       payload: SocketIOClient.Socket;
+    }
+  | {
+      type: ActionType.SET_DISPLAYNAME;
+      payload: string;
     };
 
 // SOCKET IO EVENTS

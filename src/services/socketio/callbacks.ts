@@ -15,6 +15,7 @@ import { setActiveGame } from '../../reducers/games.reducer';
 import socketService from './service';
 import * as events from './events';
 
+/** @TODO handle error on connect */
 export const connect = (
   socket: SocketIOClient.Socket,
   token: string,

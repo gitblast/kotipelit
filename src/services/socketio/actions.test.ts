@@ -1,7 +1,13 @@
 import * as actions from './actions';
 import * as events from './events';
 import store from '../../store';
-import { ActionType, Action, ActiveGame, LoggedUser } from '../../types';
+import {
+  ActionType,
+  Action,
+  ActiveGame,
+  LoggedUser,
+  BaseUser,
+} from '../../types';
 import socketService from './service';
 
 const mockSocket = { mock: true };
@@ -99,6 +105,15 @@ describe('socketio actions', () => {
   });
 
   describe('init player socket', () => {
+    beforeEach(() => {
+      const tokenGetter = socketService.getTokenForSocket as jest.Mock;
+
+      tokenGetter.mockResolvedValueOnce({
+        token: 'TOKEN',
+        displayName: 'display',
+      });
+    });
+
     it('should throw error if player id is not provided', async () => {
       try {
         await actions.initPlayerSocket('gameId', null);
@@ -117,11 +132,20 @@ describe('socketio actions', () => {
       );
     });
 
+    it('should dispatch set display name', async () => {
+      store.dispatch({ type: ActionType.LOGOUT });
+      const user = store.getState().user as BaseUser;
+
+      expect(user.displayName).toBe(null);
+
+      await actions.initPlayerSocket('gameId', 'playerId');
+
+      const userNow = store.getState().user as BaseUser;
+
+      expect(userNow.displayName).toBe('display');
+    });
+
     it('should call authenticateSocket with token it fetches', async () => {
-      const tokenGetter = socketService.getTokenForSocket as jest.Mock;
-
-      tokenGetter.mockResolvedValueOnce('TOKEN');
-
       await actions.initPlayerSocket('gameId', 'playerId');
 
       expect(socketService.authenticateSocket).toHaveBeenCalledWith(
@@ -135,7 +159,7 @@ describe('socketio actions', () => {
   describe('init host socket', () => {
     it('should throw error if game id is not provided', () => {
       try {
-        actions.initHostSocket({} as LoggedUser, null);
+        actions.initHostSocket({} as LoggedUser, (null as unknown) as string);
         throw new Error('expected to throw, but passed');
       } catch (error) {
         expect(error.message).toBe('Pelin id puuttuu');

@@ -9,6 +9,7 @@ const initialUser: BaseUser = {
   loggedIn: false,
   socket: null,
   jitsiRoom: null,
+  displayName: null,
 };
 
 const reducer: Reducer<User, Action> = (
@@ -19,8 +20,7 @@ const reducer: Reducer<User, Action> = (
     case ActionType.LOGIN_REQUEST: {
       return {
         ...state,
-        username: action.payload,
-        loggedIn: false,
+        loggingIn: true,
       };
     }
     case ActionType.LOGIN_SUCCESS: {
@@ -33,10 +33,20 @@ const reducer: Reducer<User, Action> = (
       };
     }
     case ActionType.LOGIN_FAILURE: {
-      return { loggedIn: false, socket: null, jitsiRoom: null };
+      return {
+        loggedIn: false,
+        socket: null,
+        jitsiRoom: null,
+        displayName: null,
+      };
     }
     case ActionType.LOGOUT: {
-      return { loggedIn: false, socket: null, jitsiRoom: null };
+      return {
+        loggedIn: false,
+        socket: null,
+        jitsiRoom: null,
+        displayName: null,
+      };
     }
     case ActionType.SET_JITSI_TOKEN: {
       return {
@@ -54,6 +64,12 @@ const reducer: Reducer<User, Action> = (
       return {
         ...state,
         socket: action.payload,
+      };
+    }
+    case ActionType.SET_DISPLAYNAME: {
+      return {
+        ...state,
+        displayName: action.payload,
       };
     }
     default:
@@ -89,9 +105,8 @@ export const logout = (): Action => {
   return { type: ActionType.LOGOUT };
 };
 
-export const loginRequest = (username: string): Action => ({
+export const loginRequest = (): Action => ({
   type: ActionType.LOGIN_REQUEST,
-  payload: username,
 });
 
 export const loginSuccess = (
@@ -110,7 +125,7 @@ export const loginFailure = (): Action => ({ type: ActionType.LOGIN_FAILURE });
  */
 export const loginUser = (username: string, password: string) => {
   return async (dispatch: Dispatch) => {
-    dispatch(loginRequest(username));
+    dispatch(loginRequest());
 
     try {
       const user = await userService.login(username, password);
@@ -142,6 +157,11 @@ export const setJitsiRoom = (roomName: string): Action => ({
 export const setSocket = (socket: SocketIOClient.Socket): Action => ({
   type: ActionType.SET_SOCKET,
   payload: socket,
+});
+
+export const setDisplayName = (name: string): Action => ({
+  type: ActionType.SET_DISPLAYNAME,
+  payload: name,
 });
 
 export default reducer;

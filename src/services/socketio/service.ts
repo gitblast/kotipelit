@@ -81,7 +81,7 @@ const emit = (socket: SocketIOClient.Socket, eventObj: EmittedEvent): void => {
 const getTokenForSocket = async (
   gameId: string,
   playerId: string
-): Promise<string> => {
+): Promise<{ token: string; displayName: string }> => {
   const response = await axios.get(`/api/games/${gameId}?pelaaja=${playerId}`);
   return response.data;
 };

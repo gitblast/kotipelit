@@ -97,7 +97,8 @@ const Sanakierto: React.FC = () => {
       <JitsiFrame
         token={user.loggedIn ? user.jitsiToken : null}
         roomName={jitsiRoom}
-        handleLoaded={() => handleJitsiLoaded(gameID, jitsiRoom)}
+        displayName={user.loggedIn ? user.username : user.displayName}
+        loadedCallback={() => handleJitsiLoaded(gameID, jitsiRoom)}
         dev
       />
     );

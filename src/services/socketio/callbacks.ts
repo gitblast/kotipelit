@@ -7,13 +7,13 @@ import {
   ActiveGame,
   State,
   JoinSuccessResponse,
-} from '../types';
-import { log } from '../utils/logger';
-import store from '../store';
-import { setJitsiToken, setJitsiRoom } from '../reducers/user.reducer';
-import { setActiveGame } from '../reducers/games.reducer';
-import socketService from './socketio';
-import * as events from './socketio.events';
+} from '../../types';
+import { log } from '../../utils/logger';
+import store from '../../store';
+import { setJitsiToken, setJitsiRoom } from '../../reducers/user.reducer';
+import { setActiveGame } from '../../reducers/games.reducer';
+import socketService from './service';
+import * as events from './events';
 
 export const connect = (
   socket: SocketIOClient.Socket,
@@ -103,11 +103,8 @@ export const joinSuccess = (data: JoinSuccessResponse) => {
 export const joinFailure = (data: RecievedError) =>
   log(`recieved ${PlayerEvent.JOIN_FAILURE}: ${data.error}`);
 
-export const gameReady = (jitsiRoom: string) => {
+export const gameReady = () => {
   log(`recieved ${PlayerEvent.GAME_READY}`);
-
-  store.dispatch(setJitsiRoom(jitsiRoom));
-  console.log('jitsi room tässä turha');
 
   try {
     const socket = store.getState().user.socket;

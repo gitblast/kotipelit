@@ -1,8 +1,8 @@
-import * as actions from './socketio.actions';
-import * as events from './socketio.events';
-import store from '../store';
-import { ActionType, Action, ActiveGame, LoggedUser } from '../types';
-import socketService from './socketio';
+import * as actions from './actions';
+import * as events from './events';
+import store from '../../store';
+import { ActionType, Action, ActiveGame, LoggedUser } from '../../types';
+import socketService from './service';
 
 const mockSocket = { mock: true };
 
@@ -13,7 +13,8 @@ const setSocketAction: Action = {
 
 jest.mock('socket.io-client', () => () => mockSocket);
 
-jest.mock('./socketio', () => ({
+// mock socket io service
+jest.mock('./service', () => ({
   emit: jest.fn(),
   attachListeners: jest.fn(),
   authenticateSocket: jest.fn(),

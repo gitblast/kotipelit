@@ -1,8 +1,7 @@
 import React from 'react';
 
 import { log } from '../../utils/logger';
-import * as actions from '../../services/socketio.actions';
-import socketService from '../../services/socketio';
+import * as actions from '../../services/socketio/actions';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Paper, Typography } from '@material-ui/core';
@@ -67,9 +66,9 @@ const Sanakierto: React.FC = () => {
       log('initializing socket');
 
       if (user.loggedIn) {
-        dispatch(setSocket(socketService.initHostSocket(user, gameID)));
+        dispatch(setSocket(actions.initHostSocket(user, gameID)));
       } else {
-        socketService
+        actions
           .initPlayerSocket(gameID, getPlayerIDFromQuery(location))
           .then((authedSocket) => dispatch(setSocket(authedSocket)))
           .catch((error) => console.error(error.message));

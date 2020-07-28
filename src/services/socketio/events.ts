@@ -1,4 +1,4 @@
-import { HostEvent, EmittedEvent, PlayerEvent, ActiveGame } from '../types';
+import { HostEvent, EmittedEvent, PlayerEvent, ActiveGame } from '../../types';
 
 export const createRoom = (gameId: string): EmittedEvent => ({
   event: HostEvent.CREATE_ROOM,

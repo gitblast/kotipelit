@@ -8,10 +8,10 @@ import {
   CreateSuccessResponse,
   ActiveGame,
   JoinSuccessResponse,
-} from '../types';
+} from '../../types';
 
-import * as callbacks from './socketio.callbacks';
-import { log } from '../utils/logger';
+import * as callbacks from './callbacks';
+import { log } from '../../utils/logger';
 
 const attachListeners = (socket: SocketIOClient.Socket, isHost: boolean) => {
   // default listeners
@@ -53,9 +53,8 @@ const attachListeners = (socket: SocketIOClient.Socket, isHost: boolean) => {
       callbacks.joinFailure(data)
     );
 
-    socket.on(PlayerEvent.GAME_READY, (jitsiRoom: string) =>
-      callbacks.gameReady(jitsiRoom)
-    );
+    socket.on(PlayerEvent.GAME_READY, callbacks.gameReady);
+
     socket.on(PlayerEvent.GAME_STARTING, (game: ActiveGame) =>
       callbacks.gameStarting(game)
     );

@@ -1,5 +1,5 @@
-import * as events from './socketio.events';
-import { HostEvent, PlayerEvent, ActiveGame } from '../types';
+import * as events from './events';
+import { HostEvent, PlayerEvent, ActiveGame } from '../../types';
 
 describe('socket.io events', () => {
   it('should return EmittedEvent -object with createRoom', () => {

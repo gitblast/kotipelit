@@ -11,7 +11,7 @@ import {
 } from '../../types';
 import { useSelector } from 'react-redux';
 import useInterval from '../../hooks/useInterval';
-import { updateGame } from '../../services/socketio.actions';
+import { updateGame } from '../../services/socketio/actions';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

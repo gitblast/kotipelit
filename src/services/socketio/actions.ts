@@ -1,8 +1,8 @@
 import socketIO from 'socket.io-client';
-import store from '../store';
-import socketService from './socketio';
-import * as events from './socketio.events';
-import { ActiveGame, LoggedUser } from '../types';
+import store from '../../store';
+import socketService from './service';
+import * as events from './events';
+import { ActiveGame, LoggedUser } from '../../types';
 
 export const emitJitsiReady = (gameId: string, jitsiRoom: string): void => {
   try {

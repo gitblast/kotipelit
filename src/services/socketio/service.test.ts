@@ -1,4 +1,4 @@
-import socketService from './socketio';
+import socketService from './service';
 import axios, { AxiosResponse } from 'axios';
 import {
   CommonEvent,
@@ -6,7 +6,7 @@ import {
   PlayerEvent,
   HostEvent,
   EmittedEvent,
-} from '../types';
+} from '../../types';
 
 const response: AxiosResponse = {
   data: 'token',

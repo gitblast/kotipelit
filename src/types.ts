@@ -16,6 +16,10 @@ export interface NewGame extends BaseGame {
   host: UserModel['_id'];
 }
 
+export interface WordModel extends Document {
+  word: string;
+}
+
 export interface UserModel extends Document {
   username: string;
   email: string;

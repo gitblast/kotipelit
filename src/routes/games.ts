@@ -6,12 +6,14 @@ import {
   toID,
   validateGameHost,
   validateGamePlayer,
+  toPositiveInteger,
 } from '../utils/mappers';
 
 import expressJwt from 'express-jwt';
 import jwt from 'jsonwebtoken';
 import config from '../utils/config';
 import Game from '../models/game';
+import Word from '../models/word';
 import { Role } from '../types';
 
 const router = express.Router();
@@ -88,6 +90,19 @@ router.delete('/:id', async (req, res, next) => {
     await validatedGame.remove();
 
     res.status(204).end();
+  } catch (error) {
+    next(error);
+  }
+});
+
+/** random words */
+router.get('/words/:amount', async (req, res, next) => {
+  try {
+    const amount = toPositiveInteger(req.params.amount);
+
+    const words = await Word.aggregate().sample(amount);
+
+    res.json(words);
   } catch (error) {
     next(error);
   }

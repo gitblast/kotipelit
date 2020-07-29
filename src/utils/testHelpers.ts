@@ -10,8 +10,10 @@ import {
   UserModel,
   GameModel,
   GameType,
+  WordModel,
 } from '../types';
 import Game from '../models/game';
+import Word from '../models/word';
 
 const usersInDb = async (): Promise<UserModel[]> => {
   return await User.find({});
@@ -19,6 +21,19 @@ const usersInDb = async (): Promise<UserModel[]> => {
 
 const gamesInDb = async (): Promise<GameModel[]> => {
   return await Game.find({});
+};
+
+const addDummyWords = async (words: string[]): Promise<WordModel[]> => {
+  const wordsToAdd = words.map((word) => new Word({ word }));
+
+  const savedWords = [];
+
+  for (const word of wordsToAdd) {
+    const saved = await word.save();
+    savedWords.push(saved);
+  }
+
+  return savedWords;
 };
 
 const addDummyGame = async (user: UserModel): Promise<GameModel> => {
@@ -109,4 +124,5 @@ export default {
   addDummyGame,
   getValidToken,
   getSocketIOParams,
+  addDummyWords,
 };

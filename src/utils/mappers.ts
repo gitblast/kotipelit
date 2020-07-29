@@ -92,6 +92,13 @@ const parseRounds = (rounds: any): number => {
   return Number(rounds);
 };
 
+const parseNumber = (number: any): number => {
+  if (!number) throw new Error('Missing number');
+  if (!isNumber(number)) throw new Error('Invalid number');
+
+  return Number(number);
+};
+
 const parsePlayers = (players: any): GamePlayer[] => {
   if (!players) throw new Error('Missing players');
   if (!isArray(players)) throw new Error('Invalid players');
@@ -121,6 +128,15 @@ export const toNewGame = (object: any, hostId: Types.ObjectId): NewGame => {
     host: hostId,
     rounds: parseRounds(object.rounds),
   };
+};
+
+export const toPositiveInteger = (object: any): number => {
+  const number = parseNumber(object);
+
+  if (!Number.isInteger(number)) throw new Error('Invalid number');
+  if (number < 1) throw new Error('Invalid number');
+
+  return number;
 };
 
 interface DecodedToken {

@@ -96,10 +96,19 @@ const joinRoom = (
   return room.game;
 };
 
+const deleteRoom = (roomId: string): void => {
+  const room = rooms[roomId];
+
+  if (!room) throw new Error(`Room with id '${roomId}' not found`);
+
+  delete rooms[roomId];
+};
+
 export default {
   getRooms,
   joinRoom,
   createRoom,
+  deleteRoom,
   addSocketToRoom,
   updateRoomGame,
   getRoomGame,

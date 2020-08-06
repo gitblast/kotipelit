@@ -20,6 +20,12 @@ export interface WordModel extends Document {
   word: string;
 }
 
+export interface UrlModel extends Document {
+  hostName: string;
+  gameId: string;
+  playerId: string;
+}
+
 export interface UserModel extends Document {
   username: string;
   email: string;

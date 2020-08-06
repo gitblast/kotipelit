@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import express from 'express';
 
 import {
@@ -12,18 +15,30 @@ import {
 import expressJwt from 'express-jwt';
 import jwt from 'jsonwebtoken';
 import config from '../utils/config';
+
 import Game from '../models/game';
 import Word from '../models/word';
+import Url from '../models/url';
+
 import { Role } from '../types';
 
 const router = express.Router();
 
 /** public routes */
 
-router.get('/:id', async (req, res, next) => {
+router.get('/join/:hostName/:playerId', async (req, res, next) => {
   try {
-    const gameId = toID(req.params.id);
-    const playerId = toID(req.query.pelaaja);
+    const hostName = toID(req.params.hostName);
+    const playerId = toID(req.params.playerId);
+    const urlData = await Url.findOne({ hostName, playerId });
+
+    if (!urlData) {
+      throw new Error(
+        `Invalid url: no game found with host name '${hostName}' and player ID '${playerId}'`
+      );
+    }
+
+    const { gameId } = urlData;
 
     const game = await Game.findOne({ _id: gameId });
     const player = validateGamePlayer(game, playerId);
@@ -72,6 +87,19 @@ router.post('/', async (req, res, next) => {
     });
 
     const savedGame = await game.save();
+
+    /** save short urls to database */
+    for (const player of savedGame.players) {
+      const urlObject = {
+        playerId: player.id,
+        gameId: savedGame._id.toString(),
+        hostName: user.username,
+      };
+
+      const newUrl = new Url(urlObject);
+      await newUrl.save();
+    }
+
     res.json(savedGame);
   } catch (error) {
     next(error);
@@ -99,6 +127,8 @@ router.delete('/:id', async (req, res, next) => {
 router.get('/words/:amount', async (req, res, next) => {
   try {
     const amount = toPositiveInteger(req.params.amount);
+
+    console.log('HOGMHMHMHM');
 
     const words = await Word.aggregate().sample(amount);
 

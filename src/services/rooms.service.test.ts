@@ -225,4 +225,22 @@ describe('rooms service', () => {
       });
     });
   });
+
+  describe('deleteRoom', () => {
+    it('should throw error if room not found', () => {
+      setRooms({});
+
+      expect(() => roomService.deleteRoom('id')).toThrowError();
+    });
+
+    it('should delete room with given id if found', () => {
+      setRooms({ gameId: {} as GameRoom });
+
+      expect(Object.keys(roomService.getRooms()).length).toBe(1);
+
+      roomService.deleteRoom('gameId');
+
+      expect(Object.keys(roomService.getRooms()).length).toBe(0);
+    });
+  });
 });

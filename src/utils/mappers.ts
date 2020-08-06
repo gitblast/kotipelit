@@ -153,7 +153,7 @@ export const toAuthenticatedUser = (request: any): DecodedToken => {
     !isString(request.user.username) ||
     !isString(request.user.id)
   )
-    throw new Error('Request user invalid or missing');
+    throw new Error('Invalid or missing user');
 
   return request.user as DecodedToken;
 };

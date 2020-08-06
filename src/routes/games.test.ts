@@ -53,15 +53,17 @@ describe('games router', () => {
     await api.get(`${baseUrl}/words/1`).expect(401);
   });
 
-  describe('GET /:id', () => {
-    it('should return object with token and display name if player matching params is found', async () => {
+  describe('GET /:hostName/:playerId', () => {
+    it('should return object with token and display name with valid parameters', async () => {
       const game = await testHelpers.addDummyGame(user);
       const gameId: string = game._id.toString();
 
       const player = dummyGame.players[0];
 
+      const hostName = user.username;
+
       const response = await api
-        .get(`${baseUrl}/${gameId}?pelaaja=${player.id}`)
+        .get(`${baseUrl}/join/${hostName}/${player.id}`)
         .expect(200)
         .expect('Content-Type', /application\/json/);
 
@@ -84,16 +86,15 @@ describe('games router', () => {
       expect(response.body.displayName).toBe(player.name);
     });
 
-    it('should return 400 if game or player not found', async () => {
+    it('should return 400 with invalid host name or player id', async () => {
       const game = await testHelpers.addDummyGame(user);
-      const gameId: string = game._id.toString();
 
       await api
-        .get(`${baseUrl}/${gameId}?pelaaja=UNKNOWN_PLAYER_ID`)
+        .get(`${baseUrl}/join/${user.username}/INCORRECT_ID`)
         .expect(400);
 
       await api
-        .get(`${baseUrl}/UNKNOWNID?pelaaja=UNKNOWN_PLAYER_ID`)
+        .get(`${baseUrl}/join/INVALID_HOST/${game.players[0].id}`)
         .expect(400);
     });
   });

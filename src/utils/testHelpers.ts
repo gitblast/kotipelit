@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import User from '../models/user';
 import bcrypt from 'bcryptjs';
@@ -14,6 +16,7 @@ import {
 } from '../types';
 import Game from '../models/game';
 import Word from '../models/word';
+import Url from '../models/url';
 
 const usersInDb = async (): Promise<UserModel[]> => {
   return await User.find({});
@@ -57,7 +60,19 @@ const addDummyGame = async (user: UserModel): Promise<GameModel> => {
 
   const game = new Game({ ...dummyGame, createDate: new Date() });
 
-  return await game.save();
+  const savedGame = await game.save();
+
+  for (const player of savedGame.players) {
+    const newUrl = {
+      hostName: user.username,
+      playerId: player.id,
+      gameId: savedGame._id.toString(),
+    };
+
+    await new Url(newUrl).save();
+  }
+
+  return savedGame;
 };
 
 const addDummyUser = async (

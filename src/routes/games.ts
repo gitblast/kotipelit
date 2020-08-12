@@ -128,8 +128,6 @@ router.get('/words/:amount', async (req, res, next) => {
   try {
     const amount = toPositiveInteger(req.params.amount);
 
-    console.log('HOGMHMHMHM');
-
     const words = await Word.aggregate().sample(amount);
 
     res.json(words);

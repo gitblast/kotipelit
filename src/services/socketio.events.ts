@@ -59,6 +59,16 @@ export const updateFailure = (message: string): EmittedEvent => ({
   data: { error: message },
 });
 
+export const deleteSuccess = (): EmittedEvent => ({
+  event: EventType.DELETE_SUCCESS,
+  data: null,
+});
+
+export const deleteFailure = (message: string): EmittedEvent => ({
+  event: EventType.DELETE_FAILURE,
+  data: { error: message },
+});
+
 export const gameReady = (jitsiRoom: string): BroadcastedEvent => ({
   event: EventType.GAME_READY,
   data: jitsiRoom,
@@ -77,4 +87,9 @@ export const gameStarting = (game: ActiveGame): BroadcastedEvent => ({
 export const gameUpdated = (game: ActiveGame): BroadcastedEvent => ({
   event: EventType.GAME_UPDATED,
   data: game,
+});
+
+export const gameEnded = (): BroadcastedEvent => ({
+  event: EventType.GAME_ENDED,
+  data: null,
 });

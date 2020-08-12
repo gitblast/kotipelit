@@ -21,9 +21,33 @@ import {
   CreateRoomResponse,
   JitsiReadyData,
   TestEventType,
+  EmittedEvent,
+  BroadcastedEvent,
 } from '../types';
 
+import { Socket } from 'socket.io';
+
 import roomService from './rooms';
+
+export const emit = (socket: Socket, eventObj: EmittedEvent): void => {
+  const { event, data } = eventObj;
+
+  log(`Emitting ${event}`);
+
+  socket.emit(event, data);
+};
+
+export const broadcast = (
+  socket: Socket,
+  room: string,
+  eventObj: BroadcastedEvent
+): void => {
+  const { event, data } = eventObj;
+
+  log(`Broadcasting ${event}`);
+
+  socket.to(room).emit(event, data);
+};
 
 export const initRoom = async (
   socket: SocketWithToken,
@@ -126,16 +150,20 @@ export const attachListeners = (socket: SocketWithToken): void => {
         callbacks.jitsiReady(socket, data)
       );
 
-      socket.on(EventType.CREATE_ROOM, (gameId: string) =>
-        callbacks.createRoom(socket, gameId)
-      );
+      socket.on(EventType.CREATE_ROOM, (gameId: string) => {
+        void callbacks.createRoom(socket, gameId);
+      });
 
-      socket.on(EventType.START_GAME, (gameId: string) =>
-        callbacks.startGame(socket, gameId)
-      );
+      socket.on(EventType.START_GAME, (gameId: string) => {
+        void callbacks.startGame(socket, gameId);
+      });
 
       socket.on(EventType.UPDATE_GAME, (game: ActiveGame) => {
         callbacks.updateGame(socket, game);
+      });
+
+      socket.on(EventType.END_GAME, (gameId: string) => {
+        void callbacks.endGame(socket, gameId);
       });
 
       break;

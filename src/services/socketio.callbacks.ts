@@ -2,46 +2,24 @@
 import {
   JitsiReadyData,
   EventType,
-  EmittedEvent,
-  BroadcastedEvent,
   SocketWithToken,
   GameStatus,
-  CreateRoomResponse,
   GameType,
   GameInfo,
   ActiveGame,
 } from '../types';
 import { log } from '../utils/logger';
-import { Socket } from 'socket.io';
 import * as events from './socketio.events';
-import { initRoom, setGameStatus } from './socketio';
+import { initRoom, setGameStatus, emit, broadcast } from './socketio';
 import roomService from './rooms';
-
-const emit = (socket: Socket, eventObj: EmittedEvent): void => {
-  const { event, data } = eventObj;
-
-  log(`Emitting ${event}`);
-
-  socket.emit(event, data);
-};
-
-const broadcast = (
-  socket: Socket,
-  room: string,
-  eventObj: BroadcastedEvent
-): void => {
-  const { event, data } = eventObj;
-
-  log(`Broadcasting ${event}`);
-
-  socket.to(room).emit(event, data);
-};
+import Url from '../models/url';
 
 export const jitsiReady = (
   socket: SocketWithToken,
   data: JitsiReadyData
 ): void => {
   log(`Recieved ${EventType.JITSI_READY}`);
+
   try {
     broadcast(socket, data.gameId, events.gameReady(data.jitsiRoom));
   } catch (error) {
@@ -49,20 +27,26 @@ export const jitsiReady = (
   }
 };
 
-export const createRoom = (socket: SocketWithToken, roomId: string): void => {
+export const createRoom = async (
+  socket: SocketWithToken,
+  roomId: string
+): Promise<void> => {
   log(`Recieved ${EventType.CREATE_ROOM}`);
-  initRoom(socket, roomId)
-    .then((data: CreateRoomResponse) => {
-      roomService.addSocketToRoom(roomId, socket);
-      emit(
-        socket,
-        events.createSuccess(data.game, data.jitsiToken, data.jitsiRoom)
-      );
-    })
-    .catch((error: Error) => emit(socket, events.createFailure(error.message)));
+
+  try {
+    const data = await initRoom(socket, roomId);
+
+    roomService.addSocketToRoom(roomId, socket);
+    emit(
+      socket,
+      events.createSuccess(data.game, data.jitsiToken, data.jitsiRoom)
+    );
+  } catch (error) {
+    emit(socket, events.createFailure(error.message));
+  }
 };
 
-const getInitialInfo = (game: ActiveGame): GameInfo => {
+export const getInitialInfo = (game: ActiveGame): GameInfo => {
   /** handle different game types here */
   switch (game.type) {
     case GameType.SANAKIERTO: {
@@ -83,28 +67,31 @@ const getInitialInfo = (game: ActiveGame): GameInfo => {
   }
 };
 
-export const startGame = (socket: SocketWithToken, gameId: string): void => {
+export const startGame = async (
+  socket: SocketWithToken,
+  gameId: string
+): Promise<void> => {
   log(`Recieved ${EventType.START_GAME}`);
-  setGameStatus(gameId, GameStatus.RUNNING)
-    .then(() => {
-      const game = roomService.getRoomGame(gameId);
 
-      if (!game) throw new Error(`No game found for room '${gameId}'`);
-      if (game.status === GameStatus.RUNNING)
-        console.error(`Game with id '${gameId}' already running!`);
+  try {
+    await setGameStatus(gameId, GameStatus.RUNNING);
 
-      const startedGame = roomService.updateRoomGame(gameId, {
-        ...game,
-        status: GameStatus.RUNNING,
-        info: getInitialInfo(game),
-      });
+    const game = roomService.getRoomGame(gameId);
 
-      broadcast(socket, gameId, events.gameStarting(startedGame));
-      emit(socket, events.startSuccess(startedGame));
-    })
-    .catch((error: Error) => {
-      emit(socket, events.startFailure(error.message));
+    if (game.status === GameStatus.RUNNING)
+      console.error(`Game with id '${gameId}' already running!`);
+
+    const startedGame = roomService.updateRoomGame(gameId, {
+      ...game,
+      status: GameStatus.RUNNING,
+      info: getInitialInfo(game),
     });
+
+    broadcast(socket, gameId, events.gameStarting(startedGame));
+    emit(socket, events.startSuccess(startedGame));
+  } catch (error) {
+    emit(socket, events.startFailure(error.message));
+  }
 };
 
 export const updateGame = (socket: SocketWithToken, game: ActiveGame): void => {
@@ -134,5 +121,26 @@ export const joinGame = (
     broadcast(socket, gameId, events.playerJoined(playerId));
   } catch (error) {
     emit(socket, events.joinFailure(error.message));
+  }
+};
+
+export const endGame = async (
+  socket: SocketWithToken,
+  gameId: string
+): Promise<void> => {
+  log(`Recieved ${EventType.END_GAME}`);
+
+  try {
+    const game = roomService.getRoomGame(gameId);
+
+    for (const player of game.players) {
+      await Url.deleteOne({ playerId: player.id, gameId: gameId });
+    }
+
+    roomService.deleteRoom(gameId);
+    emit(socket, events.deleteSuccess());
+    broadcast(socket, gameId, events.gameEnded());
+  } catch (error) {
+    emit(socket, events.deleteFailure(error.message));
   }
 };

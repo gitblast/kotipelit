@@ -136,11 +136,16 @@ export enum EventType {
   START_SUCCESS = 'start success',
   START_FAILURE = 'start failure',
 
+  DELETE_SUCCESS = 'delete success',
+  DELETE_FAILURE = 'delete failure',
+
   // BROADCASTED
 
   PLAYER_JOINED = 'player joined',
   GAME_READY = 'game ready',
   GAME_STARTING = 'game starting',
+  GAME_UPDATED = 'game updated',
+  GAME_ENDED = 'game ended',
 
   // RECIEVED
 
@@ -153,7 +158,7 @@ export enum EventType {
   JITSI_READY = 'jitsi ready',
   START_GAME = 'start game',
   UPDATE_GAME = 'update game',
-  GAME_UPDATED = 'game updated',
+  END_GAME = 'end game',
 
   // player
   JOIN_GAME = 'join game',
@@ -175,6 +180,10 @@ export type BroadcastedEvent =
   | {
       event: EventType.GAME_UPDATED;
       data: ActiveGame;
+    }
+  | {
+      event: EventType.GAME_ENDED;
+      data: null;
     };
 
 export type EmittedEvent =
@@ -220,6 +229,16 @@ export type EmittedEvent =
       data: {
         error: string;
       };
+    }
+  | {
+      event: EventType.DELETE_SUCCESS;
+      data: null;
+    }
+  | {
+      event: EventType.DELETE_FAILURE;
+      data: {
+        error: string;
+      };
     };
 
 export type RecievedEvent =
@@ -233,6 +252,9 @@ export type RecievedEvent =
     }
   | {
       event: EventType.JOIN_GAME;
+    }
+  | {
+      event: EventType.GAME_ENDED;
     };
 
 export enum Role {

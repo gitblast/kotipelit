@@ -15,7 +15,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { SelectableGame, Sanakierto, SanakiertoPlayer } from '../../types';
 import { useDispatch } from 'react-redux';
 import { deleteGame } from '../../reducers/games.reducer';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -53,7 +53,7 @@ const getInviteUrl = (
 const getInviteText = (
   game: Sanakierto,
   hostPath: string,
-  player?: SanakiertoPlayer
+  player: SanakiertoPlayer
 ): string =>
   `Tervetuloa pelaamaan ${capitalize(game.type)}a!
   
@@ -64,21 +64,19 @@ Tehtävänäsi on miettiä sanoille niitä kuvaavat vihjeet.
 Peli alkaa ${new Date(game.startTime).toUTCString()}
       
 Nähdään peleillä osoitteessa:
-${player ? getInviteUrl(game.id, hostPath, player?.id) : '<Pelaajan linkki>'}`;
+${getInviteUrl(game.id, hostPath, player?.id)}`;
 
 interface QueuedGameProps {
   game: SelectableGame;
+  username: string;
 }
 
-const QueuedGame: React.FC<QueuedGameProps> = ({ game }) => {
+const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
   const classes = useStyles();
-
   const history = useHistory();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [inviteText, setInviteText] = React.useState(
-    getInviteText(game, history.location.pathname)
-  );
+  const [inviteText, setInviteText] = React.useState<null | string>(null);
   const dispatch = useDispatch();
 
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -87,23 +85,17 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game }) => {
 
   const handleClose = (): void => setAnchorEl(null);
 
-  const handleStart = (): void => {
-    history.push(`${history.location.pathname}/${game.id}`);
-  };
-
   const handleRemove = (): void => {
     const agree = window.confirm('Poistetaanko peli?');
 
     if (agree) dispatch(deleteGame(game.id));
   };
 
-  const handleCopy = (
+  const showInviteText = (
     game: SelectableGame,
     hostPath: string,
     player: SanakiertoPlayer
   ): void => {
-    console.log('TODO: copy to clipboard?');
-
     setInviteText(getInviteText(game, hostPath, player));
   };
 
@@ -121,7 +113,12 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game }) => {
         </div>
 
         <div>
-          <Button variant="contained" color="secondary" onClick={handleStart}>
+          <Button
+            variant="contained"
+            color="secondary"
+            component={Link}
+            to={`/${username}/${game.id}`}
+          >
             Käynnistä
           </Button>
           <IconButton
@@ -164,7 +161,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game }) => {
                 variant="outlined"
                 color="primary"
                 onClick={() =>
-                  handleCopy(game, history.location.pathname, player)
+                  showInviteText(game, history.location.pathname, player)
                 }
               >
                 Näytä kutsuteksti
@@ -173,12 +170,14 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game }) => {
           </div>
         ))}
       </div>
-      <div className={classes.inviteText}>
-        <Typography variant="h6" gutterBottom>
-          Kutsuteksti
-        </Typography>
-        <Typography style={{ whiteSpace: 'pre' }}>{inviteText}</Typography>
-      </div>
+      {inviteText && (
+        <div className={classes.inviteText}>
+          <Typography variant="h6" gutterBottom>
+            Kutsuteksti
+          </Typography>
+          <Typography style={{ whiteSpace: 'pre' }}>{inviteText}</Typography>
+        </div>
+      )}
     </Paper>
   );
 };

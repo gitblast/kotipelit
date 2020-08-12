@@ -31,7 +31,10 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
         <Typography variant="overline">Tulevat pelit:</Typography>
       </div>
       <div>
-        {games && games.map((game) => <QueuedGame key={game.id} game={game} />)}
+        {games &&
+          games.map((game) => (
+            <QueuedGame key={game.id} game={game} username={user.username} />
+          ))}
       </div>
       <div className={classes.marginTop}>
         <Fab

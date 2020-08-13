@@ -21,6 +21,7 @@ import UserControls from './components/UserControls';
 
 import ChannelPage from './components/ChannelPage';
 import { State, HostChannel } from './types';
+import { initGames } from './reducers/games.reducer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -47,9 +48,10 @@ const App = () => {
     shallowEqual
   );
 
-  // init channels and check local storage for user
+  // init channels and games and check local storage for user
   React.useEffect(() => {
     dispatch(checkForUser());
+    dispatch(initGames());
     dispatch(initChannels());
   }, [dispatch]);
 

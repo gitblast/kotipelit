@@ -43,16 +43,12 @@ const useStyles = makeStyles((theme: Theme) =>
 
 /** @TODO invitetext function */
 
-const getInviteUrl = (
-  gameId: string,
-  hostPath: string,
-  playerId: string | undefined
-): string =>
-  `https://www.kotipelit.com${hostPath}/${gameId}?pelaaja=${playerId}`;
+const getInviteUrl = (hostName: string, playerId: string): string =>
+  `https://www.kotipelit.com/${hostName}/${playerId}`;
 
 const getInviteText = (
   game: Sanakierto,
-  hostPath: string,
+  hostName: string,
   player: SanakiertoPlayer
 ): string =>
   `Tervetuloa pelaamaan ${capitalize(game.type)}a!
@@ -64,7 +60,7 @@ Tehtävänäsi on miettiä sanoille niitä kuvaavat vihjeet.
 Peli alkaa ${new Date(game.startTime).toUTCString()}
       
 Nähdään peleillä osoitteessa:
-${getInviteUrl(game.id, hostPath, player?.id)}`;
+${getInviteUrl(hostName, player.id)}`;
 
 interface QueuedGameProps {
   game: SelectableGame;
@@ -93,10 +89,10 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
 
   const showInviteText = (
     game: SelectableGame,
-    hostPath: string,
+    hostName: string,
     player: SanakiertoPlayer
   ): void => {
-    setInviteText(getInviteText(game, hostPath, player));
+    setInviteText(getInviteText(game, hostName, player));
   };
 
   return (
@@ -136,7 +132,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
             anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             transformOrigin={{ vertical: 'top', horizontal: 'center' }}
           >
-            <MenuItem>
+            <MenuItem disabled>
               <Typography>Muokkaa</Typography>
             </MenuItem>
             <MenuItem onClick={handleRemove}>
@@ -160,9 +156,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
               <Button
                 variant="outlined"
                 color="primary"
-                onClick={() =>
-                  showInviteText(game, history.location.pathname, player)
-                }
+                onClick={() => showInviteText(game, username, player)}
               >
                 Näytä kutsuteksti
               </Button>

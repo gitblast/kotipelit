@@ -43,7 +43,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
           component={Link}
           to={`/${user.username}/newgame`}
         >
-          LUO PELI
+          UUSI PELI
         </Fab>
       </div>
     </div>

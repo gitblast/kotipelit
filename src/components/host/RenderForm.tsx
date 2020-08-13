@@ -14,7 +14,7 @@ import {
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
-import shortid from 'shortid';
+import wordService from '../../services/words';
 
 import { KeyboardDateTimePicker } from '@material-ui/pickers';
 
@@ -47,74 +47,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
-
-const hardcodedWords = [
-  'DIABOLATRY',
-  'FURIOUS',
-  'ARCH',
-  'DRUGSTORE',
-  'DONATION',
-  'HORROR',
-  'SICK',
-  'CARIBOU',
-  'BLIP',
-  'SNAIL',
-  'AIRPORT',
-  'MILKY',
-  'THINGS',
-  'PRAGMATIC',
-  'NASTY',
-  'CURVED',
-  'LIBERATING',
-  'BELT',
-  'GRIZZLY',
-  'BIGMOUTH',
-  'HOROSCOPE',
-  'LIME',
-  'HIGHWAY',
-  'THINGS',
-  'MACHINE',
-  'AGGRESSION',
-  'BARBWIRE',
-  'PROPELLER',
-  'BLEEP',
-  'DEDUCTION',
-];
-
-const getRandomWord = (): string => {
-  return hardcodedWords[Math.floor(Math.random() * hardcodedWords.length)];
-};
-
-/**
- * Generates initial player objects to be used in state
- * @return {Array} - Array of 5 player objects with 3 unique, randow words each
- */
-export const initializePlayers = (): SanakiertoPlayer[] => {
-  const players = [];
-  const usedWords: string[] = [];
-
-  for (let i = 1; i <= 5; i++) {
-    const words: string[] = [];
-
-    while (words.length < 3) {
-      const randomWord = getRandomWord();
-      if (!usedWords.includes(randomWord)) {
-        words.push(randomWord);
-        usedWords.push(randomWord);
-      }
-    }
-
-    players.push({
-      id: shortid.generate(),
-      name: `Pelaaja ${i}`,
-      words,
-      points: 0,
-      online: false,
-    });
-  }
-
-  return players;
-};
 
 interface PlayerTableProps {
   players: SanakiertoPlayer[];
@@ -184,21 +116,21 @@ const RenderForm: React.FC<RenderFormProps> = ({
 }) => {
   const classes = useStyles();
 
-  console.log('for', formikProps);
-
   /**
    * Refreshes the word in the given index of the given player with a new, randow word
    * @param {SanakiertoPlayer} playerToUpdate - the player whose word will be updated
    * @param {number} wordIndex - the index of the word to refresh
    */
-  const handleRefresh = (
+  const handleRefresh = async (
     playerToUpdate: SanakiertoPlayer,
     wordIndex: number
-  ): void => {
-    const newPlayers = formikProps.values.players.map((player) => {
-      if (player.name === playerToUpdate.name) {
+  ): Promise<void> => {
+    alert('todo!');
+    /**
+     * const newPlayers = formikProps.values.players.map((player) => {
+      if (player.id === playerToUpdate.id) {
         const newWords = player.words;
-        newWords[wordIndex] = getRandomWord();
+        newWords[wordIndex] = await wordService.getOne();
         return { ...player, words: newWords };
       }
 
@@ -209,6 +141,7 @@ const RenderForm: React.FC<RenderFormProps> = ({
       ...formikProps.values,
       players: newPlayers,
     });
+     */
   };
 
   return (

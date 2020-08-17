@@ -43,6 +43,13 @@ const attachListeners = (socket: SocketIOClient.Socket, isHost: boolean) => {
     socket.on(HostEvent.UPDATE_FAILURE, (data: RecievedError) =>
       callbacks.updateFailure(data)
     );
+
+    socket.on(HostEvent.END_SUCCESS, () => {
+      callbacks.endSuccess();
+    });
+    socket.on(HostEvent.END_FAILURE, (data: RecievedError) => {
+      callbacks.endFailure(data);
+    });
   } else {
     // player listeners
 
@@ -79,10 +86,10 @@ const emit = (socket: SocketIOClient.Socket, eventObj: EmittedEvent): void => {
 };
 
 const getTokenForSocket = async (
-  gameId: string,
+  hostName: string,
   playerId: string
 ): Promise<{ token: string; displayName: string }> => {
-  const response = await axios.get(`/api/games/${gameId}?pelaaja=${playerId}`);
+  const response = await axios.get(`/api/games/join/${hostName}/${playerId}`);
   return response.data;
 };
 

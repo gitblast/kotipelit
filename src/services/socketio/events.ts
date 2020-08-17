@@ -23,6 +23,11 @@ export const startGame = (gameId: string): EmittedEvent => ({
   data: gameId,
 });
 
+export const endGame = (gameId: string): EmittedEvent => ({
+  event: HostEvent.END_GAME,
+  data: gameId,
+});
+
 export const updateGame = (game: ActiveGame): EmittedEvent => ({
   event: HostEvent.UPDATE_GAME,
   data: game,

@@ -51,7 +51,10 @@ const ChannelPage: React.FC<ChannelPageProps> = ({ labelText }) => {
           <Route path="/:username/newgame">
             {loggedInUser ? <NewGame /> : null}
           </Route>
-          <Route path="/:username/:gameID">
+          <Route path="/:username/pelit/:gameID">
+            <Sanakierto />
+          </Route>
+          <Route path="/:username/:playerID">
             <Sanakierto />
           </Route>
           <Route path="/">

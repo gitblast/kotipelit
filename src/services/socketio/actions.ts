@@ -42,6 +42,18 @@ export const updateGame = (game: ActiveGame) => {
   }
 };
 
+export const endGame = (gameId: string): void => {
+  try {
+    const socket = store.getState().user.socket;
+
+    if (!socket) throw new Error('Socket not set for user');
+
+    socketService.emit(socket, events.endGame(gameId));
+  } catch (error) {
+    console.error(error.message);
+  }
+};
+
 export const getAuthCallback = (gameId: string | null): Function => {
   if (gameId) {
     return (socket: SocketIOClient.Socket) => {
@@ -70,12 +82,12 @@ export const initHostSocket = (
 };
 
 export const initPlayerSocket = async (
-  gameId: string,
-  playerId: string | null
+  hostName: string,
+  playerId: string
 ): Promise<SocketIOClient.Socket> => {
   if (!playerId) throw new Error('Pelaajan id puuttuu');
 
-  const data = await socketService.getTokenForSocket(gameId, playerId);
+  const data = await socketService.getTokenForSocket(hostName, playerId);
 
   log(`Setting display name to '${data.displayName}'`);
   store.dispatch(setDisplayName(data.displayName));

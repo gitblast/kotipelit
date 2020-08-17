@@ -48,6 +48,17 @@ describe('socket.io events', () => {
     });
   });
 
+  it('should return EmittedEvent -object with endGame', () => {
+    const gameId = 'GAME_ID';
+
+    const obj = events.endGame(gameId);
+
+    expect(obj).toEqual({
+      event: HostEvent.END_GAME,
+      data: gameId,
+    });
+  });
+
   it('should return EmittedEvent -object with updateGame', () => {
     const game = {} as ActiveGame;
 

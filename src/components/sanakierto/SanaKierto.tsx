@@ -13,7 +13,7 @@ import PlayerSidePanel from './PlayerSidePanel';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { State, GameStatus, SanakiertoPlayer } from '../../types';
 
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import JitsiFrame from '../JitsiFrame';
 import WaitingRoom from './WaitingRoom';
 import { setSocket } from '../../reducers/user.reducer';
@@ -37,27 +37,24 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const getPlayerIDFromQuery = (location: { search: string }) => {
-  const params = new URLSearchParams(location.search);
-
-  return params.get('pelaaja');
-};
-
 // interface SanakiertoProps {}
 
 interface ParamTypes {
   username: string;
-  gameID: string;
+  playerID?: string;
+  gameID?: string;
 }
+
+/** @TODO refactor host and player to different components */
 
 const Sanakierto: React.FC = () => {
   const classes = useStyles();
   const activeGame = useSelector((state: State) => state.games.activeGame);
-  const { gameID } = useParams<ParamTypes>();
+  const params = useParams<ParamTypes>();
+  const { gameID, username, playerID } = params;
   const user = useSelector((state: State) => state.user, shallowEqual);
   const socket = useSelector((state: State) => state.user.socket);
   const jitsiRoom = useSelector((state: State) => state.user.jitsiRoom);
-  const location = useLocation();
   const dispatch = useDispatch();
 
   /** @TODO find out if socket io always uses encrypted connection and manage auth (insecure to send token if not) */
@@ -65,13 +62,13 @@ const Sanakierto: React.FC = () => {
     if (!socket) {
       log('initializing socket');
 
-      if (user.loggedIn) {
-        dispatch(setSocket(actions.initHostSocket(user, gameID)));
-      } else {
+      if (playerID) {
         actions
-          .initPlayerSocket(gameID, getPlayerIDFromQuery(location))
+          .initPlayerSocket(username, playerID)
           .then((authedSocket) => dispatch(setSocket(authedSocket)))
           .catch((error) => console.error(error.message));
+      } else if (gameID && user.loggedIn) {
+        dispatch(setSocket(actions.initHostSocket(user, gameID)));
       }
     }
   }, []);
@@ -115,7 +112,9 @@ const Sanakierto: React.FC = () => {
       return (
         <WaitingRoom
           game={activeGame}
-          handleStart={user.loggedIn ? () => handleStartGame(gameID) : null}
+          handleStart={
+            user.loggedIn && gameID ? () => handleStartGame(gameID) : null
+          }
         />
       );
     }
@@ -128,7 +127,14 @@ const Sanakierto: React.FC = () => {
       );
     }
 
-    return <Results results={sortPlayersByPoints(activeGame.players)} />;
+    return (
+      <Results
+        results={sortPlayersByPoints(activeGame.players)}
+        handleTearDown={
+          user.loggedIn && gameID ? () => actions.endGame(gameID) : null
+        }
+      />
+    );
   };
 
   return (

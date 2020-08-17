@@ -91,11 +91,14 @@ describe('socketio service', () => {
     it('should fetch token for player', async () => {
       mockedAxios.get.mockImplementationOnce(() => Promise.resolve(response));
 
-      const token = await socketService.getTokenForSocket('gameID', 'playerID');
+      const token = await socketService.getTokenForSocket(
+        'hostName',
+        'playerID'
+      );
 
       expect(token).toBe('token');
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        '/api/games/gameID?pelaaja=playerID'
+        '/api/games/join/hostName/playerID'
       );
     });
   });

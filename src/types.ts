@@ -143,7 +143,7 @@ export enum ActionType {
 export type Action =
   | {
       type: ActionType.SET_ACTIVE_GAME;
-      payload: ActiveGame;
+      payload: ActiveGame | null;
     }
   // INIT GAMES
   | {
@@ -263,6 +263,7 @@ export enum HostEvent {
   CREATE_ROOM = 'create room',
   START_GAME = 'start game',
   UPDATE_GAME = 'update game',
+  END_GAME = 'end game',
 
   CREATE_SUCCESS = 'create success',
   CREATE_FAILURE = 'create failure',
@@ -272,6 +273,9 @@ export enum HostEvent {
 
   UPDATE_SUCCESS = 'update success',
   UPDATE_FAILURE = 'update failure',
+
+  END_SUCCESS = 'end success',
+  END_FAILURE = 'end failure',
 }
 
 export enum CommonEvent {
@@ -305,7 +309,11 @@ export type EmittedEvent =
     }
   | {
       event: HostEvent.UPDATE_GAME;
-      data: ActiveGame; // game id
+      data: ActiveGame;
+    }
+  | {
+      event: HostEvent.END_GAME;
+      data: string; // game id
     };
 
 export interface RecievedError {

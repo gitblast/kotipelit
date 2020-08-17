@@ -91,6 +91,16 @@ export const startSuccess = (startedGame: ActiveGame) => {
 export const startFailure = (data: RecievedError) =>
   log(`recieved ${HostEvent.START_FAILURE}: ${data.error}`);
 
+export const endSuccess = () => {
+  log(`recieved ${HostEvent.END_SUCCESS}:`);
+
+  store.dispatch(setActiveGame(null));
+};
+
+export const endFailure = (data: RecievedError) => {
+  log(`recieved ${HostEvent.END_FAILURE}: ${data.error}`);
+};
+
 /** PLAYER */
 
 export const joinSuccess = (data: JoinSuccessResponse) => {

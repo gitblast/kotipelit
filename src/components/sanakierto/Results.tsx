@@ -9,54 +9,51 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  Fab,
 } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       padding: theme.spacing(2),
+      textAlign: 'center',
     },
-    header: {
-      marginLeft: theme.spacing(2),
+    marginTop: {
+      marginTop: theme.spacing(2),
     },
   })
 );
 
 interface ResultsProps {
   results: SanakiertoPlayer[];
+  handleTearDown: (() => void) | null;
 }
 
-const Results: React.FC<ResultsProps> = ({ results }) => {
+const Results: React.FC<ResultsProps> = ({ results, handleTearDown }) => {
   const classes = useStyles();
-  let placement = 1;
 
   return (
     <div className={classes.container}>
-      <Typography variant="h4" gutterBottom className={classes.header}>
-        PELI PÄÄTTYI
+      <Typography variant="h4" gutterBottom>
+        TULOKSET
       </Typography>
       <Table>
         <TableBody>
-          {results.map((player, index) => {
-            const row = (
-              <TableRow key={player.name}>
-                <TableCell>{/** placement here? */ player.name}</TableCell>
-                <TableCell>{`${player.points} pistettä`}</TableCell>
-              </TableRow>
-            );
-
-            /** handle shared placements */
-            if (
-              index < results.length - 1 &&
-              results[index + 1].points < player.points
-            ) {
-              placement += 1;
-            }
-
-            return row;
-          })}
+          {results.map((player) => (
+            <TableRow key={player.name}>
+              <TableCell align="center">{player.name}</TableCell>
+              <TableCell align="center">{`${player.points} pistettä`}</TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
+      {handleTearDown && (
+        <div className={classes.marginTop}>
+          <Fab variant="extended" color="secondary" onClick={handleTearDown}>
+            Lopeta peli
+          </Fab>
+        </div>
+      )}
     </div>
   );
 };

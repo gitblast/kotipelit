@@ -69,7 +69,6 @@ interface QueuedGameProps {
 
 const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
   const classes = useStyles();
-  const history = useHistory();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [inviteText, setInviteText] = React.useState<null | string>(null);
@@ -113,7 +112,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
             variant="contained"
             color="secondary"
             component={Link}
-            to={`/${username}/${game.id}`}
+            to={`/${username}/pelit/${game.id}`}
           >
             Käynnistä
           </Button>

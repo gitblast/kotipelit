@@ -70,6 +70,19 @@ describe('socketio actions', () => {
     });
   });
 
+  describe('end game', () => {
+    it('should call emit with user socket and given game id', () => {
+      const gameId = 'TEST_ID';
+
+      actions.endGame(gameId);
+
+      expect(socketService.emit).toHaveBeenCalledWith(
+        mockSocket,
+        events.endGame(gameId)
+      );
+    });
+  });
+
   describe('get auth callback', () => {
     it('should return player callback if no game id is given', () => {
       const playerCallback = actions.getAuthCallback(null);
@@ -116,7 +129,7 @@ describe('socketio actions', () => {
 
     it('should throw error if player id is not provided', async () => {
       try {
-        await actions.initPlayerSocket('gameId', null);
+        await actions.initPlayerSocket('hostName', '');
         throw new Error('expected to throw, but passed');
       } catch (error) {
         expect(error.message).toBe('Pelaajan id puuttuu');
@@ -124,10 +137,10 @@ describe('socketio actions', () => {
     });
 
     it('should call getTokenForSocket', async () => {
-      await actions.initPlayerSocket('gameId', 'playerId');
+      await actions.initPlayerSocket('hostName', 'playerId');
 
       expect(socketService.getTokenForSocket).toHaveBeenCalledWith(
-        'gameId',
+        'hostName',
         'playerId'
       );
     });
@@ -138,7 +151,7 @@ describe('socketio actions', () => {
 
       expect(user.displayName).toBe(null);
 
-      await actions.initPlayerSocket('gameId', 'playerId');
+      await actions.initPlayerSocket('hostName', 'playerId');
 
       const userNow = store.getState().user as BaseUser;
 
@@ -146,7 +159,7 @@ describe('socketio actions', () => {
     });
 
     it('should call authenticateSocket with token it fetches', async () => {
-      await actions.initPlayerSocket('gameId', 'playerId');
+      await actions.initPlayerSocket('hostName', 'playerId');
 
       expect(socketService.authenticateSocket).toHaveBeenCalledWith(
         mockSocket,

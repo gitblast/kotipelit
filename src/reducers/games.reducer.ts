@@ -216,7 +216,7 @@ export const deleteGame = (idToRemove: string) => {
   };
 };
 
-export const setActiveGame = (game: ActiveGame): Action => ({
+export const setActiveGame = (game: ActiveGame | null): Action => ({
   type: ActionType.SET_ACTIVE_GAME,
   payload: game,
 });

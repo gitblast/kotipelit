@@ -20,7 +20,7 @@ import Game from '../models/game';
 import Word from '../models/word';
 import Url from '../models/url';
 
-import { Role } from '../types';
+import { Role, WordModel } from '../types';
 
 const router = express.Router();
 
@@ -128,9 +128,9 @@ router.get('/words/:amount', async (req, res, next) => {
   try {
     const amount = toPositiveInteger(req.params.amount);
 
-    const words = await Word.aggregate().sample(amount);
+    const words = await Word.aggregate<WordModel>().sample(amount);
 
-    res.json(words);
+    res.json(words.map((word) => word.word));
   } catch (error) {
     next(error);
   }

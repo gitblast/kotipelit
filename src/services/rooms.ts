@@ -1,4 +1,10 @@
-import { GameRoom, ActiveGame, WaitingGame } from '../types';
+import {
+  GameRoom,
+  ActiveGame,
+  WaitingGame,
+  CreateRoomResponse,
+} from '../types';
+import { getJitsiToken } from './socketio';
 
 import { log } from '../utils/logger';
 
@@ -34,6 +40,21 @@ const createRoom = (
   rooms[id] = newRoom;
 
   return newRoom;
+};
+
+const getRoomData = (
+  username: string,
+  roomId: string
+): CreateRoomResponse | null => {
+  const room = rooms[roomId];
+
+  if (!room) return null;
+
+  return {
+    jitsiRoom: room.jitsiRoom,
+    game: room.game,
+    jitsiToken: getJitsiToken(username, room.jitsiRoom),
+  };
 };
 
 const getRoomGame = (roomId: string): ActiveGame => {
@@ -114,4 +135,5 @@ export default {
   getRoomGame,
   setJitsiRoom,
   getJitsiRoomByRoomId,
+  getRoomData,
 };

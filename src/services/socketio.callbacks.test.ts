@@ -3,6 +3,7 @@ import * as socketService from './socketio';
 import roomService from './rooms';
 import Url from '../models/url';
 import * as events from './socketio.events';
+import gameService from '../services/games';
 import {
   SocketWithToken,
   JitsiReadyData,
@@ -25,13 +26,21 @@ jest.mock('./rooms', () => ({
   updateRoomGame: jest.fn(),
   getJitsiRoomByRoomId: jest.fn(),
   deleteRoom: jest.fn(),
+  getRoomData: jest.fn(),
 }));
 
 jest.mock('../models/url', () => ({
   deleteOne: jest.fn(),
 }));
 
-const mockSocket = { id: 'mockSocketID' } as SocketWithToken;
+jest.mock('../services/games');
+
+const mockSocket = {
+  id: 'mockSocketID',
+  decoded_token: {
+    username: 'testUser',
+  },
+} as SocketWithToken;
 
 describe('socket.io callbacks', () => {
   describe('jitsi ready', () => {
@@ -52,10 +61,30 @@ describe('socket.io callbacks', () => {
   });
 
   describe('create room', () => {
-    it('should call initRoom', async () => {
+    it('should call getRoomData if room already exists', async () => {
+      const getData = roomService.getRoomData as jest.Mock;
+
+      getData.mockReturnValueOnce({
+        game: null,
+        jitsiToken: null,
+        jitsiRoom: null,
+      });
+
       await callbacks.createRoom(mockSocket, 'testID');
 
-      expect(socketService.initRoom).toHaveBeenCalledWith(mockSocket, 'testID');
+      expect(roomService.getRoomData).toHaveBeenCalledWith(
+        mockSocket.decoded_token.username,
+        'testID'
+      );
+    });
+
+    it('should call initRoom if no room exists', async () => {
+      await callbacks.createRoom(mockSocket, 'unique id');
+
+      expect(socketService.initRoom).toHaveBeenCalledWith(
+        mockSocket,
+        'unique id'
+      );
     });
 
     it('should call addSocketToRoom', async () => {
@@ -304,6 +333,7 @@ describe('socket.io callbacks', () => {
 
   describe('end game', () => {
     const mockGame = {
+      id: 'testID',
       players: [
         {
           id: 'first',
@@ -344,14 +374,21 @@ describe('socket.io callbacks', () => {
       });
     });
 
+    it('should update status and players to db', () => {
+      expect(gameService.saveFinishedGame).toHaveBeenLastCalledWith(
+        'testID',
+        mockGame
+      );
+    });
+
     it('should call delete room', () => {
       expect(roomService.deleteRoom).toHaveBeenLastCalledWith('testID');
     });
 
-    it('should emit delete success', () => {
+    it('should emit end success', () => {
       expect(socketService.emit).toHaveBeenLastCalledWith(
         mockSocket,
-        events.deleteSuccess()
+        events.endSuccess(mockGame.id)
       );
     });
 
@@ -363,7 +400,7 @@ describe('socket.io callbacks', () => {
       );
     });
 
-    it('should emit delete failure on error', async () => {
+    it('should emit end failure on error', async () => {
       const getRoomGame = roomService.getRoomGame as jest.Mock;
 
       getRoomGame.mockImplementationOnce(() => {
@@ -374,7 +411,7 @@ describe('socket.io callbacks', () => {
 
       expect(socketService.emit).toHaveBeenLastCalledWith(
         mockSocket,
-        events.deleteFailure('test error')
+        events.endFailure('test error')
       );
     });
   });

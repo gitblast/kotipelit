@@ -13,6 +13,7 @@ import * as events from './socketio.events';
 import { initRoom, setGameStatus, emit, broadcast } from './socketio';
 import roomService from './rooms';
 import Url from '../models/url';
+import gameService from '../services/games';
 
 export const jitsiReady = (
   socket: SocketWithToken,
@@ -34,7 +35,15 @@ export const createRoom = async (
   log(`Recieved ${EventType.CREATE_ROOM}`);
 
   try {
-    const data = await initRoom(socket, roomId);
+    // check if room already exists
+    let data = roomService.getRoomData(socket.decoded_token.username, roomId);
+
+    if (!data) {
+      log('creating a new room');
+      data = await initRoom(socket, roomId);
+    } else {
+      log('existing room found. joining');
+    }
 
     roomService.addSocketToRoom(roomId, socket);
     emit(
@@ -137,10 +146,13 @@ export const endGame = async (
       await Url.deleteOne({ playerId: player.id, gameId: gameId });
     }
 
+    // save results to db
+    await gameService.saveFinishedGame(gameId, game);
+
     roomService.deleteRoom(gameId);
-    emit(socket, events.deleteSuccess());
+    emit(socket, events.endSuccess(gameId));
     broadcast(socket, gameId, events.gameEnded());
   } catch (error) {
-    emit(socket, events.deleteFailure(error.message));
+    emit(socket, events.endFailure(error.message));
   }
 };

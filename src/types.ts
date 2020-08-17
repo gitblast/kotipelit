@@ -58,6 +58,7 @@ export enum GameType {
 export interface GamePlayer {
   name: string;
   id: string;
+  points: number;
 }
 
 export interface ActiveGamePlayer extends GamePlayer {
@@ -99,7 +100,7 @@ export interface GameRoom {
   id: string;
   hostSocket: string;
   game: ActiveGame;
-  jitsiRoom: string | null;
+  jitsiRoom: string;
 }
 
 export interface CreateRoomData {
@@ -136,8 +137,8 @@ export enum EventType {
   START_SUCCESS = 'start success',
   START_FAILURE = 'start failure',
 
-  DELETE_SUCCESS = 'delete success',
-  DELETE_FAILURE = 'delete failure',
+  END_SUCCESS = 'end success',
+  END_FAILURE = 'end failure',
 
   // BROADCASTED
 
@@ -150,6 +151,7 @@ export enum EventType {
   // RECIEVED
 
   CONNECTION = 'connection',
+  DISCONNECT = 'disconnect',
   AUTHENTICATED = 'authenticated',
   UNAUTHORIZED = 'unauthorized',
 
@@ -231,11 +233,11 @@ export type EmittedEvent =
       };
     }
   | {
-      event: EventType.DELETE_SUCCESS;
-      data: null;
+      event: EventType.END_SUCCESS;
+      data: string; // game id
     }
   | {
-      event: EventType.DELETE_FAILURE;
+      event: EventType.END_FAILURE;
       data: {
         error: string;
       };

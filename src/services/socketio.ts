@@ -57,8 +57,6 @@ export const initRoom = async (
 
   if (token.role !== Role.HOST) throw new Error('Not authorized');
 
-  log('todo: check if room is already created');
-
   const game = await setGameStatus(gameId, GameStatus.WAITING);
 
   const roomGame: ActiveGame = {
@@ -79,10 +77,18 @@ export const initRoom = async (
 
   roomService.createRoom(gameId, socket.id, roomGame, jitsiRoom);
 
+  return {
+    jitsiToken: getJitsiToken(token.username, jitsiRoom),
+    game: roomGame,
+    jitsiRoom,
+  };
+};
+
+export const getJitsiToken = (username: string, jitsiRoom: string): string => {
   const tokenPayload = {
     context: {
       user: {
-        name: token.username,
+        name: username,
       },
     },
     aud: 'kotipelit.com',
@@ -91,11 +97,7 @@ export const initRoom = async (
     room: jitsiRoom,
   };
 
-  return {
-    jitsiToken: jwt.sign(tokenPayload, config.JITSI_SECRET),
-    game: roomGame,
-    jitsiRoom,
-  };
+  return jwt.sign(tokenPayload, config.JITSI_SECRET);
 };
 
 export const setGameStatus = async (
@@ -130,8 +132,6 @@ const attachTestListeners = (socket: SocketWithToken): void => {
 };
 
 export const attachListeners = (socket: SocketWithToken): void => {
-  log('user connected');
-
   const { id, role } = socket.decoded_token;
 
   if (!id || !role) {
@@ -141,7 +141,9 @@ export const attachListeners = (socket: SocketWithToken): void => {
   // for testing
   if (process.env.NODE_ENV === 'test') attachTestListeners(socket);
 
-  log('todo: socket on disconnect');
+  socket.on(EventType.DISCONNECT, () => {
+    log('user disconnected. TODO callback');
+  });
 
   switch (role) {
     // host specific listeners
@@ -196,9 +198,10 @@ const handler = (io: Server): void => {
       secret: config.SECRET,
       timeout: 10000,
     })
-  ).on(EventType.AUTHENTICATED, (socket: SocketWithToken) =>
-    attachListeners(socket)
-  );
+  ).on(EventType.AUTHENTICATED, (socket: SocketWithToken) => {
+    log('user connected');
+    attachListeners(socket);
+  });
 };
 
 export default handler;

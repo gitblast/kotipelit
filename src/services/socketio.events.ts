@@ -59,13 +59,13 @@ export const updateFailure = (message: string): EmittedEvent => ({
   data: { error: message },
 });
 
-export const deleteSuccess = (): EmittedEvent => ({
-  event: EventType.DELETE_SUCCESS,
-  data: null,
+export const endSuccess = (gameId: string): EmittedEvent => ({
+  event: EventType.END_SUCCESS,
+  data: gameId,
 });
 
-export const deleteFailure = (message: string): EmittedEvent => ({
-  event: EventType.DELETE_FAILURE,
+export const endFailure = (message: string): EmittedEvent => ({
+  event: EventType.END_FAILURE,
   data: { error: message },
 });
 

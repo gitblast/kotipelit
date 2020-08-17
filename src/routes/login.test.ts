@@ -43,11 +43,7 @@ describe('login router', () => {
 
     const response = await api.post(baseUrl).send(credentials).expect(401);
 
-    expect(response.body).toBeDefined();
-    expect(response.body).toHaveProperty('error');
-
-    expect(response.body).not.toHaveProperty('token');
-    expect(response.body).not.toHaveProperty('username');
+    expect(response.error).toBeDefined();
   });
 
   afterAll(async () => {

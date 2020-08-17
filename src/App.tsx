@@ -16,6 +16,7 @@ import { checkForUser } from './reducers/user.reducer';
 import { initChannels } from './reducers/channels.reducer';
 
 import FrontPage from './components/FrontPage';
+import LoginForm from './components/LoginForm';
 import TempFrontPage from './components/TempFrontPage';
 import UserControls from './components/UserControls';
 
@@ -76,6 +77,9 @@ const App = () => {
       <Container>
         <Switch>
           {channelRoutes(channels)}
+          <Route path="/kirjaudu">
+            <LoginForm />
+          </Route>
           <Route path="/">
             <TempFrontPage />
           </Route>

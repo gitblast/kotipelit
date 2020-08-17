@@ -56,6 +56,7 @@ export interface BaseUser {
   socket: null | SocketIOClient.Socket;
   jitsiRoom: null | string;
   displayName: null | string;
+  loggingIn: boolean;
 }
 
 export interface LoggedUser {
@@ -65,9 +66,10 @@ export interface LoggedUser {
   jitsiToken: string | null;
   socket: null | SocketIOClient.Socket;
   jitsiRoom: null | string;
+  loggingIn: boolean;
 }
 
-export interface LoggingUser extends BaseUser {
+export interface LoggingUser extends Omit<BaseUser, 'loggingIn'> {
   loggingIn: true;
 }
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { loginUser, logout } from '../reducers/user.reducer';
+import { logout } from '../reducers/user.reducer';
 
 import { Typography, Button } from '@material-ui/core';
 
@@ -17,21 +17,17 @@ const UserControls: React.FC<UserControlsProps> = ({ user }) => {
 
   const history = useHistory();
 
-  const handleLogin = () => {
-    dispatch(loginUser('username', 'password'));
-  };
-
   const handleLogout = () => {
     dispatch(logout());
     history.push('/');
   };
 
-  if (!user || !user.loggedIn)
-    return (
-      <Button color="inherit" onClick={handleLogin}>
+  if (!user.loggedIn)
+    return history.location.pathname !== '/kirjaudu' ? (
+      <Button color="inherit" onClick={() => history.push('/kirjaudu')}>
         <Typography>Kirjaudu</Typography>
       </Button>
-    );
+    ) : null;
 
   return (
     <Button color="inherit" onClick={handleLogout}>

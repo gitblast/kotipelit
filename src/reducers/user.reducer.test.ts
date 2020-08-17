@@ -18,6 +18,7 @@ describe('user reducer', () => {
       jitsiRoom: null,
       socket: null,
       displayName: null,
+      loggingIn: false,
     });
   });
 
@@ -47,6 +48,7 @@ describe('user reducer', () => {
       jitsiRoom: null,
       socket: null,
       displayName: null,
+      loggingIn: false,
     });
   });
 
@@ -58,6 +60,7 @@ describe('user reducer', () => {
       jitsiToken: null,
       jitsiRoom: null,
       socket: null,
+      loggingIn: false,
     };
 
     const action: Action = {
@@ -78,6 +81,7 @@ describe('user reducer', () => {
       jitsiRoom: null,
       socket: null,
       displayName: null,
+      loggingIn: false,
     });
   });
 
@@ -93,6 +97,7 @@ describe('user reducer', () => {
       jitsiRoom: null,
       socket: null,
       displayName: null,
+      loggingIn: false,
     });
   });
 
@@ -107,6 +112,7 @@ describe('user reducer', () => {
       jitsiRoom: null,
       socket: null,
       displayName: 'DISPLAYNAME',
+      loggingIn: false,
     });
   });
 
@@ -118,6 +124,7 @@ describe('user reducer', () => {
         jitsiToken: null,
         jitsiRoom: null,
         socket: null,
+        loggingIn: false,
       };
 
       window.localStorage.setItem('kotipelitUser', JSON.stringify(user));

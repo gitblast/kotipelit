@@ -69,6 +69,7 @@ export const getAuthCallback = (gameId: string | null): Function => {
 };
 
 export const tearDownSocket = (): void => {
+  log('tearing down socket');
   const socket = store.getState().user.socket;
 
   if (socket) {

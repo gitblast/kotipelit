@@ -99,6 +99,23 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
     setInviteText(getInviteText(game, hostName, player));
   };
 
+  const startButton = () => {
+    if (game.status !== GameStatus.FINISHED) {
+      const label = game.status === GameStatus.UPCOMING ? 'Käynnistä' : 'Liity';
+
+      return (
+        <Button
+          variant="contained"
+          color="secondary"
+          component={Link}
+          to={`/${username}/pelit/${game.id}`}
+        >
+          {label}
+        </Button>
+      );
+    }
+  };
+
   return (
     <Paper elevation={2} className={classes.container}>
       <div className={`${classes.infoBar} ${classes.flex}`}>
@@ -113,16 +130,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
         </div>
 
         <div>
-          {game.status === GameStatus.UPCOMING && (
-            <Button
-              variant="contained"
-              color="secondary"
-              component={Link}
-              to={`/${username}/pelit/${game.id}`}
-            >
-              Käynnistä
-            </Button>
-          )}
+          {startButton()}
           <IconButton
             size="small"
             className={classes.editButton}

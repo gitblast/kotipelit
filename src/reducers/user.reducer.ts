@@ -10,6 +10,7 @@ const initialUser: BaseUser = {
   socket: null,
   jitsiRoom: null,
   displayName: null,
+  loggingIn: false,
 };
 
 const reducer: Reducer<User, Action> = (
@@ -30,6 +31,7 @@ const reducer: Reducer<User, Action> = (
         jitsiToken: null,
         socket: null,
         jitsiRoom: null,
+        loggingIn: false,
       };
     }
     case ActionType.LOGIN_FAILURE: {
@@ -38,6 +40,7 @@ const reducer: Reducer<User, Action> = (
         socket: null,
         jitsiRoom: null,
         displayName: null,
+        loggingIn: false,
       };
     }
     case ActionType.LOGOUT: {
@@ -46,6 +49,7 @@ const reducer: Reducer<User, Action> = (
         socket: null,
         jitsiRoom: null,
         displayName: null,
+        loggingIn: false,
       };
     }
     case ActionType.SET_JITSI_TOKEN: {

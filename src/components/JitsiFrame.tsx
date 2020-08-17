@@ -32,11 +32,9 @@ interface JitsiFrameProps {
   token: string | null;
   roomName: string;
   displayName: string | null;
-  loadedCallback: () => void;
+  loadedCallback?: () => void;
   dev?: boolean;
 }
-
-/** @TODO teardown jitsi? */
 
 const JitsiFrame: React.FC<JitsiFrameProps> = ({
   token,
@@ -46,8 +44,13 @@ const JitsiFrame: React.FC<JitsiFrameProps> = ({
   dev,
 }) => {
   const [showJitsi, setShowJitsi] = React.useState<boolean>(!dev);
+  const [jitsi, setJitsi] = React.useState<null | JitsiApi>(null);
 
   const classes = useStyles();
+
+  React.useEffect(() => {
+    return () => jitsi?.dispose();
+  }, []);
 
   const handleLeave = (api: JitsiApi) => {
     setShowJitsi(false);
@@ -57,7 +60,10 @@ const JitsiFrame: React.FC<JitsiFrameProps> = ({
   /** attach listeners for jitsi events here. info: https://jitsi.github.io/handbook/docs/dev-guide/dev-guide-iframe */
   const handleAPIloaded = (api: JitsiApi) => {
     api.on('videoConferenceLeft', () => handleLeave(api));
-    loadedCallback();
+
+    setJitsi(api);
+
+    if (loadedCallback) loadedCallback();
   };
 
   if (!showJitsi) {

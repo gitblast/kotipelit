@@ -6,7 +6,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import NewGame from './host/NewGame';
-import Sanakierto from './sanakierto/SanaKierto';
+import SanakiertoHostView from './sanakierto/SanakiertoHostView';
 import SanakiertoPlayerView from './sanakierto/SanakiertoPlayerView';
 import Dashboard from './host/Dashboard';
 import { useSelector } from 'react-redux';
@@ -45,7 +45,7 @@ const ChannelPage: React.FC<ChannelPageProps> = ({ labelText }) => {
             {user.loggedIn && <NewGame />}
           </Route>
           <Route path="/:username/pelit/:gameID">
-            {user.loggedIn && <Sanakierto />}
+            {user.loggedIn && <SanakiertoHostView user={user} />}
           </Route>
           <Route path="/:username/:playerId">
             {!user.loggedIn && <SanakiertoPlayerView user={user as BaseUser} />}

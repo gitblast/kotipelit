@@ -7,11 +7,16 @@ import {
   ActiveGame,
   State,
   JoinSuccessResponse,
+  GameStatus,
 } from '../../types';
 import { log } from '../../utils/logger';
 import store from '../../store';
-import { setJitsiToken, setJitsiRoom } from '../../reducers/user.reducer';
-import { setActiveGame } from '../../reducers/games.reducer';
+import {
+  setJitsiToken,
+  setJitsiRoom,
+  setSocket,
+} from '../../reducers/user.reducer';
+import { setActiveGame, setGames } from '../../reducers/games.reducer';
 import socketService from './service';
 import * as events from './events';
 
@@ -91,10 +96,17 @@ export const startSuccess = (startedGame: ActiveGame) => {
 export const startFailure = (data: RecievedError) =>
   log(`recieved ${HostEvent.START_FAILURE}: ${data.error}`);
 
-export const endSuccess = () => {
+export const endSuccess = (gameId: string) => {
   log(`recieved ${HostEvent.END_SUCCESS}:`);
 
+  const games = store.getState().games.allGames;
+  const newGames = games.map((game) =>
+    game.id === gameId ? { ...game, status: GameStatus.FINISHED } : game
+  );
+
   store.dispatch(setActiveGame(null));
+  store.dispatch(setGames(newGames));
+  store.dispatch(setSocket(null));
 };
 
 export const endFailure = (data: RecievedError) => {
@@ -140,4 +152,8 @@ export const gameUpdated = (game: ActiveGame) => {
   log(game);
 
   store.dispatch(setActiveGame(game));
+};
+
+export const gameEnded = () => {
+  log(`recieved ${PlayerEvent.GAME_ENDED}:`);
 };

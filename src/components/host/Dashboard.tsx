@@ -7,7 +7,7 @@ import { Fab, Typography } from '@material-ui/core';
 
 import QueuedGame from './QueuedGame';
 
-import { State, LoggedUser } from '../../types';
+import { State, LoggedUser, GameStatus } from '../../types';
 import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -25,17 +25,29 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
 
   const games = useSelector((state: State) => state.games.allGames);
 
-  return (
-    <div>
-      <div>
-        <Typography variant="overline">Tulevat pelit:</Typography>
-      </div>
-      <div>
-        {games &&
-          games.map((game) => (
+  const filterGamesByStatus = (label: string, status: GameStatus) => {
+    const filtered = games.filter((game) => game.status === status);
+
+    return filtered.length ? (
+      <>
+        <div>
+          <Typography variant="overline">{label}</Typography>
+        </div>
+        <div>
+          {filtered.map((game) => (
             <QueuedGame key={game.id} game={game} username={user.username} />
           ))}
-      </div>
+        </div>
+      </>
+    ) : null;
+  };
+
+  return (
+    <div>
+      {filterGamesByStatus('Käynnissä nyt', GameStatus.RUNNING)}
+      {filterGamesByStatus('Odottaa pelaajia', GameStatus.WAITING)}
+      {filterGamesByStatus('Tulevat pelit', GameStatus.UPCOMING)}
+      {filterGamesByStatus('Menneet pelit', GameStatus.FINISHED)}
       <div className={classes.marginTop}>
         <Fab
           color="primary"

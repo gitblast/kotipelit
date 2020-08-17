@@ -101,6 +101,7 @@ export enum ActionType {
   // GAME ACTIONS
 
   SET_ACTIVE_GAME = 'SET_ACTIVE_GAME',
+  SET_GAMES = 'SET_GAMES',
 
   // init games
   INIT_GAMES_REQUEST = 'INIT_GAMES_REQUEST',
@@ -141,6 +142,10 @@ export enum ActionType {
 }
 
 export type Action =
+  | {
+      type: ActionType.SET_GAMES;
+      payload: SelectableGame[];
+    }
   | {
       type: ActionType.SET_ACTIVE_GAME;
       payload: ActiveGame | null;
@@ -227,7 +232,7 @@ export type Action =
     }
   | {
       type: ActionType.SET_SOCKET;
-      payload: SocketIOClient.Socket;
+      payload: SocketIOClient.Socket | null;
     }
   | {
       type: ActionType.SET_DISPLAYNAME;
@@ -256,6 +261,7 @@ export enum PlayerEvent {
   GAME_READY = 'game ready',
   GAME_STARTING = 'game starting',
   GAME_UPDATED = 'game updated',
+  GAME_ENDED = 'game ended',
 }
 
 export enum HostEvent {

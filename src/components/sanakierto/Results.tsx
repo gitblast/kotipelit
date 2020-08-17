@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface ResultsProps {
   results: SanakiertoPlayer[];
-  handleTearDown: (() => void) | null;
+  handleTearDown?: () => void;
 }
 
 const Results: React.FC<ResultsProps> = ({ results, handleTearDown }) => {

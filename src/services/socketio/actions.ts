@@ -1,6 +1,6 @@
 import socketIO from 'socket.io-client';
 import store from '../../store';
-import { setDisplayName } from '../../reducers/user.reducer';
+import { setDisplayName, setSocket } from '../../reducers/user.reducer';
 import socketService from './service';
 import * as events from './events';
 import { ActiveGame, LoggedUser } from '../../types';
@@ -68,14 +68,27 @@ export const getAuthCallback = (gameId: string | null): Function => {
   };
 };
 
+export const tearDownSocket = (): void => {
+  const socket = store.getState().user.socket;
+
+  if (socket) {
+    socket.disconnect();
+    store.dispatch(setSocket(null));
+  }
+};
+
 export const initHostSocket = (
   user: LoggedUser,
   gameId: string
 ): SocketIOClient.Socket => {
   if (!gameId) throw new Error(`Pelin id puuttuu`);
 
+  const socket = socketIO();
+
+  store.dispatch(setSocket(socket));
+
   return socketService.authenticateSocket(
-    socketIO(),
+    socket,
     user.token,
     getAuthCallback(gameId)
   );
@@ -92,8 +105,12 @@ export const initPlayerSocket = async (
   log(`Setting display name to '${data.displayName}'`);
   store.dispatch(setDisplayName(data.displayName));
 
+  const socket = socketIO();
+
+  store.dispatch(setSocket(socket));
+
   return socketService.authenticateSocket(
-    socketIO(),
+    socket,
     data.token,
     getAuthCallback(null)
   );

@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface WaitingRoomProps {
   game: SanakiertoActive;
-  handleStart: (() => void) | null;
+  handleStart?: () => void;
 }
 
 const WaitingRoom: React.FC<WaitingRoomProps> = ({ game, handleStart }) => {

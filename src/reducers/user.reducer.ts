@@ -154,7 +154,7 @@ export const setJitsiRoom = (roomName: string): Action => ({
   payload: roomName,
 });
 
-export const setSocket = (socket: SocketIOClient.Socket): Action => ({
+export const setSocket = (socket: SocketIOClient.Socket | null): Action => ({
   type: ActionType.SET_SOCKET,
   payload: socket,
 });

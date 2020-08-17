@@ -42,6 +42,12 @@ const reducer: Reducer<GamesState, Action> = (
   action: Action
 ) => {
   switch (action.type) {
+    case ActionType.SET_GAMES: {
+      return {
+        ...state,
+        allGames: action.payload,
+      };
+    }
     case ActionType.INIT_GAMES_REQUEST: {
       return {
         ...state,
@@ -215,6 +221,11 @@ export const deleteGame = (idToRemove: string) => {
     }
   };
 };
+
+export const setGames = (games: SelectableGame[]): Action => ({
+  type: ActionType.SET_GAMES,
+  payload: games,
+});
 
 export const setActiveGame = (game: ActiveGame | null): Action => ({
   type: ActionType.SET_ACTIVE_GAME,

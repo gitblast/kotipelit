@@ -12,10 +12,15 @@ import {
   MenuItem,
 } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { SelectableGame, Sanakierto, SanakiertoPlayer } from '../../types';
+import {
+  SelectableGame,
+  Sanakierto,
+  SanakiertoPlayer,
+  GameStatus,
+} from '../../types';
 import { useDispatch } from 'react-redux';
 import { deleteGame } from '../../reducers/games.reducer';
-import { useHistory, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -108,14 +113,16 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
         </div>
 
         <div>
-          <Button
-            variant="contained"
-            color="secondary"
-            component={Link}
-            to={`/${username}/pelit/${game.id}`}
-          >
-            Käynnistä
-          </Button>
+          {game.status === GameStatus.UPCOMING && (
+            <Button
+              variant="contained"
+              color="secondary"
+              component={Link}
+              to={`/${username}/pelit/${game.id}`}
+            >
+              Käynnistä
+            </Button>
+          )}
           <IconButton
             size="small"
             className={classes.editButton}
@@ -151,15 +158,19 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
           >
             <Typography component="div">{player.name}</Typography>
             <Typography component="div">{player.words.join(' / ')}</Typography>
-            <div>
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={() => showInviteText(game, username, player)}
-              >
-                Näytä kutsuteksti
-              </Button>
-            </div>
+            {game.status === GameStatus.UPCOMING ? (
+              <div>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => showInviteText(game, username, player)}
+                >
+                  Näytä kutsuteksti
+                </Button>
+              </div>
+            ) : (
+              <Typography>{`${player.points} pistettä`}</Typography>
+            )}
           </div>
         ))}
       </div>

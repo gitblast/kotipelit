@@ -113,7 +113,7 @@ const Sanakierto: React.FC = () => {
         <WaitingRoom
           game={activeGame}
           handleStart={
-            user.loggedIn && gameID ? () => handleStartGame(gameID) : null
+            user.loggedIn && gameID ? () => handleStartGame(gameID) : undefined
           }
         />
       );
@@ -131,7 +131,7 @@ const Sanakierto: React.FC = () => {
       <Results
         results={sortPlayersByPoints(activeGame.players)}
         handleTearDown={
-          user.loggedIn && gameID ? () => actions.endGame(gameID) : null
+          user.loggedIn && gameID ? () => actions.endGame(gameID) : undefined
         }
       />
     );

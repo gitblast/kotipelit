@@ -44,8 +44,8 @@ const attachListeners = (socket: SocketIOClient.Socket, isHost: boolean) => {
       callbacks.updateFailure(data)
     );
 
-    socket.on(HostEvent.END_SUCCESS, () => {
-      callbacks.endSuccess();
+    socket.on(HostEvent.END_SUCCESS, (gameId: string) => {
+      callbacks.endSuccess(gameId);
     });
     socket.on(HostEvent.END_FAILURE, (data: RecievedError) => {
       callbacks.endFailure(data);
@@ -69,6 +69,10 @@ const attachListeners = (socket: SocketIOClient.Socket, isHost: boolean) => {
     socket.on(PlayerEvent.GAME_UPDATED, (game: ActiveGame) =>
       callbacks.gameUpdated(game)
     );
+
+    socket.on(PlayerEvent.GAME_ENDED, () => {
+      callbacks.gameEnded();
+    });
   }
 };
 

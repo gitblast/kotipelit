@@ -9,8 +9,9 @@ import {
   BaseUser,
 } from '../../types';
 import socketService from './service';
+import { setSocket } from '../../reducers/user.reducer';
 
-const mockSocket = { mock: true };
+const mockSocket = { mock: true, disconnect: jest.fn() };
 
 const setSocketAction: Action = {
   type: ActionType.SET_SOCKET,
@@ -167,6 +168,14 @@ describe('socketio actions', () => {
         expect.any(Function)
       );
     });
+
+    it('should set user socket', async () => {
+      store.dispatch(setSocket(null));
+
+      await actions.initPlayerSocket('hostName', 'playerId');
+
+      expect(store.getState().user.socket).toEqual(mockSocket);
+    });
   });
 
   describe('init host socket', () => {
@@ -187,6 +196,26 @@ describe('socketio actions', () => {
         'TOKEN',
         expect.any(Function)
       );
+    });
+
+    it('should set user socket', () => {
+      store.dispatch(setSocket(null));
+
+      actions.initHostSocket({ token: 'TOKEN' } as LoggedUser, 'gameId');
+
+      expect(store.getState().user.socket).toEqual(mockSocket);
+    });
+  });
+
+  describe('tear down socket', () => {
+    it('should call disconnect on socket and set socket to null', () => {
+      expect(store.getState().user.socket).not.toBeNull();
+
+      actions.tearDownSocket();
+
+      expect(mockSocket.disconnect).toHaveBeenCalled();
+
+      expect(store.getState().user.socket).toBeNull();
     });
   });
 });

@@ -3,6 +3,7 @@ import {
   ActiveGame,
   WaitingGame,
   CreateRoomResponse,
+  ActiveGamePlayer,
 } from '../types';
 import { getJitsiToken } from './socketio';
 
@@ -57,6 +58,14 @@ const getRoomData = (
   };
 };
 
+const setHostOnline = (roomId: string, newStatus: boolean): void => {
+  const room = rooms[roomId];
+
+  if (!room) throw new Error(`Room with id '${roomId}' not found`);
+
+  room.game.hostOnline = newStatus;
+};
+
 const getRoomGame = (roomId: string): ActiveGame => {
   const room = rooms[roomId];
 
@@ -109,12 +118,30 @@ const joinRoom = (
     throw new Error(`Player with id '${playerId}' not found`);
 
   if (playerForSocket.socket)
-    log(`Player already has socket set: ${playerForSocket.socket}`);
+    log(`Player already has socket set: ${playerForSocket.socket}. Replacing`);
 
   playerForSocket.socket = socketId;
   playerForSocket.online = true;
 
   return room.game;
+};
+
+const leaveRoom = (roomId: string, socketId: string): ActiveGamePlayer => {
+  const room = rooms[roomId];
+
+  if (!room) throw new Error(`Room with id '${roomId}' not found`);
+
+  const playerMatchingSocket = room.game.players.find(
+    (player) => player.socket === socketId
+  );
+
+  if (!playerMatchingSocket)
+    throw new Error(`Player with socket id '${socketId}' not found`);
+
+  playerMatchingSocket.socket = null;
+  playerMatchingSocket.online = false;
+
+  return playerMatchingSocket;
 };
 
 const deleteRoom = (roomId: string): void => {
@@ -136,4 +163,6 @@ export default {
   setJitsiRoom,
   getJitsiRoomByRoomId,
   getRoomData,
+  leaveRoom,
+  setHostOnline,
 };

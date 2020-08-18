@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import Game from '../models/game';
 
 import { Server } from 'socket.io';
 import socketioJwt from 'socketio-jwt';
@@ -17,7 +16,6 @@ import {
   EventType,
   SocketWithToken,
   Role,
-  GameModel,
   CreateRoomResponse,
   JitsiReadyData,
   TestEventType,
@@ -28,6 +26,7 @@ import {
 import { Socket } from 'socket.io';
 
 import roomService from './rooms';
+import gameService from './games';
 
 export const emit = (socket: Socket, eventObj: EmittedEvent): void => {
   const { event, data } = eventObj;
@@ -57,7 +56,7 @@ export const initRoom = async (
 
   if (token.role !== Role.HOST) throw new Error('Not authorized');
 
-  const game = await setGameStatus(gameId, GameStatus.WAITING);
+  const game = await gameService.setGameStatus(gameId, GameStatus.WAITING);
 
   const roomGame: ActiveGame = {
     id: game._id.toString(),
@@ -71,6 +70,7 @@ export const initRoom = async (
     })),
     info: null, // different game types will have different info objects
     rounds: game.rounds,
+    hostOnline: true,
   };
 
   const jitsiRoom = uuidv4();
@@ -98,19 +98,6 @@ export const getJitsiToken = (username: string, jitsiRoom: string): string => {
   };
 
   return jwt.sign(tokenPayload, config.JITSI_SECRET);
-};
-
-export const setGameStatus = async (
-  gameId: string,
-  newStatus: GameStatus
-): Promise<GameModel> => {
-  const game = await Game.findById(gameId);
-
-  if (!game) throw new Error(`No game found with id ${gameId}`);
-
-  game.status = newStatus;
-
-  return await game.save();
 };
 
 const attachTestListeners = (socket: SocketWithToken): void => {
@@ -141,10 +128,6 @@ export const attachListeners = (socket: SocketWithToken): void => {
   // for testing
   if (process.env.NODE_ENV === 'test') attachTestListeners(socket);
 
-  socket.on(EventType.DISCONNECT, () => {
-    log('user disconnected. TODO callback');
-  });
-
   switch (role) {
     // host specific listeners
     case Role.HOST: {
@@ -174,7 +157,7 @@ export const attachListeners = (socket: SocketWithToken): void => {
     case Role.PLAYER: {
       const { gameId } = socket.decoded_token;
 
-      if (!gameId) console.error('Token gameId not defined');
+      if (!gameId) console.error('Warning: token gameId not defined');
 
       socket.on(EventType.JOIN_GAME, () =>
         callbacks.joinGame(socket, gameId, id)
@@ -201,6 +184,10 @@ const handler = (io: Server): void => {
   ).on(EventType.AUTHENTICATED, (socket: SocketWithToken) => {
     log('user connected');
     attachListeners(socket);
+
+    socket.on(EventType.DISCONNECT, (io: Server, socket: SocketWithToken) => {
+      callbacks.handleDisconnect(io, socket);
+    });
   });
 };
 

@@ -10,24 +10,19 @@ import {
   ActiveGame,
   GameStatus,
   GameType,
+  ActiveGamePlayer,
+  GameRoom,
+  EventType,
 } from '../types';
+import { Server } from 'socket.io';
 
 jest.mock('./socketio', () => ({
   broadcast: jest.fn(),
   emit: jest.fn(),
   initRoom: jest.fn(),
-  setGameStatus: jest.fn(),
 }));
 
-jest.mock('./rooms', () => ({
-  joinRoom: jest.fn(),
-  addSocketToRoom: jest.fn(),
-  getRoomGame: jest.fn(),
-  updateRoomGame: jest.fn(),
-  getJitsiRoomByRoomId: jest.fn(),
-  deleteRoom: jest.fn(),
-  getRoomData: jest.fn(),
-}));
+jest.mock('./rooms');
 
 jest.mock('../models/url', () => ({
   deleteOne: jest.fn(),
@@ -39,10 +34,88 @@ const mockSocket = {
   id: 'mockSocketID',
   decoded_token: {
     username: 'testUser',
+    gameId: 'gameId',
   },
 } as SocketWithToken;
 
+interface MockServer {
+  calls: Record<string, string>;
+  to: (call: string) => void;
+  emit: (call: string) => void;
+}
+
+const mockServer: MockServer = {
+  calls: {} as Record<string, string>,
+  to: function (call: string) {
+    this.calls['to'] = call;
+
+    return this;
+  },
+  emit: function (call: string) {
+    this.calls['emit'] = call;
+
+    return this;
+  },
+};
+
+const mockRooms: Record<string, GameRoom> = {
+  gameId: {
+    game: {
+      hostOnline: true,
+      players: [
+        ({
+          id: 'playerId',
+          socket: 'playerSocket',
+          online: true,
+        } as unknown) as ActiveGamePlayer,
+      ],
+    } as ActiveGame,
+    hostSocket: 'hostSocket',
+  } as GameRoom,
+};
+
 describe('socket.io callbacks', () => {
+  describe('handle disconnect', () => {
+    let server: MockServer;
+
+    beforeEach(() => {
+      server = { ...mockServer };
+    });
+
+    const getRooms = roomService.getRooms as jest.Mock;
+
+    it('should set host offline and broadcast host disconnected if socket host socket', () => {
+      getRooms.mockReturnValueOnce(mockRooms);
+
+      const hostSocket = { ...mockSocket, id: 'hostSocket' };
+
+      expect(mockRooms['gameId'].game.hostOnline).toBeTruthy();
+
+      callbacks.handleDisconnect((mockServer as unknown) as Server, hostSocket);
+
+      expect(mockRooms['gameId'].game.hostOnline).toBeFalsy();
+
+      expect(server.calls['to']).toBe(hostSocket.decoded_token.gameId);
+      expect(server.calls['emit']).toBe(EventType.HOST_DISCONNECTED);
+    });
+
+    it('should call leave room and broadcast player disconnected if player socket', () => {
+      const leaveRoom = roomService.leaveRoom as jest.Mock;
+
+      getRooms.mockReturnValueOnce(mockRooms);
+      leaveRoom.mockReturnValueOnce(mockRooms['gameId'].game.players[0]);
+
+      const playerSocket = { ...mockSocket, id: 'playerSocket' };
+
+      callbacks.handleDisconnect((server as unknown) as Server, playerSocket);
+
+      expect(leaveRoom).toHaveBeenCalledWith('gameId', playerSocket.id);
+
+      expect(server.calls['to']).toBe(playerSocket.decoded_token.gameId);
+      expect(server.calls['emit']).toBe(EventType.PLAYER_DISCONNECTED);
+    });
+  });
+
   describe('jitsi ready', () => {
     it('should broadcast game ready', () => {
       const mockData: JitsiReadyData = {
@@ -154,14 +227,14 @@ describe('socket.io callbacks', () => {
       updateRoomGame.mockReturnValue({
         ...mockGame,
         status: GameStatus.RUNNING,
-        info: callbacks.getInitialInfo(mockGame),
+        info: gameService.getInitialInfo(mockGame),
       });
 
       await callbacks.startGame(mockSocket, 'testID');
     });
 
     it('should call setGameStatus', () => {
-      expect(socketService.setGameStatus).toHaveBeenLastCalledWith(
+      expect(gameService.setGameStatus).toHaveBeenLastCalledWith(
         'testID',
         GameStatus.RUNNING
       );
@@ -175,7 +248,7 @@ describe('socket.io callbacks', () => {
       expect(roomService.updateRoomGame).toHaveBeenLastCalledWith('testID', {
         ...mockGame,
         status: GameStatus.RUNNING,
-        info: callbacks.getInitialInfo(mockGame),
+        info: gameService.getInitialInfo(mockGame),
       });
     });
 
@@ -186,7 +259,7 @@ describe('socket.io callbacks', () => {
         events.gameStarting({
           ...mockGame,
           status: GameStatus.RUNNING,
-          info: callbacks.getInitialInfo(mockGame),
+          info: gameService.getInitialInfo(mockGame),
         })
       );
     });
@@ -197,13 +270,13 @@ describe('socket.io callbacks', () => {
         events.startSuccess({
           ...mockGame,
           status: GameStatus.RUNNING,
-          info: callbacks.getInitialInfo(mockGame),
+          info: gameService.getInitialInfo(mockGame),
         })
       );
     });
 
     it('should emit start failure on error', async () => {
-      const mock = socketService.setGameStatus as jest.Mock;
+      const mock = gameService.setGameStatus as jest.Mock;
 
       const error = { message: 'test error' };
 

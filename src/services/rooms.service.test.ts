@@ -226,6 +226,52 @@ describe('rooms service', () => {
     });
   });
 
+  describe('leave room', () => {
+    const mock: Record<string, GameRoom> = {
+      gameId: {
+        game: {
+          players: [
+            ({
+              id: 'playerId',
+              socket: 'playerSocket',
+              online: true,
+            } as unknown) as ActiveGamePlayer,
+          ],
+        } as ActiveGame,
+      } as GameRoom,
+    };
+
+    it('should throw error if no player found', () => {
+      setRooms(mock);
+
+      expect(() =>
+        roomService.leaveRoom('gameId', 'invalidSocket')
+      ).toThrowError(`Player with socket id 'invalidSocket' not found`);
+    });
+
+    it('should throw error if no game found', () => {
+      setRooms({});
+
+      expect(() =>
+        roomService.leaveRoom('invalidID', 'playerSocket')
+      ).toThrowError(`Room with id 'invalidID' not found`);
+    });
+
+    it('should set found players socket to null and online to false', () => {
+      setRooms(mock);
+
+      const player = roomService.getRooms()['gameId'].game.players[0];
+
+      expect(player.socket).not.toBeNull();
+      expect(player.online).toBeTruthy();
+
+      roomService.leaveRoom('gameId', 'playerSocket');
+
+      expect(player.socket).toBeNull();
+      expect(player.online).not.toBeTruthy();
+    });
+  });
+
   describe('deleteRoom', () => {
     it('should throw error if room not found', () => {
       setRooms({});

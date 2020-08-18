@@ -4,16 +4,45 @@ import {
   EventType,
   SocketWithToken,
   GameStatus,
-  GameType,
-  GameInfo,
   ActiveGame,
 } from '../types';
 import { log } from '../utils/logger';
 import * as events from './socketio.events';
-import { initRoom, setGameStatus, emit, broadcast } from './socketio';
+import { initRoom, emit, broadcast } from './socketio';
 import roomService from './rooms';
 import Url from '../models/url';
 import gameService from '../services/games';
+import { Server } from 'socket.io';
+
+export const handleDisconnect = (io: Server, socket: SocketWithToken): void => {
+  log(`Recieved ${EventType.DISCONNECT}`);
+
+  try {
+    const gameId = socket.decoded_token.gameId;
+
+    const room = roomService.getRooms()[gameId];
+
+    if (!room) throw new Error(`No room found with id '${gameId}'`);
+
+    if (socket.id === room.hostSocket) {
+      log(`emitting host disconnected to room ${gameId}`);
+
+      room.game.hostOnline = false;
+
+      io.to(gameId).emit(EventType.HOST_DISCONNECTED);
+    } else {
+      const player = roomService.leaveRoom(gameId, socket.id);
+
+      log(`emitting player '${player.id}' disconnected to room ${gameId}`);
+
+      io.to(gameId).emit(EventType.PLAYER_DISCONNECTED, player.id);
+    }
+  } catch (error) {
+    if (process.env.NODE_ENV !== 'test') {
+      console.error(error.message);
+    }
+  }
+};
 
 export const jitsiReady = (
   socket: SocketWithToken,
@@ -55,27 +84,6 @@ export const createRoom = async (
   }
 };
 
-export const getInitialInfo = (game: ActiveGame): GameInfo => {
-  /** handle different game types here */
-  switch (game.type) {
-    case GameType.SANAKIERTO: {
-      if (!game.players || !game.players.length)
-        throw new Error('Game has no players set');
-
-      const playerWithTurn = game.players[0];
-
-      return {
-        round: 1,
-        turn: playerWithTurn.id,
-      };
-    }
-    default: {
-      const gameType: string = game.type;
-      throw new Error(`Invalid game type: ${gameType}`);
-    }
-  }
-};
-
 export const startGame = async (
   socket: SocketWithToken,
   gameId: string
@@ -83,7 +91,7 @@ export const startGame = async (
   log(`Recieved ${EventType.START_GAME}`);
 
   try {
-    await setGameStatus(gameId, GameStatus.RUNNING);
+    await gameService.setGameStatus(gameId, GameStatus.RUNNING);
 
     const game = roomService.getRoomGame(gameId);
 
@@ -93,7 +101,7 @@ export const startGame = async (
     const startedGame = roomService.updateRoomGame(gameId, {
       ...game,
       status: GameStatus.RUNNING,
-      info: getInitialInfo(game),
+      info: gameService.getInitialInfo(game),
     });
 
     broadcast(socket, gameId, events.gameStarting(startedGame));

@@ -19,17 +19,20 @@ const useStyles = makeStyles(() =>
 
 interface LoaderProps {
   msg: string;
+  spinner?: boolean;
 }
 
-const Loader: React.FC<LoaderProps> = ({ msg }) => {
+const Loader: React.FC<LoaderProps> = ({ msg, spinner }) => {
   const classes = useStyles();
 
   return (
     <div className={classes.centered}>
       <Typography gutterBottom>{msg}</Typography>
-      <div>
-        <CircularProgress />
-      </div>
+      {spinner && (
+        <div>
+          <CircularProgress />
+        </div>
+      )}
     </div>
   );
 };

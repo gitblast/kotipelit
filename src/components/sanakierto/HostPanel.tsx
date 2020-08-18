@@ -3,12 +3,7 @@ import React from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Typography, Fab } from '@material-ui/core';
 import ScoreBoard from './ScoreBoard';
-import {
-  SanakiertoActive,
-  SanakiertoPlayer,
-  GameStatus,
-  State,
-} from '../../types';
+import { SanakiertoActive, SanakiertoPlayer, State } from '../../types';
 import { useSelector } from 'react-redux';
 import useInterval from '../../hooks/useInterval';
 import { updateGame } from '../../services/socketio/actions';
@@ -82,7 +77,6 @@ const HostPanel: React.FC<HostPanelProps> = ({ game }) => {
         round,
         turn,
       },
-      status: round > game.rounds ? GameStatus.FINISHED : GameStatus.RUNNING,
     };
 
     updateGame(newGameState);

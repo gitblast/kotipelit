@@ -3,7 +3,7 @@ import React from 'react';
 import { log } from '../../utils/logger';
 
 import { useSelector, shallowEqual } from 'react-redux';
-import { useParams, useHistory } from 'react-router';
+import { useParams, Redirect } from 'react-router';
 import * as actions from '../../services/socketio/actions';
 import JitsiFrame from '../JitsiFrame';
 import { GameStatus, State, SanakiertoPlayer } from '../../types';
@@ -45,7 +45,8 @@ interface SanakiertoHostViewProps {
 
 const SanakiertoHostView: React.FC<SanakiertoHostViewProps> = ({ user }) => {
   const classes = useStyles();
-  const history = useHistory();
+
+  const [error, setError] = React.useState<null | string>(null);
 
   const activeGame = useSelector(
     (state: State) => state.games.activeGame,
@@ -61,7 +62,9 @@ const SanakiertoHostView: React.FC<SanakiertoHostViewProps> = ({ user }) => {
     try {
       actions.initHostSocket(user, gameID);
     } catch (error) {
-      console.error('error initializing socket:', error.message);
+      console.error(error.message);
+
+      setError(`Jotain meni pieleen peliä käynnistettäessä: ${error.message}`);
     }
 
     return actions.tearDownSocket;
@@ -70,15 +73,13 @@ const SanakiertoHostView: React.FC<SanakiertoHostViewProps> = ({ user }) => {
   const sortPlayersByPoints = (players: SanakiertoPlayer[]) =>
     players.sort((a, b) => b.points - a.points);
 
-  const handleTearDown = () => {
-    actions.endGame(gameID);
-
-    history.push(`/${username}`);
-  };
-
   const jitsiContent = () => {
+    if (error) {
+      return <Loader msg={error} />;
+    }
+
     if (!jitsiRoom) {
-      return <Loader msg={'Ladataan...'} />;
+      return <Loader msg={'Käynnistetään...'} spinner />;
     }
 
     return (
@@ -93,8 +94,12 @@ const SanakiertoHostView: React.FC<SanakiertoHostViewProps> = ({ user }) => {
   };
 
   const sideBar = () => {
+    if (error) {
+      return null;
+    }
+
     if (!socket || !activeGame) {
-      return <Loader msg={'Yhdistetään...'} />;
+      return <Loader msg={''} spinner />;
     }
 
     if (activeGame.status === GameStatus.WAITING) {
@@ -107,18 +112,23 @@ const SanakiertoHostView: React.FC<SanakiertoHostViewProps> = ({ user }) => {
     }
 
     if (activeGame.status === GameStatus.RUNNING) {
+      // if game has ended, show results
+      if (activeGame.info.round > activeGame.rounds) {
+        return (
+          <Results
+            results={sortPlayersByPoints(activeGame.players)}
+            handleTearDown={() => actions.endGame(gameID)}
+          />
+        );
+      }
+
       return <HostPanel game={activeGame} />;
     }
-
-    if (activeGame.status === GameStatus.FINISHED) {
-      return (
-        <Results
-          results={sortPlayersByPoints(activeGame.players)}
-          handleTearDown={handleTearDown}
-        />
-      );
-    }
   };
+
+  if (activeGame?.status === GameStatus.FINISHED) {
+    return <Redirect to={`/${username}`} />;
+  }
 
   return (
     <div className={classes.container}>

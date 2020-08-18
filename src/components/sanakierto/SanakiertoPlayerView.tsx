@@ -58,25 +58,27 @@ const SanakiertoPlayerView: React.FC<SanakiertoPlayerViewProps> = ({
     shallowEqual
   );
 
+  const error = useSelector((state: State) => state.alert);
+
   React.useEffect(() => {
-    const initSocket = async () => {
-      log('initializing socket');
+    log('initializing socket');
 
-      try {
-        await actions.initPlayerSocket(username, playerId);
-      } catch (error) {
-        console.error('error initializing socket:', error.message);
-      }
-    };
-
-    initSocket();
+    actions.initPlayerSocket(username, playerId);
 
     return actions.tearDownSocket;
   }, []);
 
   const jitsiContent = () => {
+    if (error) {
+      return <Loader msg={error} />;
+    }
+
     if (!user.jitsiRoom) {
-      return <Loader msg={'Odotetaan, että host käynnistää pelin...'} />;
+      return <Loader msg={'Ladataan...'} />;
+    }
+
+    if (activeGame?.status === GameStatus.FINISHED) {
+      return <div>palauteboksi</div>;
     }
 
     return (
@@ -91,8 +93,12 @@ const SanakiertoPlayerView: React.FC<SanakiertoPlayerViewProps> = ({
   };
 
   const sideBar = () => {
+    if (error) {
+      return null;
+    }
+
     if (!user.socket || !activeGame) {
-      return <Loader msg={'Yhdistetään...'} />;
+      return <Loader msg={'Yhdistetään...'} spinner />;
     }
 
     if (activeGame.status === GameStatus.WAITING) {
@@ -100,11 +106,11 @@ const SanakiertoPlayerView: React.FC<SanakiertoPlayerViewProps> = ({
     }
 
     if (activeGame.status === GameStatus.RUNNING) {
-      return <PlayerSidePanel game={activeGame} />;
-    }
+      if (activeGame.info.round > activeGame.rounds) {
+        return <Results results={sortPlayersByPoints(activeGame.players)} />;
+      }
 
-    if (activeGame.status === GameStatus.FINISHED) {
-      return <Results results={sortPlayersByPoints(activeGame.players)} />;
+      return <PlayerSidePanel game={activeGame} />;
     }
   };
 

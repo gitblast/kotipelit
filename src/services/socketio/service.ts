@@ -94,6 +94,7 @@ const getTokenForSocket = async (
   playerId: string
 ): Promise<{ token: string; displayName: string }> => {
   const response = await axios.get(`/api/games/join/${hostName}/${playerId}`);
+
   return response.data;
 };
 

@@ -5,20 +5,16 @@ import {
   RecievedError,
   CreateSuccessResponse,
   ActiveGame,
-  State,
   JoinSuccessResponse,
   GameStatus,
 } from '../../types';
 import { log } from '../../utils/logger';
 import store from '../../store';
-import {
-  setJitsiToken,
-  setJitsiRoom,
-  setSocket,
-} from '../../reducers/user.reducer';
+import { setJitsiToken, setJitsiRoom } from '../../reducers/user.reducer';
 import { setActiveGame, setGames } from '../../reducers/games.reducer';
 import socketService from './service';
 import * as events from './events';
+import { setError, clearError } from '../../reducers/alert.reducer';
 
 /** @TODO handle error on connect */
 export const connect = (
@@ -45,9 +41,7 @@ export const connect = (
 export const playerJoined = (playerId: string) => {
   log(`recieved ${CommonEvent.PLAYER_JOINED}`);
 
-  const state: State = store.getState();
-
-  const currentGame = state.games.activeGame;
+  const currentGame = store.getState().games.activeGame;
 
   if (!currentGame) throw new Error('Player joined but no active game is set');
 
@@ -99,14 +93,21 @@ export const startFailure = (data: RecievedError) =>
 export const endSuccess = (gameId: string) => {
   log(`recieved ${HostEvent.END_SUCCESS}:`);
 
-  const games = store.getState().games.allGames;
-  const newGames = games.map((game) =>
-    game.id === gameId ? { ...game, status: GameStatus.FINISHED } : game
-  );
+  const { allGames, activeGame } = store.getState().games;
 
-  store.dispatch(setActiveGame(null));
-  store.dispatch(setGames(newGames));
-  store.dispatch(setSocket(null));
+  if (activeGame) {
+    const newGames = allGames.map((game) =>
+      game.id === gameId
+        ? { ...game, status: GameStatus.FINISHED, players: activeGame.players }
+        : game
+    );
+
+    store.dispatch(setGames(newGames));
+
+    store.dispatch(
+      setActiveGame({ ...activeGame, status: GameStatus.FINISHED })
+    );
+  }
 };
 
 export const endFailure = (data: RecievedError) => {
@@ -119,12 +120,16 @@ export const joinSuccess = (data: JoinSuccessResponse) => {
   log(`recieved ${PlayerEvent.JOIN_SUCCESS}:`);
   log(data);
 
+  store.dispatch(clearError());
   store.dispatch(setJitsiRoom(data.jitsiRoom));
   store.dispatch(setActiveGame(data.game));
 };
 
-export const joinFailure = (data: RecievedError) =>
+export const joinFailure = (data: RecievedError) => {
   log(`recieved ${PlayerEvent.JOIN_FAILURE}: ${data.error}`);
+
+  store.dispatch(setError('Host ei ole vielä käynnistänyt peliä.'));
+};
 
 export const gameReady = () => {
   log(`recieved ${PlayerEvent.GAME_READY}`);
@@ -156,4 +161,12 @@ export const gameUpdated = (game: ActiveGame) => {
 
 export const gameEnded = () => {
   log(`recieved ${PlayerEvent.GAME_ENDED}:`);
+
+  const activeGame = store.getState().games.activeGame;
+
+  if (activeGame) {
+    store.dispatch(
+      setActiveGame({ ...activeGame, status: GameStatus.FINISHED })
+    );
+  }
 };

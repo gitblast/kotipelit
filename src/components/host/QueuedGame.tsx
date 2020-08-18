@@ -165,20 +165,21 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
             className={`${classes.flex} ${classes.playerRow}`}
           >
             <Typography component="div">{player.name}</Typography>
+            <Typography component="div">
+              {game.status !== GameStatus.UPCOMING &&
+                `${player.points} pistettä`}
+            </Typography>
             <Typography component="div">{player.words.join(' / ')}</Typography>
-            {game.status === GameStatus.UPCOMING ? (
-              <div>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => showInviteText(game, username, player)}
-                >
-                  Näytä kutsuteksti
-                </Button>
-              </div>
-            ) : (
-              <Typography>{`${player.points} pistettä`}</Typography>
-            )}
+            <div>
+              <Button
+                variant="outlined"
+                color="primary"
+                size="small"
+                onClick={() => showInviteText(game, username, player)}
+              >
+                Näytä kutsuteksti
+              </Button>
+            </div>
           </div>
         ))}
       </div>

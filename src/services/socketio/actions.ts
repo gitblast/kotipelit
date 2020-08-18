@@ -5,6 +5,8 @@ import socketService from './service';
 import * as events from './events';
 import { ActiveGame, LoggedUser } from '../../types';
 import { log } from '../../utils/logger';
+import { setActiveGame } from '../../reducers/games.reducer';
+import { setError } from '../../reducers/alert.reducer';
 
 export const emitJitsiReady = (gameId: string, jitsiRoom: string): void => {
   try {
@@ -69,13 +71,16 @@ export const getAuthCallback = (gameId: string | null): Function => {
 };
 
 export const tearDownSocket = (): void => {
-  log('tearing down socket');
+  log('tearing down socket and active game');
   const socket = store.getState().user.socket;
 
   if (socket) {
     socket.disconnect();
+
     store.dispatch(setSocket(null));
   }
+
+  store.dispatch(setActiveGame(null));
 };
 
 export const initHostSocket = (
@@ -98,21 +103,23 @@ export const initHostSocket = (
 export const initPlayerSocket = async (
   hostName: string,
   playerId: string
-): Promise<SocketIOClient.Socket> => {
+): Promise<void> => {
   if (!playerId) throw new Error('Pelaajan id puuttuu');
 
-  const data = await socketService.getTokenForSocket(hostName, playerId);
+  try {
+    const data = await socketService.getTokenForSocket(hostName, playerId);
 
-  log(`Setting display name to '${data.displayName}'`);
-  store.dispatch(setDisplayName(data.displayName));
+    log(`Setting display name to '${data.displayName}'`);
+    store.dispatch(setDisplayName(data.displayName));
 
-  const socket = socketIO();
+    const socket = socketIO();
 
-  store.dispatch(setSocket(socket));
+    store.dispatch(setSocket(socket));
 
-  return socketService.authenticateSocket(
-    socket,
-    data.token,
-    getAuthCallback(null)
-  );
+    socketService.authenticateSocket(socket, data.token, getAuthCallback(null));
+  } catch (error) {
+    store.dispatch(
+      setError('Peliin liittyminen epäonnistui. Tarkista osoite.')
+    );
+  }
 };

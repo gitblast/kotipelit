@@ -16,6 +16,7 @@ export interface Game {
   type: GameType;
   startTime: Date;
   status: GameStatus;
+  hostOnline: boolean;
 }
 
 export interface SanakiertoPlayer {
@@ -84,7 +85,10 @@ export interface State {
   games: GamesState;
   user: User;
   channels: ChannelsState;
+  alert: AlertState;
 }
+
+export type AlertState = string | null;
 
 export interface GamesState {
   allGames: SelectableGame[];
@@ -141,6 +145,11 @@ export enum ActionType {
   INIT_CHANNELS_REQUEST = 'INIT_CHANNELS_REQUEST',
   INIT_CHANNELS_SUCCESS = 'INIT_CHANNELS_SUCCESS',
   INIT_CHANNELS_FAILURE = 'INIT_CHANNELS_FAILURE',
+
+  // ALERT ACTIONS
+
+  SET_ERROR = 'SET_ERROR',
+  CLEAR_ERROR = 'CLEAR_ERROR',
 }
 
 export type Action =
@@ -239,6 +248,14 @@ export type Action =
   | {
       type: ActionType.SET_DISPLAYNAME;
       payload: string;
+    }
+  // ERRORS
+  | {
+      type: ActionType.SET_ERROR;
+      payload: string;
+    }
+  | {
+      type: ActionType.CLEAR_ERROR;
     };
 
 // SOCKET IO EVENTS

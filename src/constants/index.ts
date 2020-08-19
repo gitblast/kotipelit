@@ -8,6 +8,7 @@ import {
 
 export const hardcodedGames: SelectableGame[] = [
   {
+    hostOnline: true,
     id: '1',
     type: GameType.SANAKIERTO,
     players: [
@@ -52,6 +53,7 @@ export const hardcodedGames: SelectableGame[] = [
     rounds: 3,
   },
   {
+    hostOnline: true,
     id: '2',
     type: GameType.SANAKIERTO,
     players: [
@@ -115,6 +117,7 @@ export const hardcodedChannels: HostChannel[] = [
 export const hardcodedActiveSanakierto: SanakiertoActive = {
   id: '1',
   type: GameType.SANAKIERTO,
+  hostOnline: true,
   players: [
     {
       id: '1',

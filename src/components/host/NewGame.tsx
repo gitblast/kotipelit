@@ -137,6 +137,7 @@ const NewGame: React.FC = () => {
             players,
             status: GameStatus.UPCOMING,
             rounds: 3,
+            hostOnline: false,
           }}
           onSubmit={(values, actions) => {
             console.log('values', values, 'actions', actions);

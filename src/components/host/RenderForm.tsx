@@ -100,6 +100,7 @@ interface FormValues {
   players: SanakiertoPlayer[];
   status: GameStatus;
   rounds: number;
+  hostOnline: boolean;
 }
 
 interface RenderFormProps {

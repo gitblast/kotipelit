@@ -16,8 +16,8 @@ import { log } from '../../utils/logger';
 const attachListeners = (socket: SocketIOClient.Socket, isHost: boolean) => {
   // default listeners
 
-  socket.on(CommonEvent.PLAYER_JOINED, (data: string) =>
-    callbacks.playerJoined(data)
+  socket.on(PlayerEvent.GAME_UPDATED, (game: ActiveGame) =>
+    callbacks.gameUpdated(game)
   );
 
   if (isHost) {
@@ -64,10 +64,6 @@ const attachListeners = (socket: SocketIOClient.Socket, isHost: boolean) => {
 
     socket.on(PlayerEvent.GAME_STARTING, (game: ActiveGame) =>
       callbacks.gameStarting(game)
-    );
-
-    socket.on(PlayerEvent.GAME_UPDATED, (game: ActiveGame) =>
-      callbacks.gameUpdated(game)
     );
 
     socket.on(PlayerEvent.GAME_ENDED, () => {

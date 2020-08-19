@@ -126,9 +126,6 @@ export enum EventType {
   // EMITTED
   AUTH = 'authenticate',
 
-  HOST_DISCONNECTED = 'host disconnected',
-  PLAYER_DISCONNECTED = 'player disconnected',
-
   CREATE_SUCCESS = 'create success',
   CREATE_FAILURE = 'create failure',
 

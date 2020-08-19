@@ -25,18 +25,19 @@ export const handleDisconnect = (io: Server, socket: SocketWithToken): void => {
     if (!room) throw new Error(`No room found with id '${gameId}'`);
 
     if (socket.id === room.hostSocket) {
-      log(`emitting host disconnected to room ${gameId}`);
-
+      log(`host disconnected, emitting update game to room ${gameId}`);
       room.game.hostOnline = false;
-
-      io.to(gameId).emit(EventType.HOST_DISCONNECTED);
     } else {
       const player = roomService.leaveRoom(gameId, socket.id);
 
-      log(`emitting player '${player.id}' disconnected to room ${gameId}`);
-
-      io.to(gameId).emit(EventType.PLAYER_DISCONNECTED, player.id);
+      log(
+        `player '${player.id}' disconnected, emitting update game to room ${gameId}`
+      );
     }
+
+    const { event, data } = events.gameUpdated(room.game);
+
+    io.to(gameId).emit(event, data);
   } catch (error) {
     if (process.env.NODE_ENV !== 'test') {
       console.error(error.message);
@@ -79,6 +80,8 @@ export const createRoom = async (
       socket,
       events.createSuccess(data.game, data.jitsiToken, data.jitsiRoom)
     );
+
+    broadcast(socket, roomId, events.gameUpdated(data.game));
   } catch (error) {
     emit(socket, events.createFailure(error.message));
   }
@@ -135,7 +138,7 @@ export const joinGame = (
     const game = roomService.joinRoom(gameId, playerId, socket.id);
     const jitsiRoom = roomService.getJitsiRoomByRoomId(gameId);
     emit(socket, events.joinSuccess(game, jitsiRoom));
-    broadcast(socket, gameId, events.playerJoined(playerId));
+    broadcast(socket, gameId, events.gameUpdated(game));
   } catch (error) {
     emit(socket, events.joinFailure(error.message));
   }

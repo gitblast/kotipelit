@@ -172,7 +172,7 @@ describe('socket.io with player token', () => {
         );
       });
 
-      it('should broadcast "player joined" to room', (done) => {
+      it('should broadcast "game updated" to room', (done) => {
         const payload = { ...tokenPayload, id: 'otherid' };
         const token = jwt.sign(payload, config.SECRET);
         const other = setupSocket(token);
@@ -185,8 +185,8 @@ describe('socket.io with player token', () => {
           socket.emit(EventType.JOIN_GAME);
         });
 
-        other.once(EventType.PLAYER_JOINED, (id: string) => {
-          expect(id).toBe(tokenPayload.id);
+        other.once(EventType.GAME_UPDATED, (game: ActiveGame) => {
+          expect(game).toEqual(mockGame);
           done();
         });
       });

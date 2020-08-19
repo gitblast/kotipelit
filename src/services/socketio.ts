@@ -185,7 +185,7 @@ const handler = (io: Server): void => {
     log('user connected');
     attachListeners(socket);
 
-    socket.on(EventType.DISCONNECT, (io: Server, socket: SocketWithToken) => {
+    socket.on(EventType.DISCONNECT, () => {
       callbacks.handleDisconnect(io, socket);
     });
   });

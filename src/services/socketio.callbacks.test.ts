@@ -39,9 +39,9 @@ const mockSocket = {
 } as SocketWithToken;
 
 interface MockServer {
-  calls: Record<string, string>;
+  calls: Record<string, string | Record<string, unknown>>;
   to: (call: string) => void;
-  emit: (call: string) => void;
+  emit: (call: string, data: unknown) => void;
 }
 
 const mockServer: MockServer = {
@@ -51,8 +51,8 @@ const mockServer: MockServer = {
 
     return this;
   },
-  emit: function (call: string) {
-    this.calls['emit'] = call;
+  emit: function (call: string, data: unknown) {
+    this.calls['emit'] = { [call]: data };
 
     return this;
   },
@@ -96,7 +96,9 @@ describe('socket.io callbacks', () => {
       expect(mockRooms['gameId'].game.hostOnline).toBeFalsy();
 
       expect(server.calls['to']).toBe(hostSocket.decoded_token.gameId);
-      expect(server.calls['emit']).toBe(EventType.HOST_DISCONNECTED);
+      expect(server.calls['emit']).toEqual({
+        [EventType.GAME_UPDATED]: mockRooms['gameId'].game,
+      });
     });
 
     it('should call leave room and broadcast player disconnected if player socket', () => {
@@ -112,7 +114,9 @@ describe('socket.io callbacks', () => {
       expect(leaveRoom).toHaveBeenCalledWith('gameId', playerSocket.id);
 
       expect(server.calls['to']).toBe(playerSocket.decoded_token.gameId);
-      expect(server.calls['emit']).toBe(EventType.PLAYER_DISCONNECTED);
+      expect(server.calls['emit']).toEqual({
+        [EventType.GAME_UPDATED]: mockRooms['gameId'].game,
+      });
     });
   });
 
@@ -381,11 +385,11 @@ describe('socket.io callbacks', () => {
       );
     });
 
-    it('should broadcast player joined', () => {
+    it('should broadcast game updated', () => {
       expect(socketService.broadcast).toHaveBeenLastCalledWith(
         mockSocket,
         'testID',
-        events.playerJoined('testPlayer')
+        events.gameUpdated(mockGame)
       );
     });
 

@@ -186,7 +186,11 @@ const handler = (io: Server): void => {
     attachListeners(socket);
 
     socket.on(EventType.DISCONNECT, () => {
-      callbacks.handleDisconnect(io, socket);
+      if (socket.decoded_token.role === Role.HOST) {
+        callbacks.handleHostDisconnect(io, socket);
+      } else {
+        callbacks.handlePlayerDisconnect(io, socket);
+      }
     });
   });
 };

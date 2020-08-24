@@ -12,9 +12,38 @@ import { initRoom, emit, broadcast } from './socketio';
 import roomService from './rooms';
 import Url from '../models/url';
 import gameService from '../services/games';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 
-export const handleDisconnect = (io: Server, socket: SocketWithToken): void => {
+export const handleHostDisconnect = (io: Server, socket: Socket): void => {
+  log(`Recieved ${EventType.DISCONNECT}`);
+
+  try {
+    const rooms = roomService.getRooms();
+
+    const room = Object.values(rooms).find(
+      (room) => room.hostSocket === socket.id
+    );
+
+    if (!room)
+      throw new Error(`No room found with host socket id '${socket.id}'`);
+
+    log(`host disconnected, emitting update game to room ${room.game.id}`);
+    room.game.hostOnline = false;
+
+    const { event, data } = events.gameUpdated(room.game);
+
+    io.to(room.game.id).emit(event, data);
+  } catch (error) {
+    if (process.env.NODE_ENV !== 'test') {
+      console.error(error.message);
+    }
+  }
+};
+
+export const handlePlayerDisconnect = (
+  io: Server,
+  socket: SocketWithToken
+): void => {
   log(`Recieved ${EventType.DISCONNECT}`);
 
   try {
@@ -23,17 +52,11 @@ export const handleDisconnect = (io: Server, socket: SocketWithToken): void => {
     const room = roomService.getRooms()[gameId];
 
     if (!room) throw new Error(`No room found with id '${gameId}'`);
+    const player = roomService.leaveRoom(gameId, socket.id);
 
-    if (socket.id === room.hostSocket) {
-      log(`host disconnected, emitting update game to room ${gameId}`);
-      room.game.hostOnline = false;
-    } else {
-      const player = roomService.leaveRoom(gameId, socket.id);
-
-      log(
-        `player '${player.id}' disconnected, emitting update game to room ${gameId}`
-      );
-    }
+    log(
+      `player '${player.id}' disconnected, emitting update game to room ${gameId}`
+    );
 
     const { event, data } = events.gameUpdated(room.game);
 

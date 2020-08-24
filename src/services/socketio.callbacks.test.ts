@@ -13,6 +13,7 @@ import {
   ActiveGamePlayer,
   GameRoom,
   EventType,
+  Role,
 } from '../types';
 import { Server } from 'socket.io';
 
@@ -33,6 +34,7 @@ jest.mock('../services/games');
 const mockSocket = {
   id: 'mockSocketID',
   decoded_token: {
+    role: Role.PLAYER,
     username: 'testUser',
     gameId: 'gameId',
   },
@@ -61,6 +63,7 @@ const mockServer: MockServer = {
 const mockRooms: Record<string, GameRoom> = {
   gameId: {
     game: {
+      id: 'testGameID',
       hostOnline: true,
       players: [
         ({
@@ -84,18 +87,25 @@ describe('socket.io callbacks', () => {
 
     const getRooms = roomService.getRooms as jest.Mock;
 
-    it('should set host offline and broadcast host disconnected if socket host socket', () => {
+    it('should set host offline and broadcast host disconnected if host socket', () => {
       getRooms.mockReturnValueOnce(mockRooms);
 
-      const hostSocket = { ...mockSocket, id: 'hostSocket' };
+      const hostSocket = {
+        ...mockSocket,
+        decoded_token: { role: Role.HOST },
+        id: 'hostSocket',
+      };
 
       expect(mockRooms['gameId'].game.hostOnline).toBeTruthy();
 
-      callbacks.handleDisconnect((mockServer as unknown) as Server, hostSocket);
+      callbacks.handleHostDisconnect(
+        (mockServer as unknown) as Server,
+        hostSocket
+      );
 
       expect(mockRooms['gameId'].game.hostOnline).toBeFalsy();
 
-      expect(server.calls['to']).toBe(hostSocket.decoded_token.gameId);
+      expect(server.calls['to']).toBe('testGameID');
       expect(server.calls['emit']).toEqual({
         [EventType.GAME_UPDATED]: mockRooms['gameId'].game,
       });
@@ -109,7 +119,10 @@ describe('socket.io callbacks', () => {
 
       const playerSocket = { ...mockSocket, id: 'playerSocket' };
 
-      callbacks.handleDisconnect((server as unknown) as Server, playerSocket);
+      callbacks.handlePlayerDisconnect(
+        (server as unknown) as Server,
+        playerSocket
+      );
 
       expect(leaveRoom).toHaveBeenCalledWith('gameId', playerSocket.id);
 

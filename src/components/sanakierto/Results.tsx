@@ -32,6 +32,9 @@ interface ResultsProps {
 const Results: React.FC<ResultsProps> = ({ results, handleTearDown }) => {
   const classes = useStyles();
 
+  // use state to persist results even when host ends game
+  const [savedResults] = React.useState(results);
+
   return (
     <div className={classes.container}>
       <Typography variant="h4" gutterBottom>
@@ -39,7 +42,7 @@ const Results: React.FC<ResultsProps> = ({ results, handleTearDown }) => {
       </Typography>
       <Table>
         <TableBody>
-          {results.map((player) => (
+          {savedResults.map((player) => (
             <TableRow key={player.name}>
               <TableCell align="center">{player.name}</TableCell>
               <TableCell align="center">{`${player.points} pistettä`}</TableCell>

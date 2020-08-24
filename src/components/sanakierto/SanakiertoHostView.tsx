@@ -25,12 +25,15 @@ const useStyles = makeStyles((theme: Theme) =>
       boxSizing: 'border-box',
       width: '65%',
       backgroundColor: theme.palette.grey[400],
+
+      height: 568,
     },
     hostControls: {
       boxSizing: 'border-box',
       width: '35%',
       padding: theme.spacing(2),
       marginLeft: theme.spacing(1),
+      height: 568,
     },
   })
 );

@@ -36,10 +36,7 @@ const FrontPage: React.FC = () => {
 
   return (
     <div className={classes.container}>
-      <div>
-        <Typography variant="h3">Kanavat:</Typography>
-      </div>
-      {mapChannels()}
+      <Typography variant="h1">LANDING PAGE</Typography>
     </div>
   );
 };

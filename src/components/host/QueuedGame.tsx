@@ -21,6 +21,8 @@ import {
 import { useDispatch } from 'react-redux';
 import { deleteGame } from '../../reducers/games.reducer';
 import { Link } from 'react-router-dom';
+import { format } from 'date-fns';
+import fiLocale from 'date-fns/locale/fi';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -62,7 +64,9 @@ Sanasi ovat: ${player ? player.words.join(' ') : '<Pelaajan sanat>'}
       
 Tehtävänäsi on miettiä sanoille niitä kuvaavat vihjeet.
       
-Peli alkaa ${new Date(game.startTime).toUTCString()}
+Peli alkaa ${format(new Date(game.startTime), 'd. MMMM HH:mm', {
+    locale: fiLocale,
+  })}.
       
 Nähdään peleillä osoitteessa:
 ${getInviteUrl(hostName, player.id)}`;
@@ -120,7 +124,11 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
     <Paper elevation={2} className={classes.container}>
       <div className={`${classes.infoBar} ${classes.flex}`}>
         <div>
-          <Typography>{new Date(game.startTime).toUTCString()}</Typography>
+          <Typography>
+            {format(new Date(game.startTime), 'd. MMMM HH:mm', {
+              locale: fiLocale,
+            })}
+          </Typography>
         </div>
         <div>
           <Typography>{capitalize(game.type)}</Typography>

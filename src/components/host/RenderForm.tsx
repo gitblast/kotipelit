@@ -108,9 +108,6 @@ interface RenderFormProps {
   handleReturn: () => void;
 }
 
-/**
- * Wrapper for Formik component
- */
 const RenderForm: React.FC<RenderFormProps> = ({
   formikProps,
   handleReturn,
@@ -126,12 +123,12 @@ const RenderForm: React.FC<RenderFormProps> = ({
     playerToUpdate: SanakiertoPlayer,
     wordIndex: number
   ): Promise<void> => {
-    alert('todo!');
-    /**
-     * const newPlayers = formikProps.values.players.map((player) => {
+    const randomWord = await wordService.getOne();
+
+    const newPlayers = formikProps.values.players.map((player) => {
       if (player.id === playerToUpdate.id) {
         const newWords = player.words;
-        newWords[wordIndex] = await wordService.getOne();
+        newWords[wordIndex] = randomWord;
         return { ...player, words: newWords };
       }
 
@@ -142,7 +139,6 @@ const RenderForm: React.FC<RenderFormProps> = ({
       ...formikProps.values,
       players: newPlayers,
     });
-     */
   };
 
   return (

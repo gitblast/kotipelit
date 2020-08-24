@@ -25,12 +25,16 @@ const useStyles = makeStyles((theme: Theme) =>
       boxSizing: 'border-box',
       width: '65%',
       backgroundColor: theme.palette.grey[400],
+
+      height: 568,
     },
     sidePanel: {
       boxSizing: 'border-box',
       width: '35%',
       padding: theme.spacing(2),
       marginLeft: theme.spacing(1),
+
+      height: 568,
     },
   })
 );
@@ -78,7 +82,9 @@ const SanakiertoPlayerView: React.FC<SanakiertoPlayerViewProps> = ({
     }
 
     if (activeGame?.status === GameStatus.FINISHED) {
-      return <div>palauteboksi</div>;
+      return (
+        <Loader msg={'Kiitos osallistumisesta! Muista antaa palautetta.'} />
+      );
     }
 
     return (
@@ -103,6 +109,10 @@ const SanakiertoPlayerView: React.FC<SanakiertoPlayerViewProps> = ({
 
     if (activeGame.status === GameStatus.WAITING) {
       return <WaitingRoom game={activeGame} />;
+    }
+
+    if (activeGame.status === GameStatus.FINISHED) {
+      return <Results results={sortPlayersByPoints(activeGame.players)} />;
     }
 
     if (activeGame.status === GameStatus.RUNNING) {

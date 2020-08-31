@@ -11,6 +11,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "@types/axios": "^0.14.0",
     "@types/jest": "^24.0.0",
     "@types/lodash": "^4.14.155",
     "@types/node": "^12.0.0",
@@ -18,6 +19,9 @@
     "@types/react-dom": "^16.9.0",
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "^5.1.5",
+    "@types/redux-mock-store": "^1.0.2",
+    "@types/socket.io-client": "^1.4.33",
+    "@types/uuid": "^8.0.0",
     "cross-env": "^7.0.2",
     "date-fns": "^2.14.0",
     "eslint-config-prettier": "^6.11.0",
@@ -37,7 +41,11 @@
     "react-scripts": "3.4.1",
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
+    "redux-thunk": "^2.3.0",
+    "shortid": "^2.2.15",
+    "socket.io-client": "^2.3.0",
     "typescript": "~3.7.2",
+    "uuid": "^8.2.0",
     "yup": "^0.29.1"
   },
   "scripts": {
@@ -48,7 +56,8 @@
     "lint": "eslint './src/**/*.{ts,tsx}'"
   },
   "prettier": {
-    "singleQuote": true
+    "singleQuote": true,
+    "endOfLine": "lf"
   },
   "husky": {
     "hooks": {
@@ -74,5 +83,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "proxy": "http://localhost:3333",
+  "devDependencies": {
+    "@types/shortid": "^0.0.29"
   }
 }

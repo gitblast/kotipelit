@@ -2,16 +2,11 @@ import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Typography, Fab } from '@material-ui/core';
-
 import ScoreBoard from './ScoreBoard';
-import {
-  SanakiertoActive,
-  SanakiertoPlayer,
-  GameStatus,
-} from '../../../../types';
-import { useDispatch } from 'react-redux';
-import { updateGame } from '../../../../reducer/reducer';
-import useInterval from '../../../../hooks/useInterval';
+import { SanakiertoActive, SanakiertoPlayer, State } from '../../types';
+import { useSelector } from 'react-redux';
+import useInterval from '../../hooks/useInterval';
+import { updateGame } from '../../services/socketio/actions';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,15 +27,12 @@ interface HostPanelProps {
   game: SanakiertoActive;
 }
 
-/** @TODO set game status running */
-
 const HostPanel: React.FC<HostPanelProps> = ({ game }) => {
   const classes = useStyles();
+  const socket = useSelector((state: State) => state.user.socket);
 
   const [timerRunning, setTimerRunning] = React.useState<boolean>(false);
   const [timer, setTimer] = React.useState<number>(90);
-
-  const dispatch = useDispatch();
 
   useInterval(
     () => {
@@ -53,26 +45,41 @@ const HostPanel: React.FC<HostPanelProps> = ({ game }) => {
     timerRunning ? 1000 : null
   );
 
-  const playerWithTurn = game.players[game.turn];
+  if (!socket) return <Typography>Yhdistetään...</Typography>;
 
-  if (!playerWithTurn)
+  const { players, info } = game;
+
+  const playerInTurnIndex = players.findIndex(
+    (player) => player.id === info.turn
+  );
+
+  if (playerInTurnIndex < 0)
     throw new Error('Something went wrong with player turns');
 
+  const playerWithTurn = players[playerInTurnIndex];
+
   const handleUpdate = (players: SanakiertoPlayer[]): void => {
-    const turn = game.turn === players.length - 1 ? 0 : game.turn + 1;
-    const round = turn === 0 ? game.round + 1 : game.round;
+    let round: number;
+    let turn: string;
+
+    if (playerInTurnIndex === players.length - 1) {
+      round = game.info.round + 1;
+      turn = players[0].id;
+    } else {
+      round = game.info.round;
+      turn = players[playerInTurnIndex + 1].id;
+    }
 
     const newGameState: SanakiertoActive = {
       ...game,
       players,
-      turn,
-      round,
-      status: round > game.rounds ? GameStatus.FINISHED : GameStatus.RUNNING,
+      info: {
+        round,
+        turn,
+      },
     };
 
-    console.log('updating with', newGameState);
-
-    dispatch(updateGame(newGameState));
+    updateGame(newGameState);
     if (timerRunning) setTimerRunning(false);
     setTimer(90);
   };
@@ -85,7 +92,7 @@ const HostPanel: React.FC<HostPanelProps> = ({ game }) => {
 
   return (
     <div className={classes.container}>
-      <Typography variant="h6">{`Kierros ${game.round}`}</Typography>
+      <Typography variant="h6">{`Kierros ${game.info.round}`}</Typography>
       <div className={classes.flex}>
         <div className={classes.grow}>
           <Typography
@@ -139,7 +146,7 @@ const HostPanel: React.FC<HostPanelProps> = ({ game }) => {
       </div>
       <ScoreBoard
         players={game.players}
-        turn={game.turn}
+        turn={game.players.indexOf(playerWithTurn)}
         handleUpdate={handleUpdate}
       />
     </div>

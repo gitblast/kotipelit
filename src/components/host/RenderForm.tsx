@@ -2,9 +2,7 @@ import React from 'react';
 
 import {
   FormGroup,
-  MenuItem,
   Typography,
-  FormControl,
   Table,
   TableHead,
   TableCell,
@@ -14,90 +12,54 @@ import {
   Fab,
 } from '@material-ui/core';
 
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+
+import wordService from '../../services/words';
+
 import { KeyboardDateTimePicker } from '@material-ui/pickers';
 
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { Form, FastField, FieldArray, FormikProps } from 'formik';
-import { TextField, Select } from 'formik-material-ui';
+import { TextField } from 'formik-material-ui';
 
-import { SanakiertoPlayer, SelectableGame, GameType } from '../../../types';
+import { SanakiertoPlayer, GameType, GameStatus } from '../../types';
 
-const hardcodedWords = [
-  'DIABOLATRY',
-  'FURIOUS',
-  'ARCH',
-  'DRUGSTORE',
-  'DONATION',
-  'HORROR',
-  'SICK',
-  'CARIBOU',
-  'BLIP',
-  'SNAIL',
-  'AIRPORT',
-  'MILKY',
-  'THINGS',
-  'PRAGMATIC',
-  'NASTY',
-  'CURVED',
-  'LIBERATING',
-  'BELT',
-  'GRIZZLY',
-  'BIGMOUTH',
-  'HOROSCOPE',
-  'LIME',
-  'HIGHWAY',
-  'THINGS',
-  'MACHINE',
-  'AGGRESSION',
-  'BARBWIRE',
-  'PROPELLER',
-  'BLEEP',
-  'DEDUCTION',
-];
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    formRow: {
+      alignItems: 'center',
+      marginRight: theme.spacing(2),
+    },
+    marginRight: {
+      marginRight: theme.spacing(2),
+    },
+    gameInfo: {
+      display: 'flex',
+      marginTop: theme.spacing(2),
+      marginBottom: theme.spacing(2),
+    },
+    wordCell: {
+      minWidth: 190,
+    },
+    buttonRow: {
+      marginTop: theme.spacing(2),
+    },
+  })
+);
 
-const getRandomWord = (): string => {
-  return hardcodedWords[Math.floor(Math.random() * hardcodedWords.length)];
-};
-
-/**
- * Generates initial player objects to be used in state
- * @return {Array} - Array of 5 player objects with 3 unique, randow words each
- */
-export const initializePlayers = (): SanakiertoPlayer[] => {
-  const players = [];
-  const usedWords: string[] = [];
-
-  for (let i = 1; i <= 5; i++) {
-    const words: string[] = [];
-
-    while (words.length < 3) {
-      const randomWord = getRandomWord();
-      if (!usedWords.includes(randomWord)) {
-        words.push(randomWord);
-        usedWords.push(randomWord);
-      }
-    }
-
-    players.push({
-      name: `Pelaaja ${i}`,
-      words,
-      points: 0,
-    });
-  }
-
-  return players;
-};
+interface PlayerTableProps {
+  players: SanakiertoPlayer[];
+  handleRefresh: (player: SanakiertoPlayer, index: number) => void;
+}
 
 /**
  * Render function for form player table
- * @param players - Form state players
- * @param handleRefresh - Function to refresh a word to a new random word
  */
-const renderTable = (
-  players: SanakiertoPlayer[],
-  handleRefresh: (player: SanakiertoPlayer, index: number) => void
-) => {
+const PlayerTable: React.FC<PlayerTableProps> = ({
+  players,
+  handleRefresh,
+}) => {
   return (
     <Table>
       <TableHead>
@@ -132,38 +94,49 @@ const renderTable = (
   );
 };
 
-/**
- * Render function for Formik component
- * @param props - Formik form props
- */
-export const renderForm = (
-  props: FormikProps<Omit<SelectableGame, 'id'>>,
-  classes: Record<string, string>,
-  handleReturn:
-    | ((event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void)
-    | undefined
-) => {
+interface FormValues {
+  startTime: Date;
+  type: GameType;
+  players: SanakiertoPlayer[];
+  status: GameStatus;
+  rounds: number;
+  hostOnline: boolean;
+}
+
+interface RenderFormProps {
+  formikProps: FormikProps<FormValues>;
+  handleReturn: () => void;
+}
+
+const RenderForm: React.FC<RenderFormProps> = ({
+  formikProps,
+  handleReturn,
+}) => {
+  const classes = useStyles();
+
   /**
    * Refreshes the word in the given index of the given player with a new, randow word
    * @param {SanakiertoPlayer} playerToUpdate - the player whose word will be updated
    * @param {number} wordIndex - the index of the word to refresh
    */
-  const handleRefresh = (
+  const handleRefresh = async (
     playerToUpdate: SanakiertoPlayer,
     wordIndex: number
-  ): void => {
-    const newPlayers = props.values.players.map((player) => {
-      if (player.name === playerToUpdate.name) {
+  ): Promise<void> => {
+    const randomWord = await wordService.getOne();
+
+    const newPlayers = formikProps.values.players.map((player) => {
+      if (player.id === playerToUpdate.id) {
         const newWords = player.words;
-        newWords[wordIndex] = getRandomWord();
+        newWords[wordIndex] = randomWord;
         return { ...player, words: newWords };
       }
 
       return player;
     });
 
-    props.setValues({
-      ...props.values,
+    formikProps.setValues({
+      ...formikProps.values,
       players: newPlayers,
     });
   };
@@ -187,26 +160,11 @@ export const renderForm = (
             format="d. MMMM HH:mm"
             disablePast
             name="startTime"
-            value={props.values.startTime}
-            onChange={(value: unknown) =>
-              props.setFieldValue('startTime', value)
+            value={formikProps.values.startTime}
+            onChange={(value: string) =>
+              formikProps.setFieldValue('startTime', value)
             }
           />
-        </FormGroup>
-        <FormGroup row className={classes.formRow}>
-          <Typography
-            className={classes.marginRight}
-            component="label"
-            variant="h6"
-            htmlFor="type"
-          >
-            Pelin tyyppi:
-          </Typography>
-          <FormControl variant="outlined">
-            <FastField component={Select} name="type" disabled>
-              <MenuItem value={GameType.SANAKIERTO}>Sanakierto</MenuItem>
-            </FastField>
-          </FormControl>
         </FormGroup>
       </div>
       <div className={classes.gameInfo}>
@@ -226,9 +184,12 @@ export const renderForm = (
          * see https://jaredpalmer.com/formik/docs/api/fieldarray#fieldarray-helpers
          */
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        render={(arrayHelpers) =>
-          renderTable(props.values.players, handleRefresh)
-        }
+        render={(arrayHelpers) => (
+          <PlayerTable
+            players={formikProps.values.players}
+            handleRefresh={handleRefresh}
+          />
+        )}
       />
       <div className={classes.buttonRow}>
         <Fab
@@ -246,3 +207,5 @@ export const renderForm = (
     </Form>
   );
 };
+
+export default RenderForm;

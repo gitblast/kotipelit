@@ -6,8 +6,11 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import NewGame from './host/NewGame';
-import Sanakierto from './host/sanakierto/SanaKierto';
+import SanakiertoHostView from './sanakierto/SanakiertoHostView';
+import SanakiertoPlayerView from './sanakierto/SanakiertoPlayerView';
 import Dashboard from './host/Dashboard';
+import { useSelector } from 'react-redux';
+import { State, BaseUser } from '../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,6 +31,8 @@ interface ChannelPageProps {
 const ChannelPage: React.FC<ChannelPageProps> = ({ labelText }) => {
   const classes = useStyles();
 
+  const user = useSelector((state: State) => state.user);
+
   return (
     <Router>
       <Paper elevation={5} className={classes.container}>
@@ -37,14 +42,15 @@ const ChannelPage: React.FC<ChannelPageProps> = ({ labelText }) => {
         <Divider className={classes.marginBottom} />
         <Switch>
           <Route path="/:username/newgame">
-            <NewGame />
+            {user.loggedIn && <NewGame />}
           </Route>
-          <Route path="/:username/:gameID">
-            <Sanakierto />
+          <Route path="/:username/pelit/:gameID">
+            {user.loggedIn && <SanakiertoHostView user={user} />}
           </Route>
-          <Route path="/">
-            <Dashboard />
+          <Route path="/:username/:playerId">
+            {!user.loggedIn && <SanakiertoPlayerView user={user as BaseUser} />}
           </Route>
+          <Route path="/">{user.loggedIn && <Dashboard user={user} />}</Route>
         </Switch>
       </Paper>
     </Router>

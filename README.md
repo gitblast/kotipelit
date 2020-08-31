@@ -1,56 +1,10 @@
 # Kotipelit.com
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
 ## Description
 
-TODO
+A site for remote games. Backend for the project can be found [here](https://github.com/gitblast/kotipelit.com-backend).
 
-## About jitsi
-
-Embedded jitsi needs to be provided a valid JWT -token in order to create a new room. The creator will be granted moderator privileges. Once created, guests can join the room without authenticating (no token needed).
-
-### Token schema:
-
-#### Headers:
-
-```
-{
-  "alg": "HS256",
-  "typ": "JWT"
-}
-```
-
-#### Payload:
-
-```
-{
-  "context": { // info about the user, only name -field is required
-    name: "John Doe", // name that will be shown to other participants
-    avatar: "https://url.to.avatar",
-    id: "123456",
-    email: "email@johndoe.com"
-  },
-  "aud": kotipelit.com,
-  "iss": kotipelit.com,
-  "sub": meet.kotipelit.com,
-  "room": <roomname>, // token will only be valid with roomname provided here
-  "iat": <issued at>, // token issue time, optional
-  "exp": <expires> // token expire time, optional
-}
-```
-
-#### Verification:
-
-```
-HMACSHA256(
-  base64UrlEncode(header) + "." +
-  base64UrlEncode(payload),
-  <app_secret> // app secret set in prosody configuration
-)
-```
-
-Example tokens for development purposes can be created at www.jwt.io.
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
 
@@ -87,10 +41,46 @@ If you aren’t satisfied with the build tool and configuration choices, you can
 
 Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## About jitsi
 
-## Learn More
+Embedded jitsi needs to be provided a valid JWT -token in order to create a new room. The creator will be granted moderator privileges. Once created, guests can join the room without authenticating (no token needed).
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Token schema:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+#### Headers:
+
+```
+{
+  "alg": "HS256",
+  "typ": "JWT"
+}
+```
+
+#### Payload:
+
+```
+{
+  "context": {
+    "user": {
+      "name": "John Doe", // name that will be shown to other participants
+    }
+  },
+  "aud": "kotipelit.com",
+  "iss": "kotipelit.com",
+  "sub": "meet.kotipelit.com",
+  "room": <roomname>, // token will only be valid with roomname provided here
+  "exp": <expires> // token expire time, optional
+}
+```
+
+#### Verification:
+
+```
+HMACSHA256(
+  base64UrlEncode(header) + "." +
+  base64UrlEncode(payload),
+  <app_secret> // app secret set in prosody configuration
+)
+```
+
+Example tokens for development purposes can be created at www.jwt.io.

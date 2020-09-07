@@ -81,7 +81,7 @@ const App = () => {
             <LoginForm />
           </Route>
           <Route path="/">
-            <TempFrontPage />
+            <FrontPage />
           </Route>
         </Switch>
       </Container>

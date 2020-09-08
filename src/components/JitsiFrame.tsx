@@ -2,7 +2,7 @@ import React from 'react';
 import Jitsi from 'react-jitsi';
 import { Fab, Typography } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { ConfigOptions } from 'react-jitsi/dist/types';
+import { ConfigOptions, InterfaceConfigOptions } from 'react-jitsi/dist/types';
 import { JitsiApi } from '../types';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -102,12 +102,12 @@ const JitsiFrame: React.FC<JitsiFrameProps> = ({
     DISPLAY_WELCOME_PAGE_CONTENT: false,
     DISPLAY_WELCOME_PAGE_TOOLBAR_ADDITIONAL_CONTENT: true,
     ENABLE_DIAL_OUT: false,
-    filmStripOnly: true,
     GENERATE_ROOMNAMES_ON_WELCOME_PAGE: false,
     HIDE_INVITE_MORE_HEADER: true,
     SHOW_JITSI_WATERMARK: false,
     SHOW_WATERMARK_FOR_GUESTS: false,
     RECENT_LIST_ENABLED: false,
+    TOOLBAR_BUTTONS: ['camera', 'microphone', 'chat'],
   };
 
   /** @TODO add display name from user */
@@ -121,7 +121,7 @@ const JitsiFrame: React.FC<JitsiFrameProps> = ({
       loadingComponent={Loader}
       onAPILoad={(JitsiMeetApi) => handleAPIloaded(JitsiMeetApi as JitsiApi)}
       config={config as ConfigOptions}
-      interfaceConfig={interfaceConfig}
+      interfaceConfig={interfaceConfig as InterfaceConfigOptions}
     />
   );
 };

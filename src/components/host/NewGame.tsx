@@ -139,9 +139,7 @@ const NewGame: React.FC = () => {
             rounds: 3,
             hostOnline: false,
           }}
-          onSubmit={(values, actions) => {
-            console.log('values', values, 'actions', actions);
-            console.log('adding new game');
+          onSubmit={(values) => {
             dispatch(addGame(values));
             handleReturn();
           }}

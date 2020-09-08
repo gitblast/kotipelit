@@ -58,6 +58,14 @@ const getRoomData = (
   };
 };
 
+const setHostSocket = (roomId: string, socketId: string): void => {
+  const room = rooms[roomId];
+
+  if (!room) throw new Error(`Room with id '${roomId}' not found`);
+
+  room.hostSocket = socketId;
+};
+
 const setHostOnline = (roomId: string, newStatus: boolean): void => {
   const room = rooms[roomId];
 
@@ -165,4 +173,5 @@ export default {
   getRoomData,
   leaveRoom,
   setHostOnline,
+  setHostSocket,
 };

@@ -24,8 +24,11 @@ export const handleHostDisconnect = (io: Server, socket: Socket): void => {
       (room) => room.hostSocket === socket.id
     );
 
-    if (!room)
-      throw new Error(`No room found with host socket id '${socket.id}'`);
+    if (!room) {
+      throw new Error(
+        `No room found with host socket id '${socket.id}. If game has already ended, this is expected'`
+      );
+    }
 
     log(`host disconnected, emitting update game to room ${room.game.id}`);
     room.game.hostOnline = false;
@@ -52,6 +55,7 @@ export const handlePlayerDisconnect = (
     const room = roomService.getRooms()[gameId];
 
     if (!room) throw new Error(`No room found with id '${gameId}'`);
+
     const player = roomService.leaveRoom(gameId, socket.id);
 
     log(
@@ -96,6 +100,10 @@ export const createRoom = async (
       data = await initRoom(socket, roomId);
     } else {
       log('existing room found. joining');
+
+      // update host socket and status
+      roomService.setHostOnline(roomId, true);
+      roomService.setHostSocket(roomId, socket.id);
     }
 
     roomService.addSocketToRoom(roomId, socket);

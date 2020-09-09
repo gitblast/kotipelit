@@ -17,7 +17,6 @@ import { initChannels } from './reducers/channels.reducer';
 
 import FrontPage from './components/FrontPage';
 import LoginForm from './components/LoginForm';
-import TempFrontPage from './components/TempFrontPage';
 import UserControls from './components/UserControls';
 
 import ChannelPage from './components/ChannelPage';
@@ -54,9 +53,12 @@ const App = () => {
   // init channels and games and check local storage for user
   React.useEffect(() => {
     dispatch(checkForUser());
-    dispatch(initGames());
     dispatch(initChannels());
   }, [dispatch]);
+
+  React.useEffect(() => {
+    dispatch(initGames());
+  }, [user.loggedIn]);
 
   const channelRoutes = (channels: HostChannel[]) => {
     return channels.map((channel) => (

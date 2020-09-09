@@ -18,7 +18,7 @@ import { useHistory } from 'react-router-dom';
 import RenderForm from './RenderForm';
 import { useDispatch } from 'react-redux';
 import { addGame } from '../../reducers/games.reducer';
-import { GameType, GameStatus, SanakiertoPlayer } from '../../types';
+import { GameType, GameStatus, KotitonniPlayer } from '../../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export const initializePlayers = async (
   playerCount: number,
   wordsPerPlayer: number
-): Promise<SanakiertoPlayer[]> => {
+): Promise<KotitonniPlayer[]> => {
   const players = [];
 
   const randomWords = await wordService.getMany(playerCount * wordsPerPlayer);
@@ -67,7 +67,7 @@ export const initializePlayers = async (
 
 const NewGame: React.FC = () => {
   const [gameType, setGameType] = React.useState<null | GameType>(null);
-  const [players, setPlayers] = React.useState<null | SanakiertoPlayer[]>(null);
+  const [players, setPlayers] = React.useState<null | KotitonniPlayer[]>(null);
 
   React.useEffect(() => {
     const init = async () => {
@@ -102,11 +102,11 @@ const NewGame: React.FC = () => {
         <Typography variant="h6">Pelin tyyppi:</Typography>
         <div>
           <Fab
-            onClick={() => setGameType(GameType.SANAKIERTO)}
+            onClick={() => setGameType(GameType.KOTITONNI)}
             variant="extended"
             className={classes.marginTop}
           >
-            Sanakierto
+            Kotitonni
           </Fab>
         </div>
         <div>
@@ -133,7 +133,7 @@ const NewGame: React.FC = () => {
         <Formik
           initialValues={{
             startTime: new Date(),
-            type: GameType.SANAKIERTO,
+            type: GameType.KOTITONNI,
             players,
             status: GameStatus.UPCOMING,
             rounds: 3,

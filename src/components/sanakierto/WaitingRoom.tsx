@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@material-ui/core';
 
-import { SanakiertoActive } from '../../types';
+import { KotitonniActive } from '../../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface WaitingRoomProps {
-  game: SanakiertoActive;
+  game: KotitonniActive;
   handleStart?: () => void;
 }
 

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
-import { SanakiertoActive } from '../../types';
+import { KotitonniActive } from '../../types';
 import { Typography } from '@material-ui/core';
 
 import Scores from './Scores';
@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface PlayerSidePanelProps {
-  game: SanakiertoActive;
+  game: KotitonniActive;
 }
 
 const PlayerSidePanel: React.FC<PlayerSidePanelProps> = ({ game }) => {

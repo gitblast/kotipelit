@@ -1,6 +1,6 @@
 import React from 'react';
 import Jitsi from 'react-jitsi';
-import { Fab, Typography } from '@material-ui/core';
+import { Fab, Typography, CircularProgress } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { ConfigOptions, InterfaceConfigOptions } from 'react-jitsi/dist/types';
 import { JitsiApi } from '../types';
@@ -23,6 +23,9 @@ const Loader: React.FC = () => {
 
   return (
     <div className={classes.loader}>
+      <div>
+        <CircularProgress />
+      </div>
       <Typography>Ladataan videoyhteyttä...</Typography>
     </div>
   );
@@ -34,6 +37,7 @@ interface JitsiFrameProps {
   displayName: string | null;
   loadedCallback?: () => void;
   dev?: boolean;
+  isHost?: boolean;
 }
 
 const JitsiFrame: React.FC<JitsiFrameProps> = ({
@@ -42,6 +46,7 @@ const JitsiFrame: React.FC<JitsiFrameProps> = ({
   displayName,
   loadedCallback,
   dev,
+  isHost,
 }) => {
   const [showJitsi, setShowJitsi] = React.useState<boolean>(!dev);
   const [jitsi, setJitsi] = React.useState<null | JitsiApi>(null);
@@ -50,7 +55,7 @@ const JitsiFrame: React.FC<JitsiFrameProps> = ({
 
   React.useEffect(() => {
     return () => jitsi?.dispose();
-  }, []);
+  }, [jitsi]);
 
   const handleLeave = (api: JitsiApi) => {
     setShowJitsi(false);
@@ -85,6 +90,9 @@ const JitsiFrame: React.FC<JitsiFrameProps> = ({
     );
   }
 
+  // host cannot start conference without a token
+  if (isHost && !token) return <Loader />;
+
   // https://github.com/jitsi/jitsi-meet/blob/master/config.js
   const config = {
     subject: ' ', // hides room name
@@ -110,7 +118,6 @@ const JitsiFrame: React.FC<JitsiFrameProps> = ({
     TOOLBAR_BUTTONS: ['camera', 'microphone', 'chat'],
   };
 
-  /** @TODO add display name from user */
   return (
     <Jitsi
       containerStyle={{ width: '100%', height: '100%' }}

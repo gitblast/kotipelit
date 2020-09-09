@@ -1,7 +1,14 @@
 import { Dispatch, Reducer } from 'redux';
 import userService from '../services/users';
 
-import { Action, User, ActionType, LoggedUser, BaseUser } from '../types';
+import {
+  Action,
+  User,
+  ActionType,
+  LoggedUser,
+  BaseUser,
+  State,
+} from '../types';
 
 /** @TODO handle errors */
 
@@ -102,11 +109,18 @@ export const checkForUser = () => {
 };
 
 /**
- * Clears user from localStorage and sets user to null
+ * Clears user from localStorage, disconnects possible socket and sets user to null
  */
-export const logout = (): Action => {
-  window.localStorage.removeItem('kotipelitUser');
-  return { type: ActionType.LOGOUT };
+export const logout = () => {
+  return (dispatch: Dispatch, getState: () => State) => {
+    window.localStorage.removeItem('kotipelitUser');
+
+    const socket = getState().user.socket;
+
+    if (socket) socket.disconnect();
+
+    dispatch({ type: ActionType.LOGOUT });
+  };
 };
 
 export const loginRequest = (): Action => ({

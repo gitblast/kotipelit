@@ -6,7 +6,7 @@ import { useSelector, shallowEqual } from 'react-redux';
 import { useParams, Redirect } from 'react-router';
 import * as actions from '../../services/socketio/actions';
 import JitsiFrame from '../JitsiFrame';
-import { GameStatus, State, SanakiertoPlayer } from '../../types';
+import { GameStatus, State, KotitonniPlayer } from '../../types';
 import WaitingRoom from './WaitingRoom';
 import HostPanel from './HostPanel';
 import Results from './Results';
@@ -26,14 +26,14 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '65%',
       backgroundColor: theme.palette.grey[400],
 
-      height: 568,
+      height: 600,
     },
     hostControls: {
       boxSizing: 'border-box',
       width: '35%',
       padding: theme.spacing(2),
       marginLeft: theme.spacing(1),
-      height: 568,
+      height: 600,
     },
   })
 );
@@ -42,11 +42,11 @@ interface ParamTypes {
   gameID: string;
 }
 
-interface SanakiertoHostViewProps {
+interface KotitonniHostViewProps {
   user: LoggedUser;
 }
 
-const SanakiertoHostView: React.FC<SanakiertoHostViewProps> = ({ user }) => {
+const KotitonniHostView: React.FC<KotitonniHostViewProps> = ({ user }) => {
   const classes = useStyles();
 
   const [error, setError] = React.useState<null | string>(null);
@@ -63,7 +63,7 @@ const SanakiertoHostView: React.FC<SanakiertoHostViewProps> = ({ user }) => {
     log('initializing socket');
 
     try {
-      actions.initHostSocket(user, gameID);
+      actions.initHostSocket(gameID);
     } catch (error) {
       console.error(error.message);
 
@@ -71,9 +71,9 @@ const SanakiertoHostView: React.FC<SanakiertoHostViewProps> = ({ user }) => {
     }
 
     return actions.tearDownSocket;
-  }, []);
+  }, [gameID]);
 
-  const sortPlayersByPoints = (players: SanakiertoPlayer[]) =>
+  const sortPlayersByPoints = (players: KotitonniPlayer[]) =>
     players.sort((a, b) => b.points - a.points);
 
   const jitsiContent = () => {
@@ -91,7 +91,9 @@ const SanakiertoHostView: React.FC<SanakiertoHostViewProps> = ({ user }) => {
         roomName={jitsiRoom}
         displayName={username}
         loadedCallback={() => actions.emitJitsiReady(gameID, jitsiRoom)}
-        dev
+        // eslint-disable-next-line no-undef
+        dev={process && process.env.NODE_ENV === 'development'}
+        isHost
       />
     );
   };
@@ -145,4 +147,4 @@ const SanakiertoHostView: React.FC<SanakiertoHostViewProps> = ({ user }) => {
   );
 };
 
-export default SanakiertoHostView;
+export default KotitonniHostView;

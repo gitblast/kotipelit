@@ -152,17 +152,32 @@ describe('user reducer', () => {
       expect(dispatch).toHaveBeenCalledWith(actions.loginRequest());
     });
 
-    it('should clear localStorage and dispatch logout on logout', () => {
+    it('should clear localStorage, disconnect possible socket and dispatch logout on logout', () => {
       window.localStorage.setItem('kotipelitUser', 'mock-user');
       expect(window.localStorage.getItem('kotipelitUser')).toBe('mock-user');
 
-      const expectedAction: Action = {
+      const dispatch = jest.fn();
+      const getState = jest.fn();
+      const disconnect = jest.fn();
+
+      getState.mockReturnValueOnce({
+        user: {
+          socket: {
+            disconnect,
+          },
+        },
+      });
+
+      const expectedAction = {
         type: ActionType.LOGOUT,
       };
 
-      const action: Action = actions.logout();
+      actions.logout()(dispatch, getState);
+
       expect(window.localStorage.getItem('kotipelitUser')).toBe(null);
-      expect(action).toEqual(expectedAction);
+      expect(dispatch).toHaveBeenCalledWith(expectedAction);
+      expect(getState).toHaveBeenCalled();
+      expect(disconnect).toHaveBeenCalled();
     });
 
     describe('when login succeeds', () => {

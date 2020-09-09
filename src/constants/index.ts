@@ -3,14 +3,14 @@ import {
   GameType,
   HostChannel,
   SelectableGame,
-  SanakiertoActive,
+  KotitonniActive,
 } from '../types';
 
 export const hardcodedGames: SelectableGame[] = [
   {
     hostOnline: true,
     id: '1',
-    type: GameType.SANAKIERTO,
+    type: GameType.KOTITONNI,
     players: [
       {
         id: '1',
@@ -55,7 +55,7 @@ export const hardcodedGames: SelectableGame[] = [
   {
     hostOnline: true,
     id: '2',
-    type: GameType.SANAKIERTO,
+    type: GameType.KOTITONNI,
     players: [
       {
         id: '6',
@@ -114,9 +114,9 @@ export const hardcodedChannels: HostChannel[] = [
   },
 ];
 
-export const hardcodedActiveSanakierto: SanakiertoActive = {
+export const hardcodedActiveSanakierto: KotitonniActive = {
   id: '1',
-  type: GameType.SANAKIERTO,
+  type: GameType.KOTITONNI,
   hostOnline: true,
   players: [
     {

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
-import { SanakiertoPlayer } from '../../types';
+import { KotitonniPlayer } from '../../types';
 import {
   Typography,
   Table,
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface ResultsProps {
-  results: SanakiertoPlayer[];
+  results: KotitonniPlayer[];
   handleTearDown?: () => void;
 }
 

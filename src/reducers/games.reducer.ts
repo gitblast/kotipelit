@@ -20,7 +20,7 @@ const initialState: GamesState = {
 
 const activate = (game: SelectableGame): ActiveGame => {
   switch (game.type) {
-    case GameType.SANAKIERTO:
+    case GameType.KOTITONNI:
       return {
         ...game,
         status: GameStatus.WAITING,

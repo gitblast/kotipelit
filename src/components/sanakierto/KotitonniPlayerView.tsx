@@ -11,7 +11,7 @@ import * as actions from '../../services/socketio/actions';
 
 import Loader from '../Loader';
 import JitsiFrame from '../JitsiFrame';
-import { State, BaseUser, GameStatus, SanakiertoPlayer } from '../../types';
+import { State, BaseUser, GameStatus, KotitonniPlayer } from '../../types';
 import WaitingRoom from './WaitingRoom';
 import PlayerSidePanel from './PlayerSidePanel';
 import Results from './Results';
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '65%',
       backgroundColor: theme.palette.grey[400],
 
-      height: 568,
+      height: 600,
     },
     sidePanel: {
       boxSizing: 'border-box',
@@ -34,12 +34,12 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(2),
       marginLeft: theme.spacing(1),
 
-      height: 568,
+      height: 600,
     },
   })
 );
 
-const sortPlayersByPoints = (players: SanakiertoPlayer[]) => {
+const sortPlayersByPoints = (players: KotitonniPlayer[]) => {
   return players.sort((a, b) => b.points - a.points);
 };
 
@@ -48,13 +48,11 @@ interface ParamTypes {
   playerId: string;
 }
 
-interface SanakiertoPlayerViewProps {
+interface KotitonniPlayerViewProps {
   user: BaseUser;
 }
 
-const SanakiertoPlayerView: React.FC<SanakiertoPlayerViewProps> = ({
-  user,
-}) => {
+const KotitonniPlayerView: React.FC<KotitonniPlayerViewProps> = ({ user }) => {
   const classes = useStyles();
   const { username, playerId } = useParams<ParamTypes>();
   const activeGame = useSelector(
@@ -70,7 +68,7 @@ const SanakiertoPlayerView: React.FC<SanakiertoPlayerViewProps> = ({
     actions.initPlayerSocket(username, playerId);
 
     return actions.tearDownSocket;
-  }, []);
+  }, [playerId, username]);
 
   const jitsiContent = () => {
     if (error) {
@@ -93,7 +91,8 @@ const SanakiertoPlayerView: React.FC<SanakiertoPlayerViewProps> = ({
         roomName={user.jitsiRoom}
         displayName={user.displayName}
         loadedCallback={() => null}
-        dev
+        // eslint-disable-next-line no-undef
+        dev={process && process.env.NODE_ENV === 'development'}
       />
     );
   };
@@ -136,4 +135,4 @@ const SanakiertoPlayerView: React.FC<SanakiertoPlayerViewProps> = ({
   );
 };
 
-export default SanakiertoPlayerView;
+export default KotitonniPlayerView;

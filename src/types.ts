@@ -8,7 +8,7 @@ export interface JitsiApi {
 // GAMES
 
 export enum GameType {
-  SANAKIERTO = 'sanakierto',
+  KOTITONNI = 'kotitonni',
 }
 
 export interface Game {
@@ -19,7 +19,7 @@ export interface Game {
   hostOnline: boolean;
 }
 
-export interface SanakiertoPlayer {
+export interface KotitonniPlayer {
   id: string;
   name: string;
   words: string[];
@@ -27,21 +27,21 @@ export interface SanakiertoPlayer {
   online: boolean;
 }
 
-export interface Sanakierto extends Game {
-  players: SanakiertoPlayer[];
+export interface Kotitonni extends Game {
+  players: KotitonniPlayer[];
   rounds: number;
 }
 
-export interface SanakiertoActive extends Sanakierto {
+export interface KotitonniActive extends Kotitonni {
   info: {
     turn: string; // player id
     round: number;
   };
 }
 
-export type SelectableGame = Sanakierto; // additional games here
+export type SelectableGame = Kotitonni; // additional games here
 
-export type ActiveGame = SanakiertoActive; // additional games here
+export type ActiveGame = KotitonniActive; // additional games here
 
 export enum GameStatus {
   RUNNING = 'Running',

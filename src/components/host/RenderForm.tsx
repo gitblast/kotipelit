@@ -23,7 +23,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import { Form, FastField, FieldArray, FormikProps } from 'formik';
 import { TextField } from 'formik-material-ui';
 
-import { SanakiertoPlayer, GameType, GameStatus } from '../../types';
+import { KotitonniPlayer, GameType, GameStatus } from '../../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -49,8 +49,8 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface PlayerTableProps {
-  players: SanakiertoPlayer[];
-  handleRefresh: (player: SanakiertoPlayer, index: number) => void;
+  players: KotitonniPlayer[];
+  handleRefresh: (player: KotitonniPlayer, index: number) => void;
 }
 
 /**
@@ -97,7 +97,7 @@ const PlayerTable: React.FC<PlayerTableProps> = ({
 interface FormValues {
   startTime: Date;
   type: GameType;
-  players: SanakiertoPlayer[];
+  players: KotitonniPlayer[];
   status: GameStatus;
   rounds: number;
   hostOnline: boolean;
@@ -116,11 +116,11 @@ const RenderForm: React.FC<RenderFormProps> = ({
 
   /**
    * Refreshes the word in the given index of the given player with a new, randow word
-   * @param {SanakiertoPlayer} playerToUpdate - the player whose word will be updated
+   * @param {KotitonniPlayer} playerToUpdate - the player whose word will be updated
    * @param {number} wordIndex - the index of the word to refresh
    */
   const handleRefresh = async (
-    playerToUpdate: SanakiertoPlayer,
+    playerToUpdate: KotitonniPlayer,
     wordIndex: number
   ): Promise<void> => {
     const randomWord = await wordService.getOne();

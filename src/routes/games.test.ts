@@ -17,7 +17,7 @@ const api = supertest(app);
 const baseUrl = '/api/games';
 
 const dummyGame: Omit<NewGame, 'host'> = {
-  type: GameType.SANAKIERTO,
+  type: GameType.KOTITONNI,
   players: [
     {
       id: 'id1',

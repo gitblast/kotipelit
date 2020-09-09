@@ -52,7 +52,7 @@ export enum GameStatus {
 }
 
 export enum GameType {
-  SANAKIERTO = 'sanakierto',
+  KOTITONNI = 'kotitonni',
 }
 
 export interface GamePlayer {
@@ -66,12 +66,12 @@ export interface ActiveGamePlayer extends GamePlayer {
   online: boolean;
 }
 
-export interface SanakiertoInfo {
+export interface KotitonniInfo {
   round: number;
   turn: string; // player id
 }
 
-export type GameInfo = SanakiertoInfo;
+export type GameInfo = KotitonniInfo;
 
 export type ActiveGame = WaitingGame | RunningGame;
 

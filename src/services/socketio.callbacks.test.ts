@@ -227,7 +227,7 @@ describe('socket.io callbacks', () => {
 
   describe('start game', () => {
     const mockGame = {
-      type: GameType.SANAKIERTO,
+      type: GameType.KOTITONNI,
       status: GameStatus.WAITING,
       players: [
         {

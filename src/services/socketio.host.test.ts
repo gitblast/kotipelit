@@ -149,7 +149,7 @@ describe('socket.io with host token', () => {
       let gameId: string;
       const mockGame = {
         status: GameStatus.WAITING,
-        type: GameType.SANAKIERTO,
+        type: GameType.KOTITONNI,
         players: [{ id: 'first player id' }],
       };
 

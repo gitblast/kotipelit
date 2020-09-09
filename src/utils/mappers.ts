@@ -22,7 +22,7 @@ const isError = (object: any): object is Error => {
 
 const isGameType = (text: any): text is GameType => {
   // additional games here
-  return ['sanakierto'].includes(text);
+  return Object.values(GameType).includes(text);
 };
 
 const isDate = (date: any): boolean => {

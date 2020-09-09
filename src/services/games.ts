@@ -10,7 +10,7 @@ import {
 const getInitialInfo = (game: ActiveGame): GameInfo => {
   /** handle different game types here */
   switch (game.type) {
-    case GameType.SANAKIERTO: {
+    case GameType.KOTITONNI: {
       if (!game.players || !game.players.length)
         throw new Error('Game has no players set');
 

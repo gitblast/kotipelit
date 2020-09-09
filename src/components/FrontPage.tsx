@@ -59,25 +59,6 @@ const FrontPage: React.FC = () => {
   const classes = useStyles();
 
   return (
-    // <div className={classes.container}>
-    //   <Typography variant="h3">Kanavat:</Typography>
-    //   <div className={classes.linkContainer}>
-    //     <Button color="primary" component={Link} to="/matleena" variant="outlined">
-    //       Matleena
-    //     </Button>
-    //   </div>
-    //   <div className={classes.linkContainer}>
-    //     <Button component={Link} to="/matleena" variant="outlined">
-    //       Batleena
-    //     </Button>
-    //   </div>
-    //   <div className={classes.linkContainer}>
-    //     <Button component={Link} to="/matleena" variant="outlined">
-    //       Catleena
-    //     </Button>
-    //   </div>
-    // </div>
-
     <Grid container spacing={8} className={classes.container}>
       <Grid container className={classes.showcase}>
         <Grid item xs={12}></Grid>

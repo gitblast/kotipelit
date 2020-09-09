@@ -28,6 +28,8 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     navbar: {
       marginBottom: theme.spacing(3),
+      maxWidth: 1280,
+      margin: 'auto',
     },
     toolbar: {
       display: 'flex',

@@ -14,8 +14,8 @@ import {
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import {
   SelectableGame,
-  Sanakierto,
-  SanakiertoPlayer,
+  Kotitonni,
+  KotitonniPlayer,
   GameStatus,
 } from '../../types';
 import { useDispatch } from 'react-redux';
@@ -54,9 +54,9 @@ const getInviteUrl = (hostName: string, playerId: string): string =>
   `https://www.kotipelit.com/${hostName}/${playerId}`;
 
 const getInviteText = (
-  game: Sanakierto,
+  game: Kotitonni,
   hostName: string,
-  player: SanakiertoPlayer
+  player: KotitonniPlayer
 ): string =>
   `Tervetuloa pelaamaan ${capitalize(game.type)}a!
   
@@ -98,7 +98,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
   const showInviteText = (
     game: SelectableGame,
     hostName: string,
-    player: SanakiertoPlayer
+    player: KotitonniPlayer
   ): void => {
     setInviteText(getInviteText(game, hostName, player));
   };

@@ -3,7 +3,7 @@ import store from '../../store';
 import { setDisplayName, setSocket } from '../../reducers/user.reducer';
 import socketService from './service';
 import * as events from './events';
-import { ActiveGame, LoggedUser } from '../../types';
+import { ActiveGame } from '../../types';
 import { log } from '../../utils/logger';
 import { setActiveGame } from '../../reducers/games.reducer';
 import { setError } from '../../reducers/alert.reducer';
@@ -83,11 +83,12 @@ export const tearDownSocket = (): void => {
   store.dispatch(setActiveGame(null));
 };
 
-export const initHostSocket = (
-  user: LoggedUser,
-  gameId: string
-): SocketIOClient.Socket => {
+export const initHostSocket = (gameId: string): SocketIOClient.Socket => {
   if (!gameId) throw new Error(`Pelin id puuttuu`);
+
+  const user = store.getState().user;
+
+  if (!user.loggedIn) throw new Error(`Käyttäjän tulee olla kirjautunut`);
 
   const socket = socketIO();
 

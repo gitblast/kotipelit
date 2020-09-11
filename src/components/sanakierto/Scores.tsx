@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { SanakiertoPlayer } from '../../types';
+import { KotitonniPlayer } from '../../types';
 import {
   TableRow,
   TableCell,
@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 
 interface ScoresProps {
-  players: SanakiertoPlayer[];
+  players: KotitonniPlayer[];
 }
 
 const Scores: React.FC<ScoresProps> = ({ players }) => {

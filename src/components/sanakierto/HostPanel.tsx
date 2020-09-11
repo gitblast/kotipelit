@@ -3,7 +3,7 @@ import React from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Typography, Fab } from '@material-ui/core';
 import ScoreBoard from './ScoreBoard';
-import { SanakiertoActive, SanakiertoPlayer, State } from '../../types';
+import { KotitonniActive, KotitonniPlayer, State } from '../../types';
 import { useSelector } from 'react-redux';
 import useInterval from '../../hooks/useInterval';
 import { updateGame } from '../../services/socketio/actions';
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface HostPanelProps {
-  game: SanakiertoActive;
+  game: KotitonniActive;
 }
 
 const HostPanel: React.FC<HostPanelProps> = ({ game }) => {
@@ -58,7 +58,7 @@ const HostPanel: React.FC<HostPanelProps> = ({ game }) => {
 
   const playerWithTurn = players[playerInTurnIndex];
 
-  const handleUpdate = (players: SanakiertoPlayer[]): void => {
+  const handleUpdate = (players: KotitonniPlayer[]): void => {
     let round: number;
     let turn: string;
 
@@ -70,7 +70,7 @@ const HostPanel: React.FC<HostPanelProps> = ({ game }) => {
       turn = players[playerInTurnIndex + 1].id;
     }
 
-    const newGameState: SanakiertoActive = {
+    const newGameState: KotitonniActive = {
       ...game,
       players,
       info: {

@@ -1,13 +1,7 @@
 import * as actions from './actions';
 import * as events from './events';
 import store from '../../store';
-import {
-  ActionType,
-  Action,
-  ActiveGame,
-  LoggedUser,
-  BaseUser,
-} from '../../types';
+import { ActionType, Action, ActiveGame, BaseUser } from '../../types';
 import socketService from './service';
 import { setSocket } from '../../reducers/user.reducer';
 
@@ -179,17 +173,33 @@ describe('socketio actions', () => {
   });
 
   describe('init host socket', () => {
+    const mockUser = {
+      username: 'username',
+      token: 'token',
+    };
+
     it('should throw error if game id is not provided', () => {
       try {
-        actions.initHostSocket({} as LoggedUser, (null as unknown) as string);
+        actions.initHostSocket((null as unknown) as string);
         throw new Error('expected to throw, but passed');
       } catch (error) {
         expect(error.message).toBe('Pelin id puuttuu');
       }
     });
 
-    it('should call authenticateSocket with provided users token', () => {
-      actions.initHostSocket({ token: 'TOKEN' } as LoggedUser, 'gameId');
+    it('should throw error if user is not logged in', () => {
+      try {
+        actions.initHostSocket('gameID');
+        throw new Error('expected to throw, but passed');
+      } catch (error) {
+        expect(error.message).toBe('Käyttäjän tulee olla kirjautunut');
+      }
+    });
+
+    it('should call authenticateSocket with users token', () => {
+      store.dispatch({ type: ActionType.LOGIN_SUCCESS, payload: mockUser });
+
+      actions.initHostSocket('gameId');
 
       expect(socketService.authenticateSocket).toHaveBeenCalledWith(
         mockSocket,
@@ -199,9 +209,10 @@ describe('socketio actions', () => {
     });
 
     it('should set user socket', () => {
+      store.dispatch({ type: ActionType.LOGIN_SUCCESS, payload: mockUser });
       store.dispatch(setSocket(null));
 
-      actions.initHostSocket({ token: 'TOKEN' } as LoggedUser, 'gameId');
+      actions.initHostSocket('gameId');
 
       expect(store.getState().user.socket).toEqual(mockSocket);
     });

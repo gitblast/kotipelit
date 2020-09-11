@@ -10,7 +10,7 @@ import {
   Checkbox,
   TableBody,
 } from '@material-ui/core';
-import { SanakiertoPlayer } from '../../types';
+import { KotitonniPlayer } from '../../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,9 +32,9 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface ScoreBoardProps {
-  players: SanakiertoPlayer[];
+  players: KotitonniPlayer[];
   turn: number;
-  handleUpdate: (players: SanakiertoPlayer[]) => void;
+  handleUpdate: (players: KotitonniPlayer[]) => void;
 }
 
 const ScoreBoard: React.FC<ScoreBoardProps> = ({
@@ -86,7 +86,7 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({
   };
 
   const updateGameState = () => {
-    const newPlayers: SanakiertoPlayer[] = players.map((player, index) => {
+    const newPlayers: KotitonniPlayer[] = players.map((player, index) => {
       return {
         ...player,
         points: player.points + getPointAddition(index),

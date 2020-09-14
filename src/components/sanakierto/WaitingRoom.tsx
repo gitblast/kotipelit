@@ -6,8 +6,9 @@ import {
   Table,
   Fab,
   TableRow,
-  TableCell,
+  Grid,
   Typography,
+  Badge,
 } from '@material-ui/core';
 
 import { KotitonniActive } from '../../types';
@@ -17,6 +18,10 @@ const useStyles = makeStyles((theme: Theme) =>
     startBtn: {
       textAlign: 'center',
       margin: theme.spacing(2),
+    },
+    participants: {
+      display: 'flex',
+      justifyContent: 'space-around',
     },
   })
 );
@@ -30,35 +35,32 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ game, handleStart }) => {
   const classes = useStyles();
 
   return (
-    <div>
-      {handleStart && (
-        <div className={classes.startBtn}>
-          <Fab variant="extended" onClick={handleStart}>
-            Aloita peli
-          </Fab>
-        </div>
-      )}
-      <Table>
-        <TableBody>
-          {game.players.map((p) => (
-            <TableRow key={p.id}>
-              <TableCell>{p.name}</TableCell>
-              <TableCell>
-                {p.online ? (
-                  <Typography variant="caption" color="primary">
-                    Paikalla
-                  </Typography>
-                ) : (
-                  <Typography variant="caption" color="textSecondary">
-                    Odotetaan...
-                  </Typography>
-                )}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+    <>
+      <div className={classes.participants}>
+        {game.players.map((p) => (
+          <div key={p.id}>
+            <Typography className={classes.participants}>
+              {p.name}
+              {p.online ? (
+                <Badge variant="dot" color="primary"></Badge>
+              ) : (
+                <Badge variant="dot" color="error"></Badge>
+              )}
+            </Typography>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        {handleStart && (
+          <div className={classes.startBtn}>
+            <Fab variant="extended" onClick={handleStart}>
+              Aloita peli
+            </Fab>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

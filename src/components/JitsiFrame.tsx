@@ -115,7 +115,9 @@ const JitsiFrame: React.FC<JitsiFrameProps> = ({
     SHOW_JITSI_WATERMARK: false,
     SHOW_WATERMARK_FOR_GUESTS: false,
     RECENT_LIST_ENABLED: false,
-    TOOLBAR_BUTTONS: ['camera', 'microphone', 'chat'],
+    TOOLBAR_BUTTONS: ['camera', 'microphone', 'chat', 'fullscreen'],
+    MOBILE_APP_PROMO: false,
+    DEFAULT_BACKGROUND: '#000000',
   };
 
   return (

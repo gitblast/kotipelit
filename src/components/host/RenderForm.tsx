@@ -151,7 +151,7 @@ const RenderForm: React.FC<RenderFormProps> = ({
             variant="h6"
             htmlFor="startTime"
           >
-            Alkamisaika:
+            3. Aseta alkamisaika
           </Typography>
           <FastField
             component={KeyboardDateTimePicker}
@@ -174,7 +174,7 @@ const RenderForm: React.FC<RenderFormProps> = ({
           variant="h6"
           htmlFor="players"
         >
-          Pelaajat:
+          4. Syötä pelaajat
         </Typography>
       </div>
       <FieldArray

@@ -15,7 +15,7 @@ import { State, BaseUser } from '../types';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     marginBottom: {
-      marginBottom: theme.spacing(2),
+      margin: 'auto',
     },
     container: {
       padding: theme.spacing(3),
@@ -35,10 +35,10 @@ const ChannelPage: React.FC<ChannelPageProps> = ({ labelText }) => {
 
   return (
     <Router>
-      <Paper elevation={5} className={classes.container}>
-        <Typography variant="h3" gutterBottom>
+      <Paper elevation={4} className={classes.container}>
+        {/* <Typography variant="h3" gutterBottom>
           {labelText}
-        </Typography>
+        </Typography> */}
         <Divider className={classes.marginBottom} />
         <Switch>
           <Route path="/:username/newgame">

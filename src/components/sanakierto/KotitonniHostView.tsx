@@ -12,6 +12,7 @@ import HostPanel from './HostPanel';
 import Results from './Results';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { Grid } from '@material-ui/core';
 import { LoggedUser } from '../../types';
 import Loader from '../Loader';
 import { Paper } from '@material-ui/core';
@@ -22,18 +23,14 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
     },
     jitsiContainer: {
-      boxSizing: 'border-box',
-      width: '65%',
-      backgroundColor: theme.palette.grey[400],
-
+      width: '100%',
+      backgroundColor: theme.palette.grey[800],
       height: 600,
     },
     hostControls: {
       boxSizing: 'border-box',
-      width: '35%',
       padding: theme.spacing(2),
       marginLeft: theme.spacing(1),
-      height: 600,
     },
   })
 );
@@ -136,14 +133,22 @@ const KotitonniHostView: React.FC<KotitonniHostViewProps> = ({ user }) => {
   }
 
   return (
-    <div className={classes.container}>
-      <Paper elevation={5} className={classes.jitsiContainer}>
+    <Grid container spacing={5} className={classes.container}>
+      <Grid item xs={12} className={classes.jitsiContainer}>
         {jitsiContent()}
-      </Paper>
-      <Paper elevation={5} className={classes.hostControls}>
+      </Grid>
+      <Grid item xs={12} className={classes.hostControls}>
         {sideBar()}
-      </Paper>
-    </div>
+      </Grid>
+    </Grid>
+    // <div className={classes.container}>
+    //   <Paper elevation={5} className={classes.jitsiContainer}>
+    //     {jitsiContent()}
+    //   </Paper>
+    //   <Paper elevation={5} className={classes.hostControls}>
+    //     {sideBar()}
+    //   </Paper>
+    // </div>
   );
 };
 

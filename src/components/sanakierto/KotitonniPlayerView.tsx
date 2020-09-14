@@ -3,7 +3,7 @@ import React from 'react';
 import { log } from '../../utils/logger';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Paper } from '@material-ui/core';
+import { Paper, Grid } from '@material-ui/core';
 
 import { useSelector, shallowEqual } from 'react-redux';
 import { useParams } from 'react-router';
@@ -22,19 +22,12 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
     },
     jitsiContainer: {
-      boxSizing: 'border-box',
-      width: '65%',
-      backgroundColor: theme.palette.grey[400],
-
+      backgroundColor: theme.palette.grey[800],
       height: 600,
     },
     sidePanel: {
-      boxSizing: 'border-box',
-      width: '35%',
       padding: theme.spacing(2),
       marginLeft: theme.spacing(1),
-
-      height: 600,
     },
   })
 );
@@ -124,14 +117,22 @@ const KotitonniPlayerView: React.FC<KotitonniPlayerViewProps> = ({ user }) => {
   };
 
   return (
-    <div className={classes.container}>
-      <Paper elevation={5} className={classes.jitsiContainer}>
+    <Grid container spacing={5} className={classes.container}>
+      <Grid item xs={12} className={classes.jitsiContainer}>
         {jitsiContent()}
-      </Paper>
-      <Paper elevation={5} className={classes.sidePanel}>
+      </Grid>
+      <Grid item xs={12} className={classes.sidePanel}>
         {sideBar()}
-      </Paper>
-    </div>
+      </Grid>
+    </Grid>
+    // <div className={classes.container}>
+    //   <Paper elevation={5} className={classes.jitsiContainer}>
+    //     {jitsiContent()}
+    //   </Paper>
+    //   <Paper elevation={5} className={classes.sidePanel}>
+    //     {sideBar()}
+    //   </Paper>
+    // </div>
   );
 };
 

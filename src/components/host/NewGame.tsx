@@ -99,7 +99,10 @@ const NewGame: React.FC = () => {
   const chooseType = () => (
     <div className={classes.marginTop}>
       <div>
-        <Typography variant="h6">Pelin tyyppi:</Typography>
+        <Typography variant="h6">
+          1. Aseta pelille hinta (dropdown box hinnalle)
+        </Typography>
+        <Typography variant="h6">2. Valitse peli</Typography>
         <div>
           <Fab
             onClick={() => setGameType(GameType.KOTITONNI)}
@@ -158,6 +161,10 @@ const NewGame: React.FC = () => {
     <div>
       <Typography variant="h4" gutterBottom>
         Luo uusi peli
+      </Typography>
+      <Divider />
+      <Typography variant="body2" gutterBottom>
+        1. Aseta hinta -- 2. Valitse peli -- 3. Aseta aika - - 4. Syötä pelaajat
       </Typography>
       <Divider />
       {gameType ? gameForm() : chooseType()}

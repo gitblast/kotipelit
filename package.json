@@ -9,7 +9,8 @@
     "build": "tsc",
     "lint": "eslint --ext .ts .",
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand --detectOpenHandles",
-    "postinstall": "yarn run build"
+    "postinstall": "yarn build",
+    "add_user": "tsc && node scripts/add_user.js"
   },
   "author": "Jarkko Mämmelä",
   "license": "ISC",

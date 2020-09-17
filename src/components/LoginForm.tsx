@@ -1,7 +1,12 @@
 import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { TextField, Fab, CircularProgress } from '@material-ui/core';
+import {
+  TextField,
+  Fab,
+  CircularProgress,
+  Typography,
+} from '@material-ui/core';
 import { State } from '../types';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import { loginUser } from '../reducers/user.reducer';
@@ -66,11 +71,11 @@ const LoginForm: React.FC = () => {
         {user.loggingIn ? <CircularProgress /> : 'Kirjaudu'}
       </Fab>
 
-      <div className={classes.section}>
+      <Typography className={classes.section}>
         Jos haluat alkaa järjestämään pelejä, ota yhteyttä info@kotipelit.com
         niin teemme sinulle käyttäjätilin. Voit veloittaa peleistä esimerkiksi
-        Mobile Paylla{' '}
-      </div>
+        Mobile Paylla.
+      </Typography>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Typography, Fab } from '@material-ui/core';
+import { Typography, Fab, Divider } from '@material-ui/core';
 import ScoreBoard from './ScoreBoard';
 import { KotitonniActive, KotitonniPlayer, State } from '../../types';
 import { useSelector } from 'react-redux';
@@ -17,8 +17,10 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
     },
-    grow: {
-      flexGrow: 1,
+    infoRow: {
+      display: 'flex',
+      justifyContent: 'space-around',
+      paddingBottom: 10,
     },
   })
 );
@@ -92,58 +94,48 @@ const HostPanel: React.FC<HostPanelProps> = ({ game }) => {
 
   return (
     <div className={classes.container}>
-      <Typography variant="h6">{`Kierros ${game.info.round} / 3`}</Typography>
-      <div className={classes.flex}>
-        <div className={classes.grow}>
-          <Typography
-            variant="overline"
-            component="div"
-            className={classes.grow}
-          >
-            Vuorossa:
-          </Typography>
-          <Typography component="div" gutterBottom>
-            {playerWithTurn.name}
-          </Typography>
-        </div>
-        <div className={classes.grow}>
-          <Typography
-            variant="overline"
-            component="div"
-            className={classes.grow}
-          >
-            Sanat:
-          </Typography>
-          <Typography component="div" gutterBottom>
-            {playerWithTurn.words.join(' / ')}
-          </Typography>
-        </div>
+      <div className={classes.infoRow}>
+        <Typography variant="h6">{`Kierros ${game.info.round} / 3`}</Typography>
+        <Typography variant="overline" component="div">
+          Vuorossa:
+        </Typography>
+        <Typography component="div" gutterBottom>
+          {playerWithTurn.name}
+        </Typography>
+
+        <Typography
+          variant="overline"
+          component="div"
+          className={classes.infoRow}
+        >
+          Sanat:
+        </Typography>
+        <Typography component="div" gutterBottom>
+          {playerWithTurn.words.join(' / ')}
+        </Typography>
       </div>
-      <div>
+      <div className={classes.infoRow}>
         <Typography variant="overline" component="div">
           Vastausaika:
         </Typography>
-        <div className={classes.flex}>
-          <Typography component="div" className={classes.grow}>
-            {timer !== 0 ? (
-              `${timer} sekuntia`
-            ) : (
-              <Typography color="textSecondary">Aika loppui</Typography>
-            )}
-          </Typography>
-          <div className={classes.grow}>
-            <Fab
-              variant="extended"
-              size="small"
-              color="secondary"
-              onClick={startTimer}
-              disabled={timer === 0}
-            >
-              {timerRunning ? 'Pysäytä' : 'Käynnistä'}
-            </Fab>
-          </div>
-        </div>
+        <Typography component="div">
+          {timer !== 0 ? (
+            `${timer} sekuntia`
+          ) : (
+            <Typography color="textSecondary">Aika loppui</Typography>
+          )}
+        </Typography>
+        <Fab
+          variant="extended"
+          size="small"
+          color="secondary"
+          onClick={startTimer}
+          disabled={timer === 0}
+        >
+          {timerRunning ? 'Pysäytä' : 'Käynnistä'}
+        </Fab>
       </div>
+
       <ScoreBoard
         players={game.players}
         turn={game.players.indexOf(playerWithTurn)}

@@ -28,6 +28,11 @@ const useStyles = makeStyles((theme: Theme) =>
     additionBox: {
       minWidth: 50,
     },
+    tableStyle: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
   })
 );
 
@@ -101,7 +106,7 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({
     <div className={classes.container}>
       <Table>
         <TableBody>
-          <TableRow>
+          <TableRow className={classes.tableStyle}>
             <TableCell padding="none" align="center">
               <Typography variant="overline">Pelaaja</Typography>
             </TableCell>
@@ -119,7 +124,7 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({
           </TableRow>
           {players.map((player, index) => {
             return (
-              <TableRow key={index}>
+              <TableRow key={index} className={classes.tableStyle}>
                 <TableCell className={classes.noPaddingX} align="center">
                   <span>{player.name}</span>
                   {player.online ? null : (

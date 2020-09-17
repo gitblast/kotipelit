@@ -26,8 +26,8 @@ import { initGames } from './reducers/games.reducer';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     navbar: {
-      marginBottom: theme.spacing(3),
-      maxWidth: 1240,
+      // marginBottom: theme.spacing(3),
+      maxWidth: 1230,
       margin: 'auto',
     },
     toolbar: {

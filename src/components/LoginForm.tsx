@@ -16,6 +16,9 @@ const useStyles = makeStyles((theme: Theme) =>
     formField: {
       marginTop: theme.spacing(2),
     },
+    section: {
+      paddingTop: 40,
+    },
   })
 );
 
@@ -62,6 +65,12 @@ const LoginForm: React.FC = () => {
       >
         {user.loggingIn ? <CircularProgress /> : 'Kirjaudu'}
       </Fab>
+
+      <div className={classes.section}>
+        Jos haluat alkaa järjestämään pelejä, ota yhteyttä info@kotipelit.com
+        niin teemme sinulle käyttäjätilin. Voit veloittaa peleistä esimerkiksi
+        Mobile Paylla{' '}
+      </div>
     </div>
   );
 };

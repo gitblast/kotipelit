@@ -12,11 +12,11 @@ const theme = createMuiTheme({
   palette: {
     primary: {
       light: '#f1dac2',
-      main: '#ca9762',
+      main: '#620202ff',
       contrastText: '#FFFFFF',
     },
     secondary: {
-      main: '#6d0126',
+      main: '#b1750dd0',
     },
   },
   typography: {

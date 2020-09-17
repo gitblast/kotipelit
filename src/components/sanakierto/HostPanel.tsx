@@ -92,7 +92,7 @@ const HostPanel: React.FC<HostPanelProps> = ({ game }) => {
 
   return (
     <div className={classes.container}>
-      <Typography variant="h6">{`Kierros ${game.info.round}`}</Typography>
+      <Typography variant="h6">{`Kierros ${game.info.round} / 3`}</Typography>
       <div className={classes.flex}>
         <div className={classes.grow}>
           <Typography

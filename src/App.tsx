@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     navbar: {
       marginBottom: theme.spacing(3),
-      maxWidth: 1280,
+      maxWidth: 1240,
       margin: 'auto',
     },
     toolbar: {
@@ -73,7 +73,7 @@ const App = () => {
       <AppBar position="static" className={classes.navbar}>
         <Toolbar className={classes.toolbar}>
           <Button color="inherit" component={Link} to="/">
-            <Typography variant="h6">Kotipelit.com</Typography>
+            <Typography variant="subtitle1">Kotipelit.com</Typography>
           </Button>
           <UserControls user={user} />
         </Toolbar>

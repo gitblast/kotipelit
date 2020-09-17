@@ -19,14 +19,23 @@ import RenderForm from './RenderForm';
 import { useDispatch } from 'react-redux';
 import { addGame } from '../../reducers/games.reducer';
 import { GameType, GameStatus, KotitonniPlayer } from '../../types';
+import { green } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     marginRight: {
       marginRight: theme.spacing(2),
     },
-    marginTop: {
-      marginTop: theme.spacing(2),
+    gameBtn: {
+      padding: 50,
+      margin: 10,
+    },
+    gameRow: {
+      display: 'flex',
+      alignItems: 'center',
+    },
+    unactiveGame: {
+      color: 'grey',
     },
   })
 );
@@ -97,31 +106,50 @@ const NewGame: React.FC = () => {
   };
 
   const chooseType = () => (
-    <div className={classes.marginTop}>
-      <div>
-        <Typography variant="h6">
-          1. Aseta pelille hinta (dropdown box hinnalle)
+    <div>
+      <Typography variant="h6">
+        1. Aseta pelille hinta (dropdown box hinnalle)
+      </Typography>
+      <Typography variant="h6">2. Valitse peli</Typography>
+      <div className={classes.gameRow}>
+        <Fab
+          onClick={() => setGameType(GameType.KOTITONNI)}
+          variant="extended"
+          className={classes.gameBtn}
+          color="secondary"
+        >
+          Kotitonni
+        </Fab>
+        <Typography>
+          Kotitonnissa arvuutellaan kanssapelaajien sanoja vihjeiden avulla.
+          Jokainen pelaajista antaa vuorollaan vihjeen hänelle ennalta
+          lähetettyyn sanaan. Pelaajilla on 90 sekuntia aikaa keksiä oikea sana.
+          Vihjeen tulisi olla sellainen, että vähintään yksi arvaa mutta ei
+          liian helppo, jotta kaikki ei arvaa. Peli pelataan 5:llä pelaajalla ja
+          se kestää noin tunnin.
         </Typography>
-        <Typography variant="h6">2. Valitse peli</Typography>
-        <div>
-          <Fab
-            onClick={() => setGameType(GameType.KOTITONNI)}
-            variant="extended"
-            className={classes.marginTop}
-          >
-            Kotitonni
-          </Fab>
-        </div>
-        <div>
-          <Fab disabled variant="extended" className={classes.marginTop}>
-            Toinen peli
-          </Fab>
-        </div>
-        <div>
-          <Fab disabled variant="extended" className={classes.marginTop}>
-            Kolmas peli
-          </Fab>
-        </div>
+      </div>
+      <div className={classes.gameRow}>
+        <Fab disabled variant="extended" className={classes.gameBtn}>
+          Liars Poker
+        </Fab>
+        <Typography className={classes.unactiveGame}>
+          Liars Poker- pelissä jokainen pelaaja saa numerosarjan. Ensimmäinen
+          pelaaja aloittaa sanomalla esimerkiksi kolme kolmosta. Seuraavan
+          pelaajan täytyy joko epäillä tai "ylittää" tämä sanomalla minimissään
+          kolme nelosta. Jos pelaaja epäilee ja kaikkien numeroista ei yhteensä
+          muodostu vähintään kolmea kolmosta, menettää ensimmäinen pelaaja
+          pisteen. Peliä voi pelata 2 - 6 pelaajaa.
+        </Typography>
+      </div>
+      <div className={classes.gameRow}>
+        <Fab disabled variant="extended" className={classes.gameBtn}>
+          Kolmas peli
+        </Fab>
+        <Typography>
+          Voit ehdottaa peliä, jota voisi olla videopuhelun välityksellä hauska
+          pelata. Ehdotukset osoitteeseen info@kotipelit.com
+        </Typography>
       </div>
     </div>
   );

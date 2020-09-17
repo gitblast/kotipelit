@@ -15,11 +15,6 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
     },
     btnContainer: { textAlign: 'center', marginBottom: theme.spacing(2) },
-    btnStart: {
-      textAlign: 'center',
-
-      padding: 45,
-    },
   })
 );
 
@@ -91,14 +86,6 @@ const JitsiFrame: React.FC<JitsiFrameProps> = ({
             </Fab>
           </div>
         )}
-        <Fab
-          variant="extended"
-          size="large"
-          color="primary"
-          className={classes.btnStart}
-        >
-          Aloita peli
-        </Fab>
       </div>
     );
   }

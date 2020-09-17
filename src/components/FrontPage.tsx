@@ -27,10 +27,19 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'flex-start',
+      [theme.breakpoints.down('xs')]: {
+        backgroundImage: 'url(images/background2Xs.png)',
+      },
     },
 
     mainInfo: {
       marginLeft: 100,
+      [theme.breakpoints.down('xs')]: {
+        marginLeft: 0,
+        alignSelf: 'flex-end',
+        justifyContent: 'space-around',
+        marginBottom: 14,
+      },
     },
     buttonStyle: {
       padding: 20,
@@ -53,11 +62,14 @@ const FrontPage: React.FC = () => {
           <Typography color="primary" variant="h4">
             Peli-iltojen<br></br>yhteinen osoite.
           </Typography>
+
           <Button
             size="large"
             variant="contained"
             color="secondary"
             className={classes.buttonStyle}
+            component={Link}
+            to="/kirjaudu"
           >
             Järjestä peli-ilta
           </Button>

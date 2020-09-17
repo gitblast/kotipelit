@@ -73,8 +73,8 @@ const LoginForm: React.FC = () => {
 
       <Typography className={classes.section}>
         Jos haluat alkaa järjestämään pelejä, ota yhteyttä info@kotipelit.com
-        niin teemme sinulle käyttäjätilin. Voit veloittaa peleistä esimerkiksi
-        Mobile Paylla.
+        niin teemme sinulle käyttäjätilin. Voit määrittää peli-illan hinnan itse
+        ja veloittaa esimerkiksi Mobile Paylla.
       </Typography>
     </div>
   );

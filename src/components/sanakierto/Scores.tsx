@@ -15,24 +15,30 @@ interface ScoresProps {
 
 const Scores: React.FC<ScoresProps> = ({ players }) => {
   return (
-    <Table>
-      <TableBody>
-        <TableRow>
-          <TableCell>
-            <Typography variant="overline">Pelaaja</Typography>
-          </TableCell>
-          <TableCell align="center">
-            <Typography variant="overline">Pisteet</Typography>
-          </TableCell>
-        </TableRow>
-        {players.map((player) => (
-          <TableRow key={player.id}>
-            <TableCell>{player.name}</TableCell>
-            <TableCell align="center">{player.points}</TableCell>
+    <>
+      <Table>
+        <TableBody>
+          <TableRow>
+            <TableCell>
+              <Typography variant="overline">Pelaaja</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography variant="overline">Pisteet</Typography>
+            </TableCell>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+          {players.map((player) => (
+            <TableRow key={player.id}>
+              <TableCell>{player.name}</TableCell>
+              <TableCell align="center">{player.points}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <Typography>
+        Mikäli sinulle tuli pelin aikana kehitysideoita, ota yhteyttä;
+        info@kotipelit.com.
+      </Typography>
+    </>
   );
 };
 

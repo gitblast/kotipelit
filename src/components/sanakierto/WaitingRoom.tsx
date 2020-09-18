@@ -60,12 +60,12 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ game, handleStart }) => {
           <Typography>Tässä muutama vinkki:</Typography>
           <List>
             <ListItem>
-              1. Kun pelaaja on antanut vihjeen muista käynnistää
-              vastausaikalaskuri
+              1. Voit testata ennen peliä, että kamerayhteys toimii klikkaamalla
+              "käynnistä video"
             </ListItem>
             <ListItem>
-              2. Voit toistaa pelaajan antaman vihjeen, jotta kaikki varmasti
-              kuulevat sen
+              2. Pelin aikana voit toistaa pelaajan antaman vihjeen, jotta
+              kaikki varmasti kuulevat sen
             </ListItem>
             <ListItem>
               3. Voit ajoittain mutettaa pelaajan jos taustalta kuuluu paljon
@@ -76,10 +76,6 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ game, handleStart }) => {
             </ListItem>
           </List>
 
-          <Typography>
-            Mikäli ilmenee ongelmia tai tulee kehitysideoita, ota yhteyttä
-            Artoon: +358 46 5560 444
-          </Typography>
           <Typography>Hauskaa kotipeli-iltaa!</Typography>
         </div>
         <div>

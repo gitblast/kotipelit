@@ -3,7 +3,7 @@ import React from 'react';
 import { log } from '../../utils/logger';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Paper, Grid } from '@material-ui/core';
+import { Paper, Grid, Typography } from '@material-ui/core';
 
 import { useSelector, shallowEqual } from 'react-redux';
 import { useParams } from 'react-router';
@@ -125,6 +125,7 @@ const KotitonniPlayerView: React.FC<KotitonniPlayerViewProps> = ({ user }) => {
         {sideBar()}
       </Grid>
     </Grid>
+
     // <div className={classes.container}>
     //   <Paper elevation={5} className={classes.jitsiContainer}>
     //     {jitsiContent()}

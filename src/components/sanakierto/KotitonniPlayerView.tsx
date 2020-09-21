@@ -3,7 +3,7 @@ import React from 'react';
 import { log } from '../../utils/logger';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Paper, Grid, Typography } from '@material-ui/core';
+import { Paper, Typography, ListItem } from '@material-ui/core';
 
 import { useSelector, shallowEqual } from 'react-redux';
 import { useParams } from 'react-router';
@@ -18,9 +18,6 @@ import Results from './Results';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    container: {
-      display: 'flex',
-    },
     jitsiContainer: {
       backgroundColor: theme.palette.grey[800],
       height: 600,
@@ -74,7 +71,11 @@ const KotitonniPlayerView: React.FC<KotitonniPlayerViewProps> = ({ user }) => {
 
     if (activeGame?.status === GameStatus.FINISHED) {
       return (
-        <Loader msg={'Kiitos osallistumisesta! Muista antaa palautetta.'} />
+        <Loader
+          msg={
+            'Kiitos osallistumisesta! Mikäli pelin aikana tuli kehitysideoita, ota yhteyttä info@kotipelit.com.'
+          }
+        />
       );
     }
 
@@ -117,23 +118,40 @@ const KotitonniPlayerView: React.FC<KotitonniPlayerViewProps> = ({ user }) => {
   };
 
   return (
-    <Grid container spacing={5} className={classes.container}>
-      <Grid item xs={12} className={classes.jitsiContainer}>
-        {jitsiContent()}
-      </Grid>
-      <Grid item xs={12} className={classes.sidePanel}>
+    <div>
+      {/* Alla vain pelaajalle näytettävä welcomeMsg. Backendista tarviis pelin hinnan, houstin nimen ja jäljellä olevan odotusajan. 
+      Jätin toistaseks turhat stailit pois kun en varma mihin fileen tää tulis laittaa  */}
+      <div>
+        <Typography variant="h5">Tervetuloa pelaamaan Kotitonnia!</Typography>
+        <Typography>
+          Tehtäväsi on keksiä sanoillesi vihjeet. Eniten pisteitä saat kun vain
+          yksi kanssapelaajista arvaa sanan. Vältä antamasta henkilökohtaisia
+          vihjeitä, kuten:
+        </Typography>
+        <ListItem>
+          "Nähtävyys, jolla vierailimme Minnan kanssa viime joulukuussa"{' '}
+        </ListItem>
+        <Typography>
+          Sen sijaan käytä ytimekkäitä yleisluontoisia vihjeitä
+        </Typography>
+        <ListItem>"Dostojevski käsittelee tätä teoksessaan"</ListItem>
+        <ListItem>-Rangaistus</ListItem>
+        <Typography>
+          Maksun "pelin hinta" voi suorittaa pelinhoitajalle "pelinhoitajan
+          nimi" Mobile paylla.
+        </Typography>
+        <Typography>
+          Peli käynnistyy tähän ikkunaan "time left" kuluttua.
+        </Typography>
+        <Typography>Hauskaa kotipeli-iltaa!</Typography>
+      </div>
+      <Paper className={classes.jitsiContainer}>{jitsiContent()}</Paper>
+      {/* Näkykö pelaajien online status jo ennenkuin host oli käynnistäny peliä? 
+      Vai oonko hukannu sen johonkin tästä näkymästä? Se tulee näkyviin samalla kun tulee host käynnistää peli-ikkunan dashboardista.*/}
+      <Paper elevation={5} className={classes.sidePanel}>
         {sideBar()}
-      </Grid>
-    </Grid>
-
-    // <div className={classes.container}>
-    //   <Paper elevation={5} className={classes.jitsiContainer}>
-    //     {jitsiContent()}
-    //   </Paper>
-    //   <Paper elevation={5} className={classes.sidePanel}>
-    //     {sideBar()}
-    //   </Paper>
-    // </div>
+      </Paper>
+    </div>
   );
 };
 

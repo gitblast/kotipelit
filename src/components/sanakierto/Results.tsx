@@ -57,10 +57,6 @@ const Results: React.FC<ResultsProps> = ({ results, handleTearDown }) => {
           </Fab>
         </div>
       )}
-      <Typography className={classes.marginTop}>
-        Mikäli sinulle tuli pelin aikana kehitysideoita, ota yhteyttä;
-        info@kotipelit.com.
-      </Typography>
     </div>
   );
 };

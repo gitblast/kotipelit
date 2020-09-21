@@ -126,7 +126,7 @@ const NewGame: React.FC = () => {
           lähetettyyn sanaan. Pelaajilla on 90 sekuntia aikaa keksiä oikea sana.
           Vihjeen tulisi olla sellainen, että vähintään yksi arvaa mutta ei
           liian helppo, jotta kaikki ei arvaa. Peli pelataan 5:llä pelaajalla ja
-          se kestää noin tunnin.
+          kestää noin tunnin.
         </Typography>
       </div>
       <div className={classes.gameRow}>

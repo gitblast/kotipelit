@@ -8,7 +8,14 @@ import { Typography } from '@material-ui/core';
 import Scores from './Scores';
 
 const useStyles = makeStyles((theme: Theme) =>
-  createStyles({ container: { padding: theme.spacing(2) } })
+  createStyles({
+    container: { padding: theme.spacing(2) },
+    infoRow: {
+      display: 'flex',
+      justifyContent: 'space-around',
+      paddingBottom: 10,
+    },
+  })
 );
 
 interface PlayerSidePanelProps {
@@ -31,8 +38,8 @@ const PlayerSidePanel: React.FC<PlayerSidePanelProps> = ({ game }) => {
 
   return (
     <div>
-      <div className={classes.container}>
-        <Typography variant="h6">{`Kierros ${game.info.round}`}</Typography>
+      <div className={classes.infoRow}>
+        <Typography variant="h6">{`Kierros ${game.info.round} / 3`}</Typography>
         <Typography variant="overline" component="div">
           Vuorossa:
         </Typography>

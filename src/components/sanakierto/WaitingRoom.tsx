@@ -1,14 +1,7 @@
 import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import {
-  Fab,
-  Grid,
-  Typography,
-  Badge,
-  List,
-  ListItem,
-} from '@material-ui/core';
+import { Fab, Typography, Badge, List, ListItem } from '@material-ui/core';
 
 import { KotitonniActive } from '../../types';
 import { FullscreenExit } from '@material-ui/icons';
@@ -60,8 +53,8 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ game, handleStart }) => {
           <Typography>Tässä muutama vinkki:</Typography>
           <List>
             <ListItem>
-              1. Voit testata ennen peliä, että kamerayhteys toimii klikkaamalla
-              "käynnistä video"
+              1. Voit testata ennen peliä, että kamerayhteys toimii,
+              klikkaamalla "käynnistä video"
             </ListItem>
             <ListItem>
               2. Pelin aikana voit toistaa pelaajan antaman vihjeen, jotta
@@ -95,13 +88,41 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ game, handleStart }) => {
         </div>
         <div></div>
       </div>
+      {/* Alla poiskommentoituna vain pelaajalle näytettävä welcomeMsg. Backendista tarvii pelin hinnan, houstin nimen, jäljellä olevan odotusajan,  */}
+      {/* <div className={classes.welcomeMsg}>
+        <Typography className={classes.headLine} variant="h5">
+          Tervetuloa pelaamaan Kotitonnia!
+        </Typography>
+        <Typography>
+          Tehtäväsi on keksiä sanoillesi vihjeet. Eniten pisteitä saat kun vain
+          yksi kanssapelaajista arvaa sanan. Vältä antamasta henkilökohtaisia
+          vihjeitä, kuten:
+        </Typography>
+        <ListItem>
+          "Nähtävyys, jolla vierailimme Minnan kanssa viime joulukuussa"{' '}
+        </ListItem>
+        <Typography>
+          Sen sijaan käytä ytimekkäitä yleisluontoisia vihjeitä
+        </Typography>
+        <ListItem>"Dostojevski käsittelee tätä teoksessaan"</ListItem>
+        <ListItem>-Rangaistus</ListItem>
+        <Typography>
+          Maksun "pelin hinta" voi suorittaa pelinhoitajalle "pelinhoitajan
+          nimi" Mobile paylla.
+        </Typography>
+        <Typography>
+          Peli käynnistyy tähän ikkunaan "time left" kuluttua.
+        </Typography>
+        <Typography>Hauskaa kotipeli-iltaa!</Typography>
+      </div> */}
+
       <div className={classes.participants}>
         {game.players.map((p) => (
           <div key={p.id}>
             <Typography className={classes.participants}>
               {p.name}
               {p.online ? (
-                <Badge variant="dot" color="primary"></Badge>
+                <Badge variant="dot" color="secondary"></Badge>
               ) : (
                 <Badge variant="dot" color="error"></Badge>
               )}

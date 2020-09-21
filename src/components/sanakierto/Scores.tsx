@@ -34,10 +34,6 @@ const Scores: React.FC<ScoresProps> = ({ players }) => {
           ))}
         </TableBody>
       </Table>
-      <Typography>
-        Mikäli sinulle tuli pelin aikana kehitysideoita, ota yhteyttä;
-        info@kotipelit.com.
-      </Typography>
     </>
   );
 };

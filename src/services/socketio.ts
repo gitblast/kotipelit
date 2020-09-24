@@ -62,6 +62,7 @@ export const initRoom = async (
     id: game._id.toString(),
     status: GameStatus.WAITING,
     type: game.type,
+    price: game.price,
     startTime: game.startTime,
     players: game.players.map((player) => ({
       ...player,

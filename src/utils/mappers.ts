@@ -127,6 +127,7 @@ export const toNewGame = (object: any, hostId: Types.ObjectId): NewGame => {
     status: parseStatus(object.status),
     host: hostId,
     rounds: parseRounds(object.rounds),
+    price: parseNumber(object.price),
   };
 };
 

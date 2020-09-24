@@ -9,6 +9,7 @@ export interface BaseGame {
   status: GameStatus;
   startTime: Date;
   rounds: number;
+  price: number;
 }
 
 export interface NewGame extends BaseGame {

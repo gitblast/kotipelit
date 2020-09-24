@@ -14,6 +14,7 @@ const gameSchema: Schema = new Schema({
   host: { type: mongoose.Types.ObjectId, required: true },
   createDate: { type: Date, required: true },
   rounds: Number,
+  price: { type: Number, required: true },
 });
 
 gameSchema.set('toJSON', {

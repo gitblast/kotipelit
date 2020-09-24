@@ -9,6 +9,7 @@ import {
 export const hardcodedGames: SelectableGame[] = [
   {
     hostOnline: true,
+    price: 2,
     id: '1',
     type: GameType.KOTITONNI,
     players: [
@@ -54,6 +55,7 @@ export const hardcodedGames: SelectableGame[] = [
   },
   {
     hostOnline: true,
+    price: 2,
     id: '2',
     type: GameType.KOTITONNI,
     players: [
@@ -118,6 +120,7 @@ export const hardcodedActiveSanakierto: KotitonniActive = {
   id: '1',
   type: GameType.KOTITONNI,
   hostOnline: true,
+  price: 2,
   players: [
     {
       id: '1',

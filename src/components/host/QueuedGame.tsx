@@ -48,8 +48,6 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-/** @TODO invitetext function */
-
 const getInviteUrl = (hostName: string, playerId: string): string =>
   `https://www.kotipelit.com/${hostName}/${playerId}`;
 
@@ -67,6 +65,8 @@ Tehtävänäsi on miettiä sanoille niitä kuvaavat vihjeet.
 Peli alkaa ${format(new Date(game.startTime), 'd. MMMM HH:mm', {
     locale: fiLocale,
   })}.
+
+Pelin hinta on ${game.price ? game.price : 0} euroa.
       
 Nähdään peleillä osoitteessa:
 ${getInviteUrl(hostName, player.id)}`;

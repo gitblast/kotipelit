@@ -17,6 +17,7 @@ export interface Game {
   startTime: Date;
   status: GameStatus;
   hostOnline: boolean;
+  price: number;
 }
 
 export interface KotitonniPlayer {

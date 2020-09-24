@@ -137,8 +137,8 @@ const KotitonniPlayerView: React.FC<KotitonniPlayerViewProps> = ({ user }) => {
           <ListItem>"Dostojevski käsittelee tätä teoksessaan"</ListItem>
           <ListItem>-Rangaistus</ListItem>
           <Typography>
-            Maksun "pelin hinta" voi suorittaa pelinhoitajalle "pelinhoitajan
-            nimi" Mobile paylla.
+            Maksun "pelin hinta" voi suorittaa pelinhoitajalle "{username}"
+            Mobile paylla.
           </Typography>
           <Typography>
             Peli käynnistyy tähän ikkunaan "time left" kuluttua.

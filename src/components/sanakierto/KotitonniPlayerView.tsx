@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import React from 'react';
 
 import { log } from '../../utils/logger';
@@ -117,34 +118,42 @@ const KotitonniPlayerView: React.FC<KotitonniPlayerViewProps> = ({ user }) => {
     }
   };
 
+  const welcomeMsg = () => {
+    if (!activeGame || activeGame.status === GameStatus.WAITING) {
+      return (
+        <div>
+          <Typography variant="h5">Tervetuloa pelaamaan Kotitonnia!</Typography>
+          <Typography>
+            Tehtäväsi on keksiä sanoillesi vihjeet. Eniten pisteitä saat kun
+            vain yksi kanssapelaajista arvaa sanan. Vältä antamasta
+            henkilökohtaisia vihjeitä, kuten:
+          </Typography>
+          <ListItem>
+            "Nähtävyys, jolla vierailimme Minnan kanssa viime joulukuussa"{' '}
+          </ListItem>
+          <Typography>
+            Sen sijaan käytä ytimekkäitä yleisluontoisia vihjeitä
+          </Typography>
+          <ListItem>"Dostojevski käsittelee tätä teoksessaan"</ListItem>
+          <ListItem>-Rangaistus</ListItem>
+          <Typography>
+            Maksun "pelin hinta" voi suorittaa pelinhoitajalle "pelinhoitajan
+            nimi" Mobile paylla.
+          </Typography>
+          <Typography>
+            Peli käynnistyy tähän ikkunaan "time left" kuluttua.
+          </Typography>
+          <Typography>Hauskaa kotipeli-iltaa!</Typography>
+        </div>
+      );
+    }
+  };
+
   return (
     <div>
       {/* Alla vain pelaajalle näytettävä welcomeMsg. Backendista tarviis pelin hinnan, houstin nimen ja jäljellä olevan odotusajan. 
       Jätin toistaseks turhat stailit pois kun en varma mihin fileen tää tulis laittaa  */}
-      <div>
-        <Typography variant="h5">Tervetuloa pelaamaan Kotitonnia!</Typography>
-        <Typography>
-          Tehtäväsi on keksiä sanoillesi vihjeet. Eniten pisteitä saat kun vain
-          yksi kanssapelaajista arvaa sanan. Vältä antamasta henkilökohtaisia
-          vihjeitä, kuten:
-        </Typography>
-        <ListItem>
-          "Nähtävyys, jolla vierailimme Minnan kanssa viime joulukuussa"{' '}
-        </ListItem>
-        <Typography>
-          Sen sijaan käytä ytimekkäitä yleisluontoisia vihjeitä
-        </Typography>
-        <ListItem>"Dostojevski käsittelee tätä teoksessaan"</ListItem>
-        <ListItem>-Rangaistus</ListItem>
-        <Typography>
-          Maksun "pelin hinta" voi suorittaa pelinhoitajalle "pelinhoitajan
-          nimi" Mobile paylla.
-        </Typography>
-        <Typography>
-          Peli käynnistyy tähän ikkunaan "time left" kuluttua.
-        </Typography>
-        <Typography>Hauskaa kotipeli-iltaa!</Typography>
-      </div>
+      {welcomeMsg()}
       <Paper className={classes.jitsiContainer}>{jitsiContent()}</Paper>
       {/* Näkykö pelaajien online status jo ennenkuin host oli käynnistäny peliä? 
       Vai oonko hukannu sen johonkin tästä näkymästä? Se tulee näkyviin samalla kun tulee host käynnistää peli-ikkunan dashboardista.*/}

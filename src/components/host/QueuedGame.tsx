@@ -48,8 +48,6 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-/** @TODO invitetext function */
-
 const getInviteUrl = (hostName: string, playerId: string): string =>
   `https://www.kotipelit.com/${hostName}/${playerId}`;
 
@@ -67,6 +65,10 @@ Tehtävänäsi on miettiä sanoille niitä kuvaavat vihjeet.
 Peli alkaa ${format(new Date(game.startTime), 'd. MMMM HH:mm', {
     locale: fiLocale,
   })}.
+
+Pelin hinta on ${
+    game.price ? game.price : 0
+  } euroa. Ohjeet alla olevassa linkissä.
       
 Nähdään peleillä osoitteessa:
 ${getInviteUrl(hostName, player.id)}`;
@@ -194,7 +196,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
       {inviteText && (
         <div className={classes.inviteText}>
           <Typography variant="h6" gutterBottom>
-            Kutsuteksti
+            Lähetä pelaajien kutsutekstit hyvissä ajoin.
           </Typography>
           <Typography style={{ whiteSpace: 'pre' }}>{inviteText}</Typography>
         </div>

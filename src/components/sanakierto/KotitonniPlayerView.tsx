@@ -137,7 +137,11 @@ const KotitonniPlayerView: React.FC<KotitonniPlayerViewProps> = ({ user }) => {
           <ListItem>"Löytyy tähtimerkeistä ja Espanjasta."</ListItem>
           <ListItem>-Härkä</ListItem>
           <Typography>
-            Pelin maksun voi suorittaa pelinhoitajalle Mobile paylla.
+            Maksun "pelin hinta" voi suorittaa pelinhoitajalle "{username}"
+            Mobile paylla.
+          </Typography>
+          <Typography>
+            Peli käynnistyy tähän ikkunaan "time left" kuluttua.
           </Typography>
           <Typography>Pelinhoitaja käynnistää pelin tähän ikkunaan.</Typography>
           <Typography>Hauskaa kotipeli-iltaa!</Typography>

@@ -5,7 +5,14 @@ import wordService from '../../services/words';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
-import { Typography, Divider, Fab } from '@material-ui/core';
+import {
+  Typography,
+  Divider,
+  Fab,
+  FormControl,
+  MenuItem,
+  Select,
+} from '@material-ui/core';
 
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
@@ -19,7 +26,6 @@ import RenderForm from './RenderForm';
 import { useDispatch } from 'react-redux';
 import { addGame } from '../../reducers/games.reducer';
 import { GameType, GameStatus, KotitonniPlayer } from '../../types';
-import { green } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -75,7 +81,8 @@ export const initializePlayers = async (
 };
 
 const NewGame: React.FC = () => {
-  const [gameType, setGameType] = React.useState<null | GameType>(null);
+  const [gameType, setGameType] = React.useState<GameType | null>(null);
+  const [price, setPrice] = React.useState<number>(2);
   const [players, setPlayers] = React.useState<null | KotitonniPlayer[]>(null);
 
   React.useEffect(() => {
@@ -107,9 +114,25 @@ const NewGame: React.FC = () => {
 
   const chooseType = () => (
     <div>
-      <Typography variant="h6">
-        1. Aseta pelille hinta (dropdown box hinnalle)
-      </Typography>
+      <Typography variant="h6">1. Aseta pelille hinta</Typography>
+      <div>
+        <FormControl variant="outlined">
+          <Select
+            value={price}
+            onChange={(e) => setPrice(Number(e.target.value))}
+          >
+            <MenuItem value={2}>2€</MenuItem>
+            <MenuItem value={3}>3€</MenuItem>
+            <MenuItem value={4}>4€</MenuItem>
+            <MenuItem value={5}>5€</MenuItem>
+            <MenuItem value={6}>6€</MenuItem>
+            <MenuItem value={7}>7€</MenuItem>
+            <MenuItem value={8}>8€</MenuItem>
+            <MenuItem value={9}>9€</MenuItem>
+            <MenuItem value={10}>10€</MenuItem>
+          </Select>
+        </FormControl>
+      </div>
       <Typography variant="h6">2. Valitse peli</Typography>
       <div className={classes.gameRow}>
         <Fab
@@ -155,7 +178,7 @@ const NewGame: React.FC = () => {
   );
 
   const gameForm = () => {
-    if (!players) {
+    if (!players || !gameType) {
       return <div>Ladataan...</div>;
     }
 
@@ -164,7 +187,8 @@ const NewGame: React.FC = () => {
         <Formik
           initialValues={{
             startTime: new Date(),
-            type: GameType.KOTITONNI,
+            type: gameType,
+            price,
             players,
             status: GameStatus.UPCOMING,
             rounds: 3,

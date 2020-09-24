@@ -101,6 +101,7 @@ interface FormValues {
   status: GameStatus;
   rounds: number;
   hostOnline: boolean;
+  price: number;
 }
 
 interface RenderFormProps {

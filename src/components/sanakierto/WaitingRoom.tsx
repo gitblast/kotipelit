@@ -88,33 +88,6 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ game, handleStart }) => {
         </div>
         <div></div>
       </div>
-      {/* Alla poiskommentoituna vain pelaajalle näytettävä welcomeMsg. Backendista tarvii pelin hinnan, houstin nimen, jäljellä olevan odotusajan,  */}
-      {/* <div className={classes.welcomeMsg}>
-        <Typography className={classes.headLine} variant="h5">
-          Tervetuloa pelaamaan Kotitonnia!
-        </Typography>
-        <Typography>
-          Tehtäväsi on keksiä sanoillesi vihjeet. Eniten pisteitä saat kun vain
-          yksi kanssapelaajista arvaa sanan. Vältä antamasta henkilökohtaisia
-          vihjeitä, kuten:
-        </Typography>
-        <ListItem>
-          "Nähtävyys, jolla vierailimme Minnan kanssa viime joulukuussa"{' '}
-        </ListItem>
-        <Typography>
-          Sen sijaan käytä ytimekkäitä yleisluontoisia vihjeitä
-        </Typography>
-        <ListItem>"Dostojevski käsittelee tätä teoksessaan"</ListItem>
-        <ListItem>-Rangaistus</ListItem>
-        <Typography>
-          Maksun "pelin hinta" voi suorittaa pelinhoitajalle "pelinhoitajan
-          nimi" Mobile paylla.
-        </Typography>
-        <Typography>
-          Peli käynnistyy tähän ikkunaan "time left" kuluttua.
-        </Typography>
-        <Typography>Hauskaa kotipeli-iltaa!</Typography>
-      </div> */}
 
       <div className={classes.participants}>
         {game.players.map((p) => (

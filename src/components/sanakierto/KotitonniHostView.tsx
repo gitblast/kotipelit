@@ -22,6 +22,7 @@ import {
 } from '@material-ui/core';
 import { LoggedUser } from '../../types';
 import Loader from '../Loader';
+import MoreVertRoundedIcon from '@material-ui/icons/MoreVertRounded';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingBottom: 15,
     },
     welcomeMsg: {
-      marginBottom: 40,
+      marginBottom: 5,
     },
     participants: {
       display: 'flex',
@@ -60,7 +61,6 @@ const useStyles = makeStyles((theme: Theme) =>
     flexing: {
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'space-between',
     },
   })
 );
@@ -154,7 +154,7 @@ const KotitonniHostView: React.FC<KotitonniHostViewProps> = ({ user }) => {
   }
 
   return (
-    <Grid container spacing={5} className={classes.container}>
+    <Grid container spacing={1} className={classes.container}>
       {!activeGame ||
         (activeGame.status === GameStatus.WAITING && (
           <div className={classes.flexing}>
@@ -169,34 +169,38 @@ const KotitonniHostView: React.FC<KotitonniHostViewProps> = ({ user }) => {
                   klikkaamalla "käynnistä video"
                 </ListItem>
                 <ListItem>
-                  2. Pelin aikana voit toistaa pelaajan antaman vihjeen, jotta
+                  2. Pelaajat antavat vastauksensa privaviestillä. Viestin saa
+                  lähetettyä kun pelaaja painaa tätä symbolia{' '}
+                  <MoreVertRoundedIcon></MoreVertRoundedIcon> videokuvasi
+                  kohdalla
+                </ListItem>
+                <ListItem>
+                  3. Pelin aikana voit toistaa pelaajan antaman vihjeen, jotta
                   kaikki varmasti kuulevat sen
                 </ListItem>
                 <ListItem>
-                  3. Voit ajoittain mutettaa pelaajan jos taustalta kuuluu
+                  4. Voit ajoittain mutettaa pelaajan jos taustalta kuuluu
                   paljon melua
                 </ListItem>
                 <ListItem>
-                  4. Peli aukeaa tähän ikkunaan kun klikkaat "Aloita peli"
+                  5. Peli aukeaa tähän ikkunaan kun klikkaat "Aloita peli"
                 </ListItem>
               </List>
 
               <Typography>Hauskaa kotipeli-iltaa!</Typography>
             </div>
-            <div>
-              <div className={classes.startBtn}>
-                <Fab
-                  onClick={() => actions.startGame(gameID)}
-                  variant="extended"
-                  size="large"
-                  color="primary"
-                  className={classes.btnStart}
-                >
-                  Aloita peli
-                </Fab>
-              </div>
+
+            <div className={classes.startBtn}>
+              <Fab
+                onClick={() => actions.startGame(gameID)}
+                variant="extended"
+                size="large"
+                color="primary"
+                className={classes.btnStart}
+              >
+                Aloita peli
+              </Fab>
             </div>
-            <div></div>
           </div>
         ))}
       <Grid item xs={12} className={classes.jitsiContainer}>
@@ -222,14 +226,6 @@ const KotitonniHostView: React.FC<KotitonniHostViewProps> = ({ user }) => {
         </Grid>
       )}
     </Grid>
-    // <div className={classes.container}>
-    //   <Paper elevation={5} className={classes.jitsiContainer}>
-    //     {jitsiContent()}
-    //   </Paper>
-    //   <Paper elevation={5} className={classes.hostControls}>
-    //     {sideBar()}
-    //   </Paper>
-    // </div>
   );
 };
 

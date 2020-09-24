@@ -114,9 +114,11 @@ const NewGame: React.FC = () => {
 
   const chooseType = () => (
     <div>
-      <Typography variant="h6">1. Aseta pelille hinta</Typography>
-      <div>
-        <FormControl variant="outlined">
+      <div className={classes.gameRow}>
+        <Typography variant="h6" className={classes.marginRight}>
+          1. Aseta pelille hinta
+        </Typography>
+        <FormControl variant="standard">
           <Select
             value={price}
             onChange={(e) => setPrice(Number(e.target.value))}

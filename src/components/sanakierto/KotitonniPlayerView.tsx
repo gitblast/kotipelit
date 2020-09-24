@@ -22,10 +22,19 @@ const useStyles = makeStyles((theme: Theme) =>
     jitsiContainer: {
       backgroundColor: theme.palette.grey[800],
       height: 600,
+      [theme.breakpoints.down('xs')]: {
+        display: 'none',
+      },
     },
     sidePanel: {
       padding: theme.spacing(2),
       marginLeft: theme.spacing(1),
+      [theme.breakpoints.down('xs')]: {
+        display: 'none',
+      },
+    },
+    marginBottom: {
+      marginBottom: 15,
     },
   })
 );
@@ -122,11 +131,19 @@ const KotitonniPlayerView: React.FC<KotitonniPlayerViewProps> = ({ user }) => {
     if (!activeGame || activeGame.status === GameStatus.WAITING) {
       return (
         <div>
-          <Typography variant="h5">Tervetuloa pelaamaan Kotitonnia!</Typography>
-          <Typography>
+          <Typography className={classes.marginBottom} variant="h5">
+            Tervetuloa pelaamaan Kotitonnia!
+          </Typography>
+          <Typography className={classes.marginBottom} color="primary">
+            Huomioithan, että peli toimii toistaiseksi vain läppärillä /
+            pöytäkoneella.
+          </Typography>
+          <Typography className={classes.marginBottom}>
             Tehtäväsi on keksiä sanoillesi vihjeet. Eniten pisteitä saat kun
-            vain yksi kanssapelaajista arvaa sanan. Vältä antamasta
-            henkilökohtaisia vihjeitä, kuten:
+            vain yksi kanssapelaajista arvaa sanan.
+          </Typography>
+          <Typography>
+            Vältä antamasta henkilökohtaisia vihjeitä, kuten:
           </Typography>
           <ListItem>
             "Nähtävyys, jolla vierailimme Minnan kanssa viime joulukuussa"{' '}
@@ -136,15 +153,17 @@ const KotitonniPlayerView: React.FC<KotitonniPlayerViewProps> = ({ user }) => {
           </Typography>
           <ListItem>"Löytyy tähtimerkeistä ja Espanjasta."</ListItem>
           <ListItem>-Härkä</ListItem>
-          <Typography>
-            Maksun "pelin hinta" voi suorittaa pelinhoitajalle "{username}"
-            Mobile paylla.
+          <Typography className={classes.marginBottom}>
+            Pelin maksun voi suorittaa pelinhoitajalle {username} {''}
+            Mobile paylla. Pelin hinta lukee kutsuviestissä.
           </Typography>
-          <Typography>
-            Peli käynnistyy tähän ikkunaan "time left" kuluttua.
+          <Typography className={classes.marginBottom}>
+            Pelinhoitaja käynnistää pelin tähän ikkunaan.
           </Typography>
-          <Typography>Pelinhoitaja käynnistää pelin tähän ikkunaan.</Typography>
-          <Typography>Hauskaa kotipeli-iltaa!</Typography>
+
+          <Typography className={classes.marginBottom}>
+            Hauskaa kotipeli-iltaa!
+          </Typography>
         </div>
       );
     }
@@ -152,12 +171,9 @@ const KotitonniPlayerView: React.FC<KotitonniPlayerViewProps> = ({ user }) => {
 
   return (
     <div>
-      {/* Alla vain pelaajalle näytettävä welcomeMsg. Backendista tarviis pelin hinnan, houstin nimen ja jäljellä olevan odotusajan. 
-      Jätin toistaseks turhat stailit pois kun en varma mihin fileen tää tulis laittaa  */}
       {welcomeMsg()}
       <Paper className={classes.jitsiContainer}>{jitsiContent()}</Paper>
-      {/* Näkykö pelaajien online status jo ennenkuin host oli käynnistäny peliä? 
-      Vai oonko hukannu sen johonkin tästä näkymästä? Se tulee näkyviin samalla kun tulee host käynnistää peli-ikkunan dashboardista.*/}
+
       <Paper elevation={5} className={classes.sidePanel}>
         {sideBar()}
       </Paper>

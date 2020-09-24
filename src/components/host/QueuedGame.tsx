@@ -196,7 +196,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
       {inviteText && (
         <div className={classes.inviteText}>
           <Typography variant="h6" gutterBottom>
-            Lähetä pelaajien kutsutekstit hyvissä ajoin.
+            Lähetä pelaajalle alla oleva kutsuteksti.
           </Typography>
           <Typography style={{ whiteSpace: 'pre' }}>{inviteText}</Typography>
         </div>

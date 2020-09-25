@@ -34,15 +34,24 @@ const useStyles = makeStyles((theme: Theme) =>
 
     mainInfo: {
       marginLeft: 100,
+
       [theme.breakpoints.down('xs')]: {
         marginLeft: 0,
         alignSelf: 'flex-end',
         justifyContent: 'space-around',
         marginBottom: 14,
+        width: '75%',
       },
     },
     buttonStyle: {
-      padding: 20,
+      padding: 12,
+      marginTop: 20,
+      marginLeft: 40,
+      // Asettelu melko vammasesti tehty
+      [theme.breakpoints.down('xs')]: {
+        marginTop: 10,
+        marginLeft: 0,
+      },
     },
     section: {
       backgroundColor: '#f8f8f8ff',
@@ -59,12 +68,11 @@ const FrontPage: React.FC = () => {
     <>
       <div className={classes.showcase}>
         <div className={classes.mainInfo}>
-          <Typography color="primary" variant="h4">
-            Peli-iltojen<br></br>yhteinen osoite.
+          <Typography color="primary" variant="h5">
+            Peli-iltojen yhteinen osoite.
           </Typography>
 
           <Button
-            size="large"
             variant="contained"
             color="secondary"
             className={classes.buttonStyle}

@@ -169,14 +169,14 @@ const KotitonniHostView: React.FC<KotitonniHostViewProps> = ({ user }) => {
                   klikkaamalla "käynnistä video"
                 </ListItem>
                 <ListItem>
-                  2. Pelaajat antavat vastauksensa privaviestillä. Viestin saa
-                  lähetettyä kun pelaaja painaa tätä symbolia{' '}
+                  2. Pelaajat antavat vastauksensa privaviestillä. He saavat
+                  lähetettyä viestin klikkaamalla tätä symbolia{' '}
                   <MoreVertRoundedIcon></MoreVertRoundedIcon> videokuvasi
                   kohdalla
                 </ListItem>
                 <ListItem>
-                  3. Pelin aikana voit toistaa pelaajan antaman vihjeen, jotta
-                  kaikki varmasti kuulevat sen
+                  3. Voit toistaa pelaajan antaman vihjeen, jotta kaikki
+                  varmasti kuulevat sen
                 </ListItem>
                 <ListItem>
                   4. Voit ajoittain mutettaa pelaajan jos taustalta kuuluu

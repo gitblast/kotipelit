@@ -116,9 +116,9 @@ const NewGame: React.FC = () => {
     <div>
       <div className={classes.gameRow}>
         <Typography variant="h6" className={classes.marginRight}>
-          1. Aseta pelille hinta
+          1. Pelin hinta per pelaaja
         </Typography>
-        <FormControl variant="standard">
+        <FormControl className={classes.marginRight} variant="standard">
           <Select
             value={price}
             onChange={(e) => setPrice(Number(e.target.value))}
@@ -134,6 +134,9 @@ const NewGame: React.FC = () => {
             <MenuItem value={10}>10€</MenuItem>
           </Select>
         </FormControl>
+        <Typography variant="body2">
+          Saat 80% pelin tuotosta itsellesi.
+        </Typography>
       </div>
       <Typography variant="h6">2. Valitse peli</Typography>
       <div className={classes.gameRow}>

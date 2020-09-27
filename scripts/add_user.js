@@ -22,18 +22,19 @@ if (!email) throw new Error('Anna email kolmantena parametrina!');
 if (!channelName) throw new Error('Anna kanavan nimi neljäntenä parametrina!');
 
 const addUser = async () => {
-  await connection.connect(process.env.MONGODB_URI);
+  try {
+    await connection.connect(process.env.MONGODB_URI);
 
-  const newUser = toNewUser({
-    username,
-    password,
-    email,
-    channelName,
-  });
+    const newUser = toNewUser({
+      username,
+      password,
+      email,
+      channelName,
+    });
 
-  console.log('\nTallennetaan käyttäjä:');
+    console.log('\nTallennetaan käyttäjä:');
 
-  console.log(`
+    console.log(`
 
   username: ${newUser.username}
   password: ${newUser.password}
@@ -42,19 +43,22 @@ const addUser = async () => {
   
   `);
 
-  const passwordHash = await bcrypt.hash(newUser.password, 10);
+    const passwordHash = await bcrypt.hash(newUser.password, 10);
 
-  const user = new User({
-    username: newUser.username,
-    email: newUser.email,
-    channelName: newUser.channelName,
-    passwordHash,
-    joinDate: new Date(),
-  });
+    const user = new User({
+      username: newUser.username,
+      email: newUser.email,
+      channelName: newUser.channelName,
+      passwordHash,
+      joinDate: new Date(),
+    });
 
-  await user.save();
+    await user.save();
 
-  console.log('Käyttäjä tallennettu.');
+    console.log('Käyttäjä tallennettu.');
+  } catch (e) {
+    console.log(`Tapahtui virhe: ${e.message}`);
+  }
 
   await connection.close();
 };

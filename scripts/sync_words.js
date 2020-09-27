@@ -1,3 +1,5 @@
+/** Example use: node sync_words.js path/to/wordlist.txt */
+
 require('dotenv').config();
 
 const fs = require('fs');

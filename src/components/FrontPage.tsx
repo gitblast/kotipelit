@@ -6,11 +6,9 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Typography, Grid, Button, Paper } from '@material-ui/core';
 
 // icon imports, bundling together requires "minimizing bundle size?"
-import AssignmentIcon from '@material-ui/icons/Assignment';
 import EuroSymbolIcon from '@material-ui/icons/EuroSymbol';
 import AppsIcon from '@material-ui/icons/Apps';
-import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
-import VideogameAssetIcon from '@material-ui/icons/VideogameAsset';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -85,59 +83,44 @@ const FrontPage: React.FC = () => {
       </div>
 
       <Paper elevation={1} className={classes.section}>
-        <Grid container>
-          {/* Pelinhoitajainfo */}
-          <Grid container spacing={4} className={classes.container}>
-            <Grid item xs={12}>
-              <Typography color="primary" variant="h4">
-                Tienaa järjestämällä pelejä
-              </Typography>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <AssignmentIcon></AssignmentIcon>
-
-              <Typography>
-                Järjestä etänä peli-iltoja tutuille tai tuntemattomille.
-              </Typography>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <EuroSymbolIcon></EuroSymbolIcon>
-
-              <Typography>
-                Tienaa hauskalla tavalla - suurinosa pelin tuotoista tulee
-                sinulle.
-              </Typography>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <AppsIcon></AppsIcon>
-              <Typography>
-                Pelaamiseen kustomoitu videopuhelualusta tekee pelien
-                järjestämisestä hauskaa ja vaivatonta.
-              </Typography>
-            </Grid>
+        {/* Pelinhoitajainfo */}
+        <Grid container spacing={4} className={classes.container}>
+          <Grid item xs={12}>
+            <Typography color="primary" variant="h4">
+              Ryhdy pelinhoitajaksi
+            </Typography>
           </Grid>
-          {/* Pelaajainfo-osio */}
-          <Grid container spacing={4} className={classes.container}>
-            <Grid item xs={12}></Grid>
-            <Grid item xs={12}>
-              <Typography color="primary" variant="h4">
-                Pelaa kavereiden kanssa
-              </Typography>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <CheckCircleOutlineIcon></CheckCircleOutlineIcon>
-              <Typography>Ei rekisteröitymistä.</Typography>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <AppsIcon></AppsIcon>
-              <Typography>Pelaamiseen kustomoitu videopuhelualusta.</Typography>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <VideogameAssetIcon></VideogameAssetIcon>
-              <Typography>Kasvava valikoima pelejä.</Typography>
-            </Grid>
+          <Grid item xs={12} sm={4}>
+            <AppsIcon></AppsIcon>
+            <Typography variant="h5">
+              Ilahduta järjestämällä peli-iltoja.
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <EuroSymbolIcon></EuroSymbolIcon>
+
+            <Typography variant="h5">
+              Voit asettaa pelin hinnan itse, 80% peli-illan tuotosta tulee
+              sinulle.
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <AccountCircleIcon></AccountCircleIcon>
+            <Typography variant="h5">
+              Tarvitsen vain käyttäjätilin ja webkameran niin olet valmis!
+            </Typography>
           </Grid>
         </Grid>
+      </Paper>
+      <Paper>
+        <Typography color="primary" variant="h4">
+          Kotitonni
+        </Typography>
+        <Typography>
+          Kotitonnissa arvuutellaan kanssapelaajien sanoja vihjeiden avulla.
+          Peli kestää noin tunnin ja pyörii Kotipelien pelaamiseen kustomoidulla
+          videopuhelualustalla. Peli-illan kruunaa hyvä pelinhoitaja.
+        </Typography>
       </Paper>
     </>
   );

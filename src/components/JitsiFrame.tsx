@@ -96,6 +96,8 @@ const JitsiFrame: React.FC<JitsiFrameProps> = ({
   // https://github.com/jitsi/jitsi-meet/blob/master/config.js
   const config = {
     subject: ' ', // hides room name
+    enableNoAudioDetection: true, // will notify the user if the current selected microphone has no audio
+    // input and will suggest another valid device if one is present.
   };
 
   // https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js

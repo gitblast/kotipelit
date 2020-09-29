@@ -122,6 +122,24 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
     }
   };
 
+  const startRTCButton = () => {
+    if (game.status !== GameStatus.FINISHED) {
+      const label =
+        game.status === GameStatus.UPCOMING ? 'Käynnistä RTC' : 'Liity RTC';
+
+      return (
+        <Button
+          variant="contained"
+          color="primary"
+          component={Link}
+          to={`/${username}/pelit/rtc/${game.id}`}
+        >
+          {label}
+        </Button>
+      );
+    }
+  };
+
   return (
     <Paper elevation={2} className={classes.container}>
       <div className={`${classes.infoBar} ${classes.flex}`}>
@@ -140,6 +158,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
         </div>
 
         <div>
+          {username === 'username' && startRTCButton()}
           {startButton()}
           <IconButton
             size="small"

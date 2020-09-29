@@ -1,5 +1,7 @@
 // JITSI
 
+import { MediaConnection } from 'peerjs';
+
 export interface JitsiApi {
   on: (event: string, listener: () => void) => void;
   dispose: () => void;
@@ -353,4 +355,44 @@ export interface MockSocket {
   emitted: Record<string, object>;
   on: Function;
   emit: Function;
+}
+
+export interface RTCPlayer {
+  id: string;
+  displayName: string;
+  socketId: null | string;
+  peerId: null | string;
+  isHost: boolean;
+  stream: MediaStream | null;
+  call: MediaConnection | null;
+}
+
+export interface RTCGameRoom {
+  game: RTCGame;
+  host: RTCPlayer;
+  players: RTCPlayer[];
+}
+
+export interface GamePlayer {
+  name: string;
+  id: string;
+  points: number;
+}
+
+export interface KotitonniInfo {
+  round: number;
+  turn: string; // player id
+}
+
+export type GameInfo = KotitonniInfo;
+
+export interface RTCGame {
+  id: string;
+  status: GameStatus;
+  type: GameType;
+  price: number;
+  startTime: Date;
+  players: GamePlayer[];
+  info: GameInfo;
+  host: string;
 }

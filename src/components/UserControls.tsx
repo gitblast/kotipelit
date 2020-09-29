@@ -3,6 +3,7 @@ import * as React from 'react';
 import { logout } from '../reducers/user.reducer';
 
 import { Typography, Button } from '@material-ui/core';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import { User } from '../types';
 import { useDispatch } from 'react-redux';
@@ -25,7 +26,9 @@ const UserControls: React.FC<UserControlsProps> = ({ user }) => {
   if (!user.loggedIn)
     return history.location.pathname !== '/kirjaudu' ? (
       <Button color="inherit" onClick={() => history.push('/kirjaudu')}>
-        <Typography>Kirjaudu</Typography>
+        <Typography>
+          Kirjaudu<AccountCircleIcon></AccountCircleIcon>
+        </Typography>
       </Button>
     ) : null;
 

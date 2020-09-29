@@ -1,7 +1,7 @@
 import React from 'react';
 import socketIOClient from 'socket.io-client';
-import Peer from 'peerjs';
-import { CommonEvent, RTCGameRoom, RTCPlayer } from '../types';
+import Peer, { MediaConnection } from 'peerjs';
+import { CommonEvent, RTCGame, RTCGameRoom, RTCPlayer } from '../types';
 import { log } from '../utils/logger';
 import gameService from '../services/games';
 import { useParams } from 'react-router-dom';
@@ -119,21 +119,27 @@ export const usePlayerGameToken = () => {
 
 export const useHostGameToken = (gameId: string) => {
   const [token, setToken] = React.useState<null | string>(null);
+  const [error, setError] = React.useState<null | string>(null);
 
   React.useEffect(() => {
     const fetchToken = async () => {
-      const gameToken = await gameService.getHostTokenForGame(gameId);
+      try {
+        const gameToken = await gameService.getHostTokenForGame(gameId);
 
-      setToken(gameToken);
+        setToken(gameToken);
+      } catch (e) {
+        console.error(`Error with host token: ${e.message}`);
+        setError(e.message);
+      }
     };
 
     fetchToken();
   }, [gameId]);
 
-  return token;
+  return [token, error];
 };
 
-const useMediaStream = (
+export const useMediaStream = (
   showVideo: boolean
 ): [MediaStream | null, string | null] => {
   const [stream, setStream] = React.useState<MediaStream | null>(null);
@@ -144,7 +150,8 @@ const useMediaStream = (
       log(`getting user media`);
       try {
         const localStream = await navigator.mediaDevices.getUserMedia({
-          audio: {},
+          audio: true,
+          video: true,
         });
 
         setStream(localStream);
@@ -156,18 +163,14 @@ const useMediaStream = (
 
     if (!stream && showVideo) {
       getUserMedia();
+    } else {
+      return () => {
+        if (stream) {
+          log(`shutting off local stream`);
+          stream.getTracks().forEach((track) => track.stop());
+        }
+      };
     }
-
-    if (stream && !showVideo) {
-      log(`shutting off local stream`);
-      setStream(null);
-    }
-
-    return () => {
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
-      }
-    };
   }, [stream, showVideo]);
 
   return [stream, error];
@@ -183,16 +186,16 @@ interface RTCCall {
 
 const useGameRoom = (
   token: string | null,
-  showVideo: boolean
-): [RTCGameRoom | null, RTCPlayer[] | null] => {
+  mediaStream: MediaStream | null
+): [RTCGame | null, RTCPlayer[] | null, string | null] => {
   const [gameRoom, setGameRoom] = React.useState<RTCGameRoom | null>(null);
-  const [peersCalled, setPeersCalled] = React.useState<boolean>(false);
   const [peers, setPeers] = React.useState<RTCPlayer[] | null>(null);
   const [peer, peerError] = usePeer();
-  const socket = useSocket(token);
-  const [mediaStream, mediaStreamError] = useMediaStream(showVideo);
+  const [onCall, setOnCall] = React.useState<boolean>(false);
 
-  if (mediaStreamError || peerError) {
+  const socket = useSocket(token);
+
+  if (peerError) {
     console.error('handle errors!');
   }
 
@@ -264,39 +267,65 @@ const useGameRoom = (
           }
 
           return currentPeers.map((peerObj) =>
-            peerObj.id === newUser.id ? newUser : peerObj
+            peerObj.id === newUser.id
+              ? { ...newUser, call: null, stream: null }
+              : peerObj
           );
         });
       });
     }
   }, [socket, peer]);
 
-  React.useEffect(() => {
-    if (peers && !showVideo) {
-      if (
-        !peers.map((peerObj) => peerObj.call).every((call) => call === null)
-      ) {
-        setPeers((currentPeers) => {
-          if (!currentPeers) {
-            return currentPeers;
-          }
+  const joinCall = React.useCallback(
+    (mediaStream: MediaStream) => {
+      if (!peers) {
+        console.error('no peers set when trying to call!');
 
-          return currentPeers.map((peerObj) => {
-            if (peerObj.call) {
-              log(`closing call with ${peerObj.displayName}`);
+        return;
+      }
 
-              peerObj.call.close();
+      if (!peer) {
+        console.error('no peer client set when trying to call!');
+
+        return;
+      }
+
+      const attachListeners = (call: MediaConnection) => {
+        call.on('stream', (stream) => {
+          console.log('recieving stream', stream);
+
+          setPeers((currentPeers) => {
+            if (!currentPeers) {
+              return currentPeers;
             }
 
-            return { ...peerObj, stream: null, call: null };
+            const user = currentPeers.find(
+              (peerObj) => peerObj.peerId === call.peer
+            );
+
+            if (!user) {
+              console.error(`No user found matching call peer id`);
+
+              return currentPeers;
+            }
+
+            return currentPeers.map((peerObj) =>
+              peerObj.peerId === call.peer
+                ? { ...peerObj, stream, call }
+                : peerObj
+            );
           });
         });
-      }
-    }
-  }, [showVideo, peers]);
 
-  React.useEffect(() => {
-    if (peer && mediaStream) {
+        call.on('error', (error) => {
+          console.error('error calling:', error.message);
+        });
+
+        call.on('close', () => {
+          log(`call closed with peer ${call.peer}`);
+        });
+      };
+
       log(`attaching call listener`);
 
       peer.on('call', (call) => {
@@ -304,103 +333,40 @@ const useGameRoom = (
 
         call.answer(mediaStream);
 
-        call.on('stream', (stream) => {
-          console.log('recieving stream', stream);
-
-          setPeers((currentPeers) => {
-            if (!currentPeers) {
-              return currentPeers;
-            }
-
-            const user = currentPeers.find(
-              (peerObj) => peerObj.peerId === call.peer
-            );
-
-            if (!user) {
-              log(`No user found for call`);
-
-              return currentPeers;
-            }
-
-            return currentPeers.map((peerObj) =>
-              peerObj.peerId === call.peer
-                ? { ...peerObj, stream, call }
-                : peerObj
-            );
-          });
-        });
-
-        call.on('close', () => {
-          console.log('call closed with', call.peer);
-        });
-
-        call.on('error', (error) => {
-          console.error('error calling:', error.message);
-        });
+        attachListeners(call);
       });
-    }
-  }, [peer, mediaStream]);
 
-  React.useEffect(() => {
-    if (peer && showVideo && peers && mediaStream && !peersCalled) {
-      log(`calling peers`);
+      peers.forEach((peerObj) => {
+        if (peerObj.peerId) {
+          // not calling self
+          if (peer.id === peerObj.peerId) {
+            return;
+          }
 
-      const callPeer = (peerId: string) => {
-        const call = peer.call(peerId, mediaStream);
+          log(`calling peer ${peerObj.displayName}`);
 
-        call.on('stream', (stream) => {
-          console.log('recieving stream', stream);
+          const call = peer.call(peerObj.peerId, mediaStream);
 
-          setPeers((currentPeers) => {
-            if (!currentPeers) {
-              return currentPeers;
-            }
-
-            const user = currentPeers.find(
-              (peerObj) => peerObj.peerId === call.peer
-            );
-
-            if (!user) {
-              log(`No user found for call`);
-
-              return currentPeers;
-            }
-
-            return currentPeers.map((peerObj) =>
-              peerObj.peerId === call.peer
-                ? { ...peerObj, stream, call }
-                : peerObj
-            );
-          });
-        });
-
-        call.on('error', (error) => {
-          console.error('error calling:', error.message);
-        });
-
-        call.on('close', () => {
-          console.log('call closed with peer', call.peer);
-        });
-
-        return call;
-      };
-
-      // call players
-      peers.forEach((player) => {
-        if (peer.id !== player.peerId && player.peerId) {
-          log(
-            `calling user '${player.displayName}' with peer id ${player.peerId}`
-          );
-
-          callPeer(player.peerId);
+          attachListeners(call);
         }
       });
+    },
+    [peers, peer]
+  );
 
-      setPeersCalled(true);
+  React.useEffect(() => {
+    if (mediaStream && !onCall) {
+      log('calling all peers');
+
+      setOnCall(true);
+
+      joinCall(mediaStream);
     }
-  }, [peer, mediaStream, showVideo, peers, peersCalled]);
+  }, [joinCall, mediaStream, onCall]);
 
-  return [gameRoom, peers];
+  const myPeerId = peer ? peer.id : null;
+
+  return [gameRoom ? gameRoom.game : null, peers, myPeerId];
 };
 
 export default useGameRoom;

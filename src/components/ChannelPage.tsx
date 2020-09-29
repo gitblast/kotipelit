@@ -39,8 +39,9 @@ const ChannelPage: React.FC<ChannelPageProps> = ({ labelText }) => {
       <Paper elevation={4} className={classes.container}>
         {/* <Typography variant="h3" gutterBottom>
           {labelText}
-        </Typography> */}
-        <Divider className={classes.marginBottom} />
+        </Typography>
+        
+        <Divider className={classes.marginBottom} /> */}
         <Switch>
           <Route path="/:username/newgame">
             {user.loggedIn && <NewGame />}

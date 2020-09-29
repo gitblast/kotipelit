@@ -2,85 +2,157 @@ import React from 'react';
 
 import useGameRoom, {
   useHostGameToken,
+  useMediaStream,
   usePlayerGameToken,
 } from '../hooks/useGameRoom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { useParams } from 'react-router-dom';
+import { RTCPlayer } from '../types';
+import { Card, CardContent, Fab, Typography } from '@material-ui/core';
+import Loader from './Loader';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
-      padding: theme.spacing(0),
+      padding: theme.spacing(2),
+    },
+    // conference
+    videoConf: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      justifyContent: 'space-evenly',
+
+      alignItems: 'center',
+      minHeight: 400,
+    },
+    // video
+    videoContainer: {
+      width: `32%`,
+      marginBottom: theme.spacing(1),
+      textAlign: 'center',
+    },
+    video: {
+      display: 'flex',
+      backgroundColor: 'grey',
+      width: '100%',
+      minHeight: 200,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   })
 );
 
-const HostView: React.FC = () => {
+interface VideoFrameProps {
+  peer: RTCPlayer;
+}
+
+const VideoFrame: React.FC<VideoFrameProps> = ({ peer }) => {
   const classes = useStyles();
-  const { gameID } = useParams<{ gameID: string }>();
-
-  const [showVideo, setShowVideo] = React.useState<boolean>(false);
-
-  const token = useHostGameToken(gameID);
-
-  const [gameRoom, peers] = useGameRoom(token, showVideo);
-
-  const handleClick = () => {
-    setShowVideo(!showVideo);
-  };
 
   return (
-    <div className={classes.container}>
-      <h4>Peers</h4>
-      {peers &&
-        peers.map((player) => {
-          return (
-            <div key={player.id}>
-              <span>
-                {player.displayName} {player.isHost && '(HOST)'}{' '}
-              </span>
-              <span>{player.peerId} </span>
-              {player.stream && <span>STREAMING!</span>}
-            </div>
-          );
-        })}
-      <button onClick={handleClick}>
-        {!showVideo ? 'show video' : 'hide video'}
-      </button>
+    <Card elevation={3} className={classes.videoContainer}>
+      {peer.stream ? (
+        <video
+          className={classes.video}
+          ref={(videoRef) => {
+            if (videoRef) {
+              videoRef.srcObject = peer.stream;
+            }
+          }}
+        />
+      ) : (
+        <div className={classes.video}>
+          <Typography>Ei videoyhteyttä</Typography>
+        </div>
+      )}
+      <CardContent component="div">
+        <Typography>
+          {peer.isMe
+            ? 'SINÄ'
+            : peer.isHost
+            ? `${peer.displayName} (HOST)`
+            : peer.displayName}
+        </Typography>
+      </CardContent>
+    </Card>
+  );
+};
+
+interface VideoConferenceProps {
+  peers: RTCPlayer[] | null;
+  onCall: boolean;
+  joinCall: () => void;
+}
+
+const VideoConference: React.FC<VideoConferenceProps> = ({
+  peers,
+  onCall,
+  joinCall,
+}) => {
+  const classes = useStyles();
+
+  if (!peers) {
+    return (
+      <div className={classes.videoConf}>
+        <Loader msg="Ladataan..." spinner />
+      </div>
+    );
+  }
+
+  if (!onCall) {
+    return (
+      <div className={classes.videoConf}>
+        <Fab variant="extended" onClick={joinCall}>
+          Liity puheluun
+        </Fab>
+      </div>
+    );
+  }
+
+  return (
+    <div className={classes.videoConf}>
+      {peers.map((peer) => (
+        <VideoFrame key={peer.id} peer={peer} />
+      ))}
     </div>
   );
 };
 
-const PlayerView: React.FC = () => {
+const RTCGameRoom: React.FC<{ token: string | null }> = ({ token }) => {
   const classes = useStyles();
-  const [showVideo, setShowVideo] = React.useState<boolean>(false);
 
-  const token = usePlayerGameToken();
+  const [usingMedia, setUsingMedia] = React.useState<boolean>(false);
 
-  const [gameRoom, peers] = useGameRoom(token, showVideo);
+  const [mediaStream, mediaStreamError] = useMediaStream(usingMedia);
+  const [game, peers, myPeerId] = useGameRoom(token, mediaStream);
 
-  const handleClick = () => {
-    setShowVideo(!showVideo);
+  if (mediaStreamError) {
+    console.error('error', mediaStreamError);
+  }
+
+  React.useEffect(() => {
+    if (peers) console.log('PEERS CHANGED:', peers);
+  }, [peers]);
+
+  const peersWithOwnStreamSet = (peerObjects: RTCPlayer[] | null) => {
+    if (!peerObjects) {
+      return null;
+    }
+
+    return peerObjects.map((peer) =>
+      peer.peerId === myPeerId
+        ? { ...peer, isMe: true, stream: mediaStream }
+        : peer
+    );
   };
 
   return (
     <div className={classes.container}>
-      <h4>Peers</h4>
-      {peers &&
-        peers.map((player) => {
-          return (
-            <div key={player.id}>
-              <span>
-                {player.displayName} {player.isHost && '(HOST)'}{' '}
-              </span>
-              <span>{player.peerId} </span>
-              {player.stream && <span>STREAMING!</span>}
-            </div>
-          );
-        })}
-      <button onClick={handleClick}>
-        {!showVideo ? 'show video' : 'hide video'}
-      </button>
+      <VideoConference
+        peers={peersWithOwnStreamSet(peers)}
+        onCall={usingMedia}
+        joinCall={() => setUsingMedia(true)}
+      />
     </div>
   );
 };
@@ -90,11 +162,15 @@ interface RTCVideoCallProps {
 }
 
 const RTCVideoCall: React.FC<RTCVideoCallProps> = ({ isHost }) => {
+  const { gameID } = useParams<{ gameID: string }>();
+  const [token] = useHostGameToken(gameID);
+  const playerToken = usePlayerGameToken();
+
   if (isHost) {
-    return <HostView />;
+    return <RTCGameRoom token={token} />;
   }
 
-  return <PlayerView />;
+  return <RTCGameRoom token={playerToken} />;
 };
 
 export default RTCVideoCall;

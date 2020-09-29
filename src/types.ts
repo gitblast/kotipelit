@@ -365,6 +365,7 @@ export interface RTCPlayer {
   isHost: boolean;
   stream: MediaStream | null;
   call: MediaConnection | null;
+  isMe?: boolean;
 }
 
 export interface RTCGameRoom {

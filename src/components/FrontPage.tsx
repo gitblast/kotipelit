@@ -19,8 +19,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    container: { padding: theme.spacing(1), textAlign: 'center' },
-    linkContainer: { marginTop: theme.spacing(2) },
+    container: { padding: theme.spacing(2), textAlign: 'center' },
     media: { height: 150 },
     showcase: {
       backgroundImage: 'url(images/background2.png)',
@@ -61,12 +60,17 @@ const useStyles = makeStyles((theme: Theme) =>
     section: {
       backgroundColor: '#be780017',
     },
+    sectionB: {
+      marginBottom: 15,
+    },
     flexin: {
       display: 'flex',
       alignItems: 'center',
     },
-    marginLeft: {
-      marginLeft: 10,
+    // Makes images responsive
+    image: {
+      width: '100%',
+      height: 'auto',
     },
   })
 );
@@ -101,7 +105,7 @@ const FrontPage: React.FC = () => {
         <Grid container spacing={4} className={classes.container}>
           <Grid item xs={12}>
             <Typography color="primary" variant="h4">
-              Ryhdy pelinhoitajaksi
+              Etsitään pelinhoitajia
             </Typography>
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -121,14 +125,14 @@ const FrontPage: React.FC = () => {
           <Grid item xs={12} sm={4}>
             <AccountCircleIcon></AccountCircleIcon>
             <Typography variant="h5">
-              Tarvitsen vain käyttäjätilin ja webkameran niin olet valmis!
+              Tarvitset vain käyttäjätilin ja web-kameran niin olet valmis!
             </Typography>
           </Grid>
         </Grid>
       </Paper>
       {/* Kotitonni-info */}
-      <Paper>
-        <Grid container spacing={4} className={classes.flexin}>
+      <Paper className={classes.sectionB}>
+        <Grid container spacing={2} className={classes.flexin}>
           <Grid item sm={1}></Grid>
           <Grid item xs={12} sm={4}>
             <Typography color="primary" variant="h4">
@@ -136,20 +140,15 @@ const FrontPage: React.FC = () => {
             </Typography>
 
             <Typography variant="h6">
-              Kotitonnissa arvuutellaan kanssapelaajien sanoja vihjeiden avulla.
-              Peli kestää noin tunnin ja pyörii pelaamiseen kustomoidulla
-              videopuhelualustalla. Peli-illan kruunaa hyvä pelinhoitaja.
+              Kotitonni on viihdyttävä peli, jossa pelaajat arvuuttelevat
+              toistensa sanoja vihjeiden avulla. Eniten pisteitä saa kun vain
+              yksi arvaa sanan. Peli kestää noin tunnin ja pyörii pelaamiseen
+              kustomoidulla videopuhelualustalla.
             </Typography>
           </Grid>
           <Grid item sm={1}></Grid>
           <Grid item xs={12} sm={6}>
-            <Card>
-              <CardMedia
-                component="img"
-                image="images/Kotitonni.png"
-                alt="Kotitonni"
-              ></CardMedia>
-            </Card>
+            <img className={classes.image} src="images/Kotitonni.png"></img>
           </Grid>
         </Grid>
       </Paper>
@@ -159,7 +158,7 @@ const FrontPage: React.FC = () => {
         <Grid container spacing={4} className={classes.container}>
           <Grid item xs={12}>
             <Typography color="primary" variant="h4">
-              Kiinostuitko?
+              Kiinnostuitko?
             </Typography>
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -170,14 +169,14 @@ const FrontPage: React.FC = () => {
           </Grid>
           <Grid item xs={12} sm={4}>
             <Typography variant="h5">
-              Peli-illan järjestäminen on helppoa ja voit kysyä apua milloin
-              vain.
+              Peli-illan järjestäminen sivustolla on helppoa ja voit kysyä apua
+              milloin vain.
             </Typography>
           </Grid>
           <Grid item xs={12} sm={4}>
             <Typography variant="h5">
-              Halutessasi voimme järjestää sinulle pelaajat ensimmäistä
-              peli-iltaasi varten.
+              Halutessasi voimme järjestää pelaajat ensimmäistä peli-iltaasi
+              varten.
             </Typography>
           </Grid>
         </Grid>

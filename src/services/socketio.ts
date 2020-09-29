@@ -171,9 +171,31 @@ export const attachListeners = (socket: SocketWithToken): void => {
   }
 };
 
+const attachRTCListeners = (socket: SocketWithToken) => {
+  log('attaching listeners');
+
+  socket.on('join-gameroom', (peerId: string) => {
+    void callbacks.joinRTCRoom(socket, peerId);
+  });
+
+  socket.on(EventType.DISCONNECT, () => {
+    void callbacks.leaveRTCRoom(socket);
+  });
+};
+
+const handleRTCConnection = (socket: SocketWithToken) => {
+  const { gameId } = socket.decoded_token;
+
+  log(`joining channel ${gameId}`);
+
+  socket.join(gameId);
+
+  attachRTCListeners(socket);
+};
+
 /**
  * Authenticates connection and attaches listeners to socket on success
- * @param io - socket.io socket
+ * @param io - socket.io server
  */
 const handler = (io: Server): void => {
   io.on(
@@ -183,16 +205,23 @@ const handler = (io: Server): void => {
       timeout: 10000,
     })
   ).on(EventType.AUTHENTICATED, (socket: SocketWithToken) => {
-    log('user connected');
-    attachListeners(socket);
+    log(`user connected ${socket.decoded_token.username}`);
 
-    socket.on(EventType.DISCONNECT, () => {
-      if (socket.decoded_token.role === Role.HOST) {
-        callbacks.handleHostDisconnect(io, socket);
-      } else {
-        callbacks.handlePlayerDisconnect(io, socket);
-      }
-    });
+    if (socket.decoded_token.type === 'rtc') {
+      log('using rtc');
+
+      handleRTCConnection(socket);
+    } else {
+      attachListeners(socket);
+
+      socket.on(EventType.DISCONNECT, () => {
+        if (socket.decoded_token.role === Role.HOST) {
+          callbacks.handleHostDisconnect(io, socket);
+        } else {
+          callbacks.handlePlayerDisconnect(io, socket);
+        }
+      });
+    }
   });
 };
 

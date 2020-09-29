@@ -17,8 +17,11 @@ const errorHandler: ErrorRequestHandler = (error, _request, response, next) => {
     return response.status(400).send('Invalid game id');
   }
 
-  // credentials wrong
-  if (message === 'Invalid username or password') {
+  // unauthorized
+  if (
+    message.startsWith('Unauthorized') ||
+    message === 'Invalid username or password'
+  ) {
     return response.status(401).send(message);
   }
 

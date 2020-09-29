@@ -42,7 +42,7 @@ let token: string;
 describe('games router', () => {
   beforeAll(async () => {
     user = await testHelpers.addDummyUser();
-    token = testHelpers.getValidToken(user, config.SECRET);
+    token = testHelpers.getValidToken(user, config.SECRET, Role.HOST);
   });
 
   beforeEach(async () => {
@@ -54,6 +54,30 @@ describe('games router', () => {
     await api.get(baseUrl).expect(401);
     await api.delete(`${baseUrl}/id`).expect(401);
     await api.get(`${baseUrl}/words/1`).expect(401);
+
+    const invalidToken = testHelpers.getValidToken(
+      user,
+      config.SECRET,
+      Role.PLAYER
+    );
+
+    await api
+      .post(baseUrl)
+      .set('Authorization', `bearer ${invalidToken}`)
+      .send(dummyGame)
+      .expect(401);
+    await api
+      .get(baseUrl)
+      .set('Authorization', `bearer ${invalidToken}`)
+      .expect(401);
+    await api
+      .delete(`${baseUrl}/id`)
+      .set('Authorization', `bearer ${invalidToken}`)
+      .expect(401);
+    await api
+      .get(`${baseUrl}/words/1`)
+      .set('Authorization', `bearer ${invalidToken}`)
+      .expect(401);
   });
 
   describe('GET /:hostName/:playerId', () => {
@@ -74,6 +98,7 @@ describe('games router', () => {
         username: player.name,
         id: player.id,
         gameId: gameId,
+        type: 'jitsi',
         role: Role.PLAYER,
       };
 

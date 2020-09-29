@@ -34,6 +34,4 @@ app.use('/api/games', gameRouter);
 
 app.use(errorHandler);
 
-app.use('/*', express.static('build'));
-
 export default app;

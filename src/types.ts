@@ -271,8 +271,34 @@ export interface SocketIOAuthToken {
   username: string;
   role: Role;
   gameId: string;
+  type?: 'rtc' | 'jitsi';
 }
 
 export interface SocketWithToken extends SocketIO.Socket {
   decoded_token: SocketIOAuthToken;
+}
+
+export interface RTCPlayer {
+  id: string;
+  displayName: string;
+  socketId: null | string;
+  peerId: null | string;
+  isHost: boolean;
+}
+
+export interface RTCGameRoom {
+  game: RTCGame;
+  host: RTCPlayer;
+  players: RTCPlayer[];
+}
+
+export interface RTCGame {
+  id: string;
+  status: GameStatus;
+  type: GameType;
+  price: number;
+  startTime: Date;
+  players: GamePlayer[];
+  info: GameInfo;
+  host: string;
 }

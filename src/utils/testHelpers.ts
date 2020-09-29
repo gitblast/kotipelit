@@ -13,6 +13,7 @@ import {
   GameModel,
   GameType,
   WordModel,
+  Role,
 } from '../types';
 import Game from '../models/game';
 import Word from '../models/word';
@@ -104,10 +105,11 @@ const addDummyUser = async (
   return await user.save();
 };
 
-const getValidToken = (user: UserModel, secret: string): string => {
+const getValidToken = (user: UserModel, secret: string, role: Role): string => {
   const tokenUser = {
     username: user.username,
     id: user._id,
+    role,
   };
 
   return jwt.sign(tokenUser, secret);

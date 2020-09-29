@@ -28,6 +28,8 @@ const router = express.Router();
 
 router.get('/join/:hostName/:playerId', async (req, res, next) => {
   try {
+    const rtc = req.query.rtc;
+
     const hostName = toID(req.params.hostName);
     const playerId = toID(req.params.playerId);
     const urlData = await Url.findOne({ hostName, playerId });
@@ -48,11 +50,12 @@ router.get('/join/:hostName/:playerId', async (req, res, next) => {
       id: player.id,
       role: Role.PLAYER,
       gameId,
+      type: rtc ? 'rtc' : 'jitsi',
     };
 
     const token = jwt.sign(payload, config.SECRET);
 
-    const response = { token, displayName: player.name };
+    const response = rtc ? token : { token, displayName: player.name };
 
     res.json(response);
   } catch (error) {
@@ -62,6 +65,21 @@ router.get('/join/:hostName/:playerId', async (req, res, next) => {
 
 /** token protected routes */
 router.use(expressJwt({ secret: config.SECRET }));
+
+/** middleware that checks host role */
+router.use((req, _res, next) => {
+  try {
+    const user = req.user;
+
+    if (!user || user.role !== Role.HOST) {
+      throw new Error('Unauthorized: invalid token role');
+    }
+
+    next();
+  } catch (e) {
+    next(e);
+  }
+});
 
 router.get('/', async (req, res, next) => {
   /** return all games where host id matches user token id */
@@ -101,6 +119,42 @@ router.post('/', async (req, res, next) => {
     }
 
     res.json(savedGame);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/token/:id', async (req, res, next) => {
+  try {
+    const gameId = toID(req.params.id);
+
+    const game = await Game.findById(gameId);
+
+    if (!game) {
+      throw new Error(`Invalid game id: ${gameId}`);
+    }
+
+    const user = toAuthenticatedUser(req);
+
+    if (!user.id === game.host) {
+      console.error('invalid host', game.host, user.id);
+
+      throw new Error(
+        `Invalid request: game host id and request user id not matching`
+      );
+    }
+
+    const payload = {
+      username: user.username,
+      id: user.id,
+      role: Role.HOST,
+      gameId,
+      type: 'rtc',
+    };
+
+    const token = jwt.sign(payload, config.SECRET);
+
+    res.json(token);
   } catch (error) {
     next(error);
   }

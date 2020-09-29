@@ -5,6 +5,7 @@ import {
   SocketWithToken,
   GameStatus,
   ActiveGame,
+  Role,
 } from '../types';
 import { log } from '../utils/logger';
 import * as events from './socketio.events';
@@ -13,6 +14,7 @@ import roomService from './rooms';
 import Url from '../models/url';
 import gameService from '../services/games';
 import { Server, Socket } from 'socket.io';
+import rtcrooms from './rtcrooms';
 
 export const handleHostDisconnect = (io: Server, socket: Socket): void => {
   log(`Recieved ${EventType.DISCONNECT}`);
@@ -197,4 +199,52 @@ export const endGame = async (
   } catch (error) {
     emit(socket, events.endFailure(error.message));
   }
+};
+
+// RTC
+
+export const joinRTCRoom = async (
+  socket: SocketWithToken,
+  peerId: string
+): Promise<void> => {
+  log(`Recieved join-gameroom`);
+
+  try {
+    const { gameId, id, role } = socket.decoded_token;
+
+    const existingRoom = rtcrooms.getRoom(gameId);
+
+    if (!existingRoom) {
+      const game = await gameService.getGameById(gameId);
+
+      const rtcGame = gameService.convertToRTCGame(game);
+
+      rtcrooms.createRoom(rtcGame);
+    }
+
+    const joinedRoom = rtcrooms.joinRoom(socket, peerId);
+
+    let self;
+
+    if (role === Role.HOST) {
+      self = joinedRoom.host;
+    } else {
+      self = joinedRoom.players.find((player) => player.id === id);
+    }
+
+    socket.emit('room-joined', joinedRoom);
+    socket.to(gameId).emit('user-joined', self);
+  } catch (e) {
+    console.error(e.message);
+  }
+};
+
+export const leaveRTCRoom = (socket: SocketWithToken): void => {
+  log(`recieved disconnect from ${socket.decoded_token.username}`);
+
+  const { id, gameId } = socket.decoded_token;
+
+  rtcrooms.leaveRoom(gameId, id);
+
+  socket.to(gameId).emit('user-left', id);
 };

@@ -2,9 +2,11 @@ import React from 'react';
 import socketIOClient from 'socket.io-client';
 import Peer, { MediaConnection } from 'peerjs';
 import { CommonEvent, RTCGame, RTCGameRoom, RTCPlayer } from '../types';
-import { log } from '../utils/logger';
+// import { log } from '../utils/logger';
 import gameService from '../services/games';
 import { useParams } from 'react-router-dom';
+
+const log = (msg: unknown) => console.log(msg);
 
 const useSocket = (token: string | null) => {
   const [
@@ -55,9 +57,15 @@ const usePeer = (): [Peer | null, string | null] => {
 
   React.useEffect(() => {
     if (!peerClient) {
+      const port =
+        // eslint-disable-next-line no-undef
+        process && process.env.NODE_ENV === 'development' ? 3333 : 443;
+
+      log(`using port ${port}`);
+
       const peer = new Peer({
         host: '/',
-        port: 3333,
+        port: port,
         debug: 1,
         path: '/api/peerjs',
       });
@@ -292,8 +300,6 @@ const useGameRoom = (
 
       const attachListeners = (call: MediaConnection) => {
         call.on('stream', (stream) => {
-          console.log('recieving stream', stream);
-
           setPeers((currentPeers) => {
             if (!currentPeers) {
               return currentPeers;
@@ -308,6 +314,16 @@ const useGameRoom = (
 
               return currentPeers;
             }
+
+            /** only set stream if not already set. otherwise the steam might get set twice (from calling and answering) */
+
+            if (user.stream) {
+              log('User stream already set');
+
+              return currentPeers;
+            }
+
+            log(`recieving stream from ${call.peer}`);
 
             return currentPeers.map((peerObj) =>
               peerObj.peerId === call.peer

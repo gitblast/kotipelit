@@ -397,3 +397,23 @@ export interface RTCGame {
   info: GameInfo;
   host: string;
 }
+
+export enum Role {
+  HOST = 'host',
+  PLAYER = 'player',
+}
+
+// useGameToken hook
+
+export interface PlayerGameTokenConfig {
+  type: Role.PLAYER;
+  username: string;
+  playerId: string;
+}
+
+export interface HostGameTokenConfig {
+  type: Role.HOST;
+  gameId: string;
+}
+
+export type GameTokenConfig = PlayerGameTokenConfig | HostGameTokenConfig;

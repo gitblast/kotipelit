@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import NewGame from './host/NewGame';
 import KotitonniHostView from './kotitonni/KotitonniHostView';
 import KotitonniPlayerView from './kotitonni/KotitonniPlayerView';
-import RTCVideoCall from './RTCVideoCall';
+import RTCGameRoom from './RTCGameRoom';
 import Dashboard from './host/Dashboard';
 import { useSelector } from 'react-redux';
 import { State, BaseUser } from '../types';
@@ -47,13 +47,13 @@ const ChannelPage: React.FC<ChannelPageProps> = ({ labelText }) => {
             {user.loggedIn && <NewGame />}
           </Route>
           <Route path="/username/pelit/rtc/:gameID">
-            {user.loggedIn && <RTCVideoCall isHost />}
+            {user.loggedIn && <RTCGameRoom isHost />}
           </Route>
           <Route path="/:username/pelit/:gameID">
             {user.loggedIn && <KotitonniHostView user={user} />}
           </Route>
           <Route path="/:username/rtc/:playerId">
-            {!user.loggedIn && <RTCVideoCall />}
+            {!user.loggedIn && <RTCGameRoom />}
           </Route>
           <Route path="/:username/:playerId">
             {!user.loggedIn && <KotitonniPlayerView user={user as BaseUser} />}

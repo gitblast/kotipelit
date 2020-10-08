@@ -141,7 +141,10 @@ export const gameReady = () => {
 
     socketService.emit(socket, events.joinGame());
   } catch (error) {
-    console.error(error.message);
+    // eslint-disable-next-line no-undef
+    if (!(process && process.env.NODE_ENV === 'test')) {
+      console.error(error.message);
+    }
   }
 };
 

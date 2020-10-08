@@ -1,12 +1,11 @@
 import React from 'react';
 
-import useGameRoom, {
-  useHostGameToken,
-  useMediaStream,
-  usePlayerGameToken,
-} from '../hooks/useGameRoom';
+import useGameRoom from '../hooks/useGameRoom';
+import useMediaStream from '../hooks/useMediaStream';
+import usePlayerGameToken from '../hooks/usePlayerGameToken';
+import useHostGameToken from '../hooks/useHostGameToken';
+
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { useParams } from 'react-router-dom';
 import { RTCPlayer } from '../types';
 import { Card, CardContent, Fab, Paper, Typography } from '@material-ui/core';
 import Loader from './Loader';
@@ -164,12 +163,21 @@ const VideoConference: React.FC<VideoConferenceProps> = ({
   );
 };
 
-const RTCGameRoom: React.FC<{ token: string | null }> = ({ token }) => {
+const GameRoom: React.FC<{ token: string | null }> = ({ token }) => {
   const classes = useStyles();
 
   const [usingMedia, setUsingMedia] = React.useState<boolean>(false);
 
-  const [mediaStream, mediaStreamError] = useMediaStream(usingMedia);
+  const MEDIA_CONSTRAINTS = { audio: true, video: false };
+
+  if (!MEDIA_CONSTRAINTS.video) {
+    console.warn('NOT REQUESTING VIDEO (needs to be changed in code)');
+  }
+
+  const [mediaStream, mediaStreamError] = useMediaStream(
+    usingMedia,
+    MEDIA_CONSTRAINTS
+  );
   const [game, peers, myPeerId] = useGameRoom(token, mediaStream);
 
   if (mediaStreamError) {
@@ -205,20 +213,33 @@ const RTCGameRoom: React.FC<{ token: string | null }> = ({ token }) => {
   );
 };
 
-interface RTCVideoCallProps {
+const RTCGameForPlayer: React.FC = () => {
+  const [token, error] = usePlayerGameToken();
+
+  if (error) {
+    console.warn('handle errors');
+  }
+
+  return <GameRoom token={token} />;
+};
+
+const RTCGameForHost: React.FC = () => {
+  const [token, error] = useHostGameToken();
+
+  if (error) {
+    console.warn('handle errors');
+  }
+
+  return <GameRoom token={token} />;
+};
+
+interface RTCGameRoomProps {
   isHost?: boolean;
 }
 
-const RTCVideoCall: React.FC<RTCVideoCallProps> = ({ isHost }) => {
-  const { gameID } = useParams<{ gameID: string }>();
-  const [token] = useHostGameToken(gameID);
-  const playerToken = usePlayerGameToken();
-
-  if (isHost) {
-    return <RTCGameRoom token={token} />;
-  }
-
-  return <RTCGameRoom token={playerToken} />;
+// redirects to correct component
+const RTCGameRoom: React.FC<RTCGameRoomProps> = ({ isHost }) => {
+  return isHost ? <RTCGameForHost /> : <RTCGameForPlayer />;
 };
 
-export default RTCVideoCall;
+export default RTCGameRoom;

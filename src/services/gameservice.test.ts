@@ -6,7 +6,7 @@ import { GameType, SelectableGame, GameStatus } from '../types';
 
 const newGame: SelectableGame = {
   startTime: new Date(),
-  type: GameType.SANAKIERTO,
+  type: GameType.KOTITONNI,
   status: GameStatus.UPCOMING,
   rounds: 3,
   id: '123',
@@ -19,6 +19,8 @@ const newGame: SelectableGame = {
       online: false,
     },
   ],
+  price: 0,
+  hostOnline: true,
 };
 
 jest.mock('axios');

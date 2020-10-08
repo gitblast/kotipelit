@@ -1,196 +1,13 @@
 import React from 'react';
-import socketIOClient from 'socket.io-client';
-import Peer, { MediaConnection } from 'peerjs';
-import { CommonEvent, RTCGame, RTCGameRoom, RTCPlayer } from '../types';
+import { MediaConnection } from 'peerjs';
+
+import useSocket from './useSocket';
+import usePeer from './usePeer';
+
+import { RTCGame, RTCGameRoom, RTCPlayer } from '../types';
 // import { log } from '../utils/logger';
-import gameService from '../services/games';
-import { useParams } from 'react-router-dom';
 
 const log = (msg: unknown) => console.log(msg);
-
-const useSocket = (token: string | null) => {
-  const [
-    socketClient,
-    setSocketClient,
-  ] = React.useState<SocketIOClient.Socket | null>(null);
-
-  React.useEffect(() => {
-    const initSocket = async () => {
-      log('initializing socket');
-      const socket = socketIOClient();
-
-      socket.on(CommonEvent.CONNECT, () => {
-        socket
-          .emit(CommonEvent.AUTH_REQUEST, { token })
-          .on(CommonEvent.AUTHENTICATED, () => {
-            log('socketio authorized');
-
-            setSocketClient(socket);
-          })
-          .on(CommonEvent.UNAUTHORIZED, (error: { message: string }) => {
-            log('socketio unauthorized');
-
-            throw new Error(error.message);
-          });
-      });
-    };
-
-    if (token && !socketClient) {
-      initSocket();
-    }
-
-    return () => {
-      if (socketClient && socketClient.connected) {
-        log(`disconnecting socket`);
-
-        socketClient.disconnect();
-      }
-    };
-  }, [token, socketClient]);
-
-  return socketClient;
-};
-
-const usePeer = (): [Peer | null, string | null] => {
-  const [peerClient, setPeerClient] = React.useState<Peer | null>(null);
-  const [error, setError] = React.useState<null | string>(null);
-
-  React.useEffect(() => {
-    if (!peerClient) {
-      const port =
-        // eslint-disable-next-line no-undef
-        process && process.env.NODE_ENV === 'development' ? 3333 : 443;
-
-      log(`using port ${port}`);
-
-      const peer = new Peer({
-        host: '/',
-        port: port,
-        debug: 1,
-        path: '/api/peerjs',
-      });
-
-      peer.on('error', (error) => {
-        console.error('peer error', error.message);
-
-        setError(error.message);
-      });
-
-      peer.on('open', () => {
-        log(`opened peer connection with id ${peer.id}`);
-
-        setPeerClient(peer);
-      });
-    }
-
-    return () => {
-      if (peerClient) {
-        log(`disconnecting peer`);
-        peerClient.destroy();
-      }
-    };
-  }, [peerClient]);
-
-  return [peerClient, error];
-};
-
-interface ParamTypes {
-  username: string;
-  playerId: string;
-}
-
-export const usePlayerGameToken = () => {
-  const [token, setToken] = React.useState<null | string>(null);
-
-  const { username, playerId } = useParams<ParamTypes>();
-
-  React.useEffect(() => {
-    const fetchToken = async () => {
-      log(`fetching player token`);
-
-      const gameToken = await gameService.getPlayerTokenForGame(
-        username,
-        playerId,
-        true
-      );
-
-      setToken(gameToken);
-    };
-
-    if (username && playerId && !token) {
-      fetchToken();
-    }
-  }, [token, username, playerId]);
-
-  return token;
-};
-
-export const useHostGameToken = (gameId: string) => {
-  const [token, setToken] = React.useState<null | string>(null);
-  const [error, setError] = React.useState<null | string>(null);
-
-  React.useEffect(() => {
-    const fetchToken = async () => {
-      try {
-        const gameToken = await gameService.getHostTokenForGame(gameId);
-
-        setToken(gameToken);
-      } catch (e) {
-        console.error(`Error with host token: ${e.message}`);
-        setError(e.message);
-      }
-    };
-
-    fetchToken();
-  }, [gameId]);
-
-  return [token, error];
-};
-
-export const useMediaStream = (
-  showVideo: boolean
-): [MediaStream | null, string | null] => {
-  const [stream, setStream] = React.useState<MediaStream | null>(null);
-  const [error, setError] = React.useState<null | string>(null);
-
-  React.useEffect(() => {
-    const getUserMedia = async () => {
-      log(`getting user media`);
-      try {
-        const localStream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-          video: true,
-        });
-
-        setStream(localStream);
-      } catch (e) {
-        log(`error getting user media: ${e.message}`);
-        setError(e.message);
-      }
-    };
-
-    if (!stream && showVideo) {
-      getUserMedia();
-    } else {
-      return () => {
-        if (stream) {
-          log(`shutting off local stream`);
-          stream.getTracks().forEach((track) => track.stop());
-        }
-      };
-    }
-  }, [stream, showVideo]);
-
-  return [stream, error];
-};
-
-interface RTCCall {
-  call: Peer.MediaConnection | null;
-  id: string | null;
-  stream: MediaStream | null;
-  displayName: string;
-  isHost: boolean;
-}
 
 const useGameRoom = (
   token: string | null,
@@ -201,15 +18,15 @@ const useGameRoom = (
   const [peer, peerError] = usePeer();
   const [onCall, setOnCall] = React.useState<boolean>(false);
 
-  const socket = useSocket(token);
+  const [socket, socketError] = useSocket(token);
 
-  if (peerError) {
+  if (peerError || socketError) {
     console.error('handle errors!');
   }
 
   // for testing
   React.useEffect(() => {
-    console.log('peer changed', peer);
+    log('peer changed');
   }, [peer]);
 
   React.useEffect(() => {
@@ -234,6 +51,8 @@ const useGameRoom = (
       socket.on('user-left', (id: string) => {
         log(`recieved user left from ${id}`);
 
+        console.warn('experimental: not setting user stream to null');
+
         setPeers((currentPeers) => {
           if (!currentPeers) {
             return currentPeers;
@@ -252,8 +71,8 @@ const useGameRoom = (
               ...peerObj,
               socketId: null,
               peerId: null,
-              stream: null,
               call: null,
+              // stream: null,
             };
           });
         });
@@ -334,7 +153,7 @@ const useGameRoom = (
         });
 
         call.on('error', (error) => {
-          console.error('error calling:', error.message);
+          console.error('call error:', error.message);
         });
 
         call.on('close', () => {

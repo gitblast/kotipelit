@@ -4,9 +4,7 @@ import { useParams } from 'react-router-dom';
 
 import gameService from '../services/games';
 
-import { log } from '../utils/logger';
-
-// const log = (msg: unknown) => console.log(msg);
+import logger from '../utils/logger';
 
 interface ParamTypes {
   username: string;
@@ -22,7 +20,7 @@ export const usePlayerGameToken = (): [string | null, string | null] => {
   React.useEffect(() => {
     const fetchToken = async () => {
       try {
-        log(`fetching player token`);
+        logger.log(`fetching player token`);
 
         const gameToken = await gameService.getPlayerTokenForGame(
           username,
@@ -32,7 +30,7 @@ export const usePlayerGameToken = (): [string | null, string | null] => {
 
         setToken(gameToken);
       } catch (e) {
-        console.error('error with player token', e.message);
+        logger.error('error with player token', e.message);
         setError(e.message);
       }
     };

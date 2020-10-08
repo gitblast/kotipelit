@@ -1,5 +1,4 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import { mocked } from 'ts-jest/utils';
 import usePlayerGameToken from './usePlayerGameToken';
 import gameService from '../services/games';
 import * as routerDom from 'react-router-dom';
@@ -9,14 +8,9 @@ jest.mock('react-router-dom', () => ({
   useParams: jest.fn(),
 }));
 
-/**
-, () => ({
-  useParams: () => ({ username: 'username', playerId: 'playerId' }),
-}) */
-
 describe('usePlayerGameToken hook', () => {
-  const GameServiceMock = mocked(gameService);
-  const useParamsMock = mocked(routerDom.useParams);
+  const GameServiceMock = gameService as jest.Mocked<typeof gameService>;
+  const useParamsMock = routerDom.useParams as jest.Mock;
 
   beforeEach(() => {
     GameServiceMock.getPlayerTokenForGame.mockClear();

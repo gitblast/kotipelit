@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom';
 
 import gameService from '../services/games';
 
+import logger from '../utils/logger';
+
 export const useHostGameToken = () => {
   const [token, setToken] = React.useState<null | string>(null);
   const [error, setError] = React.useState<null | string>(null);
@@ -16,7 +18,7 @@ export const useHostGameToken = () => {
 
         setToken(gameToken);
       } catch (e) {
-        console.error(`Error with host token: ${e.message}`);
+        logger.error(`Error with host token: ${e.message}`);
         setError(e.message);
       }
     };
@@ -24,7 +26,7 @@ export const useHostGameToken = () => {
     if (gameID && !token) {
       fetchToken();
     }
-  }, [gameID]);
+  }, [gameID, token]);
 
   return [token, error];
 };

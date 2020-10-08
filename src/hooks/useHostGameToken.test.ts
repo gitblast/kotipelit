@@ -1,18 +1,21 @@
-import { renderHook } from '@testing-library/react-hooks';
-import { mocked } from 'ts-jest/utils';
+import { act, renderHook } from '@testing-library/react-hooks';
 import useHostGameToken from './useHostGameToken';
 import gameService from '../services/games';
+import * as routerDom from 'react-router-dom';
 
 jest.mock('../services/games');
 jest.mock('react-router-dom', () => ({
-  useParams: () => ({ gameID: 'gameID' }),
+  useParams: jest.fn(),
 }));
 
 describe('useHostGameToken hook', () => {
-  const GameServiceMock = mocked(gameService);
+  const GameServiceMock = gameService as jest.Mocked<typeof gameService>;
+  const useParamsMock = routerDom.useParams as jest.Mock;
 
   beforeEach(() => {
     GameServiceMock.getHostTokenForGame.mockClear();
+
+    useParamsMock.mockReturnValue({ gameID: null });
   });
 
   it('should have null token and error at start', () => {
@@ -31,9 +34,19 @@ describe('useHostGameToken hook', () => {
 
     expect(GameServiceMock.getHostTokenForGame).toHaveBeenCalledTimes(0);
 
-    const { result, waitForNextUpdate } = renderHook(() => useHostGameToken());
+    const { result, waitForNextUpdate, rerender } = renderHook(() =>
+      useHostGameToken()
+    );
 
     expect(result.current[0]).toBeNull();
+
+    act(() => {
+      useParamsMock.mockReturnValue({
+        gameID: 'gameID',
+      });
+
+      rerender();
+    });
 
     await waitForNextUpdate();
 
@@ -46,9 +59,19 @@ describe('useHostGameToken hook', () => {
   it('should set error if token rejected', async () => {
     GameServiceMock.getHostTokenForGame.mockRejectedValueOnce('error');
 
-    const { result, waitForNextUpdate } = renderHook(() => useHostGameToken());
+    const { result, waitForNextUpdate, rerender } = renderHook(() =>
+      useHostGameToken()
+    );
 
     expect(result.current[1]).toBeNull();
+
+    act(() => {
+      useParamsMock.mockReturnValue({
+        gameID: 'gameID',
+      });
+
+      rerender();
+    });
 
     await waitForNextUpdate();
 

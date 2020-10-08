@@ -1,8 +1,6 @@
 import React from 'react';
 
-import { log } from '../utils/logger';
-
-// const log = (msg: unknown) => console.log(msg);
+import logger from '../utils/logger';
 
 export const useMediaStream = (
   showVideo: boolean,
@@ -13,7 +11,7 @@ export const useMediaStream = (
 
   React.useEffect(() => {
     const getUserMedia = async () => {
-      log(`getting user media`);
+      logger.log(`getting user media`);
       try {
         const localStream = await navigator.mediaDevices.getUserMedia(
           constraints
@@ -21,7 +19,7 @@ export const useMediaStream = (
 
         setStream(localStream);
       } catch (e) {
-        log(`error getting user media: ${e.message}`);
+        logger.error(`error getting user media: ${e.message}`);
         setError(e.message);
       }
     };
@@ -31,12 +29,12 @@ export const useMediaStream = (
     } else {
       return () => {
         if (stream) {
-          log(`shutting off local stream`);
+          logger.log(`shutting off local stream`);
           stream.getTracks().forEach((track) => track.stop());
         }
       };
     }
-  }, [stream, showVideo]);
+  }, [stream, showVideo, constraints]);
 
   return [stream, error];
 };

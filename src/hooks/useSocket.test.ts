@@ -1,5 +1,4 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import { mocked } from 'ts-jest/utils';
 import useSocket from './useSocket';
 import socketIOClient from 'socket.io-client';
 import { CommonEvent, MockSocket } from '../types';
@@ -23,7 +22,7 @@ const getMockSocket = () =>
   } as unknown) as SocketIOClient.Socket);
 
 describe('useSocket hook', () => {
-  const SocketMock = mocked(socketIOClient);
+  const SocketMock = (socketIOClient as unknown) as jest.Mock;
   const token = 'token';
 
   let mock: SocketIOClient.Socket;

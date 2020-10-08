@@ -1,5 +1,4 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import { mocked } from 'ts-jest/utils';
 import usePeer from './usePeer';
 import Peer from 'peerjs';
 
@@ -29,7 +28,7 @@ const getPeerMock = () => {
 };
 
 describe('usePeer hook', () => {
-  const PeerMock = mocked(Peer, false);
+  const PeerMock = Peer as jest.Mock;
 
   let mock: Peer;
 

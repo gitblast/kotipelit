@@ -1,22 +1,22 @@
 import React from 'react';
 import { MediaConnection } from 'peerjs';
 
-import useSocket from './useSocket';
+import useAuthSocket from './useAuthSocket';
 import usePeer from './usePeer';
 
-import { RTCGame, RTCGameRoom, RTCPlayer } from '../types';
+import { RTCGame, RTCGameRoom, RTCPeer } from '../types';
 import logger from '../utils/logger';
 
 const useGameRoom = (
   token: string | null,
   mediaStream: MediaStream | null
-): [RTCGame | null, RTCPlayer[] | null, string | null] => {
+): [RTCGame | null, RTCPeer[] | null, SocketIOClient.Socket | null] => {
   const [gameRoom, setGameRoom] = React.useState<RTCGameRoom | null>(null);
-  const [peers, setPeers] = React.useState<RTCPlayer[] | null>(null);
+  const [peers, setPeers] = React.useState<RTCPeer[] | null>(null);
   const [peer, peerError] = usePeer();
   const [onCall, setOnCall] = React.useState<boolean>(false);
 
-  const [socket, socketError] = useSocket(token);
+  const [socket, socketError] = useAuthSocket(token);
 
   if (peerError || socketError) {
     console.error('handle errors!');
@@ -40,7 +40,12 @@ const useGameRoom = (
 
         const initialPeers = rtcRoom.players
           .concat(rtcRoom.host)
-          .map((user) => ({ ...user, stream: null, call: null }));
+          .map((user) => ({
+            ...user,
+            stream: null,
+            call: null,
+            isMe: user.peerId === peer.id,
+          }));
 
         setGameRoom(rtcRoom);
         setPeers(initialPeers);
@@ -76,7 +81,7 @@ const useGameRoom = (
         });
       });
 
-      socket.on('user-joined', (newUser: RTCPlayer) => {
+      socket.on('user-joined', (newUser: RTCPeer) => {
         logger.log(`recieved new user`);
         logger.log(newUser);
 
@@ -197,9 +202,20 @@ const useGameRoom = (
     }
   }, [joinCall, mediaStream, onCall]);
 
-  const myPeerId = peer ? peer.id : null;
+  const game = React.useMemo(() => {
+    if (!gameRoom) {
+      return null;
+    }
 
-  return [gameRoom ? gameRoom.game : null, peers, myPeerId];
+    const mappedPlayers = gameRoom.game.players.map((player) => ({
+      ...player,
+      hasTurn: player.id === gameRoom.game.info.turn,
+    }));
+
+    return { ...gameRoom.game, players: mappedPlayers };
+  }, [gameRoom]);
+
+  return [game, peers, socket];
 };
 
 export default useGameRoom;

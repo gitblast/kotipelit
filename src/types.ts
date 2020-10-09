@@ -357,7 +357,7 @@ export interface MockSocket {
   emit: Function;
 }
 
-export interface RTCPlayer {
+export interface RTCPeer {
   id: string;
   displayName: string;
   socketId: null | string;
@@ -370,14 +370,15 @@ export interface RTCPlayer {
 
 export interface RTCGameRoom {
   game: RTCGame;
-  host: RTCPlayer;
-  players: RTCPlayer[];
+  host: RTCPeer;
+  players: RTCPeer[];
 }
 
 export interface GamePlayer {
   name: string;
   id: string;
   points: number;
+  hasTurn?: boolean;
 }
 
 export interface KotitonniInfo {

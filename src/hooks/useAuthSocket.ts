@@ -5,7 +5,7 @@ import { CommonEvent } from '../types';
 
 import logger from '../utils/logger';
 
-const useSocket = (
+const useAuthSocket = (
   token: string | null
 ): [SocketIOClient.Socket | null, string | null] => {
   const [
@@ -19,7 +19,9 @@ const useSocket = (
     const initSocket = () => {
       logger.log('initializing socket');
 
-      const socket = socketIOClient();
+      const socket = socketIOClient('/');
+
+      // const authSocket = socketIOClient('/auth');
 
       socket.on(CommonEvent.CONNECT, () => {
         socket.emit(CommonEvent.AUTH_REQUEST, { token });
@@ -53,4 +55,4 @@ const useSocket = (
   return [socketClient, error];
 };
 
-export default useSocket;
+export default useAuthSocket;

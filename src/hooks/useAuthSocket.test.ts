@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import useSocket from './useSocket';
+import useAuthSocket from './useAuthSocket';
 import socketIOClient from 'socket.io-client';
 import { CommonEvent, MockSocket } from '../types';
 
@@ -36,7 +36,7 @@ describe('useSocket hook', () => {
   });
 
   it('should start with socket and error as null', () => {
-    const { result } = renderHook(({ token }) => useSocket(token), {
+    const { result } = renderHook(({ token }) => useAuthSocket(token), {
       initialProps: { token: null },
     });
 
@@ -50,7 +50,7 @@ describe('useSocket hook', () => {
       token: null,
     };
 
-    const { rerender } = renderHook(({ token }) => useSocket(token), {
+    const { rerender } = renderHook(({ token }) => useAuthSocket(token), {
       initialProps,
     });
 
@@ -62,7 +62,7 @@ describe('useSocket hook', () => {
   });
 
   it('should init socket only if not set', () => {
-    const { result } = renderHook(({ token }) => useSocket(token), {
+    const { result } = renderHook(({ token }) => useAuthSocket(token), {
       initialProps: { token },
     });
 
@@ -84,7 +84,7 @@ describe('useSocket hook', () => {
   });
 
   it('should attach listener for connect', () => {
-    renderHook(({ token }) => useSocket(token), {
+    renderHook(({ token }) => useAuthSocket(token), {
       initialProps: { token: 'token' },
     });
 
@@ -97,7 +97,7 @@ describe('useSocket hook', () => {
   });
 
   it('should emit auth request and attach auth listeners on connect', () => {
-    renderHook(({ token }) => useSocket(token), {
+    renderHook(({ token }) => useAuthSocket(token), {
       initialProps: { token },
     });
 
@@ -131,7 +131,7 @@ describe('useSocket hook', () => {
   });
 
   it('should set socket on authenticated', () => {
-    const { result } = renderHook(({ token }) => useSocket(token), {
+    const { result } = renderHook(({ token }) => useAuthSocket(token), {
       initialProps: { token },
     });
 
@@ -149,7 +149,7 @@ describe('useSocket hook', () => {
   });
 
   it('should set error on unauthorized', () => {
-    const { result } = renderHook(({ token }) => useSocket(token), {
+    const { result } = renderHook(({ token }) => useAuthSocket(token), {
       initialProps: { token },
     });
 
@@ -167,9 +167,12 @@ describe('useSocket hook', () => {
   });
 
   it('should call disconnect as cleanup if socket is set', () => {
-    const { result, unmount } = renderHook(({ token }) => useSocket(token), {
-      initialProps: { token },
-    });
+    const { result, unmount } = renderHook(
+      ({ token }) => useAuthSocket(token),
+      {
+        initialProps: { token },
+      }
+    );
 
     const asMock = (mock as unknown) as MockSocket;
 

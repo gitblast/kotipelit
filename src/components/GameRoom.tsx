@@ -5,11 +5,13 @@ import useMediaStream from '../hooks/useMediaStream';
 
 import InfoBar from './InfoBar';
 import RTCVideoConference from './RTCVideoConference';
+import RTCHostControls from './RTCHostControls';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import logger from '../utils/logger';
-import { Fab } from '@material-ui/core';
+import { Backdrop, Fab, Typography } from '@material-ui/core';
 import Loader from './Loader';
+import { GameStatus, RTCGame } from '../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,6 +29,15 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     startBtnContainer: {
       marginTop: theme.spacing(1),
+    },
+    backdrop: {
+      zIndex: theme.zIndex.drawer + 1,
+      color: 'white',
+    },
+    backdropContent: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
     },
   })
 );
@@ -48,7 +59,6 @@ if (!MEDIA_CONSTRAINTS.video) {
 
 const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   const classes = useStyles();
-
   const [onCall, setOnCall] = React.useState<boolean>(false);
   const [mediaStream, mediaStreamError] = useMediaStream(
     onCall,
@@ -77,9 +87,20 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
       }
 
       // sets game status as waiting triggering "starting soon" -screen
-      socket?.emit('launch');
+      if (socket) {
+        data ? socket.emit(event, data) : socket.emit(event);
+      }
     },
     [socket]
+  );
+
+  const emitStart = React.useCallback(() => emitWithSocket('start'), [
+    emitWithSocket,
+  ]);
+
+  const emitUpdate = React.useCallback(
+    (newGame: RTCGame) => emitWithSocket('update-game', newGame),
+    [emitWithSocket]
   );
 
   const handleJoinCall = React.useCallback(() => {
@@ -90,7 +111,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
     setOnCall(true);
   }, [socket, isHost]);
 
-  const peersWithOwnStreamSet = React.useCallback(() => {
+  const peersWithOwnStreamSet = React.useMemo(() => {
     if (!peers) {
       return null;
     }
@@ -120,19 +141,36 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
 
   return (
     <div className={classes.container}>
-      <InfoBar game={game} />
-      <RTCVideoConference peers={peersWithOwnStreamSet()} game={game} />
-      {isHost && (
-        <div className={classes.startBtnContainer}>
-          <Fab
-            variant="extended"
-            size="large"
-            onClick={() => emitWithSocket('start')}
-          >
-            Aloita peli
-          </Fab>
-        </div>
+      <InfoBar game={game} isHost={isHost} />
+      <RTCVideoConference peers={peersWithOwnStreamSet} game={game} />
+      {isHost ? (
+        game.status === GameStatus.RUNNING && (
+          <RTCHostControls game={game} handleUpdate={emitUpdate} />
+        )
+      ) : (
+        <div>player</div>
       )}
+      <Backdrop
+        open={game.status === GameStatus.WAITING}
+        className={classes.backdrop}
+      >
+        <div className={classes.backdropContent}>
+          <Typography variant="h1" component="div">
+            Kotipelit.com
+          </Typography>
+          {isHost ? (
+            <div className={classes.startBtnContainer}>
+              <Fab variant="extended" size="large" onClick={emitStart}>
+                Aloita peli
+              </Fab>
+            </div>
+          ) : (
+            <Typography variant="h6" component="div">
+              Peli alkaa hetken kuluttua...
+            </Typography>
+          )}
+        </div>
+      </Backdrop>
     </div>
   );
 };

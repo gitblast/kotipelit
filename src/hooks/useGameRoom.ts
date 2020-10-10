@@ -4,7 +4,7 @@ import { MediaConnection } from 'peerjs';
 import useAuthSocket from './useAuthSocket';
 import usePeer from './usePeer';
 
-import { RTCGame, RTCGameRoom, RTCPeer } from '../types';
+import { GameType, RTCGame, RTCGameRoom, RTCPeer } from '../types';
 import logger from '../utils/logger';
 
 const useGameRoom = (
@@ -38,6 +38,11 @@ const useGameRoom = (
 
         logger.log(rtcRoom);
 
+        // handle game types
+        if (rtcRoom.game.type === GameType.KOTITONNI) {
+          // socket.on('');
+        }
+
         const initialPeers = rtcRoom.players
           .concat(rtcRoom.host)
           .map((user) => ({
@@ -49,6 +54,25 @@ const useGameRoom = (
 
         setGameRoom(rtcRoom);
         setPeers(initialPeers);
+      });
+
+      socket.on('rtc_error', (msg: string) => {
+        logger.error('rtc error:', msg);
+      });
+
+      socket.on('game updated', (updatedGame: RTCGame) => {
+        logger.log(`recieved 'game updated' with data;`, updatedGame);
+
+        setGameRoom((current) => {
+          if (!current) {
+            return null;
+          }
+
+          return {
+            ...current,
+            game: updatedGame,
+          };
+        });
       });
 
       socket.on('user-left', (id: string) => {

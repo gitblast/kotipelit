@@ -28,6 +28,7 @@ export interface KotitonniPlayer {
   words: string[];
   points: number;
   online: boolean;
+  hasTurn?: boolean;
 }
 
 export interface Kotitonni extends Game {
@@ -374,16 +375,12 @@ export interface RTCGameRoom {
   players: RTCPeer[];
 }
 
-export interface GamePlayer {
-  name: string;
-  id: string;
-  points: number;
-  hasTurn?: boolean;
-}
+export type GamePlayer = KotitonniPlayer; // handle other game types here
 
 export interface KotitonniInfo {
   round: number;
   turn: string; // player id
+  answeringOpen: boolean;
 }
 
 export type GameInfo = KotitonniInfo;

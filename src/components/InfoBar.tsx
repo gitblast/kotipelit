@@ -15,19 +15,45 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '96%',
       marginBottom: theme.spacing(0.5),
     },
+    textContainer: {
+      marginLeft: theme.spacing(1),
+    },
   })
 );
 
 interface InfoBarProps {
   game: RTCGame | null;
+  isHost?: boolean;
 }
 
-const InfoBar: React.FC<InfoBarProps> = ({ game }) => {
+const InfoBar: React.FC<InfoBarProps> = ({ game, isHost }) => {
   const classes = useStyles();
+
+  const playerWithTurn = React.useMemo(
+    () => game?.players.find((player) => player.hasTurn),
+    [game]
+  );
+
+  const getText = React.useCallback(() => {
+    if (playerWithTurn) {
+      return (
+        <>
+          <span>{`Vuorossa: ${playerWithTurn.name}`}</span>
+          {isHost && (
+            <span>{` - Sanat: ${playerWithTurn.words.join(', ')}`}</span>
+          )}
+        </>
+      );
+    }
+  }, [playerWithTurn, isHost]);
 
   return (
     <Paper className={classes.container}>
-      {game && <Typography variant="h4">{game.type}</Typography>}
+      {game && (
+        <div className={classes.textContainer}>
+          <Typography variant="h6">{getText()}</Typography>
+        </div>
+      )}
     </Paper>
   );
 };

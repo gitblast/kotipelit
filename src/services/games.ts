@@ -23,6 +23,7 @@ const getInitialInfo = (game: ActiveGame | GameModel): GameInfo => {
       return {
         round: 1,
         turn: playerWithTurn.id,
+        answeringOpen: false,
       };
     }
     default: {

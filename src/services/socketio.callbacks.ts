@@ -6,6 +6,9 @@ import {
   GameStatus,
   ActiveGame,
   Role,
+  RTCGame,
+  GameType,
+  RTCPlayer,
 } from '../types';
 import { log } from '../utils/logger';
 import * as events from './socketio.events';
@@ -207,7 +210,7 @@ export const joinRTCRoom = async (
   socket: SocketWithToken,
   peerId: string
 ): Promise<void> => {
-  log(`Recieved join-gameroom`);
+  log(`recieved 'join-gameroom' from ${socket.decoded_token.username}`);
 
   try {
     const { gameId, id, role } = socket.decoded_token;
@@ -236,6 +239,8 @@ export const joinRTCRoom = async (
     socket.to(gameId).emit('user-joined', self);
   } catch (e) {
     console.error(e.message);
+
+    socket.emit('rtc_error', e.message);
   }
 };
 
@@ -247,4 +252,116 @@ export const leaveRTCRoom = (socket: SocketWithToken): void => {
   rtcrooms.leaveRoom(gameId, id);
 
   socket.to(gameId).emit('user-left', id);
+};
+
+export const startRTCGame = async (socket: SocketWithToken): Promise<void> => {
+  log(`recieved 'start' from ${socket.decoded_token.username}`);
+
+  try {
+    const { gameId } = socket.decoded_token;
+
+    const room = rtcrooms.getRoom(gameId);
+
+    if (!room) {
+      throw new Error(`no room set when starting game, id ${gameId}`);
+    }
+
+    if (room.game.status !== GameStatus.WAITING) {
+      throw new Error(`game with id ${gameId} already started`);
+    }
+
+    await gameService.setGameStatus(gameId, GameStatus.RUNNING);
+
+    const updatedGame = rtcrooms.updateRoomGame(gameId, {
+      ...room.game,
+      status: GameStatus.RUNNING,
+    });
+
+    emitUpdatedGame(socket, updatedGame, room.players);
+  } catch (e) {
+    console.error(e.message);
+
+    socket.emit('rtc_error', e.message);
+  }
+};
+
+export const launchRTCGame = async (socket: SocketWithToken): Promise<void> => {
+  log(`recieved 'launch' from ${socket.decoded_token.username}`);
+
+  try {
+    const { gameId } = socket.decoded_token;
+
+    const room = rtcrooms.getRoom(gameId);
+
+    if (!room) {
+      throw new Error(`no room set when starting game, id ${gameId}`);
+    }
+
+    if (room.game.status !== GameStatus.UPCOMING) {
+      throw new Error(`game with id ${gameId} already launched`);
+    }
+
+    await gameService.setGameStatus(gameId, GameStatus.WAITING);
+
+    const updatedGame = rtcrooms.updateRoomGame(gameId, {
+      ...room.game,
+      status: GameStatus.WAITING,
+    });
+
+    emitUpdatedGame(socket, updatedGame, room.players);
+  } catch (e) {
+    console.error(e.message);
+
+    socket.emit('rtc_error', e.message);
+  }
+};
+
+export const updateRTCGame = (socket: SocketWithToken, game: RTCGame): void => {
+  log(`recieved 'update-game' from ${socket.decoded_token.username}`);
+
+  try {
+    const { gameId } = socket.decoded_token;
+
+    const room = rtcrooms.getRoom(gameId);
+
+    if (!room) {
+      throw new Error(`no room set when updating game, id ${gameId}`);
+    }
+
+    const updatedGame = rtcrooms.updateRoomGame(gameId, game);
+
+    emitUpdatedGame(socket, updatedGame, room.players);
+  } catch (e) {
+    console.error(e.message);
+
+    socket.emit('rtc_error', e.message);
+  }
+};
+
+const emitUpdatedGame = (
+  socket: SocketWithToken,
+  newGame: RTCGame,
+  peers: RTCPlayer[]
+): void => {
+  const { id, role } = socket.decoded_token;
+  log(`emitting game updated`);
+
+  // handle game types here
+  if (newGame.type === GameType.KOTITONNI) {
+    if (role === Role.HOST) {
+      socket.emit(EventType.GAME_UPDATED, newGame);
+
+      // doesn't send other players' words, also dont send them to self
+      peers.forEach((peer) => {
+        if (peer.id !== id && peer.socketId) {
+          socket
+            .to(peer.socketId)
+            .emit(
+              EventType.GAME_UPDATED,
+              rtcrooms.filterGameForPlayer(newGame, peer.id)
+            );
+        }
+      });
+    }
+  }
 };

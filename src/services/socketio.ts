@@ -21,6 +21,7 @@ import {
   TestEventType,
   EmittedEvent,
   BroadcastedEvent,
+  RTCGame,
 } from '../types';
 
 import { Socket } from 'socket.io';
@@ -181,6 +182,20 @@ const attachRTCListeners = (socket: SocketWithToken) => {
   socket.on(EventType.DISCONNECT, () => {
     void callbacks.leaveRTCRoom(socket);
   });
+
+  if (socket.decoded_token.role === Role.HOST) {
+    socket.on('launch', () => {
+      void callbacks.launchRTCGame(socket);
+    });
+
+    socket.on('start', () => {
+      void callbacks.startRTCGame(socket);
+    });
+
+    socket.on('update-game', (game: RTCGame) => {
+      void callbacks.updateRTCGame(socket, game);
+    });
+  }
 };
 
 const handleRTCConnection = (socket: SocketWithToken) => {
@@ -198,31 +213,47 @@ const handleRTCConnection = (socket: SocketWithToken) => {
  * @param io - socket.io server
  */
 const handler = (io: Server): void => {
-  io.on(
-    EventType.CONNECTION,
-    socketioJwt.authorize({
-      secret: config.SECRET,
-      timeout: 10000,
-    })
-  ).on(EventType.AUTHENTICATED, (socket: SocketWithToken) => {
-    log(`user connected ${socket.decoded_token.username}`);
+  io.of('/lobby').on(EventType.CONNECTION, (socket: SocketIOClient.Socket) => {
+    console.log("socket connected to namespace '/'");
 
-    if (socket.decoded_token.type === 'rtc') {
-      log('using rtc');
+    socket.on('authenticate', () => {
+      console.log('auth on public namespace!');
+    });
 
-      handleRTCConnection(socket);
-    } else {
-      attachListeners(socket);
+    // use for lobby socket!
 
-      socket.on(EventType.DISCONNECT, () => {
-        if (socket.decoded_token.role === Role.HOST) {
-          callbacks.handleHostDisconnect(io, socket);
-        } else {
-          callbacks.handlePlayerDisconnect(io, socket);
-        }
-      });
-    }
+    socket.on('disconnect', () => {
+      console.log('disconnected, nsp:', io.nsps);
+    });
   });
+
+  io.of('/')
+    .on(
+      EventType.CONNECTION,
+      socketioJwt.authorize({
+        secret: config.SECRET,
+        timeout: 10000,
+      })
+    )
+    .on(EventType.AUTHENTICATED, (socket: SocketWithToken) => {
+      log(`user connected ${socket.decoded_token.username}`);
+
+      if (socket.decoded_token.type === 'rtc') {
+        log('using rtc');
+
+        handleRTCConnection(socket);
+      } else {
+        attachListeners(socket);
+
+        socket.on(EventType.DISCONNECT, () => {
+          if (socket.decoded_token.role === Role.HOST) {
+            callbacks.handleHostDisconnect(io, socket);
+          } else {
+            callbacks.handlePlayerDisconnect(io, socket);
+          }
+        });
+      }
+    });
 };
 
 export default handler;

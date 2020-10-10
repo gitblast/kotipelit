@@ -1,4 +1,10 @@
-import { RTCGameRoom, RTCGame, SocketWithToken, Role } from '../types';
+import {
+  RTCGameRoom,
+  RTCGame,
+  SocketWithToken,
+  Role,
+  GameType,
+} from '../types';
 import { log } from '../utils/logger';
 
 const rooms = new Map<string, RTCGameRoom>();
@@ -52,7 +58,30 @@ const joinPlayerToRoom = (
 
   rooms.set(socket.decoded_token.gameId, newRoom);
 
-  return newRoom;
+  // dont return other players' words
+  return {
+    ...newRoom,
+    game: filterGameForPlayer(newRoom.game, socket.decoded_token.id),
+  };
+};
+
+const filterGameForPlayer = (game: RTCGame, playerId: string): RTCGame => {
+  if (game.type === GameType.KOTITONNI) {
+    return {
+      ...game,
+      players: game.players.map((player) => {
+        return player.id === playerId
+          ? player
+          : {
+              ...player,
+              words: null,
+            };
+      }),
+    };
+  }
+
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+  throw new Error(`invalid game type: ${game.type}`);
 };
 
 const joinRoom = (socket: SocketWithToken, peerId: string): RTCGameRoom => {
@@ -91,7 +120,13 @@ const createRoom = (game: RTCGame): void => {
   }
 
   const newRoom: RTCGameRoom = {
-    game,
+    game: {
+      ...game,
+      players: game.players.map((player) => ({
+        ...player,
+        answers: {},
+      })),
+    },
     host: {
       id: game.host,
       socketId: null,
@@ -139,9 +174,23 @@ const leaveRoom = (gameId: string, userId: string): void => {
   }
 };
 
+const updateRoomGame = (gameId: string, newGame: RTCGame): RTCGame => {
+  const room = rooms.get(gameId);
+
+  if (!room) {
+    throw new Error(`no room set with id ${gameId}`);
+  }
+
+  rooms.set(gameId, { ...room, game: newGame });
+
+  return newGame;
+};
+
 export default {
   createRoom,
   joinRoom,
   getRoom,
   leaveRoom,
+  updateRoomGame,
+  filterGameForPlayer,
 };

@@ -11,7 +11,7 @@ import testHelpers from '../utils/testHelpers';
 
 const api = supertest(app);
 
-import { NewUser } from '../types';
+import { NewUser, Role } from '../types';
 
 const baseUrl = '/api/users';
 
@@ -27,7 +27,11 @@ let adminToken: string;
 describe('user router', () => {
   beforeAll(async () => {
     const user = await testHelpers.addDummyUser();
-    adminToken = testHelpers.getValidToken(user, config.ADMIN_SECRET);
+    adminToken = testHelpers.getValidToken(
+      user,
+      config.ADMIN_SECRET,
+      Role.HOST
+    );
   });
 
   beforeEach(async () => {
@@ -36,7 +40,7 @@ describe('user router', () => {
 
   it('should return 401 without valid admin token', async () => {
     const user = await testHelpers.addDummyUser();
-    const hostToken = testHelpers.getValidToken(user, config.SECRET);
+    const hostToken = testHelpers.getValidToken(user, config.SECRET, Role.HOST);
 
     await api.post(baseUrl).send(dummy).expect(401);
     await api

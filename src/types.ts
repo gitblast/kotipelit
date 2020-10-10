@@ -70,6 +70,7 @@ export interface ActiveGamePlayer extends GamePlayer {
 export interface KotitonniInfo {
   round: number;
   turn: string; // player id
+  answeringOpen: boolean;
 }
 
 export type GameInfo = KotitonniInfo;

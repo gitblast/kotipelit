@@ -5,7 +5,14 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import MicOffIcon from '@material-ui/icons/MicOff';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { GamePlayer, GameType, RTCGame } from '../types';
-import { Paper, Typography, IconButton, Tooltip } from '@material-ui/core';
+import {
+  Paper,
+  Typography,
+  IconButton,
+  Tooltip,
+  FormControlLabel,
+  Checkbox,
+} from '@material-ui/core';
 
 import logger from '../utils/logger';
 
@@ -63,6 +70,11 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
   forHost,
 }) => {
   const classes = useStyles();
+  const [checked, setChecked] = React.useState(false);
+
+  const handleChange = React.useCallback(() => {
+    setChecked((curr) => !curr);
+  }, []);
 
   const getAnswer = React.useCallback(() => {
     const { turn, round } = game.info;
@@ -112,6 +124,22 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
             <Typography>{player.name}</Typography>
           </Paper>
           <div className={classes.spacer} />
+          {forHost && (
+            <>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    color="primary"
+                    value={checked}
+                    onChange={handleChange}
+                  />
+                }
+                label={<Typography variant="overline">Oikein</Typography>}
+              />
+              <div className={classes.spacer} />
+            </>
+          )}
+
           <IconButton size="small">
             <MicOffIcon />
           </IconButton>

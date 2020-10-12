@@ -56,15 +56,22 @@ export enum GameType {
   KOTITONNI = 'kotitonni',
 }
 
-export interface GamePlayer {
+export interface BaseGamePlayer {
   name: string;
   id: string;
   points: number;
 }
 
-export interface ActiveGamePlayer extends GamePlayer {
+export interface KotitonniPlayer extends BaseGamePlayer {
+  answers: Record<string, Record<string, string>>;
+}
+
+export type GamePlayer = KotitonniPlayer;
+
+export interface ActiveGamePlayer extends BaseGamePlayer {
   socket: null | string;
   online: boolean;
+  answers: Record<string, Record<string, string>>;
 }
 
 export interface KotitonniInfo {
@@ -302,4 +309,9 @@ export interface RTCGame {
   players: GamePlayer[];
   info: GameInfo;
   host: string;
+}
+
+export interface Answer {
+  answer: string;
+  info: GameInfo;
 }

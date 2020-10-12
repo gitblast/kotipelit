@@ -9,6 +9,7 @@ import {
   RTCGame,
   GameType,
   RTCPlayer,
+  Answer,
 } from '../types';
 import { log } from '../utils/logger';
 import * as events from './socketio.events';
@@ -331,6 +332,50 @@ export const updateRTCGame = (socket: SocketWithToken, game: RTCGame): void => {
     const updatedGame = rtcrooms.updateRoomGame(gameId, game);
 
     emitUpdatedGame(socket, updatedGame, room.players);
+  } catch (e) {
+    console.error(e.message);
+
+    socket.emit('rtc_error', e.message);
+  }
+};
+
+export const handleAnswer = (socket: SocketWithToken, answer: Answer): void => {
+  log(`recieved 'answer' from ${socket.decoded_token.username}`);
+
+  try {
+    const { id, gameId } = socket.decoded_token;
+
+    const room = rtcrooms.getRoom(gameId);
+
+    if (!room) {
+      throw new Error(`no room set when trying to answer, game id ${gameId}`);
+    }
+
+    const newGame = {
+      ...room.game,
+      players: room.game.players.map((player) => {
+        return player.id === id
+          ? {
+              ...player,
+              answers: {
+                ...player.answers,
+                [answer.info.turn]: {
+                  ...player.answers[answer.info.turn],
+                  [answer.info.round]: answer.answer,
+                },
+              },
+            }
+          : player;
+      }),
+    };
+
+    const updatedGame = rtcrooms.updateRoomGame(gameId, newGame);
+
+    const hostSocketId = room.host.socketId;
+
+    if (hostSocketId) {
+      socket.to(hostSocketId).emit(EventType.GAME_UPDATED, updatedGame);
+    }
   } catch (e) {
     console.error(e.message);
 

@@ -22,6 +22,7 @@ import {
   EmittedEvent,
   BroadcastedEvent,
   RTCGame,
+  Answer,
 } from '../types';
 
 import { Socket } from 'socket.io';
@@ -69,6 +70,7 @@ export const initRoom = async (
       ...player,
       socket: null,
       online: false,
+      answers: {} as Record<string, Record<string, string>>,
     })),
     info: null, // different game types will have different info objects
     rounds: game.rounds,
@@ -175,8 +177,14 @@ export const attachListeners = (socket: SocketWithToken): void => {
 const attachRTCListeners = (socket: SocketWithToken) => {
   log('attaching listeners');
 
+  // can handle game types here
+
   socket.on('join-gameroom', (peerId: string) => {
     void callbacks.joinRTCRoom(socket, peerId);
+  });
+
+  socket.on('answer', (answerObj: Answer) => {
+    void callbacks.handleAnswer(socket, answerObj);
   });
 
   socket.on(EventType.DISCONNECT, () => {

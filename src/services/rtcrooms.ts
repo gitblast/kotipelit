@@ -67,6 +67,7 @@ const joinPlayerToRoom = (
 
 const filterGameForPlayer = (game: RTCGame, playerId: string): RTCGame => {
   if (game.type === GameType.KOTITONNI) {
+    // hide words and answers not self
     return {
       ...game,
       players: game.players.map((player) => {
@@ -75,6 +76,7 @@ const filterGameForPlayer = (game: RTCGame, playerId: string): RTCGame => {
           : {
               ...player,
               words: null,
+              answers: {},
             };
       }),
     };

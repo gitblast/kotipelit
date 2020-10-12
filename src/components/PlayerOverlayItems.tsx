@@ -4,8 +4,8 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import MicOffIcon from '@material-ui/icons/MicOff';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { GamePlayer, GameType } from '../types';
-import { Paper, Typography, IconButton } from '@material-ui/core';
+import { GamePlayer, GameType, RTCGame } from '../types';
+import { Paper, Typography, IconButton, Tooltip } from '@material-ui/core';
 
 import logger from '../utils/logger';
 
@@ -32,30 +32,71 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%',
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'space-between',
     },
     flex: {
       display: 'flex',
     },
     spacer: {
+      // fills empty space
       flex: '1 1 auto',
+    },
+    tooltipRoot: {
+      marginTop: '10%',
+      marginRight: '30%',
+    },
+    tooltipContent: {
+      paddingLeft: theme.spacing(1),
+      paddingRight: theme.spacing(1),
     },
   })
 );
 
 interface PlayerOverlayItemsProps {
   player: GamePlayer;
-  gameType: GameType;
+  game: RTCGame;
+  forHost?: boolean;
 }
 
 const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
   player,
-  gameType,
+  game,
+  forHost,
 }) => {
   const classes = useStyles();
 
+  const getAnswer = React.useCallback(() => {
+    const { turn, round } = game.info;
+
+    if (!player || !player.answers) {
+      return <div className={classes.spacer} />;
+    }
+
+    const answers = player.answers[turn];
+
+    if (!answers || !answers[round] || !answers[round].length) {
+      return <div className={classes.spacer} />;
+    }
+
+    return (
+      <Tooltip
+        title={
+          <div className={classes.tooltipContent}>
+            <Typography variant="h4" component="div">
+              {answers[round]}
+            </Typography>
+          </div>
+        }
+        open={true}
+        arrow={true}
+        placement="top"
+      >
+        <div className={`${classes.spacer} ${classes.tooltipRoot}`} />
+      </Tooltip>
+    );
+  }, [game, player]);
+
   // handle different game types here
-  if (gameType === GameType.KOTITONNI) {
+  if (game.type === GameType.KOTITONNI) {
     return (
       <div className={classes.flexCol}>
         <div className={classes.flex}>
@@ -64,6 +105,8 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
             <Typography>{player.points}</Typography>
           </Paper>
         </div>
+
+        {forHost ? getAnswer() : <div className={classes.spacer} />}
         <div className={classes.flex}>
           <Paper className={classes.badge}>
             <Typography>{player.name}</Typography>

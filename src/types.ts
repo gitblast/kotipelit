@@ -31,6 +31,10 @@ export interface KotitonniPlayer {
   hasTurn?: boolean;
 }
 
+export interface RTCKotitonniPlayer extends KotitonniPlayer {
+  answers: Record<string, Record<string, string>>;
+}
+
 export interface Kotitonni extends Game {
   players: KotitonniPlayer[];
   rounds: number;
@@ -375,7 +379,7 @@ export interface RTCGameRoom {
   players: RTCPeer[];
 }
 
-export type GamePlayer = KotitonniPlayer; // handle other game types here
+export type GamePlayer = RTCKotitonniPlayer; // handle other game types here
 
 export interface KotitonniInfo {
   round: number;

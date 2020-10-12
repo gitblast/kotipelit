@@ -5,7 +5,7 @@ import PlayerOverlayItems from './PlayerOverlayItems';
 import HostOverlayItems from './HostOverlayItems';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { GamePlayer, GameType, RTCPeer } from '../types';
+import { GamePlayer, RTCGame, RTCPeer } from '../types';
 import { Card, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -42,8 +42,9 @@ interface RTCVideoFrameProps {
   peer: RTCPeer;
   player: GamePlayer | undefined;
   order: number; // defines the order of video windows
-  gameType: GameType;
+  game: RTCGame;
   highlightTurn?: boolean;
+  isHost?: boolean;
 }
 
 const ErrorMsg: React.FC<{ text: string }> = ({ text }) => {
@@ -62,8 +63,9 @@ const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({
   peer,
   player,
   order,
-  gameType,
+  game,
   highlightTurn,
+  isHost,
 }) => {
   const classes = useStyles();
 
@@ -80,9 +82,9 @@ const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({
       {peer.stream ? (
         <VideoWithOverlay peer={peer}>
           {peer.isHost ? (
-            <HostOverlayItems host={peer} gameType={gameType} />
+            <HostOverlayItems host={peer} gameType={game.type} />
           ) : player ? (
-            <PlayerOverlayItems player={player} gameType={gameType} />
+            <PlayerOverlayItems player={player} game={game} forHost={isHost} />
           ) : (
             <ErrorMsg text={'Odottamaton virhe: pelaajaa ei löytynyt'} />
           )}

@@ -23,11 +23,13 @@ const useStyles = makeStyles(() =>
 interface RTCVideoConferenceProps {
   peers: RTCPeer[] | null;
   game: RTCGame | null;
+  isHost?: boolean;
 }
 
 const RTCVideoConference: React.FC<RTCVideoConferenceProps> = ({
   peers,
   game,
+  isHost,
 }) => {
   const classes = useStyles();
 
@@ -67,8 +69,9 @@ const RTCVideoConference: React.FC<RTCVideoConferenceProps> = ({
           peer={peer}
           player={findPlayerById(peer.id)}
           order={getOrder(index, peers.length)}
-          gameType={game.type}
+          game={game}
           highlightTurn={game.status === GameStatus.RUNNING}
+          isHost={isHost}
         />
       ))}
     </div>

@@ -6,6 +6,7 @@ import useMediaStream from '../hooks/useMediaStream';
 import InfoBar from './InfoBar';
 import RTCVideoConference from './RTCVideoConference';
 import RTCHostControls from './RTCHostControls';
+import RTCPlayerControls from './RTCPlayerControls';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import logger from '../utils/logger';
@@ -94,6 +95,34 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
     [socket]
   );
 
+  const peerSelf = React.useMemo(() => peers?.find((p) => p.isMe), [peers]);
+  const playerSelf = React.useMemo(() => {
+    if (isHost || !game || !peerSelf) {
+      return null;
+    }
+
+    const self = game.players.find((p) => p.id === peerSelf.id);
+
+    return self ? self : null;
+  }, [game, peerSelf, isHost]);
+
+  const canAnswer = React.useMemo(() => {
+    if (
+      !game ||
+      !playerSelf ||
+      !playerSelf.answers ||
+      !playerSelf.answers[game.info.turn]
+    ) {
+      return false;
+    }
+
+    const answer = playerSelf.answers[game.info.turn][game.info.round];
+
+    console.log('ans', answer);
+
+    return !answer;
+  }, [playerSelf, game]);
+
   const emitStart = React.useCallback(() => emitWithSocket('start'), [
     emitWithSocket,
   ]);
@@ -121,6 +150,22 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
     });
   }, [mediaStream, peers]);
 
+  const handlePlayerAnswer = React.useCallback(
+    (answer: string) => {
+      if (game) {
+        const answerObj = {
+          answer,
+          info: game.info,
+        };
+
+        emitWithSocket('answer', answerObj);
+      } else {
+        logger.error('no game was set when trying to answer');
+      }
+    },
+    [game, emitWithSocket]
+  );
+
   if (!game) {
     return (
       <div className={classes.centered}>
@@ -142,13 +187,20 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   return (
     <div className={classes.container}>
       <InfoBar game={game} isHost={isHost} />
-      <RTCVideoConference peers={peersWithOwnStreamSet} game={game} />
+      <RTCVideoConference
+        peers={peersWithOwnStreamSet}
+        game={game}
+        isHost={isHost}
+      />
       {isHost ? (
         game.status === GameStatus.RUNNING && (
           <RTCHostControls game={game} handleUpdate={emitUpdate} />
         )
       ) : (
-        <div>player</div>
+        <RTCPlayerControls
+          disabled={!canAnswer}
+          handleUpdate={handlePlayerAnswer}
+        />
       )}
       <Backdrop
         open={game.status === GameStatus.WAITING}

@@ -72,7 +72,7 @@ const setGameStatus = async (
 const convertToRTCGame = (game: GameModel): RTCGame => {
   return {
     id: game._id.toString(),
-    status: GameStatus.WAITING,
+    status: game.status,
     type: game.type,
     price: game.price,
     startTime: game.startTime,

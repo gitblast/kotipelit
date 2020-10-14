@@ -376,6 +376,11 @@ export const handleAnswer = (socket: SocketWithToken, answer: Answer): void => {
     if (hostSocketId) {
       socket.to(hostSocketId).emit(EventType.GAME_UPDATED, updatedGame);
     }
+
+    socket.emit(
+      EventType.GAME_UPDATED,
+      rtcrooms.filterGameForPlayer(updatedGame, id)
+    );
   } catch (e) {
     console.error(e.message);
 

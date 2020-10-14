@@ -20,7 +20,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     container: {
       padding: 0,
-      margin: 0,
     },
   })
 );

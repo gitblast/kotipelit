@@ -9,9 +9,9 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      padding: theme.spacing(1),
-      width: '96%',
-      marginTop: theme.spacing(0.5),
+      paddingTop: theme.spacing(1),
+      paddingBottom: theme.spacing(1),
+      width: '100%',
     },
     btnContainer: {
       margin: theme.spacing(1),
@@ -40,7 +40,7 @@ const RTCPlayerControls: React.FC<RTCPlayerControlsProps> = ({
   };
 
   return (
-    <Paper elevation={3} className={classes.container}>
+    <Paper elevation={3} className={classes.container} square>
       <div>
         <TextField
           variant="outlined"

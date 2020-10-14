@@ -5,6 +5,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Paper, Typography, IconButton } from '@material-ui/core';
 import MicOffIcon from '@material-ui/icons/MicOff';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import { GameType, RTCPeer } from '../types';
 import logger from '../utils/logger';
@@ -12,21 +13,18 @@ import logger from '../utils/logger';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     badge: {
-      margin: theme.spacing(1),
       paddingLeft: theme.spacing(1),
       paddingRight: theme.spacing(1),
-      backgroundColor: 'darkgrey',
+      backgroundColor: 'black',
       color: 'white',
-      opacity: 0.95,
+      opacity: 0.8,
       minWidth: 30,
     },
     hostBadge: {
       paddingLeft: theme.spacing(1),
       paddingRight: theme.spacing(1),
       margin: theme.spacing(1),
-      backgroundColor: 'red',
       color: 'white',
-      opacity: 0.95,
     },
     flexCol: {
       height: '100%',
@@ -38,6 +36,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     spacer: {
       flex: '1 1 auto',
+    },
+    controlIcon: {
+      color: 'white',
     },
   })
 );
@@ -58,9 +59,9 @@ const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({
       <div className={classes.flexCol}>
         <div className={classes.flex}>
           <div className={classes.spacer} />
-          <Paper className={classes.hostBadge}>
-            <Typography>HOST</Typography>
-          </Paper>
+          <IconButton className={classes.hostBadge}>
+            <AccountCircleIcon />
+          </IconButton>
         </div>
         <div className={classes.spacer} />
         <div className={classes.flex}>
@@ -68,10 +69,10 @@ const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({
             <Typography>{host.displayName}</Typography>
           </Paper>
           <div className={classes.spacer} />
-          <IconButton size="small">
+          <IconButton size="small" className={classes.controlIcon}>
             <MicOffIcon />
           </IconButton>
-          <IconButton size="small">
+          <IconButton size="small" className={classes.controlIcon}>
             <MoreVertIcon />
           </IconButton>
         </div>

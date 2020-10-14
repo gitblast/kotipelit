@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
     },
     textContainer: {
-      marginLeft: theme.spacing(1),
+      marginLeft: theme.spacing(2),
     },
   })
 );
@@ -51,7 +51,7 @@ const InfoBar: React.FC<InfoBarProps> = ({ game, isHost }) => {
     <Paper className={classes.container} square>
       {game && (
         <div className={classes.textContainer}>
-          <Typography variant="h6">{getText()}</Typography>
+          <Typography>{getText()}</Typography>
         </div>
       )}
     </Paper>

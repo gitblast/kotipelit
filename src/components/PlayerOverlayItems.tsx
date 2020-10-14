@@ -18,22 +18,22 @@ import logger from '../utils/logger';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    badge: {
-      margin: theme.spacing(1),
-      paddingLeft: theme.spacing(1),
-      paddingRight: theme.spacing(1),
-      backgroundColor: 'darkgrey',
+    pointsBadge: {
+      margin: theme.spacing(0.5),
+      padding: theme.spacing(1),
+      borderRadius: '100%',
+      backgroundColor: 'black',
       color: 'white',
-      opacity: 0.95,
-      minWidth: 30,
+      opacity: 0.8,
+      minWidth: '10%',
     },
-    hostBadge: {
+    nameBadge: {
       paddingLeft: theme.spacing(1),
       paddingRight: theme.spacing(1),
-      margin: theme.spacing(1),
-      backgroundColor: 'red',
+      backgroundColor: 'black',
       color: 'white',
-      opacity: 0.95,
+      opacity: 0.8,
+      minWidth: 30,
     },
     flexCol: {
       height: '100%',
@@ -54,6 +54,10 @@ const useStyles = makeStyles((theme: Theme) =>
     tooltipContent: {
       paddingLeft: theme.spacing(1),
       paddingRight: theme.spacing(1),
+    },
+    // Repeating same code from HostOverlayItems
+    controlIcon: {
+      color: 'white',
     },
   })
 );
@@ -113,14 +117,14 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
       <div className={classes.flexCol}>
         <div className={classes.flex}>
           <div className={classes.spacer} />
-          <Paper className={classes.badge}>
-            <Typography>{player.points}</Typography>
+          <Paper className={classes.pointsBadge}>
+            <Typography variant="h6">{player.points}</Typography>
           </Paper>
         </div>
 
         {forHost ? getAnswer() : <div className={classes.spacer} />}
         <div className={classes.flex}>
-          <Paper className={classes.badge}>
+          <Paper className={classes.nameBadge}>
             <Typography>{player.name}</Typography>
           </Paper>
           <div className={classes.spacer} />
@@ -140,10 +144,10 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
             </>
           )}
 
-          <IconButton size="small">
+          <IconButton size="small" className={classes.controlIcon}>
             <MicOffIcon />
           </IconButton>
-          <IconButton size="small">
+          <IconButton size="small" className={classes.controlIcon}>
             <MoreVertIcon />
           </IconButton>
         </div>

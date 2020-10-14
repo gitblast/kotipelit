@@ -13,19 +13,18 @@ import logger from '../utils/logger';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     badge: {
-      margin: theme.spacing(1),
       paddingLeft: theme.spacing(1),
       paddingRight: theme.spacing(1),
       backgroundColor: 'black',
       color: 'white',
-      opacity: 0.35,
+      opacity: 0.8,
       minWidth: 30,
     },
     hostBadge: {
       paddingLeft: theme.spacing(1),
       paddingRight: theme.spacing(1),
       margin: theme.spacing(1),
-      opacity: 0.95,
+      color: 'white',
     },
     flexCol: {
       height: '100%',
@@ -37,6 +36,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     spacer: {
       flex: '1 1 auto',
+    },
+    controlIcon: {
+      color: 'white',
     },
   })
 );
@@ -57,7 +59,9 @@ const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({
       <div className={classes.flexCol}>
         <div className={classes.flex}>
           <div className={classes.spacer} />
-          <AccountCircleIcon className={classes.hostBadge} />
+          <IconButton className={classes.hostBadge}>
+            <AccountCircleIcon />
+          </IconButton>
         </div>
         <div className={classes.spacer} />
         <div className={classes.flex}>
@@ -65,10 +69,10 @@ const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({
             <Typography>{host.displayName}</Typography>
           </Paper>
           <div className={classes.spacer} />
-          <IconButton size="small">
+          <IconButton size="small" className={classes.controlIcon}>
             <MicOffIcon />
           </IconButton>
-          <IconButton size="small">
+          <IconButton size="small" className={classes.controlIcon}>
             <MoreVertIcon />
           </IconButton>
         </div>

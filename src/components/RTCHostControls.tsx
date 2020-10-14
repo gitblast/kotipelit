@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
       width: '100%',
       backgroundColor: 'black',
+      position: 'relative',
     },
     btnContainer: {
       margin: theme.spacing(1),
@@ -26,6 +27,8 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'white',
       margin: theme.spacing(1),
       alignSelf: 'center',
+      position: 'absolute',
+      right: '2%',
     },
     timerContainer: {
       textAlign: 'center',

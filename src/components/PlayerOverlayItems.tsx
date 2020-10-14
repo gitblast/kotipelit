@@ -24,16 +24,15 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: '100%',
       backgroundColor: 'black',
       color: 'white',
-      opacity: 0.35,
+      opacity: 0.8,
       minWidth: '10%',
     },
     nameBadge: {
-      margin: theme.spacing(0.5),
       paddingLeft: theme.spacing(1),
       paddingRight: theme.spacing(1),
       backgroundColor: 'black',
       color: 'white',
-      opacity: 0.35,
+      opacity: 0.8,
       minWidth: 30,
     },
     flexCol: {
@@ -55,6 +54,10 @@ const useStyles = makeStyles((theme: Theme) =>
     tooltipContent: {
       paddingLeft: theme.spacing(1),
       paddingRight: theme.spacing(1),
+    },
+    // Repeating same code from HostOverlayItems
+    controlIcon: {
+      color: 'white',
     },
   })
 );
@@ -141,10 +144,10 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
             </>
           )}
 
-          <IconButton size="small">
+          <IconButton size="small" className={classes.controlIcon}>
             <MicOffIcon />
           </IconButton>
-          <IconButton size="small">
+          <IconButton size="small" className={classes.controlIcon}>
             <MoreVertIcon />
           </IconButton>
         </div>

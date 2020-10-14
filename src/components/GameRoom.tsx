@@ -51,7 +51,7 @@ interface GameRoomProps {
 const MEDIA_CONSTRAINTS = {
   audio: true,
   // eslint-disable-next-line no-undef
-  video: process.env.NODE_ENV !== 'development', // not requesting video in development
+  video: true, // not requesting video in development: process.env.NODE_ENV !== 'development',
 };
 
 if (!MEDIA_CONSTRAINTS.video) {

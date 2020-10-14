@@ -107,13 +107,12 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   }, [game, peerSelf, isHost]);
 
   const canAnswer = React.useMemo(() => {
-    if (
-      !game ||
-      !playerSelf ||
-      !playerSelf.answers ||
-      !playerSelf.answers[game.info.turn]
-    ) {
+    if (!game || !playerSelf || !playerSelf.answers || playerSelf.hasTurn) {
       return false;
+    }
+
+    if (!playerSelf.answers[game.info.turn]) {
+      return true;
     }
 
     const answer = playerSelf.answers[game.info.turn][game.info.round];

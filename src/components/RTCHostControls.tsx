@@ -8,6 +8,7 @@ import { Fab, Paper } from '@material-ui/core';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import UndoIcon from '@material-ui/icons/Undo';
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import { RTCGame } from '../types';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -20,6 +21,11 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     btnContainer: {
       margin: theme.spacing(1),
+    },
+    fullScreen: {
+      color: 'white',
+      margin: theme.spacing(1),
+      alignSelf: 'center',
     },
     timerContainer: {
       textAlign: 'center',
@@ -106,6 +112,9 @@ const RTCHostControls: React.FC<RTCHostControlsProps> = ({
         <Fab size="medium" color="secondary">
           <UndoIcon />
         </Fab>
+      </div>
+      <div className={classes.fullScreen}>
+        <FullscreenIcon />
       </div>
     </Paper>
   );

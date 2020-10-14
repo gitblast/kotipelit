@@ -7,13 +7,13 @@ import { Paper, Typography } from '@material-ui/core';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
-      padding: theme.spacing(1),
+      paddingTop: theme.spacing(1),
+      paddingBottom: theme.spacing(1),
       display: 'flex',
       alignItems: 'center',
       backgroundColor: 'black',
       color: 'white',
-      width: '96%',
-      marginBottom: theme.spacing(0.5),
+      width: '100%',
     },
     textContainer: {
       marginLeft: theme.spacing(1),
@@ -48,7 +48,7 @@ const InfoBar: React.FC<InfoBarProps> = ({ game, isHost }) => {
   }, [playerWithTurn, isHost]);
 
   return (
-    <Paper className={classes.container}>
+    <Paper className={classes.container} square>
       {game && (
         <div className={classes.textContainer}>
           <Typography variant="h6">{getText()}</Typography>

@@ -22,11 +22,12 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     frame: {
       paddingTop: '75%',
-      backgroundColor: 'grey',
+      backgroundColor: 'rgba(43,16,8)',
       position: 'relative',
+      color: 'white',
     },
     hasTurn: {
-      boxShadow: '0 0 7px 2px rgba(0,255,0)',
+      boxShadow: '0 0 7px 2px rgba(19,116,78)',
     },
     placeHolderText: {
       position: 'absolute',

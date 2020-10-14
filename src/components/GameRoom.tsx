@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
     },
     startBtnContainer: {
-      marginTop: theme.spacing(1),
+      marginTop: theme.spacing(2),
     },
     backdrop: {
       zIndex: theme.zIndex.drawer + 1,
@@ -207,8 +207,8 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
         className={classes.backdrop}
       >
         <div className={classes.backdropContent}>
-          <Typography variant="h1" component="div">
-            Kotipelit.com
+          <Typography variant="h2" component="div">
+            Kotitonni
           </Typography>
           {isHost ? (
             <div className={classes.startBtnContainer}>

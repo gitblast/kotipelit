@@ -24,11 +24,13 @@ const dummyGame: Omit<NewGame, 'host'> = {
       id: 'id1',
       name: 'player1',
       points: 0,
+      answers: {},
     },
     {
       id: 'id2',
       name: 'player2',
       points: 0,
+      answers: {},
     },
   ],
   startTime: new Date(),

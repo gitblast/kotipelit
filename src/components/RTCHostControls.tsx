@@ -15,9 +15,8 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       display: 'flex',
       justifyContent: 'center',
-      padding: theme.spacing(1),
-      width: '96%',
-      marginTop: theme.spacing(0.5),
+      width: '100%',
+      backgroundColor: 'black',
     },
     btnContainer: {
       margin: theme.spacing(1),
@@ -81,7 +80,7 @@ const RTCHostControls: React.FC<RTCHostControlsProps> = ({
   };
 
   return (
-    <Paper elevation={3} className={classes.container}>
+    <Paper elevation={3} className={classes.container} square>
       <div className={classes.btnContainer}>
         <Fab
           variant="extended"

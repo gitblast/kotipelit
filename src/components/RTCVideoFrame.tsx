@@ -12,6 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     videoWindow: {
       boxSizing: 'border-box',
+      boxShadow: '0 0 1px 1px rgba(255,254,255)',
       width: `32%`,
       margin: theme.spacing(0.5),
       textAlign: 'center',
@@ -35,6 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
       bottom: 0,
       left: 0,
       right: 0,
+      color: 'rgba(222,222,222)',
     },
   })
 );
@@ -54,7 +56,7 @@ const ErrorMsg: React.FC<{ text: string }> = ({ text }) => {
   return (
     <div className={classes.frame}>
       <div className={classes.placeHolderText}>
-        <Typography>{text}</Typography>
+        <Typography variant="body2">{text}</Typography>
       </div>
     </div>
   );

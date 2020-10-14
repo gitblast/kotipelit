@@ -51,7 +51,7 @@ const InfoBar: React.FC<InfoBarProps> = ({ game, isHost }) => {
     <Paper className={classes.container} square>
       {game && (
         <div className={classes.textContainer}>
-          <Typography variant="h6">{getText()}</Typography>
+          <Typography>{getText()}</Typography>
         </div>
       )}
     </Paper>

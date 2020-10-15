@@ -181,11 +181,6 @@ const FrontPage: React.FC = () => {
           </Grid>
         </Grid>
       </Paper>
-      <Paper>
-        <Typography className={classes.container} variant="body2">
-          &copy; 2020 Spektaakkeli Events
-        </Typography>
-      </Paper>
     </>
   );
 };

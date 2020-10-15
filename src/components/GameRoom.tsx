@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     backdrop: {
       zIndex: theme.zIndex.drawer + 1,
+      backgroundColor: 'rgba(0,0,0,0.8)',
       color: 'white',
     },
     backdropContent: {

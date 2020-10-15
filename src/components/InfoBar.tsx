@@ -12,11 +12,15 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
       backgroundColor: 'black',
-      color: 'white',
+      color: 'rgba(218, 214, 214)',
       width: '100%',
     },
     textContainer: {
       marginLeft: theme.spacing(2),
+    },
+    turn: {
+      // Keep the same as videoframe hasTurn
+      color: 'rgba(244, 172, 69)',
     },
   })
 );
@@ -38,7 +42,9 @@ const InfoBar: React.FC<InfoBarProps> = ({ game, isHost }) => {
     if (playerWithTurn) {
       return (
         <>
-          <span>{`Vuorossa: ${playerWithTurn.name}`}</span>
+          <span
+            className={classes.turn}
+          >{`Vuorossa: ${playerWithTurn.name}`}</span>
           {isHost && (
             <span>{` - Sanat: ${playerWithTurn.words.join(', ')}`}</span>
           )}

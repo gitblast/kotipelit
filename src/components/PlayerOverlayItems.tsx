@@ -48,8 +48,8 @@ const useStyles = makeStyles((theme: Theme) =>
       flex: '1 1 auto',
     },
     tooltipRoot: {
-      marginTop: '10%',
-      marginRight: '30%',
+      marginTop: '5%',
+      marginRight: '5%',
     },
     tooltipContent: {
       paddingLeft: theme.spacing(1),

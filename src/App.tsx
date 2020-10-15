@@ -8,6 +8,7 @@ import {
   Toolbar,
   Typography,
   Button,
+  Paper,
 } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
@@ -27,13 +28,14 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     navbar: {
       // marginBottom: theme.spacing(3),
-      maxWidth: 1230,
+      // maxWidth: 1230,
       margin: 'auto',
     },
     toolbar: {
       display: 'flex',
       justifyContent: 'space-between',
     },
+    footer: { padding: theme.spacing(2), textAlign: 'center' },
   })
 );
 
@@ -91,6 +93,11 @@ const App = () => {
           </Route>
         </Switch>
       </Container>
+      <Paper>
+        <Typography className={classes.footer} variant="body2">
+          &copy; 2020 Spektaakkeli Events
+        </Typography>
+      </Paper>
     </Router>
   );
 };

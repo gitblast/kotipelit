@@ -22,6 +22,15 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     btnContainer: {
       margin: theme.spacing(1),
+      paddingTop: theme.spacing(2),
+      paddingBottom: theme.spacing(2),
+    },
+    updatePoints: {
+      backgroundColor: 'rgba(63, 120, 76)',
+      color: 'white',
+    },
+    returnPoints: {
+      backgroundColor: 'rgba(239, 100, 97)',
     },
     fullScreen: {
       color: 'white',
@@ -33,6 +42,9 @@ const useStyles = makeStyles((theme: Theme) =>
     timerContainer: {
       textAlign: 'center',
       width: 30,
+    },
+    timerBtn: {
+      backgroundColor: 'rgba(244, 172, 69)',
     },
   })
 );
@@ -96,6 +108,7 @@ const RTCHostControls: React.FC<RTCHostControlsProps> = ({
           size="large"
           color={timerRunning ? 'primary' : 'secondary'}
           onClick={toggleTimer}
+          className={classes.timerBtn}
         >
           {timerRunning ? <PauseIcon /> : <PlayArrowIcon />}
           <div className={classes.timerContainer}>{timer}</div>
@@ -104,15 +117,15 @@ const RTCHostControls: React.FC<RTCHostControlsProps> = ({
       <div className={classes.btnContainer}>
         <Fab
           variant="extended"
-          color="secondary"
           onClick={() => null}
           disabled={!game.info.answeringOpen}
+          className={classes.updatePoints}
         >
           Päivitä pisteet
         </Fab>
       </div>
       <div className={classes.btnContainer}>
-        <Fab size="medium" color="secondary">
+        <Fab size="medium" className={classes.returnPoints}>
           <UndoIcon />
         </Fab>
       </div>

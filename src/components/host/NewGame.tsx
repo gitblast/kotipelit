@@ -12,6 +12,10 @@ import {
   FormControl,
   MenuItem,
   Select,
+  Card,
+  CardActionArea,
+  CardContent,
+  CardMedia,
 } from '@material-ui/core';
 
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -29,6 +33,9 @@ import { GameType, GameStatus, KotitonniPlayer } from '../../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    container: {
+      margin: theme.spacing(2),
+    },
     marginRight: {
       marginRight: theme.spacing(2),
     },
@@ -43,6 +50,15 @@ const useStyles = makeStyles((theme: Theme) =>
     unactiveGame: {
       color: 'grey',
     },
+    gameCard: {
+      maxWidth: 280,
+    },
+    cardBottom: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-around',
+    },
+    cardImg: {},
   })
 );
 
@@ -113,7 +129,7 @@ const NewGame: React.FC = () => {
   };
 
   const chooseType = () => (
-    <div>
+    <div className={classes.container}>
       <div className={classes.gameRow}>
         <Typography variant="h6" className={classes.marginRight}>
           1. Pelin hinta per pelaaja
@@ -140,7 +156,44 @@ const NewGame: React.FC = () => {
       </div>
       <Typography variant="h6">2. Valitse peli</Typography>
       <div className={classes.gameRow}>
-        <Fab
+        <Card
+          className={classes.gameCard}
+          onClick={() => setGameType(GameType.KOTITONNI)}
+          elevation={3}
+        >
+          <CardActionArea>
+            <CardMedia
+              component="img"
+              alt="Kotitonni"
+              height="200"
+              image="/images/kotitonni-preview.jpg"
+              title="Kotitonni"
+              className={classes.cardImg}
+            />
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="h2">
+                Kotitonni
+              </Typography>
+              <Typography variant="body1" color="textSecondary">
+                Pelaajille lähetetään ennen peliä 3 sanaa, joihin he miettivät
+                vihjeet. Pelaajat kirjoittavat sinulle vastauksensa. Vastausaika
+                on 90 sekuntia.
+              </Typography>
+              <CardContent>
+                <div className={classes.cardBottom}>
+                  <Typography variant="body2" component="p">
+                    • 5 pelaajaa
+                  </Typography>
+                  <Typography variant="body2" component="p">
+                    • 45-60min
+                  </Typography>
+                </div>
+              </CardContent>
+            </CardContent>
+          </CardActionArea>
+        </Card>
+      </div>
+      {/* <Fab
           onClick={() => setGameType(GameType.KOTITONNI)}
           variant="extended"
           className={classes.gameBtn}
@@ -178,7 +231,7 @@ const NewGame: React.FC = () => {
           Voit ehdottaa peliä, jota voisi olla videopuhelun välityksellä hauska
           pelata. Ehdotukset osoitteeseen info@kotipelit.com
         </Typography>
-      </div>
+      </div> */}
     </div>
   );
 

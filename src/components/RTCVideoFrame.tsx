@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'white',
     },
     hasTurn: {
-      boxShadow: '0 0 4px 5px rgba(20,117,117)',
+      boxShadow: '0 0 4px 5px rgba(244, 172, 69)',
     },
     placeHolderText: {
       position: 'absolute',
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
       bottom: 0,
       left: 0,
       right: 0,
-      color: 'rgba(222,222,222)',
+      color: 'rgba(218, 214, 214)',
     },
   })
 );

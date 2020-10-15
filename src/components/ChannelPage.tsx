@@ -18,7 +18,9 @@ const useStyles = makeStyles((theme: Theme) =>
     marginBottom: {
       margin: 'auto',
     },
-    container: {},
+    container: {
+      width: '100vw',
+    },
   })
 );
 

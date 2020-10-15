@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { Paper, Typography, Divider } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
@@ -15,12 +14,7 @@ import { State, BaseUser } from '../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    marginBottom: {
-      margin: 'auto',
-    },
-    container: {
-      width: '100vw',
-    },
+    container: {},
   })
 );
 
@@ -36,31 +30,22 @@ const ChannelPage: React.FC<ChannelPageProps> = ({ labelText }) => {
 
   return (
     <Router>
-      <Paper elevation={4} className={classes.container}>
-        {/* <Typography variant="h3" gutterBottom>
-          {labelText}
-        </Typography>
-        
-        <Divider className={classes.marginBottom} /> */}
-        <Switch>
-          <Route path="/:username/newgame">
-            {user.loggedIn && <NewGame />}
-          </Route>
-          <Route path="/username/pelit/rtc/:gameID">
-            {user.loggedIn && <RTCGameRoom isHost />}
-          </Route>
-          <Route path="/:username/pelit/:gameID">
-            {user.loggedIn && <KotitonniHostView user={user} />}
-          </Route>
-          <Route path="/:username/rtc/:playerId">
-            {!user.loggedIn && <RTCGameRoom />}
-          </Route>
-          <Route path="/:username/:playerId">
-            {!user.loggedIn && <KotitonniPlayerView user={user as BaseUser} />}
-          </Route>
-          <Route path="/">{user.loggedIn && <Dashboard user={user} />}</Route>
-        </Switch>
-      </Paper>
+      <Switch>
+        <Route path="/:username/newgame">{user.loggedIn && <NewGame />}</Route>
+        <Route path="/username/pelit/rtc/:gameID">
+          {user.loggedIn && <RTCGameRoom isHost />}
+        </Route>
+        <Route path="/:username/pelit/:gameID">
+          {user.loggedIn && <KotitonniHostView user={user} />}
+        </Route>
+        <Route path="/:username/rtc/:playerId">
+          {!user.loggedIn && <RTCGameRoom />}
+        </Route>
+        <Route path="/:username/:playerId">
+          {!user.loggedIn && <KotitonniPlayerView user={user as BaseUser} />}
+        </Route>
+        <Route path="/">{user.loggedIn && <Dashboard user={user} />}</Route>
+      </Switch>
     </Router>
   );
 };

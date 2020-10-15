@@ -98,7 +98,7 @@ const RTCHostControls: React.FC<RTCHostControlsProps> = ({
           variant="extended"
           color="secondary"
           onClick={() => null}
-          disabled={!game.info.answeringOpen}
+          disabled={false /**!game.info.answeringOpen */}
         >
           Päivitä pisteet
         </Fab>

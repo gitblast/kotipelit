@@ -12,7 +12,8 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import logger from '../utils/logger';
 import { Backdrop, Fab, Typography } from '@material-ui/core';
 import Loader from './Loader';
-import { GameStatus, RTCGame } from '../types';
+import { GameStatus, RTCGame, State } from '../types';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -66,6 +67,8 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
     MEDIA_CONSTRAINTS
   );
   const [game, peers, socket] = useGameRoom(token, mediaStream);
+
+  const reduxGame = useSelector((state: State) => state.rtc.game);
 
   if (mediaStreamError) {
     console.error('error', mediaStreamError);

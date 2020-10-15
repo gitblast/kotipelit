@@ -36,6 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'space-between',
     },
     footer: { padding: theme.spacing(2), textAlign: 'center' },
+    container: {},
   })
 );
 
@@ -82,7 +83,7 @@ const App = () => {
           <UserControls user={user} />
         </Toolbar>
       </AppBar>
-      <Container>
+      <Container className={classes.container}>
         <Switch>
           {channelRoutes(channels)}
           <Route path="/kirjaudu">

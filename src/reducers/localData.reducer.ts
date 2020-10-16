@@ -1,6 +1,7 @@
-import { Reducer } from 'redux';
+import { Reducer, Dispatch } from 'redux';
 
-import { LocalData, LocalDataAction } from '../types';
+import { GameType, LocalData, LocalDataAction, State } from '../types';
+import logger from '../utils/logger';
 
 const initialData = null;
 
@@ -20,6 +21,39 @@ export const setLocalData = (data: LocalData): LocalDataAction => {
   return {
     type: 'SET_DATA',
     payload: data,
+  };
+};
+
+// Kotitonni
+
+export const setClicked = (playerId: string, clicked: boolean) => {
+  return (dispatch: Dispatch, getState: () => State) => {
+    try {
+      const oldClickedMap = getState().rtc.localData?.clickedMap;
+
+      const data: LocalData = {
+        gameType: GameType.KOTITONNI,
+        clickedMap: {
+          ...oldClickedMap,
+          [playerId]: clicked,
+        },
+      };
+
+      dispatch(setLocalData(data));
+    } catch (e) {
+      logger.error('error setting clickmap:', e.message);
+    }
+  };
+};
+
+export const resetClicks = () => {
+  return (dispatch: Dispatch) => {
+    const data: LocalData = {
+      gameType: GameType.KOTITONNI,
+      clickedMap: {},
+    };
+
+    dispatch(setLocalData(data));
   };
 };
 

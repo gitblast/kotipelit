@@ -26,7 +26,7 @@ const InfoBar: React.FC = () => {
   const classes = useStyles();
 
   const players = useSelector((state: State) => state.rtc.game?.players);
-  const isHost = useSelector((state: State) => state.rtc.self?.isHost);
+  const self = useSelector((state: State) => state.rtc.self);
 
   const playerWithTurn = React.useMemo(() => {
     if (!players) {
@@ -40,14 +40,18 @@ const InfoBar: React.FC = () => {
     if (playerWithTurn) {
       return (
         <>
-          <span>{`Vuorossa: ${playerWithTurn.name}`}</span>
-          {isHost && (
+          <span>
+            {playerWithTurn.id === self?.id
+              ? 'Sinun vuorosi!'
+              : `Vuorossa: ${playerWithTurn.name}`}
+          </span>
+          {self?.isHost && (
             <span>{` - Sanat: ${playerWithTurn.words.join(', ')}`}</span>
           )}
         </>
       );
     }
-  }, [playerWithTurn, isHost]);
+  }, [playerWithTurn, self]);
 
   return (
     <Paper className={classes.container}>

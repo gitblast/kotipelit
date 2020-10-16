@@ -15,7 +15,8 @@ import {
 } from '@material-ui/core';
 
 import logger from '../utils/logger';
-import { shallowEqual, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { setClicked } from '../reducers/localData.reducer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -67,8 +68,10 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
   playerId,
 }) => {
   const classes = useStyles();
-  const [checked, setChecked] = React.useState(false);
-
+  const clickMap = useSelector(
+    (state: State) => state.rtc.localData?.clickedMap
+  );
+  const dispatch = useDispatch();
   const forHost = useSelector((state: State) => state.rtc.self?.isHost);
   const game = useSelector((state: State) => state.rtc.game);
   const player = useSelector(
@@ -76,13 +79,15 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
     shallowEqual
   );
 
-  const handleChange = React.useCallback(() => {
-    setChecked((curr) => !curr);
-  }, []);
+  const checked = clickMap && clickMap[playerId];
+
+  const handleChange = () => {
+    dispatch(setClicked(playerId, !checked));
+  };
 
   const getAnswer = () => {
     if (!game || !player || !player.answers) {
-      return <div className={classes.spacer} />;
+      return null;
     }
 
     const { turn, round } = game.info;
@@ -90,15 +95,19 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
     const answers = player.answers[turn];
 
     if (!answers || !answers[round] || !answers[round].length) {
-      return <div className={classes.spacer} />;
+      return null;
     }
 
+    return answers[round];
+  };
+
+  const answerBox = (answer: string) => {
     return (
       <Tooltip
         title={
           <div className={classes.tooltipContent}>
             <Typography variant="h4" component="div">
-              {answers[round]}
+              {answer}
             </Typography>
           </div>
         }
@@ -115,6 +124,8 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
     return null;
   }
 
+  const answer = getAnswer();
+
   // handle different game types here
   if (game.type === GameType.KOTITONNI) {
     return (
@@ -126,13 +137,17 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
           </Paper>
         </div>
 
-        {forHost ? getAnswer() : <div className={classes.spacer} />}
+        {forHost && answer ? (
+          answerBox(answer)
+        ) : (
+          <div className={classes.spacer} />
+        )}
         <div className={classes.flex}>
           <Paper className={classes.badge}>
             <Typography>{player.name}</Typography>
           </Paper>
           <div className={classes.spacer} />
-          {forHost && (
+          {forHost && answer && (
             <>
               <FormControlLabel
                 control={

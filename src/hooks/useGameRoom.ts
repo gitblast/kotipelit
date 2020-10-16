@@ -1,21 +1,14 @@
 import React from 'react';
 import { MediaConnection } from 'peerjs';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setSelf } from '../reducers/rtcSelf.reducer';
 import { setGame } from '../reducers/rtcGame.reducer';
 
 import useAuthSocket from './useAuthSocket';
 import usePeer from './usePeer';
 
-import {
-  GameType,
-  RTCGame,
-  RTCGameRoom,
-  RTCPeer,
-  RTCSelf,
-  State,
-} from '../types';
+import { RTCGame, RTCGameRoom, RTCPeer, RTCSelf } from '../types';
 import logger from '../utils/logger';
 
 const useGameRoom = (
@@ -26,12 +19,7 @@ const useGameRoom = (
   const [peer, peerError] = usePeer();
   const [onCall, setOnCall] = React.useState<boolean>(false);
   const dispatch = useDispatch();
-  const reduxGame = useSelector((state: State) => state.rtc.game);
   const [socket, socketError] = useAuthSocket(token);
-
-  React.useEffect(() => {
-    console.log('redux game', reduxGame);
-  }, [reduxGame]);
 
   if (peerError || socketError) {
     console.error('handle errors!');
@@ -50,11 +38,6 @@ const useGameRoom = (
 
       socket.on('room-joined', (rtcRoom: RTCGameRoom) => {
         logger.log(`recieved a game room`, rtcRoom);
-
-        // handle game types
-        if (rtcRoom.game.type === GameType.KOTITONNI) {
-          // socket.on('');
-        }
 
         const initialPeers = rtcRoom.players
           .concat(rtcRoom.host)
@@ -157,7 +140,7 @@ const useGameRoom = (
         });
       });
     }
-  }, [socket, peer]);
+  }, [socket, peer, dispatch]);
 
   const joinCall = React.useCallback(
     (mediaStream: MediaStream) => {

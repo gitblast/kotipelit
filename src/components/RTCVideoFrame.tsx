@@ -37,6 +37,14 @@ const useStyles = makeStyles((theme: Theme) =>
       left: 0,
       right: 0,
     },
+    absolute: {
+      width: '100%',
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+    },
   })
 );
 
@@ -45,14 +53,17 @@ interface RTCVideoFrameProps {
   order: number; // defines the order of video windows
 }
 
-const ErrorMsg: React.FC<{ text: string }> = ({ text }) => {
+const ErrorMsg: React.FC<{ text: string }> = ({ text, children }) => {
   const classes = useStyles();
+  // eslint-disable-next-line no-undef
+  const showPointsAnyway = process && process.env.NODE_ENV === 'development';
 
   return (
     <div className={classes.frame}>
       <div className={classes.placeHolderText}>
         <Typography>{text}</Typography>
       </div>
+      {showPointsAnyway && <div className={classes.absolute}>{children}</div>}
     </div>
   );
 };
@@ -64,6 +75,15 @@ const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({ peer, order }) => {
     (state: State) => state.rtc.game?.info.turn
   );
   const style = React.useMemo(() => ({ order }), [order]);
+  const overlayContent = React.useMemo(
+    () =>
+      peer.isHost ? (
+        <HostOverlayItems host={peer} />
+      ) : (
+        <PlayerOverlayItems playerId={peer.id} />
+      ),
+    [peer]
+  );
   const highlighted =
     playerWithTurnId &&
     playerWithTurnId === peer.id &&
@@ -77,15 +97,9 @@ const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({ peer, order }) => {
       style={style}
     >
       {peer.stream ? (
-        <VideoWithOverlay peer={peer}>
-          {peer.isHost ? (
-            <HostOverlayItems host={peer} />
-          ) : (
-            <PlayerOverlayItems playerId={peer.id} />
-          )}
-        </VideoWithOverlay>
+        <VideoWithOverlay peer={peer}>{overlayContent}</VideoWithOverlay>
       ) : (
-        <ErrorMsg text={'Ei videoyhteyttä'} />
+        <ErrorMsg text={'Ei videoyhteyttä'}>{overlayContent}</ErrorMsg>
       )}
     </Card>
   );

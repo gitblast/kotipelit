@@ -35,8 +35,8 @@ interface RTCHostControlsProps {
 }
 
 const RTCHostControls: React.FC<RTCHostControlsProps> = ({
-  handleUpdate,
   game,
+  handleUpdate,
 }) => {
   const classes = useStyles();
 

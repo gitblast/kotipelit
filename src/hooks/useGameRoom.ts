@@ -2,30 +2,36 @@ import React from 'react';
 import { MediaConnection } from 'peerjs';
 
 import { useDispatch, useSelector } from 'react-redux';
+import { setSelf } from '../reducers/rtcSelf.reducer';
 import { setGame } from '../reducers/rtcGame.reducer';
 
 import useAuthSocket from './useAuthSocket';
 import usePeer from './usePeer';
 
-import { GameType, RTCGame, RTCGameRoom, RTCPeer, State } from '../types';
+import {
+  GameType,
+  RTCGame,
+  RTCGameRoom,
+  RTCPeer,
+  RTCSelf,
+  State,
+} from '../types';
 import logger from '../utils/logger';
 
 const useGameRoom = (
   token: string | null,
   mediaStream: MediaStream | null
-): [RTCGame | null, RTCPeer[] | null, SocketIOClient.Socket | null] => {
-  const [gameRoom, setGameRoom] = React.useState<RTCGameRoom | null>(null);
+): [RTCPeer[] | null, SocketIOClient.Socket | null] => {
   const [peers, setPeers] = React.useState<RTCPeer[] | null>(null);
   const [peer, peerError] = usePeer();
   const [onCall, setOnCall] = React.useState<boolean>(false);
   const dispatch = useDispatch();
   const reduxGame = useSelector((state: State) => state.rtc.game);
+  const [socket, socketError] = useAuthSocket(token);
 
   React.useEffect(() => {
     console.log('redux game', reduxGame);
   }, [reduxGame]);
-
-  const [socket, socketError] = useAuthSocket(token);
 
   if (peerError || socketError) {
     console.error('handle errors!');
@@ -52,16 +58,33 @@ const useGameRoom = (
 
         const initialPeers = rtcRoom.players
           .concat(rtcRoom.host)
-          .map((user) => ({
-            ...user,
-            stream: null,
-            call: null,
-            isMe: user.peerId === peer.id,
-          }));
+          .map((user) => {
+            if (user.peerId === peer.id) {
+              // set self
 
-        dispatch(setGame(rtcRoom.game));
+              const self: RTCSelf = {
+                ...user,
+                socket,
+              };
 
-        setGameRoom(rtcRoom);
+              dispatch(setSelf(self));
+            }
+
+            return {
+              ...user,
+              stream: null,
+              call: null,
+              isMe: user.peerId === peer.id,
+            };
+          });
+
+        const mappedPlayers = rtcRoom.game.players.map((player) => ({
+          ...player,
+          hasTurn: player.id === rtcRoom.game.info.turn,
+        }));
+
+        dispatch(setGame({ ...rtcRoom.game, players: mappedPlayers }));
+
         setPeers(initialPeers);
       });
 
@@ -72,18 +95,12 @@ const useGameRoom = (
       socket.on('game updated', (updatedGame: RTCGame) => {
         logger.log(`recieved 'game updated' with data;`, updatedGame);
 
-        dispatch(setGame(updatedGame));
+        const mappedPlayers = updatedGame.players.map((player) => ({
+          ...player,
+          hasTurn: player.id === updatedGame.info.turn,
+        }));
 
-        setGameRoom((current) => {
-          if (!current) {
-            return null;
-          }
-
-          return {
-            ...current,
-            game: updatedGame,
-          };
-        });
+        dispatch(setGame({ ...updatedGame, players: mappedPlayers }));
       });
 
       socket.on('user-left', (id: string) => {
@@ -237,20 +254,7 @@ const useGameRoom = (
     }
   }, [joinCall, mediaStream, onCall]);
 
-  const game = React.useMemo(() => {
-    if (!gameRoom) {
-      return null;
-    }
-
-    const mappedPlayers = gameRoom.game.players.map((player) => ({
-      ...player,
-      hasTurn: player.id === gameRoom.game.info.turn,
-    }));
-
-    return { ...gameRoom.game, players: mappedPlayers };
-  }, [gameRoom]);
-
-  return [game, peers, socket];
+  return [peers, socket];
 };
 
 export default useGameRoom;

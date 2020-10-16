@@ -1,11 +1,13 @@
 import React from 'react';
 
+import { useSelector } from 'react-redux';
+
 import VideoWithOverlay from './VideoWithOverlay';
 import PlayerOverlayItems from './PlayerOverlayItems';
 import HostOverlayItems from './HostOverlayItems';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { GamePlayer, RTCGame, RTCPeer } from '../types';
+import { GamePlayer, GameStatus, RTCGame, RTCPeer, State } from '../types';
 import { Card, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -40,10 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface RTCVideoFrameProps {
   peer: RTCPeer;
-  player: GamePlayer | undefined;
   order: number; // defines the order of video windows
-  game: RTCGame;
-  highlightTurn?: boolean;
   isHost?: boolean;
 }
 
@@ -61,32 +60,33 @@ const ErrorMsg: React.FC<{ text: string }> = ({ text }) => {
 
 const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({
   peer,
-  player,
   order,
-  game,
-  highlightTurn,
   isHost,
 }) => {
   const classes = useStyles();
-
+  const gameStatus = useSelector((state: State) => state.rtc.game?.status);
+  const playerWithTurnId = useSelector(
+    (state: State) => state.rtc.game?.info.turn
+  );
   const style = React.useMemo(() => ({ order }), [order]);
+  const highlighted =
+    playerWithTurnId &&
+    playerWithTurnId === peer.id &&
+    gameStatus &&
+    gameStatus === GameStatus.RUNNING;
 
   return (
     <Card
       elevation={3}
-      className={`${classes.videoWindow} ${
-        player?.hasTurn && highlightTurn ? classes.hasTurn : ''
-      }`}
+      className={`${classes.videoWindow} ${highlighted ? classes.hasTurn : ''}`}
       style={style}
     >
       {peer.stream ? (
         <VideoWithOverlay peer={peer}>
           {peer.isHost ? (
-            <HostOverlayItems host={peer} gameType={game.type} />
-          ) : player ? (
-            <PlayerOverlayItems player={player} game={game} forHost={isHost} />
+            <HostOverlayItems host={peer} />
           ) : (
-            <ErrorMsg text={'Odottamaton virhe: pelaajaa ei löytynyt'} />
+            <PlayerOverlayItems playerId={peer.id} forHost={isHost} />
           )}
         </VideoWithOverlay>
       ) : (

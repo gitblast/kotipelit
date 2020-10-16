@@ -189,11 +189,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   return (
     <div className={classes.container}>
       <InfoBar game={game} isHost={isHost} />
-      <RTCVideoConference
-        peers={peersWithOwnStreamSet}
-        game={game}
-        isHost={isHost}
-      />
+      <RTCVideoConference peers={peersWithOwnStreamSet} isHost={isHost} />
       {isHost ? (
         game.status === GameStatus.RUNNING && (
           <RTCHostControls game={game} handleUpdate={emitUpdate} />

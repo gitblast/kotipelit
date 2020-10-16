@@ -31,6 +31,20 @@ const RTCPlayerControls: React.FC<RTCPlayerControlsProps> = ({
   const classes = useStyles();
   const [answer, setAnswer] = React.useState<string>('');
 
+  /**const isDisabled = () => {
+    if (!game || !playerSelf || !playerSelf.answers || playerSelf.hasTurn) {
+      return true;
+    }
+
+    if (!playerSelf.answers[game.info.turn]) {
+      return false;
+    }
+
+    const answer = playerSelf.answers[game.info.turn][game.info.round];
+
+    return !!answer;
+  };*/
+
   const handleClick = () => {
     if (answer.length) {
       handleUpdate(answer);

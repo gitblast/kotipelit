@@ -4,7 +4,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import MicOffIcon from '@material-ui/icons/MicOff';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { GamePlayer, GameType, RTCGame } from '../types';
+import { GameType, State } from '../types';
 import {
   Paper,
   Typography,
@@ -15,6 +15,7 @@ import {
 } from '@material-ui/core';
 
 import logger from '../utils/logger';
+import { shallowEqual, useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -59,29 +60,33 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface PlayerOverlayItemsProps {
-  player: GamePlayer;
-  game: RTCGame;
+  playerId: string;
   forHost?: boolean;
 }
 
 const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
-  player,
-  game,
+  playerId,
   forHost,
 }) => {
   const classes = useStyles();
   const [checked, setChecked] = React.useState(false);
+
+  const game = useSelector((state: State) => state.rtc.game);
+  const player = useSelector(
+    (state: State) => state.rtc.game?.players.find((p) => p.id === playerId),
+    shallowEqual
+  );
 
   const handleChange = React.useCallback(() => {
     setChecked((curr) => !curr);
   }, []);
 
   const getAnswer = React.useCallback(() => {
-    const { turn, round } = game.info;
-
-    if (!player || !player.answers) {
+    if (!game || !player || !player.answers) {
       return <div className={classes.spacer} />;
     }
+
+    const { turn, round } = game.info;
 
     const answers = player.answers[turn];
 
@@ -106,6 +111,10 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
       </Tooltip>
     );
   }, [game, player]);
+
+  if (!game || !player) {
+    return null;
+  }
 
   // handle different game types here
   if (game.type === GameType.KOTITONNI) {

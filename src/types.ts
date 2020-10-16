@@ -289,6 +289,11 @@ export type RTCGameAction = {
   payload: RTCGame;
 };
 
+export type RTCSelfAction = {
+  type: 'SET_SELF';
+  payload: RTCSelf;
+};
+
 // SOCKET IO EVENTS
 
 export interface CreateSuccessResponse {
@@ -394,6 +399,10 @@ export interface RTCPeer {
   stream: MediaStream | null;
   call: MediaConnection | null;
   isMe?: boolean;
+}
+
+export interface RTCSelf extends Omit<RTCPeer, 'socketId'> {
+  socket: SocketIOClient.Socket | null;
 }
 
 export interface RTCGameRoom {

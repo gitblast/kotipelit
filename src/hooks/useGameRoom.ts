@@ -90,8 +90,6 @@ const useGameRoom = (
       socket.on('user-left', (id: string) => {
         logger.log(`recieved user left from ${id}`);
 
-        console.warn('experimental: not setting user stream to null');
-
         setPeers((currentPeers) => {
           if (!currentPeers) {
             return currentPeers;
@@ -111,7 +109,7 @@ const useGameRoom = (
               socketId: null,
               peerId: null,
               call: null,
-              // stream: null,
+              stream: null,
             };
           });
         });

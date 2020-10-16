@@ -78,6 +78,23 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
     (state: State) => state.rtc.game?.players.find((p) => p.id === playerId),
     shallowEqual
   );
+  const showPointAddition = React.useMemo(() => {
+    if (!game) {
+      return false;
+    }
+
+    return (
+      // show is answering is closed and at least one player has answered
+      !game.info.answeringOpen &&
+      game.players.some((player) => {
+        return (
+          player.answers &&
+          player.answers[game.info.round] &&
+          player.answers[game.info.round].length
+        );
+      })
+    );
+  }, [game]);
 
   const checked = clickMap && clickMap[playerId];
 
@@ -124,6 +141,33 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
     return null;
   }
 
+  const getPointAddition = (playerId: string, hasTurn: boolean): number => {
+    const playerCount = game.players.length;
+    const correctAnswers = game.players.reduce((sum, next) => {
+      return clickMap && clickMap[next.id] ? sum + 1 : sum;
+    }, 0);
+
+    switch (correctAnswers) {
+      case playerCount - 1: {
+        return hasTurn ? -50 : 0;
+      }
+      case 0: {
+        return hasTurn ? -50 : 0;
+      }
+      case 1: {
+        return (clickMap && clickMap[playerId]) || hasTurn ? 100 : 0;
+      }
+      case 2: {
+        return (clickMap && clickMap[playerId]) || hasTurn ? 30 : 0;
+      }
+      case 3: {
+        return (clickMap && clickMap[playerId]) || hasTurn ? 10 : 0;
+      }
+    }
+
+    return correctAnswers;
+  };
+
   const answer = getAnswer();
 
   // handle different game types here
@@ -136,6 +180,16 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
             <Typography>{player.points}</Typography>
           </Paper>
         </div>
+        {true && ( // showPointAddition !!!
+          <div className={classes.flex}>
+            <div className={classes.spacer} />
+            <Paper className={classes.badge}>
+              <Typography>
+                {getPointAddition(player.id, !!player.hasTurn)}
+              </Typography>
+            </Paper>
+          </div>
+        )}
 
         {forHost && answer ? (
           answerBox(answer)

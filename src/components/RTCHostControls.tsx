@@ -8,7 +8,9 @@ import { Fab, Paper } from '@material-ui/core';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import UndoIcon from '@material-ui/icons/Undo';
-import { RTCGame } from '../types';
+import { RTCGame, State } from '../types';
+import { useSelector } from 'react-redux';
+import logger from '../utils/logger';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,22 +31,25 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface RTCHostControlsProps {
-  handleUpdate: (game: RTCGame) => void;
-  game: RTCGame;
-}
-
-const RTCHostControls: React.FC<RTCHostControlsProps> = ({
-  game,
-  handleUpdate,
-}) => {
+const RTCHostControls: React.FC = () => {
   const classes = useStyles();
 
   const [timerRunning, setTimerRunning] = React.useState<boolean>(false);
   const [timer, setTimer] = React.useState<number>(90);
 
+  const game = useSelector((state: State) => state.rtc.game);
+  const socket = useSelector((state: State) => state.rtc.self?.socket);
+
+  const handleUpdate = (newGame: RTCGame) => {
+    if (socket) {
+      socket.emit('update-game', newGame);
+    } else {
+      logger.error('no socket when trying to emit update');
+    }
+  };
+
   React.useEffect(() => {
-    if (timer === 0) {
+    if (game && timer === 0) {
       handleUpdate({
         ...game,
         info: {
@@ -53,7 +58,7 @@ const RTCHostControls: React.FC<RTCHostControlsProps> = ({
         },
       });
     }
-  }, [timer]);
+  }, [timer, game]);
 
   useInterval(
     () => {
@@ -67,7 +72,7 @@ const RTCHostControls: React.FC<RTCHostControlsProps> = ({
   );
 
   const toggleTimer = () => {
-    if (timer === 90) {
+    if (game && timer === 90) {
       handleUpdate({
         ...game,
         info: {

@@ -100,6 +100,7 @@ export interface State {
 export interface RTCState {
   game: RTCGame | null;
   localData: LocalData;
+  self: RTCSelf | null;
 }
 
 export type AlertState = string | null;
@@ -401,8 +402,10 @@ export interface RTCPeer {
   isMe?: boolean;
 }
 
-export interface RTCSelf extends Omit<RTCPeer, 'socketId'> {
-  socket: SocketIOClient.Socket | null;
+export interface RTCSelf {
+  id: string;
+  isHost: boolean;
+  socket: SocketIOClient.Socket;
 }
 
 export interface RTCGameRoom {

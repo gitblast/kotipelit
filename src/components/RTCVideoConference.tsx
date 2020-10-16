@@ -5,7 +5,7 @@ import { makeStyles, createStyles } from '@material-ui/core/styles';
 import Loader from './Loader';
 import RTCVideoFrame from './RTCVideoFrame';
 
-import { GameStatus, RTCGame, RTCPeer } from '../types';
+import { RTCPeer } from '../types';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -22,19 +22,15 @@ const useStyles = makeStyles(() =>
 
 interface RTCVideoConferenceProps {
   peers: RTCPeer[] | null;
-  isHost?: boolean;
 }
 
-const RTCVideoConference: React.FC<RTCVideoConferenceProps> = ({
-  peers,
-  isHost,
-}) => {
+const RTCVideoConference: React.FC<RTCVideoConferenceProps> = ({ peers }) => {
   const classes = useStyles();
 
   /**
    * Calculates the order for the video windows, setting host as bottom -center if 6 players
    */
-  const getOrder = React.useCallback((index, length) => {
+  const getOrder = (index: number, length: number) => {
     let order = index;
 
     if (index === length - 1) {
@@ -44,7 +40,7 @@ const RTCVideoConference: React.FC<RTCVideoConferenceProps> = ({
     }
 
     return order;
-  }, []);
+  };
 
   if (!peers) {
     return (
@@ -61,7 +57,6 @@ const RTCVideoConference: React.FC<RTCVideoConferenceProps> = ({
           key={peer.id}
           peer={peer}
           order={getOrder(index, peers.length)}
-          isHost={isHost}
         />
       ))}
     </div>

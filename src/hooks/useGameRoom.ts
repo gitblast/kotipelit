@@ -63,7 +63,8 @@ const useGameRoom = (
               // set self
 
               const self: RTCSelf = {
-                ...user,
+                id: user.id,
+                isHost: user.isHost,
                 socket,
               };
 
@@ -184,15 +185,15 @@ const useGameRoom = (
             );
 
             if (!user) {
-              console.error(`No user found matching call peer id`);
+              console.error(`no user found matching call peer id`);
 
               return currentPeers;
             }
 
-            /** only set stream if not already set. otherwise the steam might get set twice (from calling and answering) */
+            /** only set stream if not already set. otherwise the stream might get set twice (from calling and answering) */
 
             if (user.stream) {
-              logger.log('User stream already set');
+              logger.log('user stream already set');
 
               return currentPeers;
             }

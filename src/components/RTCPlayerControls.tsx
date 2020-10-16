@@ -2,6 +2,9 @@ import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Fab, Paper, TextField } from '@material-ui/core';
+import { shallowEqual, useSelector } from 'react-redux';
+import { State } from '../types';
+import logger from '../utils/logger';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -19,20 +22,28 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface RTCPlayerControlsProps {
-  handleUpdate: (answer: string) => void;
-  disabled: boolean;
-}
-
-const RTCPlayerControls: React.FC<RTCPlayerControlsProps> = ({
-  disabled,
-  handleUpdate,
-}) => {
+const RTCPlayerControls: React.FC = () => {
   const classes = useStyles();
   const [answer, setAnswer] = React.useState<string>('');
 
-  /**const isDisabled = () => {
-    if (!game || !playerSelf || !playerSelf.answers || playerSelf.hasTurn) {
+  const game = useSelector((state: State) => state.rtc.game);
+  const self = useSelector((state: State) => state.rtc.self);
+  const playerSelf = useSelector((state: State) => {
+    if (!self) {
+      return null;
+    }
+
+    return state.rtc.game?.players.find((player) => player.id === self.id);
+  }, shallowEqual);
+
+  const isDisabled = () => {
+    if (
+      !game ||
+      !game.info.answeringOpen ||
+      !playerSelf ||
+      !playerSelf.answers ||
+      playerSelf.hasTurn
+    ) {
       return true;
     }
 
@@ -43,15 +54,28 @@ const RTCPlayerControls: React.FC<RTCPlayerControlsProps> = ({
     const answer = playerSelf.answers[game.info.turn][game.info.round];
 
     return !!answer;
-  };*/
+  };
 
   const handleClick = () => {
+    if (!self || !game) {
+      logger.error('self object or game missing when trying to emit');
+
+      return;
+    }
+
     if (answer.length) {
-      handleUpdate(answer);
+      const answerObj = {
+        answer,
+        info: game.info,
+      };
+
+      self.socket.emit('answer', answerObj);
 
       setAnswer('');
     }
   };
+
+  const disabled = isDisabled();
 
   return (
     <Paper elevation={3} className={classes.container}>

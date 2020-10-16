@@ -61,16 +61,15 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface PlayerOverlayItemsProps {
   playerId: string;
-  forHost?: boolean;
 }
 
 const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
   playerId,
-  forHost,
 }) => {
   const classes = useStyles();
   const [checked, setChecked] = React.useState(false);
 
+  const forHost = useSelector((state: State) => state.rtc.self?.isHost);
   const game = useSelector((state: State) => state.rtc.game);
   const player = useSelector(
     (state: State) => state.rtc.game?.players.find((p) => p.id === playerId),
@@ -81,7 +80,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
     setChecked((curr) => !curr);
   }, []);
 
-  const getAnswer = React.useCallback(() => {
+  const getAnswer = () => {
     if (!game || !player || !player.answers) {
       return <div className={classes.spacer} />;
     }
@@ -110,7 +109,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
         <div className={`${classes.spacer} ${classes.tooltipRoot}`} />
       </Tooltip>
     );
-  }, [game, player]);
+  };
 
   if (!game || !player) {
     return null;

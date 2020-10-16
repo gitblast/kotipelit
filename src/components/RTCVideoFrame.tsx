@@ -7,7 +7,7 @@ import PlayerOverlayItems from './PlayerOverlayItems';
 import HostOverlayItems from './HostOverlayItems';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { GamePlayer, GameStatus, RTCGame, RTCPeer, State } from '../types';
+import { GameStatus, RTCPeer, State } from '../types';
 import { Card, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -43,7 +43,6 @@ const useStyles = makeStyles((theme: Theme) =>
 interface RTCVideoFrameProps {
   peer: RTCPeer;
   order: number; // defines the order of video windows
-  isHost?: boolean;
 }
 
 const ErrorMsg: React.FC<{ text: string }> = ({ text }) => {
@@ -58,11 +57,7 @@ const ErrorMsg: React.FC<{ text: string }> = ({ text }) => {
   );
 };
 
-const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({
-  peer,
-  order,
-  isHost,
-}) => {
+const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({ peer, order }) => {
   const classes = useStyles();
   const gameStatus = useSelector((state: State) => state.rtc.game?.status);
   const playerWithTurnId = useSelector(
@@ -86,7 +81,7 @@ const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({
           {peer.isHost ? (
             <HostOverlayItems host={peer} />
           ) : (
-            <PlayerOverlayItems playerId={peer.id} forHost={isHost} />
+            <PlayerOverlayItems playerId={peer.id} />
           )}
         </VideoWithOverlay>
       ) : (
@@ -96,4 +91,4 @@ const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({
   );
 };
 
-export default RTCVideoFrame;
+export default React.memo(RTCVideoFrame);

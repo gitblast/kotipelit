@@ -1,11 +1,13 @@
 import React from 'react';
 
+import { useSelector } from 'react-redux';
+
 import VideoWithOverlay from './VideoWithOverlay';
 import PlayerOverlayItems from './PlayerOverlayItems';
 import HostOverlayItems from './HostOverlayItems';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { GamePlayer, RTCGame, RTCPeer } from '../types';
+import { GameStatus, RTCPeer, State } from '../types';
 import { Card, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -38,65 +40,72 @@ const useStyles = makeStyles((theme: Theme) =>
       right: 0,
       color: 'rgba(218, 214, 214)',
     },
+    absolute: {
+      width: '100%',
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+    },
   })
 );
 
 interface RTCVideoFrameProps {
   peer: RTCPeer;
-  player: GamePlayer | undefined;
   order: number; // defines the order of video windows
-  game: RTCGame;
-  highlightTurn?: boolean;
-  isHost?: boolean;
 }
 
-const ErrorMsg: React.FC<{ text: string }> = ({ text }) => {
+const ErrorMsg: React.FC<{ text: string }> = ({ text, children }) => {
   const classes = useStyles();
+  // eslint-disable-next-line no-undef
+  const showPointsAnyway = process && process.env.NODE_ENV === 'development';
 
   return (
     <div className={classes.frame}>
       <div className={classes.placeHolderText}>
         <Typography variant="body2">{text}</Typography>
       </div>
+      {showPointsAnyway && <div className={classes.absolute}>{children}</div>}
     </div>
   );
 };
 
-const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({
-  peer,
-  player,
-  order,
-  game,
-  highlightTurn,
-  isHost,
-}) => {
+const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({ peer, order }) => {
   const classes = useStyles();
-
+  const gameStatus = useSelector((state: State) => state.rtc.game?.status);
+  const playerWithTurnId = useSelector(
+    (state: State) => state.rtc.game?.info.turn
+  );
   const style = React.useMemo(() => ({ order }), [order]);
+  const overlayContent = React.useMemo(
+    () =>
+      peer.isHost ? (
+        <HostOverlayItems host={peer} />
+      ) : (
+        <PlayerOverlayItems playerId={peer.id} />
+      ),
+    [peer]
+  );
+  const highlighted =
+    playerWithTurnId &&
+    playerWithTurnId === peer.id &&
+    gameStatus &&
+    gameStatus === GameStatus.RUNNING;
 
   return (
     <Card
       elevation={3}
-      className={`${classes.videoWindow} ${
-        player?.hasTurn && highlightTurn ? classes.hasTurn : ''
-      }`}
+      className={`${classes.videoWindow} ${highlighted ? classes.hasTurn : ''}`}
       style={style}
     >
       {peer.stream ? (
-        <VideoWithOverlay peer={peer}>
-          {peer.isHost ? (
-            <HostOverlayItems host={peer} gameType={game.type} />
-          ) : player ? (
-            <PlayerOverlayItems player={player} game={game} forHost={isHost} />
-          ) : (
-            <ErrorMsg text={'Odottamaton virhe: pelaajaa ei löytynyt'} />
-          )}
-        </VideoWithOverlay>
+        <VideoWithOverlay peer={peer}>{overlayContent}</VideoWithOverlay>
       ) : (
-        <ErrorMsg text={'Ei videoyhteyttä'} />
+        <ErrorMsg text={'Ei videoyhteyttä'}>{overlayContent}</ErrorMsg>
       )}
     </Card>
   );
 };
 
-export default RTCVideoFrame;
+export default React.memo(RTCVideoFrame);

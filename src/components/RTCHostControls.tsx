@@ -8,8 +8,10 @@ import { Fab, Paper } from '@material-ui/core';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import UndoIcon from '@material-ui/icons/Undo';
-import FullscreenIcon from '@material-ui/icons/Fullscreen';
-import { RTCGame } from '../types';
+import { RTCGame, State } from '../types';
+import { useDispatch, useSelector } from 'react-redux';
+import logger from '../utils/logger';
+import { resetClicks } from '../reducers/localData.reducer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -49,22 +51,66 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface RTCHostControlsProps {
-  handleUpdate: (game: RTCGame) => void;
-  game: RTCGame;
-}
-
-const RTCHostControls: React.FC<RTCHostControlsProps> = ({
-  handleUpdate,
-  game,
-}) => {
+const RTCHostControls: React.FC = () => {
   const classes = useStyles();
 
   const [timerRunning, setTimerRunning] = React.useState<boolean>(false);
   const [timer, setTimer] = React.useState<number>(90);
 
+  const dispatch = useDispatch();
+  const game = useSelector((state: State) => state.rtc.game);
+  const socket = useSelector((state: State) => state.rtc.self?.socket);
+  const clickMap = useSelector(
+    (state: State) => state.rtc.localData?.clickedMap
+  );
+
+  const handleUpdate = React.useCallback(
+    (newGame: RTCGame) => {
+      if (socket) {
+        socket.emit('update-game', newGame);
+      } else {
+        logger.error('no socket when trying to emit update');
+      }
+    },
+    [socket]
+  );
+
   React.useEffect(() => {
-    if (timer === 0) {
+    // sets answering open to false if everyone has answered
+    if (game && game.info.answeringOpen) {
+      const playerWithTurnId = game.info.turn;
+
+      const everyoneHasAnswered = game.players.every((player) => {
+        if (player.hasTurn) {
+          return true;
+        }
+
+        const answers = player.answers[playerWithTurnId];
+
+        return (
+          answers && answers[game.info.round] && answers[game.info.round].length
+        );
+      });
+
+      if (everyoneHasAnswered) {
+        logger.log('everyone has answered, setting answering open to false');
+
+        handleUpdate({
+          ...game,
+          info: {
+            ...game.info,
+            answeringOpen: false,
+          },
+        });
+      }
+    }
+  }, [game, handleUpdate]);
+
+  React.useEffect(() => {
+    // sets answering open to false if timer reaches 0
+    if (game && game.info.answeringOpen && timer === 0) {
+      logger.log('timer is 0, setting answering open to false');
+
       handleUpdate({
         ...game,
         info: {
@@ -73,7 +119,7 @@ const RTCHostControls: React.FC<RTCHostControlsProps> = ({
         },
       });
     }
-  }, [timer]);
+  }, [timer, game, handleUpdate]);
 
   useInterval(
     () => {
@@ -83,11 +129,18 @@ const RTCHostControls: React.FC<RTCHostControlsProps> = ({
         setTimerRunning(false);
       }
     },
-    timerRunning ? 1000 : null
+    timerRunning
+      ? // eslint-disable-next-line no-undef
+        process && process.env.NODE_ENV === 'development'
+        ? 10
+        : 1000
+      : null
   );
 
   const toggleTimer = () => {
-    if (timer === 90) {
+    if (game && !game.info.answeringOpen && timer === 90) {
+      logger.log('setting answering open to true');
+
       handleUpdate({
         ...game,
         info: {
@@ -98,6 +151,94 @@ const RTCHostControls: React.FC<RTCHostControlsProps> = ({
     }
 
     setTimerRunning((current) => !current);
+  };
+
+  const handlePointUpdate = () => {
+    if (!game) {
+      logger.error('no game set when trying to update');
+
+      return;
+    }
+
+    if (!socket) {
+      logger.error('no socket set when trying to update');
+
+      return;
+    }
+
+    const playerInTurn = game.players.find((player) => player.hasTurn);
+
+    if (!playerInTurn) {
+      logger.error('no player with turn set when trying to update');
+
+      return;
+    }
+
+    const getPointAddition = (playerId: string, hasTurn: boolean): number => {
+      const playerCount = game.players.length;
+      const correctAnswers = game.players.reduce((sum, next) => {
+        return clickMap && clickMap[next.id] ? sum + 1 : sum;
+      }, 0);
+
+      switch (correctAnswers) {
+        case playerCount - 1: {
+          return hasTurn ? -50 : 0;
+        }
+        case 0: {
+          return hasTurn ? -50 : 0;
+        }
+        case 1: {
+          return (clickMap && clickMap[playerId]) || hasTurn ? 100 : 0;
+        }
+        case 2: {
+          return (clickMap && clickMap[playerId]) || hasTurn ? 30 : 0;
+        }
+        case 3: {
+          return (clickMap && clickMap[playerId]) || hasTurn ? 10 : 0;
+        }
+      }
+
+      return correctAnswers;
+    };
+
+    const newPlayers = game.players.map((player) => {
+      return {
+        ...player,
+        points: player.points + getPointAddition(player.id, !!player.hasTurn),
+      };
+    });
+
+    const playerInTurnIndex = game.players.indexOf(playerInTurn);
+    let round: number;
+    let turn: string;
+
+    if (playerInTurnIndex === game.players.length - 1) {
+      round = game.info.round + 1;
+      turn = game.players[0].id;
+    } else {
+      round = game.info.round;
+      turn = game.players[playerInTurnIndex + 1].id;
+    }
+
+    const updatedGame = {
+      ...game,
+      players: newPlayers,
+      info: {
+        ...game.info,
+        round,
+        turn,
+      },
+    };
+
+    socket.emit('update-game', updatedGame);
+
+    if (timerRunning) {
+      setTimerRunning(false);
+    }
+
+    dispatch(resetClicks());
+
+    setTimer(90);
   };
 
   return (
@@ -117,9 +258,9 @@ const RTCHostControls: React.FC<RTCHostControlsProps> = ({
       <div className={classes.btnContainer}>
         <Fab
           variant="extended"
-          onClick={() => null}
-          disabled={!game.info.answeringOpen}
-          className={classes.updatePoints}
+          color="secondary"
+          onClick={handlePointUpdate}
+          disabled={!game ? true : game.info.answeringOpen}
         >
           Päivitä pisteet
         </Fab>

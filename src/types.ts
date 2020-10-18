@@ -94,6 +94,13 @@ export interface State {
   user: User;
   channels: ChannelsState;
   alert: AlertState;
+  rtc: RTCState;
+}
+
+export interface RTCState {
+  game: RTCGame | null;
+  localData: LocalData;
+  self: RTCSelf | null;
 }
 
 export type AlertState = string | null;
@@ -266,6 +273,28 @@ export type Action =
       type: ActionType.CLEAR_ERROR;
     };
 
+export type LocalData = null | KotitonniHostData;
+
+export interface KotitonniHostData {
+  gameType: GameType.KOTITONNI;
+  clickedMap: Record<string, boolean>;
+}
+
+export type LocalDataAction = {
+  type: 'SET_DATA';
+  payload: LocalData;
+};
+
+export type RTCGameAction = {
+  type: 'SET_GAME';
+  payload: RTCGame;
+};
+
+export type RTCSelfAction = {
+  type: 'SET_SELF';
+  payload: RTCSelf;
+};
+
 // SOCKET IO EVENTS
 
 export interface CreateSuccessResponse {
@@ -371,6 +400,12 @@ export interface RTCPeer {
   stream: MediaStream | null;
   call: MediaConnection | null;
   isMe?: boolean;
+}
+
+export interface RTCSelf {
+  id: string;
+  isHost: boolean;
+  socket: SocketIOClient.Socket;
 }
 
 export interface RTCGameRoom {

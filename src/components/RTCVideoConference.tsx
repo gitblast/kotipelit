@@ -5,7 +5,7 @@ import { makeStyles, createStyles } from '@material-ui/core/styles';
 import Loader from './Loader';
 import RTCVideoFrame from './RTCVideoFrame';
 
-import { GameStatus, RTCGame, RTCPeer } from '../types';
+import { RTCPeer } from '../types';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -23,26 +23,15 @@ const useStyles = makeStyles(() =>
 
 interface RTCVideoConferenceProps {
   peers: RTCPeer[] | null;
-  game: RTCGame | null;
-  isHost?: boolean;
 }
 
-const RTCVideoConference: React.FC<RTCVideoConferenceProps> = ({
-  peers,
-  game,
-  isHost,
-}) => {
+const RTCVideoConference: React.FC<RTCVideoConferenceProps> = ({ peers }) => {
   const classes = useStyles();
-
-  const findPlayerById = React.useCallback(
-    (id: string) => game?.players.find((p) => p.id === id),
-    [game]
-  );
 
   /**
    * Calculates the order for the video windows, setting host as bottom -center if 6 players
    */
-  const getOrder = React.useCallback((index, length) => {
+  const getOrder = (index: number, length: number) => {
     let order = index;
 
     if (index === length - 1) {
@@ -52,9 +41,9 @@ const RTCVideoConference: React.FC<RTCVideoConferenceProps> = ({
     }
 
     return order;
-  }, []);
+  };
 
-  if (!peers || !game) {
+  if (!peers) {
     return (
       <div className={classes.videoConf}>
         <Loader msg="Ladataan..." spinner />
@@ -68,11 +57,7 @@ const RTCVideoConference: React.FC<RTCVideoConferenceProps> = ({
         <RTCVideoFrame
           key={peer.id}
           peer={peer}
-          player={findPlayerById(peer.id)}
           order={getOrder(index, peers.length)}
-          game={game}
-          highlightTurn={game.status === GameStatus.RUNNING}
-          isHost={isHost}
         />
       ))}
     </div>

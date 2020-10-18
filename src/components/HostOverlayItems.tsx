@@ -7,8 +7,9 @@ import MicOffIcon from '@material-ui/icons/MicOff';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
-import { GameType, RTCPeer } from '../types';
+import { GameType, RTCPeer, State } from '../types';
 import logger from '../utils/logger';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -45,14 +46,17 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface HostOverlayItemsProps {
   host: RTCPeer;
-  gameType: GameType;
 }
 
-const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({
-  host,
-  gameType,
-}) => {
+const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({ host }) => {
   const classes = useStyles();
+
+  const gameType = useSelector((state: State) => state.rtc.game?.type);
+
+  if (!gameType) {
+    return null;
+  }
+
   // handle different game types here, "if gameType === kotitonni return kotitonni-items" etc
   if (gameType === GameType.KOTITONNI) {
     return (

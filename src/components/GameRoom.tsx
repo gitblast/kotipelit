@@ -12,7 +12,8 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import logger from '../utils/logger';
 import { Backdrop, Fab, Typography } from '@material-ui/core';
 import Loader from './Loader';
-import { GameStatus, RTCGame } from '../types';
+import { GameStatus, State } from '../types';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -66,79 +67,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
     onCall,
     MEDIA_CONSTRAINTS
   );
-  const [game, peers, socket] = useGameRoom(token, mediaStream);
-
-  if (mediaStreamError) {
-    console.error('error', mediaStreamError);
-  }
-
-  React.useEffect(() => {
-    if (peers) {
-      logger.log('PEERS CHANGED:', peers);
-    }
-  }, [peers]);
-
-  const emitWithSocket = React.useCallback(
-    (event: string, data?: unknown) => {
-      if (!socket) {
-        logger.error(
-          `unexpected error: socket was null when trying to emit ${event}`
-        );
-      } else {
-        logger.log(`emitting '${event}'`, data);
-      }
-
-      // sets game status as waiting triggering "starting soon" -screen
-      if (socket) {
-        data ? socket.emit(event, data) : socket.emit(event);
-      }
-    },
-    [socket]
-  );
-
-  const peerSelf = React.useMemo(() => peers?.find((p) => p.isMe), [peers]);
-  const playerSelf = React.useMemo(() => {
-    if (isHost || !game || !peerSelf) {
-      return null;
-    }
-
-    const self = game.players.find((p) => p.id === peerSelf.id);
-
-    return self ? self : null;
-  }, [game, peerSelf, isHost]);
-
-  const canAnswer = React.useMemo(() => {
-    if (!game || !playerSelf || !playerSelf.answers || playerSelf.hasTurn) {
-      return false;
-    }
-
-    if (!playerSelf.answers[game.info.turn]) {
-      return true;
-    }
-
-    const answer = playerSelf.answers[game.info.turn][game.info.round];
-
-    console.log('ans', answer);
-
-    return !answer;
-  }, [playerSelf, game]);
-
-  const emitStart = React.useCallback(() => emitWithSocket('start'), [
-    emitWithSocket,
-  ]);
-
-  const emitUpdate = React.useCallback(
-    (newGame: RTCGame) => emitWithSocket('update-game', newGame),
-    [emitWithSocket]
-  );
-
-  const handleJoinCall = React.useCallback(() => {
-    if (isHost) {
-      emitWithSocket('launch');
-    }
-
-    setOnCall(true);
-  }, [socket, isHost]);
+  const [peers] = useGameRoom(token, mediaStream);
 
   const peersWithOwnStreamSet = React.useMemo(() => {
     if (!peers) {
@@ -150,21 +79,38 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
     });
   }, [mediaStream, peers]);
 
-  const handlePlayerAnswer = React.useCallback(
-    (answer: string) => {
-      if (game) {
-        const answerObj = {
-          answer,
-          info: game.info,
-        };
+  const game = useSelector((state: State) => state.rtc.game);
+  const socket = useSelector((state: State) => state.rtc.self?.socket);
 
-        emitWithSocket('answer', answerObj);
+  if (mediaStreamError) {
+    console.error('error', mediaStreamError);
+  }
+
+  React.useEffect(() => {
+    if (peers) {
+      logger.log('PEERS CHANGED:', peers);
+    }
+  }, [peers]);
+
+  const handleStart = () => {
+    if (socket) {
+      socket.emit('start');
+    } else {
+      logger.error('socket was null when trying to emit start');
+    }
+  };
+
+  const handleJoinCall = () => {
+    if (isHost) {
+      if (socket) {
+        socket.emit('launch');
       } else {
-        logger.error('no game was set when trying to answer');
+        logger.error('socket was null trying to emit launch');
       }
-    },
-    [game, emitWithSocket]
-  );
+    }
+
+    setOnCall(true);
+  };
 
   if (!game) {
     return (
@@ -186,21 +132,12 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
 
   return (
     <div className={classes.container}>
-      <InfoBar game={game} isHost={isHost} />
-      <RTCVideoConference
-        peers={peersWithOwnStreamSet}
-        game={game}
-        isHost={isHost}
-      />
+      <InfoBar />
+      <RTCVideoConference peers={peersWithOwnStreamSet} />
       {isHost ? (
-        game.status === GameStatus.RUNNING && (
-          <RTCHostControls game={game} handleUpdate={emitUpdate} />
-        )
+        game.status === GameStatus.RUNNING && <RTCHostControls />
       ) : (
-        <RTCPlayerControls
-          disabled={!canAnswer}
-          handleUpdate={handlePlayerAnswer}
-        />
+        <RTCPlayerControls />
       )}
       <Backdrop
         open={game.status === GameStatus.WAITING}
@@ -212,7 +149,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
           </Typography>
           {isHost ? (
             <div className={classes.startBtnContainer}>
-              <Fab variant="extended" size="large" onClick={emitStart}>
+              <Fab variant="extended" size="large" onClick={handleStart}>
                 Aloita peli
               </Fab>
             </div>

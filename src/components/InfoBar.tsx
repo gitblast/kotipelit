@@ -1,8 +1,9 @@
 import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { RTCGame } from '../types';
+import { State } from '../types';
 import { Paper, Typography } from '@material-ui/core';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,37 +26,40 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface InfoBarProps {
-  game: RTCGame | null;
-  isHost?: boolean;
-}
-
-const InfoBar: React.FC<InfoBarProps> = ({ game, isHost }) => {
+const InfoBar: React.FC = () => {
   const classes = useStyles();
 
-  const playerWithTurn = React.useMemo(
-    () => game?.players.find((player) => player.hasTurn),
-    [game]
-  );
+  const players = useSelector((state: State) => state.rtc.game?.players);
+  const self = useSelector((state: State) => state.rtc.self);
+
+  const playerWithTurn = React.useMemo(() => {
+    if (!players) {
+      return null;
+    }
+
+    return players.find((player) => player.hasTurn);
+  }, [players]);
 
   const getText = React.useCallback(() => {
     if (playerWithTurn) {
       return (
         <>
-          <span
-            className={classes.turn}
-          >{`Vuorossa: ${playerWithTurn.name}`}</span>
-          {isHost && (
+          <span>
+            {playerWithTurn.id === self?.id
+              ? 'Sinun vuorosi!'
+              : `Vuorossa: ${playerWithTurn.name}`}
+          </span>
+          {self?.isHost && (
             <span>{` - Sanat: ${playerWithTurn.words.join(', ')}`}</span>
           )}
         </>
       );
     }
-  }, [playerWithTurn, isHost]);
+  }, [playerWithTurn, self]);
 
   return (
-    <Paper className={classes.container} square>
-      {game && (
+    <Paper className={classes.container}>
+      {players && (
         <div className={classes.textContainer}>
           <Typography>{getText()}</Typography>
         </div>

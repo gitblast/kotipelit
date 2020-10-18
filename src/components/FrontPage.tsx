@@ -106,13 +106,13 @@ const FrontPage: React.FC = () => {
         <Grid container spacing={4} className={classes.container}>
           <Grid item xs={12}>
             <Typography color="primary" variant="h4">
-              Etsitään pelinhoitajia
+              Järjestä kotipelit
             </Typography>
           </Grid>
           <Grid item xs={12} sm={4}>
             <AppsIcon></AppsIcon>
             <Typography variant="h5">
-              Ilahduta järjestämällä peli-iltoja.
+              Ilahduta järjestämällä peli-iltoja etänä.
             </Typography>
           </Grid>
           <Grid item xs={12} sm={4}>

@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingBottom: theme.spacing(1),
       display: 'flex',
       alignItems: 'center',
-      backgroundColor: 'black',
+      backgroundColor: 'rgba(34, 34, 59)',
       color: 'rgba(218, 214, 214)',
       width: '100%',
     },

@@ -35,7 +35,10 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'space-between',
     },
-    footer: { padding: theme.spacing(2), textAlign: 'center' },
+    footer: {
+      padding: theme.spacing(2),
+      textAlign: 'center',
+    },
     container: {
       width: '100%',
     },

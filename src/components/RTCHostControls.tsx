@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
       width: '100%',
-      backgroundColor: 'black',
+      backgroundColor: 'rgba(34, 34, 59)',
       position: 'relative',
     },
     btnContainer: {

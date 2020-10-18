@@ -12,6 +12,10 @@ import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    container: {
+      width: '90%',
+      margin: 'auto',
+    },
     marginTop: { marginTop: theme.spacing(2) },
   })
 );
@@ -43,7 +47,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   };
 
   return (
-    <div>
+    <div className={classes.container}>
       {filterGamesByStatus('Käynnissä nyt', GameStatus.RUNNING)}
       {filterGamesByStatus('Odottaa pelaajia', GameStatus.WAITING)}
       {filterGamesByStatus('Tulevat pelit', GameStatus.UPCOMING)}

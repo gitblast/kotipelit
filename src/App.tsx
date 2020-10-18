@@ -35,7 +35,13 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'space-between',
     },
-    footer: { padding: theme.spacing(2), textAlign: 'center' },
+    footer: {
+      padding: theme.spacing(2),
+      textAlign: 'center',
+    },
+    container: {
+      width: '100%',
+    },
   })
 );
 
@@ -82,7 +88,7 @@ const App = () => {
           <UserControls user={user} />
         </Toolbar>
       </AppBar>
-      <Container>
+      <div className={classes.container}>
         <Switch>
           {channelRoutes(channels)}
           <Route path="/kirjaudu">
@@ -92,7 +98,7 @@ const App = () => {
             <FrontPage />
           </Route>
         </Switch>
-      </Container>
+      </div>
       <Paper>
         <Typography className={classes.footer} variant="body2">
           &copy; 2020 Spektaakkeli Events

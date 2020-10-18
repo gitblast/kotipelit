@@ -56,6 +56,7 @@ const useStyles = makeStyles((theme: Theme) =>
     tooltipContent: {
       paddingLeft: theme.spacing(1),
       paddingRight: theme.spacing(1),
+      backgroundColor: 'rgba(244, 172, 69)',
     },
     // Repeating same code from HostOverlayItems
     controlIcon: {

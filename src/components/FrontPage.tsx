@@ -3,14 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import {
-  Typography,
-  Grid,
-  Button,
-  Paper,
-  Card,
-  CardMedia,
-} from '@material-ui/core';
+import { Typography, Grid, Button, Paper } from '@material-ui/core';
 
 // icon imports, bundling together requires "minimizing bundle size?"
 import EuroSymbolIcon from '@material-ui/icons/EuroSymbol';
@@ -19,7 +12,14 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    container: { padding: theme.spacing(2), textAlign: 'center' },
+    mainContainer: {
+      width: '90%',
+      margin: 'auto',
+    },
+    container: {
+      padding: theme.spacing(2),
+      textAlign: 'center',
+    },
     media: { height: 150 },
     showcase: {
       backgroundImage: 'url(images/background2.png)',
@@ -64,6 +64,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: 15,
     },
     flexin: {
+      width: '100%',
       display: 'flex',
       alignItems: 'center',
     },
@@ -81,7 +82,7 @@ const FrontPage: React.FC = () => {
   const classes = useStyles();
 
   return (
-    <>
+    <div className={classes.mainContainer}>
       <div className={classes.showcase}>
         <div className={classes.mainInfo}>
           <Typography color="primary" variant="h5">
@@ -105,13 +106,13 @@ const FrontPage: React.FC = () => {
         <Grid container spacing={4} className={classes.container}>
           <Grid item xs={12}>
             <Typography color="primary" variant="h4">
-              Etsitään pelinhoitajia
+              Järjestä kotipelit
             </Typography>
           </Grid>
           <Grid item xs={12} sm={4}>
             <AppsIcon></AppsIcon>
             <Typography variant="h5">
-              Ilahduta järjestämällä peli-iltoja.
+              Ilahduta järjestämällä peli-iltoja etänä.
             </Typography>
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -181,7 +182,7 @@ const FrontPage: React.FC = () => {
           </Grid>
         </Grid>
       </Paper>
-    </>
+    </div>
   );
 };
 

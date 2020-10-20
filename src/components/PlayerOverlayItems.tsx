@@ -3,8 +3,9 @@ import React from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import MicOffIcon from '@material-ui/icons/MicOff';
+import MicIcon from '@material-ui/icons/Mic';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { GameType, State } from '../types';
+import { GameStatus, GameType, RTCPeer, State } from '../types';
 import {
   Paper,
   Typography,
@@ -17,7 +18,7 @@ import {
 
 import logger from '../utils/logger';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { setClicked } from '../reducers/localData.reducer';
+import { setClicked, setMuted } from '../reducers/kotitonni.local.reducer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -61,21 +62,28 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingLeft: theme.spacing(1),
       paddingRight: theme.spacing(1),
     },
+    positionLabel: {
+      position: 'absolute',
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2),
+      margin: theme.spacing(1),
+    },
   })
 );
 
 interface PlayerOverlayItemsProps {
-  playerId: string;
+  peer: RTCPeer;
 }
 
-const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
-  playerId,
-}) => {
+const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
+  const playerId = peer.id;
+
   const classes = useStyles();
   const clickMap = useSelector(
-    (state: State) => state.rtc.localData?.clickedMap
+    (state: State) => state.rtc.localData.clickedMap
   );
-  const timer = useSelector((state: State) => state.rtc.localData?.timer);
+  const mutedMap = useSelector((state: State) => state.rtc.localData.mutedMap);
+  const timer = useSelector((state: State) => state.rtc.localData.timer);
   const dispatch = useDispatch();
   const forHost = useSelector((state: State) => state.rtc.self?.isHost);
   const game = useSelector((state: State) => state.rtc.game);
@@ -87,16 +95,13 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
     if (timer === 0) {
       return true;
     }
-    if (!clickMap) {
-      return false;
-    }
 
     const values = Object.values(clickMap);
 
     return values.some((val) => !!val);
   }, [clickMap, timer]);
 
-  const checked = clickMap && clickMap[playerId];
+  const checked = clickMap[playerId];
 
   const handleChange = () => {
     dispatch(setClicked(playerId, !checked));
@@ -144,28 +149,45 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
   const getPointAddition = (playerId: string, hasTurn: boolean): number => {
     const playerCount = game.players.length;
     const correctAnswers = game.players.reduce((sum, next) => {
-      return clickMap && clickMap[next.id] ? sum + 1 : sum;
+      return clickMap[next.id] ? sum + 1 : sum;
     }, 0);
 
     switch (correctAnswers) {
-      case playerCount - 1: {
+      case playerCount - 1:
         return hasTurn ? -50 : 0;
-      }
-      case 0: {
+      case 0:
         return hasTurn ? -50 : 0;
-      }
-      case 1: {
-        return (clickMap && clickMap[playerId]) || hasTurn ? 100 : 0;
-      }
-      case 2: {
-        return (clickMap && clickMap[playerId]) || hasTurn ? 30 : 0;
-      }
-      case 3: {
-        return (clickMap && clickMap[playerId]) || hasTurn ? 10 : 0;
-      }
+      case 1:
+        return clickMap[playerId] || hasTurn ? 100 : 0;
+      case 2:
+        return clickMap[playerId] || hasTurn ? 30 : 0;
+      case 3:
+        return clickMap[playerId] || hasTurn ? 10 : 0;
     }
 
     return correctAnswers;
+  };
+
+  const getPosition = () => {
+    const pos = game.players
+      .map((player) => player.points)
+      .sort((a, b) => b - a)
+      .indexOf(player.points);
+
+    return pos + 1;
+  };
+
+  const toggleMuted = () => {
+    if (peer.isMe) {
+      // toggle enable/disable audio track if self
+      const audioTracks = peer.stream?.getAudioTracks();
+
+      if (audioTracks && audioTracks.length) {
+        audioTracks[0].enabled = !audioTracks[0].enabled;
+      }
+    }
+
+    dispatch(setMuted(player.id, !mutedMap[playerId]));
   };
 
   const answer = getAnswer();
@@ -176,6 +198,12 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
   if (game.type === GameType.KOTITONNI) {
     return (
       <div className={classes.flexCol}>
+        {forHost && answer && answerBox(answer)}
+        {game.status === GameStatus.FINISHED && (
+          <div className={classes.positionLabel}>
+            <Typography variant="h1">{getPosition()}</Typography>
+          </div>
+        )}
         <div className={classes.flex}>
           <div className={classes.spacer} />
           <Paper className={classes.badge}>
@@ -192,7 +220,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
             </div>
           </Fade>
         )}
-        {forHost && answer && answerBox(answer)}
+
         <div className={classes.spacer} />
         <div className={classes.flex}>
           <Paper className={classes.badge}>
@@ -214,8 +242,9 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
               <div className={classes.spacer} />
             </>
           )}
-          <IconButton size="small">
-            <MicOffIcon />
+
+          <IconButton size="small" onClick={toggleMuted}>
+            {mutedMap[player.id] ? <MicOffIcon color="error" /> : <MicIcon />}
           </IconButton>
           <IconButton size="small">
             <MoreVertIcon />

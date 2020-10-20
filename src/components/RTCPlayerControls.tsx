@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(1),
     },
     timer: {
-      padding: theme.spacing(1),
+      padding: theme.spacing(2),
       margin: theme.spacing(1),
       minWidth: 60,
       textAlign: 'center',
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const RTCPlayerControls: React.FC = () => {
   const classes = useStyles();
   const [answer, setAnswer] = React.useState<string>('');
-  const timer = useSelector((state: State) => state.rtc.localData?.timer);
+  const timer = useSelector((state: State) => state.rtc.localData.timer);
   const game = useSelector((state: State) => state.rtc.game);
   const self = useSelector((state: State) => state.rtc.self);
   const playerSelf = useSelector((state: State) => {
@@ -86,7 +86,7 @@ const RTCPlayerControls: React.FC = () => {
   return (
     <Paper elevation={3} className={classes.container}>
       <Paper className={classes.timer}>
-        <Typography>{timer !== undefined ? timer : 90}</Typography>
+        <Typography>{timer}</Typography>
       </Paper>
       <div>
         <TextField

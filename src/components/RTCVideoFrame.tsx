@@ -80,7 +80,7 @@ const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({ peer, order }) => {
       peer.isHost ? (
         <HostOverlayItems host={peer} />
       ) : (
-        <PlayerOverlayItems playerId={peer.id} />
+        <PlayerOverlayItems peer={peer} />
       ),
     [peer]
   );

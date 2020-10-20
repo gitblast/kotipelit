@@ -8,14 +8,17 @@ import { setGame } from '../reducers/rtcGame.reducer';
 import useAuthSocket from './useAuthSocket';
 import usePeer from './usePeer';
 
-import { RTCGame, RTCGameRoom, RTCPeer, RTCSelf } from '../types';
+import kotitonniLocalData from '../reducers/kotitonni.local.reducer';
+import store, { injectLocalDataReducer } from '../store';
+
+import { GameType, RTCGame, RTCGameRoom, RTCPeer, RTCSelf } from '../types';
 import logger from '../utils/logger';
-import { setTimer } from '../reducers/localData.reducer';
+import { setTimer } from '../reducers/kotitonni.local.reducer';
 
 const useGameRoom = (
   token: string | null,
   mediaStream: MediaStream | null
-): [RTCPeer[] | null, SocketIOClient.Socket | null] => {
+): [RTCPeer[] | null] => {
   const [peers, setPeers] = React.useState<RTCPeer[] | null>(null);
   const [peer, peerError] = usePeer();
   const [onCall, setOnCall] = React.useState<boolean>(false);
@@ -39,6 +42,11 @@ const useGameRoom = (
 
       socket.on('room-joined', (rtcRoom: RTCGameRoom) => {
         logger.log(`recieved a game room`, rtcRoom);
+
+        if (rtcRoom.game.type === GameType.KOTITONNI) {
+          logger.log('injecting local data reducer');
+          injectLocalDataReducer(store, kotitonniLocalData);
+        }
 
         const initialPeers = rtcRoom.players
           .concat(rtcRoom.host)
@@ -243,7 +251,7 @@ const useGameRoom = (
     }
   }, [joinCall, mediaStream, onCall]);
 
-  return [peers, socket];
+  return [peers];
 };
 
 export default useGameRoom;

@@ -20,6 +20,11 @@ import { setClicked } from '../reducers/localData.reducer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    additionBadge: {
+      color: 'grey',
+      margin: theme.spacing(0.5),
+      padding: theme.spacing(1),
+    },
     pointsBadge: {
       margin: theme.spacing(0.5),
       padding: theme.spacing(1),
@@ -182,17 +187,16 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
         <div className={classes.flex}>
           <div className={classes.spacer} />
           <Paper className={classes.pointsBadge}>
-            <Typography variant="h6">{player.points}</Typography>
+            <Typography variant="h5">{player.points}</Typography>
           </Paper>
         </div>
         {true && ( // showPointAddition !!!
           <div className={classes.flex}>
             <div className={classes.spacer} />
-            <Paper className={classes.badge}>
-              <Typography>
-                {getPointAddition(player.id, !!player.hasTurn)}
-              </Typography>
-            </Paper>
+
+            <Typography className={classes.additionBadge}>
+              {getPointAddition(player.id, !!player.hasTurn)}
+            </Typography>
           </div>
         )}
 
@@ -209,13 +213,8 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
           {forHost && answer && (
             <>
               <FormControlLabel
-                control={
-                  <Checkbox
-                    color="primary"
-                    value={checked}
-                    onChange={handleChange}
-                  />
-                }
+                color="primary"
+                control={<Checkbox value={checked} onChange={handleChange} />}
                 label={<Typography variant="overline">Oikein</Typography>}
               />
               <div className={classes.spacer} />

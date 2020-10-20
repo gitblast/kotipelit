@@ -4,6 +4,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { State } from '../types';
 import { Paper, Typography } from '@material-ui/core';
 import { useSelector } from 'react-redux';
+import { url } from 'inspector';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -12,6 +13,7 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingBottom: theme.spacing(1),
       display: 'flex',
       alignItems: 'center',
+      backgroundImage: 'url(images/jazz-theme.jpg)',
       backgroundColor: 'rgba(34, 34, 59)',
       color: 'rgba(218, 214, 214)',
       width: '100%',

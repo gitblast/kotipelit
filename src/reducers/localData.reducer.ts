@@ -29,14 +29,15 @@ export const setLocalData = (data: LocalData): LocalDataAction => {
 export const setClicked = (playerId: string, clicked: boolean) => {
   return (dispatch: Dispatch, getState: () => State) => {
     try {
-      const oldClickedMap = getState().rtc.localData?.clickedMap;
+      const oldData = getState().rtc.localData;
 
       const data: LocalData = {
         gameType: GameType.KOTITONNI,
         clickedMap: {
-          ...oldClickedMap,
+          ...oldData?.clickedMap,
           [playerId]: clicked,
         },
+        timer: oldData?.timer || 90,
       };
 
       dispatch(setLocalData(data));
@@ -46,14 +47,35 @@ export const setClicked = (playerId: string, clicked: boolean) => {
   };
 };
 
-export const resetClicks = () => {
+export const reset = () => {
   return (dispatch: Dispatch) => {
     const data: LocalData = {
       gameType: GameType.KOTITONNI,
       clickedMap: {},
+      timer: 90,
     };
 
     dispatch(setLocalData(data));
+  };
+};
+
+export const setTimer = (value: number) => {
+  return (dispatch: Dispatch, getState: () => State) => {
+    try {
+      const oldData = getState().rtc.localData;
+
+      const data: LocalData = {
+        gameType: GameType.KOTITONNI,
+        clickedMap: {
+          ...oldData?.clickedMap,
+        },
+        timer: value,
+      };
+
+      dispatch(setLocalData(data));
+    } catch (e) {
+      logger.error('error setting timer:', e.message);
+    }
   };
 };
 

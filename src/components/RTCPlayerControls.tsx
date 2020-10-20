@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Fab, Paper, TextField } from '@material-ui/core';
+import { Fab, Paper, TextField, Typography } from '@material-ui/core';
 import { shallowEqual, useSelector } from 'react-redux';
 import { State } from '../types';
 import logger from '../utils/logger';
@@ -19,13 +19,19 @@ const useStyles = makeStyles((theme: Theme) =>
     btnContainer: {
       margin: theme.spacing(1),
     },
+    timer: {
+      padding: theme.spacing(1),
+      margin: theme.spacing(1),
+      minWidth: 60,
+      textAlign: 'center',
+    },
   })
 );
 
 const RTCPlayerControls: React.FC = () => {
   const classes = useStyles();
   const [answer, setAnswer] = React.useState<string>('');
-
+  const timer = useSelector((state: State) => state.rtc.localData?.timer);
   const game = useSelector((state: State) => state.rtc.game);
   const self = useSelector((state: State) => state.rtc.self);
   const playerSelf = useSelector((state: State) => {
@@ -79,6 +85,9 @@ const RTCPlayerControls: React.FC = () => {
 
   return (
     <Paper elevation={3} className={classes.container}>
+      <Paper className={classes.timer}>
+        <Typography>{timer !== undefined ? timer : 90}</Typography>
+      </Paper>
       <div>
         <TextField
           variant="outlined"

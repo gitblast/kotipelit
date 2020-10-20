@@ -8,10 +8,10 @@ import { Fab, Paper } from '@material-ui/core';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import UndoIcon from '@material-ui/icons/Undo';
-import { RTCGame, State } from '../types';
+import { GameStatus, RTCGame, State } from '../types';
 import { useDispatch, useSelector } from 'react-redux';
 import logger from '../utils/logger';
-import { resetClicks } from '../reducers/localData.reducer';
+import { reset, setTimer } from '../reducers/localData.reducer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,7 +36,13 @@ const RTCHostControls: React.FC = () => {
   const classes = useStyles();
 
   const [timerRunning, setTimerRunning] = React.useState<boolean>(false);
-  const [timer, setTimer] = React.useState<number>(90);
+  const timer = useSelector((state: State) => {
+    if (!state.rtc.localData) {
+      return 90;
+    }
+
+    return state.rtc.localData.timer;
+  });
 
   const dispatch = useDispatch();
   const game = useSelector((state: State) => state.rtc.game);
@@ -104,11 +110,17 @@ const RTCHostControls: React.FC = () => {
 
   useInterval(
     () => {
-      setTimer(timer - 1);
-
       if (timer === 1) {
         setTimerRunning(false);
       }
+
+      if (socket) {
+        socket.emit('timer', timer - 1);
+      } else {
+        console.error('no socket set when trying to emit timer change');
+      }
+
+      dispatch(setTimer(timer - 1));
     },
     timerRunning
       ? // eslint-disable-next-line no-undef
@@ -203,6 +215,7 @@ const RTCHostControls: React.FC = () => {
 
     const updatedGame = {
       ...game,
+      status: round > 3 ? GameStatus.FINISHED : game.status,
       players: newPlayers,
       info: {
         ...game.info,
@@ -217,9 +230,7 @@ const RTCHostControls: React.FC = () => {
       setTimerRunning(false);
     }
 
-    dispatch(resetClicks());
-
-    setTimer(90);
+    dispatch(reset());
   };
 
   return (

@@ -42,7 +42,7 @@ const InfoBar: React.FC = () => {
         <>
           <span>
             {playerWithTurn.id === self?.id
-              ? 'Sinun vuorosi!'
+              ? `Sinun vuorosi! - Sanasi: ${playerWithTurn.words.join(', ')}`
               : `Vuorossa: ${playerWithTurn.name}`}
           </span>
           {self?.isHost && (

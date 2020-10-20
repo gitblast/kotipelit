@@ -10,6 +10,7 @@ import usePeer from './usePeer';
 
 import { RTCGame, RTCGameRoom, RTCPeer, RTCSelf } from '../types';
 import logger from '../utils/logger';
+import { setTimer } from '../reducers/localData.reducer';
 
 const useGameRoom = (
   token: string | null,
@@ -85,6 +86,12 @@ const useGameRoom = (
         }));
 
         dispatch(setGame({ ...updatedGame, players: mappedPlayers }));
+      });
+
+      socket.on('timer-changed', (value: number) => {
+        logger.log(`recieved timer change to value ${value}`);
+
+        dispatch(setTimer(value));
       });
 
       socket.on('user-left', (id: string) => {

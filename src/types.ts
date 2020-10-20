@@ -278,6 +278,7 @@ export type LocalData = null | KotitonniHostData;
 export interface KotitonniHostData {
   gameType: GameType.KOTITONNI;
   clickedMap: Record<string, boolean>;
+  timer: number;
 }
 
 export type LocalDataAction = {

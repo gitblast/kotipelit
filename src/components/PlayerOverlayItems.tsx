@@ -12,6 +12,7 @@ import {
   Tooltip,
   FormControlLabel,
   Checkbox,
+  Fade,
 } from '@material-ui/core';
 
 import logger from '../utils/logger';
@@ -50,8 +51,11 @@ const useStyles = makeStyles((theme: Theme) =>
       flex: '1 1 auto',
     },
     tooltipRoot: {
-      marginTop: '10%',
-      marginRight: '30%',
+      position: 'absolute',
+      height: 1,
+      width: 1,
+      top: '27.5%',
+      left: '30%',
     },
     tooltipContent: {
       paddingLeft: theme.spacing(1),
@@ -71,6 +75,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
   const clickMap = useSelector(
     (state: State) => state.rtc.localData?.clickedMap
   );
+  const timer = useSelector((state: State) => state.rtc.localData?.timer);
   const dispatch = useDispatch();
   const forHost = useSelector((state: State) => state.rtc.self?.isHost);
   const game = useSelector((state: State) => state.rtc.game);
@@ -79,22 +84,17 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
     shallowEqual
   );
   const showPointAddition = React.useMemo(() => {
-    if (!game) {
+    if (timer === 0) {
+      return true;
+    }
+    if (!clickMap) {
       return false;
     }
 
-    return (
-      // show is answering is closed and at least one player has answered
-      !game.info.answeringOpen &&
-      game.players.some((player) => {
-        return (
-          player.answers &&
-          player.answers[game.info.round] &&
-          player.answers[game.info.round].length
-        );
-      })
-    );
-  }, [game]);
+    const values = Object.values(clickMap);
+
+    return values.some((val) => !!val);
+  }, [clickMap, timer]);
 
   const checked = clickMap && clickMap[playerId];
 
@@ -132,7 +132,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
         arrow={true}
         placement="top"
       >
-        <div className={`${classes.spacer} ${classes.tooltipRoot}`} />
+        <div className={classes.tooltipRoot} />
       </Tooltip>
     );
   };
@@ -170,6 +170,8 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
 
   const answer = getAnswer();
 
+  const addition = getPointAddition(player.id, !!player.hasTurn);
+
   // handle different game types here
   if (game.type === GameType.KOTITONNI) {
     return (
@@ -180,22 +182,18 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
             <Typography>{player.points}</Typography>
           </Paper>
         </div>
-        {true && ( // showPointAddition !!!
-          <div className={classes.flex}>
-            <div className={classes.spacer} />
-            <Paper className={classes.badge}>
-              <Typography>
-                {getPointAddition(player.id, !!player.hasTurn)}
-              </Typography>
-            </Paper>
-          </div>
+        {showPointAddition && addition !== 0 && (
+          <Fade in>
+            <div className={classes.flex}>
+              <div className={classes.spacer} />
+              <Paper className={classes.badge}>
+                <Typography>{addition}</Typography>
+              </Paper>
+            </div>
+          </Fade>
         )}
-
-        {forHost && answer ? (
-          answerBox(answer)
-        ) : (
-          <div className={classes.spacer} />
-        )}
+        {forHost && answer && answerBox(answer)}
+        <div className={classes.spacer} />
         <div className={classes.flex}>
           <Paper className={classes.badge}>
             <Typography>{player.name}</Typography>
@@ -216,7 +214,6 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
               <div className={classes.spacer} />
             </>
           )}
-
           <IconButton size="small">
             <MicOffIcon />
           </IconButton>

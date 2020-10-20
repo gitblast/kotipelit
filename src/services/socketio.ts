@@ -203,6 +203,10 @@ const attachRTCListeners = (socket: SocketWithToken) => {
     socket.on('update-game', (game: RTCGame) => {
       void callbacks.updateRTCGame(socket, game);
     });
+
+    socket.on('timer', (value: number) => {
+      void callbacks.handleTimerChange(socket, value);
+    });
   }
 };
 

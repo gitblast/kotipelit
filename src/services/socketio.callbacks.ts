@@ -339,6 +339,23 @@ export const updateRTCGame = (socket: SocketWithToken, game: RTCGame): void => {
   }
 };
 
+export const handleTimerChange = (
+  socket: SocketWithToken,
+  value: number
+): void => {
+  // log(`recieved 'timer' from ${socket.decoded_token.username}`);
+
+  try {
+    const { gameId } = socket.decoded_token;
+
+    socket.to(gameId).emit('timer-changed', value);
+  } catch (e) {
+    console.error(e.message);
+
+    socket.emit('rtc_error', e.message);
+  }
+};
+
 export const handleAnswer = (socket: SocketWithToken, answer: Answer): void => {
   log(`recieved 'answer' from ${socket.decoded_token.username}`);
 

@@ -58,7 +58,6 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       justifyContent: 'space-around',
     },
-    cardImg: {},
   })
 );
 
@@ -139,6 +138,7 @@ const NewGame: React.FC = () => {
             value={price}
             onChange={(e) => setPrice(Number(e.target.value))}
           >
+            <MenuItem value={2}>0€</MenuItem>
             <MenuItem value={2}>2€</MenuItem>
             <MenuItem value={3}>3€</MenuItem>
             <MenuItem value={4}>4€</MenuItem>
@@ -166,9 +166,8 @@ const NewGame: React.FC = () => {
               component="img"
               alt="Kotitonni"
               height="200"
-              image="/images/kotitonni-preview.jpg"
+              image="/images/Kotitonni.png"
               title="Kotitonni"
-              className={classes.cardImg}
             />
             <CardContent>
               <Typography gutterBottom variant="h5" component="h2">

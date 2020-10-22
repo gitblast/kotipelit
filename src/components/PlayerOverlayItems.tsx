@@ -29,12 +29,12 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     pointsBadge: {
       margin: theme.spacing(0.5),
-      padding: theme.spacing(1),
+      padding: theme.spacing(1.5),
       borderRadius: '100%',
       backgroundColor: 'black',
       color: 'white',
       opacity: 0.8,
-      minWidth: '10%',
+      minWidth: 50,
     },
     nameBadge: {
       paddingLeft: theme.spacing(1),
@@ -251,8 +251,14 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
             <Paper className={classes.nameBadge}>
               <FormControlLabel
                 color="primary"
-                control={<Checkbox value={checked} onChange={handleChange} />}
-                label={<Typography variant="overline">Oikein</Typography>}
+                control={
+                  <Checkbox
+                    value={checked}
+                    onChange={handleChange}
+                    icon={<span className={classes.controlIcon} />}
+                  />
+                }
+                label={<Typography variant="h6">Oikein</Typography>}
               />
               <div className={classes.spacer} />
             </Paper>

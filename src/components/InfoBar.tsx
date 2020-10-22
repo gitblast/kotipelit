@@ -20,9 +20,9 @@ const useStyles = makeStyles((theme: Theme) =>
     textContainer: {
       marginLeft: theme.spacing(2),
     },
-    turn: {
+    nextUpText: {
       // Keep the same as videoframe hasTurn
-      color: 'rgba(244, 172, 69)',
+      color: 'rgba(199, 204, 57)',
     },
   })
 );
@@ -57,7 +57,7 @@ const InfoBar: React.FC = () => {
 
     return (
       <>
-        <span>
+        <span className={classes.nextUpText}>
           {playerWithTurn.id === self?.id
             ? `Sinun vuorosi! - Sanasi: ${playerWithTurn.words.join(', ')}`
             : `Vuorossa: ${playerWithTurn.name}`}

@@ -39,7 +39,8 @@ const useStyles = makeStyles((theme: Theme) =>
     footer: {
       padding: theme.spacing(2),
       textAlign: 'center',
-      backgroundColor: 'rgba(218,231,231)',
+      color: 'white',
+      backgroundColor: 'rgba(129,129,129)',
     },
     container: {
       width: '100%',

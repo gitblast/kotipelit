@@ -86,7 +86,7 @@ const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({ host }) => {
         <div className={classes.spacer} />
         <div className={classes.flex}>
           <Paper className={classes.badge}>
-            <Typography>{host.displayName}</Typography>
+            <Typography variant="h5">{host.displayName}</Typography>
           </Paper>
           <div className={classes.spacer} />
           <IconButton size="small" onClick={toggleMuted}>

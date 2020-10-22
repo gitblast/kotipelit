@@ -15,15 +15,22 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingTop: theme.spacing(1),
       paddingBottom: theme.spacing(1),
       width: '100%',
+      backgroundColor: 'Black',
     },
     btnContainer: {
       margin: theme.spacing(1),
+      backgroundColor: 'primary',
     },
     timer: {
       padding: theme.spacing(2),
       margin: theme.spacing(1),
       minWidth: 60,
       textAlign: 'center',
+      backgroundColor: 'rgba(179,49,49)',
+      color: 'white',
+    },
+    answerField: {
+      backgroundColor: 'white',
     },
   })
 );
@@ -84,13 +91,13 @@ const RTCPlayerControls: React.FC = () => {
   const disabled = isDisabled();
 
   return (
-    <Paper elevation={3} className={classes.container}>
+    <Paper elevation={3} className={classes.container} square>
       <Paper className={classes.timer}>
         <Typography>{timer}</Typography>
       </Paper>
-      <div>
+      <div className={classes.answerField}>
         <TextField
-          variant="outlined"
+          variant="filled"
           label="Vastaus"
           value={answer}
           onChange={({ target }) => setAnswer(target.value)}

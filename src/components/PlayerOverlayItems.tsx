@@ -244,7 +244,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
         <div className={classes.spacer} />
         <div className={classes.flex}>
           <Paper className={classes.nameBadge}>
-            <Typography>{player.name}</Typography>
+            <Typography variant="h5">{player.name}</Typography>
           </Paper>
           <div className={classes.spacer} />
           {forHost && answer && (

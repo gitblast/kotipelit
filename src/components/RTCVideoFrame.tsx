@@ -25,12 +25,12 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     frame: {
       paddingTop: '75%',
-      backgroundColor: 'rgba(43,16,8)',
+      backgroundColor: 'rgba(126,126,126)',
       position: 'relative',
       color: 'white',
     },
     hasTurn: {
-      boxShadow: '0 0 4px 5px rgba(172, 190, 72)',
+      boxShadow: '0 0 4px 5px rgba(127, 129, 38)',
     },
     placeHolderText: {
       position: 'absolute',

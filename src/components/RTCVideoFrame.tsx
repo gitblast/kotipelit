@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'white',
     },
     hasTurn: {
-      boxShadow: '0 0 4px 5px rgba(244, 172, 69)',
+      boxShadow: '0 0 4px 5px rgba(172, 190, 72)',
     },
     placeHolderText: {
       position: 'absolute',

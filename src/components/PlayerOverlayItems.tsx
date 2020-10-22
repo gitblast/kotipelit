@@ -56,18 +56,24 @@ const useStyles = makeStyles((theme: Theme) =>
       // fills empty space
       flex: '1 1 auto',
     },
-    tooltipRoot: {
+    answerBubble: {
       position: 'absolute',
-      height: 1,
-      width: 1,
-      top: '27.5%',
-      left: '30%',
+      width: 'fit-content',
+      padding: theme.spacing(1),
+      margin: theme.spacing(1),
     },
-    tooltipContent: {
-      paddingLeft: theme.spacing(1),
-      paddingRight: theme.spacing(1),
-      backgroundColor: 'rgba(244, 172, 69)',
-    },
+    // tooltipRoot: {
+    //   position: 'absolute',
+    //   height: 1,
+    //   width: 1,
+    //   top: '27.5%',
+    //   left: '30%',
+    // },
+    // tooltipContent: {
+    //   paddingLeft: theme.spacing(1),
+    //   paddingRight: theme.spacing(1),
+    //   backgroundColor: 'rgba(244, 172, 69)',
+    // },
     // Repeating same code from HostOverlayItems
     controlIcon: {
       color: 'white',
@@ -135,20 +141,23 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
 
   const answerBox = (answer: string) => {
     return (
-      <Tooltip
-        title={
-          <div className={classes.tooltipContent}>
-            <Typography variant="h4" component="div">
-              {answer}
-            </Typography>
-          </div>
-        }
-        open={true}
-        arrow={true}
-        placement="top"
-      >
-        <div className={classes.tooltipRoot} />
-      </Tooltip>
+      <Paper className={classes.answerBubble}>
+        <Typography variant="h5">{answer}</Typography>
+      </Paper>
+      // <Tooltip
+      //   title={
+      //     <div className={classes.tooltipContent}>
+      //       <Typography variant="h4" component="div">
+      //         {answer}
+      //       </Typography>
+      //     </div>
+      //   }
+      //   open={true}
+      //   arrow={true}
+      //   placement="top"
+      // >
+      //   <div className={classes.tooltipRoot} />
+      // </Tooltip>
     );
   };
 
@@ -239,17 +248,21 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
           </Paper>
           <div className={classes.spacer} />
           {forHost && answer && (
-            <>
+            <Paper className={classes.nameBadge}>
               <FormControlLabel
                 color="primary"
                 control={<Checkbox value={checked} onChange={handleChange} />}
                 label={<Typography variant="overline">Oikein</Typography>}
               />
               <div className={classes.spacer} />
-            </>
+            </Paper>
           )}
 
-          <IconButton size="small" onClick={toggleMuted}>
+          <IconButton
+            size="small"
+            onClick={toggleMuted}
+            className={classes.controlIcon}
+          >
             {mutedMap[player.id] ? <MicOffIcon color="error" /> : <MicIcon />}
           </IconButton>
           <IconButton size="small" className={classes.controlIcon}>

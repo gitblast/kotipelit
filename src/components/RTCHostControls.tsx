@@ -243,7 +243,7 @@ const RTCHostControls: React.FC = () => {
   };
 
   return (
-    <Paper elevation={3} className={classes.container}>
+    <Paper elevation={3} className={classes.container} square>
       {game?.status === GameStatus.FINISHED ? (
         <div className={classes.btnContainer}>
           <Fab variant="extended" color="secondary" onClick={() => null}>

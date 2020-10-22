@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     section: {
-      backgroundColor: 'rgba(236, 242, 248)',
+      backgroundColor: 'rgba(245, 245, 248)',
     },
     sectionB: {
       marginBottom: 15,

@@ -13,8 +13,7 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingBottom: theme.spacing(1),
       display: 'flex',
       alignItems: 'center',
-      backgroundImage: 'url(images/jazz-theme.jpg)',
-      backgroundColor: 'rgba(34, 34, 59)',
+      backgroundColor: 'rgba(15, 17, 15)',
       color: 'rgba(218, 214, 214)',
       width: '100%',
     },
@@ -60,7 +59,7 @@ const InfoBar: React.FC = () => {
   }, [playerWithTurn, self]);
 
   return (
-    <Paper className={classes.container}>
+    <Paper className={classes.container} square>
       {players && (
         <div className={classes.textContainer}>
           <Typography>{getText()}</Typography>

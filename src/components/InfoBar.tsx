@@ -4,6 +4,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { GameStatus, State } from '../types';
 import { Paper, Typography } from '@material-ui/core';
 import { useSelector } from 'react-redux';
+import { url } from 'inspector';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -12,7 +13,7 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingBottom: theme.spacing(1),
       display: 'flex',
       alignItems: 'center',
-      backgroundColor: 'rgba(34, 34, 59)',
+      backgroundColor: 'rgba(15, 17, 15)',
       color: 'rgba(218, 214, 214)',
       width: '100%',
     },
@@ -69,7 +70,7 @@ const InfoBar: React.FC = () => {
   };
 
   return (
-    <Paper className={classes.container}>
+    <Paper className={classes.container} square>
       {players && (
         <div className={classes.textContainer}>
           <Typography>{getText()}</Typography>

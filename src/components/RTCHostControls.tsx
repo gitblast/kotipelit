@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
       width: '100%',
-      backgroundColor: 'rgba(34, 34, 59)',
+      backgroundColor: 'rgba(15, 17, 15)',
       position: 'relative',
     },
     btnContainer: {
@@ -44,9 +44,10 @@ const useStyles = makeStyles((theme: Theme) =>
     timerContainer: {
       textAlign: 'center',
       width: 30,
+      backgroundImage: 'url(images/timer.png)',
     },
     timerBtn: {
-      backgroundColor: 'rgba(244, 172, 69)',
+      backgroundColor: 'secondary',
     },
   })
 );

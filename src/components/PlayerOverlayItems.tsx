@@ -22,7 +22,11 @@ import { setClicked, setMuted } from '../reducers/kotitonni.local.reducer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    bagde: {},
+    additionBadge: {
+      color: 'grey',
+      margin: theme.spacing(0.5),
+      padding: theme.spacing(1),
+    },
     pointsBadge: {
       margin: theme.spacing(0.5),
       padding: theme.spacing(1),
@@ -213,16 +217,17 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
         <div className={classes.flex}>
           <div className={classes.spacer} />
           <Paper className={classes.pointsBadge}>
-            <Typography variant="h6">{player.points}</Typography>
+            <Typography variant="h5">{player.points}</Typography>
           </Paper>
         </div>
         {showPointAddition && addition !== 0 && (
           <Fade in>
             <div className={classes.flex}>
               <div className={classes.spacer} />
-              <Paper>
-                <Typography>{addition}</Typography>
-              </Paper>
+
+              <Typography className={classes.additionBadge}>
+                {addition}
+              </Typography>
             </div>
           </Fade>
         )}
@@ -236,13 +241,8 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
           {forHost && answer && (
             <>
               <FormControlLabel
-                control={
-                  <Checkbox
-                    color="primary"
-                    value={checked}
-                    onChange={handleChange}
-                  />
-                }
+                color="primary"
+                control={<Checkbox value={checked} onChange={handleChange} />}
                 label={<Typography variant="overline">Oikein</Typography>}
               />
               <div className={classes.spacer} />

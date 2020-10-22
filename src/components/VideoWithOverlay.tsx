@@ -1,7 +1,8 @@
 import React from 'react';
 
 import { makeStyles, createStyles } from '@material-ui/core/styles';
-import { RTCPeer } from '../types';
+import { RTCPeer, State } from '../types';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -31,6 +32,7 @@ const VideoWithOverlay: React.FC<VideoWithOverlayProps> = ({
   children,
 }) => {
   const classes = useStyles();
+  const mutedMap = useSelector((state: State) => state.rtc.localData.mutedMap);
 
   return (
     <div className={classes.frame}>
@@ -43,7 +45,7 @@ const VideoWithOverlay: React.FC<VideoWithOverlayProps> = ({
         }}
         autoPlay
         playsInline
-        muted={peer.isMe}
+        muted={peer.isMe || mutedMap[peer.id]}
       />
       <div className={classes.absolute} id="overlayContainer">
         {children}

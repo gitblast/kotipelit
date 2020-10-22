@@ -273,17 +273,38 @@ export type Action =
       type: ActionType.CLEAR_ERROR;
     };
 
-export type LocalData = null | KotitonniHostData;
+export type LocalData = KotitonniLocalData;
 
-export interface KotitonniHostData {
-  gameType: GameType.KOTITONNI;
+export type LocalDataAction = KotitonniLocalAction;
+
+export interface KotitonniLocalData {
   clickedMap: Record<string, boolean>;
+  timer: number;
+  mutedMap: Record<string, boolean>;
 }
 
-export type LocalDataAction = {
-  type: 'SET_DATA';
-  payload: LocalData;
-};
+export type KotitonniLocalAction =
+  | {
+      type: 'SET_CLICK';
+      payload: {
+        playerId: string;
+        clicked: boolean;
+      };
+    }
+  | {
+      type: 'SET_TIMER';
+      payload: number;
+    }
+  | {
+      type: 'SET_MUTED';
+      payload: {
+        playerId: string;
+        muted: boolean;
+      };
+    }
+  | {
+      type: 'RESET';
+    };
 
 export type RTCGameAction = {
   type: 'SET_GAME';

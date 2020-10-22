@@ -8,11 +8,10 @@ import { Fab, Paper } from '@material-ui/core';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import UndoIcon from '@material-ui/icons/Undo';
-import FullscreenIcon from '@material-ui/icons/Fullscreen';
-import { RTCGame, State } from '../types';
+import { GameStatus, RTCGame, State } from '../types';
 import { useDispatch, useSelector } from 'react-redux';
 import logger from '../utils/logger';
-import { resetClicks } from '../reducers/localData.reducer';
+import { reset, setTimer } from '../reducers/kotitonni.local.reducer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -56,13 +55,13 @@ const RTCHostControls: React.FC = () => {
   const classes = useStyles();
 
   const [timerRunning, setTimerRunning] = React.useState<boolean>(false);
-  const [timer, setTimer] = React.useState<number>(90);
+  const timer = useSelector((state: State) => state.rtc.localData.timer);
 
   const dispatch = useDispatch();
   const game = useSelector((state: State) => state.rtc.game);
   const socket = useSelector((state: State) => state.rtc.self?.socket);
   const clickMap = useSelector(
-    (state: State) => state.rtc.localData?.clickedMap
+    (state: State) => state.rtc.localData.clickedMap
   );
 
   const handleUpdate = React.useCallback(
@@ -124,11 +123,17 @@ const RTCHostControls: React.FC = () => {
 
   useInterval(
     () => {
-      setTimer(timer - 1);
-
       if (timer === 1) {
         setTimerRunning(false);
       }
+
+      if (socket) {
+        socket.emit('timer', timer - 1);
+      } else {
+        console.error('no socket set when trying to emit timer change');
+      }
+
+      dispatch(setTimer(timer - 1));
     },
     timerRunning
       ? // eslint-disable-next-line no-undef
@@ -178,25 +183,20 @@ const RTCHostControls: React.FC = () => {
     const getPointAddition = (playerId: string, hasTurn: boolean): number => {
       const playerCount = game.players.length;
       const correctAnswers = game.players.reduce((sum, next) => {
-        return clickMap && clickMap[next.id] ? sum + 1 : sum;
+        return clickMap[next.id] ? sum + 1 : sum;
       }, 0);
 
       switch (correctAnswers) {
-        case playerCount - 1: {
+        case playerCount - 1:
           return hasTurn ? -50 : 0;
-        }
-        case 0: {
+        case 0:
           return hasTurn ? -50 : 0;
-        }
-        case 1: {
-          return (clickMap && clickMap[playerId]) || hasTurn ? 100 : 0;
-        }
-        case 2: {
-          return (clickMap && clickMap[playerId]) || hasTurn ? 30 : 0;
-        }
-        case 3: {
-          return (clickMap && clickMap[playerId]) || hasTurn ? 10 : 0;
-        }
+        case 1:
+          return clickMap[playerId] || hasTurn ? 100 : 0;
+        case 2:
+          return clickMap[playerId] || hasTurn ? 30 : 0;
+        case 3:
+          return clickMap[playerId] || hasTurn ? 10 : 0;
       }
 
       return correctAnswers;
@@ -223,6 +223,7 @@ const RTCHostControls: React.FC = () => {
 
     const updatedGame = {
       ...game,
+      status: round > 3 ? GameStatus.FINISHED : game.status,
       players: newPlayers,
       info: {
         ...game.info,
@@ -237,43 +238,47 @@ const RTCHostControls: React.FC = () => {
       setTimerRunning(false);
     }
 
-    dispatch(resetClicks());
-
-    setTimer(90);
+    dispatch(reset());
   };
 
   return (
-    <Paper elevation={3} className={classes.container} square>
-      <div className={classes.btnContainer}>
-        <Fab
-          variant="extended"
-          size="large"
-          color={timerRunning ? 'primary' : 'secondary'}
-          onClick={toggleTimer}
-          className={classes.timerBtn}
-        >
-          {timerRunning ? <PauseIcon /> : <PlayArrowIcon />}
-          <div className={classes.timerContainer}>{timer}</div>
-        </Fab>
-      </div>
-      <div className={classes.btnContainer}>
-        <Fab
-          variant="extended"
-          color="secondary"
-          onClick={handlePointUpdate}
-          disabled={!game ? true : game.info.answeringOpen}
-        >
-          Päivitä pisteet
-        </Fab>
-      </div>
-      <div className={classes.btnContainer}>
-        <Fab size="medium" className={classes.returnPoints}>
-          <UndoIcon />
-        </Fab>
-      </div>
-      <div className={classes.fullScreen}>
-        <FullscreenIcon />
-      </div>
+    <Paper elevation={3} className={classes.container}>
+      {game?.status === GameStatus.FINISHED ? (
+        <div className={classes.btnContainer}>
+          <Fab variant="extended" color="secondary" onClick={() => null}>
+            Lopeta peli
+          </Fab>
+        </div>
+      ) : (
+        <>
+          <div className={classes.btnContainer}>
+            <Fab
+              variant="extended"
+              size="large"
+              color={timerRunning ? 'primary' : 'secondary'}
+              onClick={toggleTimer}
+            >
+              {timerRunning ? <PauseIcon /> : <PlayArrowIcon />}
+              <div className={classes.timerContainer}>{timer}</div>
+            </Fab>
+          </div>
+          <div className={classes.btnContainer}>
+            <Fab
+              variant="extended"
+              color="secondary"
+              onClick={handlePointUpdate}
+              disabled={!game ? true : game.info.answeringOpen}
+            >
+              Päivitä pisteet
+            </Fab>
+          </div>
+          <div className={classes.btnContainer}>
+            <Fab size="medium" color="secondary">
+              <UndoIcon />
+            </Fab>
+          </div>
+        </>
+      )}
     </Paper>
   );
 };

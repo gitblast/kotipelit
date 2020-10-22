@@ -3,8 +3,9 @@ import React from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import MicOffIcon from '@material-ui/icons/MicOff';
+import MicIcon from '@material-ui/icons/Mic';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { GameType, State } from '../types';
+import { GameStatus, GameType, RTCPeer, State } from '../types';
 import {
   Paper,
   Typography,
@@ -12,14 +13,16 @@ import {
   Tooltip,
   FormControlLabel,
   Checkbox,
+  Fade,
 } from '@material-ui/core';
 
 import logger from '../utils/logger';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { setClicked } from '../reducers/localData.reducer';
+import { setClicked, setMuted } from '../reducers/kotitonni.local.reducer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    bagde: {},
     pointsBadge: {
       margin: theme.spacing(0.5),
       padding: theme.spacing(1),
@@ -50,8 +53,11 @@ const useStyles = makeStyles((theme: Theme) =>
       flex: '1 1 auto',
     },
     tooltipRoot: {
-      marginTop: '5%',
-      marginRight: '5%',
+      position: 'absolute',
+      height: 1,
+      width: 1,
+      top: '27.5%',
+      left: '30%',
     },
     tooltipContent: {
       paddingLeft: theme.spacing(1),
@@ -62,20 +68,28 @@ const useStyles = makeStyles((theme: Theme) =>
     controlIcon: {
       color: 'white',
     },
+    positionLabel: {
+      position: 'absolute',
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2),
+      margin: theme.spacing(1),
+    },
   })
 );
 
 interface PlayerOverlayItemsProps {
-  playerId: string;
+  peer: RTCPeer;
 }
 
-const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
-  playerId,
-}) => {
+const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
+  const playerId = peer.id;
+
   const classes = useStyles();
   const clickMap = useSelector(
-    (state: State) => state.rtc.localData?.clickedMap
+    (state: State) => state.rtc.localData.clickedMap
   );
+  const mutedMap = useSelector((state: State) => state.rtc.localData.mutedMap);
+  const timer = useSelector((state: State) => state.rtc.localData.timer);
   const dispatch = useDispatch();
   const forHost = useSelector((state: State) => state.rtc.self?.isHost);
   const game = useSelector((state: State) => state.rtc.game);
@@ -84,24 +98,16 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
     shallowEqual
   );
   const showPointAddition = React.useMemo(() => {
-    if (!game) {
-      return false;
+    if (timer === 0) {
+      return true;
     }
 
-    return (
-      // show is answering is closed and at least one player has answered
-      !game.info.answeringOpen &&
-      game.players.some((player) => {
-        return (
-          player.answers &&
-          player.answers[game.info.round] &&
-          player.answers[game.info.round].length
-        );
-      })
-    );
-  }, [game]);
+    const values = Object.values(clickMap);
 
-  const checked = clickMap && clickMap[playerId];
+    return values.some((val) => !!val);
+  }, [clickMap, timer]);
+
+  const checked = clickMap[playerId];
 
   const handleChange = () => {
     dispatch(setClicked(playerId, !checked));
@@ -137,7 +143,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
         arrow={true}
         placement="top"
       >
-        <div className={`${classes.spacer} ${classes.tooltipRoot}`} />
+        <div className={classes.tooltipRoot} />
       </Tooltip>
     );
   };
@@ -149,58 +155,79 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
   const getPointAddition = (playerId: string, hasTurn: boolean): number => {
     const playerCount = game.players.length;
     const correctAnswers = game.players.reduce((sum, next) => {
-      return clickMap && clickMap[next.id] ? sum + 1 : sum;
+      return clickMap[next.id] ? sum + 1 : sum;
     }, 0);
 
     switch (correctAnswers) {
-      case playerCount - 1: {
+      case playerCount - 1:
         return hasTurn ? -50 : 0;
-      }
-      case 0: {
+      case 0:
         return hasTurn ? -50 : 0;
-      }
-      case 1: {
-        return (clickMap && clickMap[playerId]) || hasTurn ? 100 : 0;
-      }
-      case 2: {
-        return (clickMap && clickMap[playerId]) || hasTurn ? 30 : 0;
-      }
-      case 3: {
-        return (clickMap && clickMap[playerId]) || hasTurn ? 10 : 0;
-      }
+      case 1:
+        return clickMap[playerId] || hasTurn ? 100 : 0;
+      case 2:
+        return clickMap[playerId] || hasTurn ? 30 : 0;
+      case 3:
+        return clickMap[playerId] || hasTurn ? 10 : 0;
     }
 
     return correctAnswers;
   };
 
+  const getPosition = () => {
+    const pos = game.players
+      .map((player) => player.points)
+      .sort((a, b) => b - a)
+      .indexOf(player.points);
+
+    return pos + 1;
+  };
+
+  const toggleMuted = () => {
+    if (peer.isMe) {
+      // toggle enable/disable audio track if self
+      const audioTracks = peer.stream?.getAudioTracks();
+
+      if (audioTracks && audioTracks.length) {
+        audioTracks[0].enabled = !audioTracks[0].enabled;
+      }
+    }
+
+    dispatch(setMuted(player.id, !mutedMap[playerId]));
+  };
+
   const answer = getAnswer();
+
+  const addition = getPointAddition(player.id, !!player.hasTurn);
 
   // handle different game types here
   if (game.type === GameType.KOTITONNI) {
     return (
       <div className={classes.flexCol}>
+        {forHost && answer && answerBox(answer)}
+        {game.status === GameStatus.FINISHED && (
+          <div className={classes.positionLabel}>
+            <Typography variant="h1">{getPosition()}</Typography>
+          </div>
+        )}
         <div className={classes.flex}>
           <div className={classes.spacer} />
           <Paper className={classes.pointsBadge}>
             <Typography variant="h6">{player.points}</Typography>
           </Paper>
         </div>
-        {true && ( // showPointAddition !!!
-          <div className={classes.flex}>
-            <div className={classes.spacer} />
-            <Paper className={classes.badge}>
-              <Typography>
-                {getPointAddition(player.id, !!player.hasTurn)}
-              </Typography>
-            </Paper>
-          </div>
+        {showPointAddition && addition !== 0 && (
+          <Fade in>
+            <div className={classes.flex}>
+              <div className={classes.spacer} />
+              <Paper>
+                <Typography>{addition}</Typography>
+              </Paper>
+            </div>
+          </Fade>
         )}
 
-        {forHost && answer ? (
-          answerBox(answer)
-        ) : (
-          <div className={classes.spacer} />
-        )}
+        <div className={classes.spacer} />
         <div className={classes.flex}>
           <Paper className={classes.nameBadge}>
             <Typography>{player.name}</Typography>
@@ -222,8 +249,8 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
             </>
           )}
 
-          <IconButton size="small" className={classes.controlIcon}>
-            <MicOffIcon />
+          <IconButton size="small" onClick={toggleMuted}>
+            {mutedMap[player.id] ? <MicOffIcon color="error" /> : <MicIcon />}
           </IconButton>
           <IconButton size="small" className={classes.controlIcon}>
             <MoreVertIcon />

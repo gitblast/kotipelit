@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { State } from '../types';
+import { GameStatus, State } from '../types';
 import { Paper, Typography } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 
@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const InfoBar: React.FC = () => {
   const classes = useStyles();
 
+  const gameStatus = useSelector((state: State) => state.rtc.game?.status);
   const players = useSelector((state: State) => state.rtc.game?.players);
   const self = useSelector((state: State) => state.rtc.self);
 
@@ -40,22 +41,32 @@ const InfoBar: React.FC = () => {
     return players.find((player) => player.hasTurn);
   }, [players]);
 
-  const getText = React.useCallback(() => {
-    if (playerWithTurn) {
+  const getText = () => {
+    if (!playerWithTurn) {
+      return null;
+    }
+
+    if (gameStatus === GameStatus.FINISHED) {
       return (
-        <>
-          <span>
-            {playerWithTurn.id === self?.id
-              ? 'Sinun vuorosi!'
-              : `Vuorossa: ${playerWithTurn.name}`}
-          </span>
-          {self?.isHost && (
-            <span>{` - Sanat: ${playerWithTurn.words.join(', ')}`}</span>
-          )}
-        </>
+        <span>
+          Peli on päättynyt! Kiitos osallistumisesta. Muista antaa palautetta.
+        </span>
       );
     }
-  }, [playerWithTurn, self]);
+
+    return (
+      <>
+        <span>
+          {playerWithTurn.id === self?.id
+            ? `Sinun vuorosi! - Sanasi: ${playerWithTurn.words.join(', ')}`
+            : `Vuorossa: ${playerWithTurn.name}`}
+        </span>
+        {self?.isHost && (
+          <span>{` - Sanat: ${playerWithTurn.words.join(', ')}`}</span>
+        )}
+      </>
+    );
+  };
 
   return (
     <Paper className={classes.container}>

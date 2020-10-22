@@ -135,9 +135,9 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
       <InfoBar />
       <RTCVideoConference peers={peersWithOwnStreamSet} />
       {isHost ? (
-        game.status === GameStatus.RUNNING && <RTCHostControls />
+        <RTCHostControls />
       ) : (
-        <RTCPlayerControls />
+        game.status === GameStatus.RUNNING && <RTCPlayerControls />
       )}
       <Backdrop
         open={game.status === GameStatus.WAITING}

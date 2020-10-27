@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Typography, Grid, Button, Paper } from '@material-ui/core';
+import { Typography, Grid, Button, Paper, Container } from '@material-ui/core';
 
 // icon imports, bundling together requires "minimizing bundle size?"
 import EuroSymbolIcon from '@material-ui/icons/EuroSymbol';
@@ -83,7 +83,7 @@ const FrontPage: React.FC = () => {
 
   return (
     <div className={classes.mainContainer}>
-      <div className={classes.showcase}>
+      <Container className={classes.showcase}>
         <div className={classes.mainInfo}>
           <Typography color="primary" variant="h5">
             Peli-iltojen yhteinen osoite.
@@ -99,7 +99,7 @@ const FrontPage: React.FC = () => {
             Järjestä peli-ilta
           </Button>
         </div>
-      </div>
+      </Container>
 
       <Paper elevation={1} className={classes.section}>
         {/* Pelinhoitajainfo A */}

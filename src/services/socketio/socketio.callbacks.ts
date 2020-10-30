@@ -36,7 +36,9 @@ export const handleHostDisconnect = (io: Server, socket: Socket): void => {
       );
     }
 
-    logger.log(`host disconnected, emitting update game to room ${room.game.id}`);
+    logger.log(
+      `host disconnected, emitting update game to room ${room.game.id}`
+    );
     room.game.hostOnline = false;
 
     const { event, data } = events.gameUpdated(room.game);
@@ -136,7 +138,7 @@ export const startGame = async (
     const game = roomService.getRoomGame(gameId);
 
     if (game.status === GameStatus.RUNNING)
-    logger.error(`Game with id '${gameId}' already running!`);
+      logger.error(`Game with id '${gameId}' already running!`);
 
     const startedGame = roomService.updateRoomGame(gameId, {
       ...game,
@@ -236,7 +238,22 @@ export const joinRTCRoom = async (
       self = joinedRoom.players.find((player) => player.id === id);
     }
 
-    socket.emit('room-joined', joinedRoom);
+    // hide invite codes if not host
+    const returnedRoom =
+      role === Role.HOST
+        ? joinedRoom
+        : {
+            ...joinedRoom,
+            game: {
+              ...joinedRoom.game,
+              players: joinedRoom.game.players.map((player) => ({
+                ...player,
+                inviteCode: undefined,
+              })),
+            },
+          };
+
+    socket.emit('room-joined', returnedRoom);
     socket.to(gameId).emit('user-joined', self);
   } catch (e) {
     logger.error(e.message);

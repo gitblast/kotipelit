@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import mongoose, { Schema } from 'mongoose';
-import { GameStatus, GameModel, GamePlayer } from '../types';
+import { GameStatus, GameModel } from '../types';
 
 const gameSchema: Schema = new Schema({
   type: { type: String, required: true },
@@ -15,28 +15,11 @@ const gameSchema: Schema = new Schema({
   price: { type: Number, required: true },
 });
 
-interface JSONGamePlayer extends Omit<GamePlayer, 'inviteCode'> {
-  inviteCode?: string;
-}
-
-interface JSONGameModel extends Omit<GameModel, 'players'> {
-  players: JSONGamePlayer[];
-}
-
 gameSchema.set('toJSON', {
-  transform: (_document, returnedObject: JSONGameModel) => {
+  transform: (_document, returnedObject: GameModel) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;
-    returnedObject.players = returnedObject.players.map((player) => {
-      const mapped = { ...player };
-
-      if (process.env.NODE_ENV !== 'development') {
-        delete mapped.inviteCode;
-      }
-
-      return mapped;
-    });
   },
 });
 

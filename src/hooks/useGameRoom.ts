@@ -35,6 +35,22 @@ const useGameRoom = (
   }, [peer]);
 
   React.useEffect(() => {
+    return () => {
+      if (peer?.destroyed && peers) {
+        logger.log('closing all calls');
+
+        peers.forEach((peerObj) => {
+          if (peerObj.call) {
+            console.log('closing call with peer', peerObj.displayName);
+
+            peerObj.call.close();
+          }
+        });
+      }
+    };
+  }, [peer, peers]);
+
+  React.useEffect(() => {
     if (socket && peer) {
       logger.log(`emitting join-gameroom with peer id ${peer.id}`);
 
@@ -115,16 +131,22 @@ const useGameRoom = (
               return peerObj;
             }
 
-            if (peerObj.call) {
+            logger.log('test: not setting call / stream to null on user left');
+
+            /**
+             
+              if (peerObj.call) {
               peerObj.call.close();
-            }
+            } 
+            
+            */
 
             return {
               ...peerObj,
               socketId: null,
-              peerId: null,
-              call: null,
-              stream: null,
+              //peerId: null,
+              //call: null,
+              //stream: null,
             };
           });
         });
@@ -140,6 +162,8 @@ const useGameRoom = (
           }`
         );
 
+        logger.log('test: not setting new user call & stream to null');
+
         setPeers((currentPeers) => {
           if (!currentPeers) {
             return currentPeers;
@@ -147,7 +171,7 @@ const useGameRoom = (
 
           return currentPeers.map((peerObj) =>
             peerObj.id === newUser.id
-              ? { ...newUser, call: null, stream: null }
+              ? { ...newUser, call: peerObj.call, stream: peerObj.stream }
               : peerObj
           );
         });
@@ -158,13 +182,13 @@ const useGameRoom = (
   const joinCall = React.useCallback(
     (mediaStream: MediaStream) => {
       if (!peers) {
-        console.error('no peers set when trying to call!');
+        logger.error('no peers set when trying to call!');
 
         return;
       }
 
       if (!peer) {
-        console.error('no peer client set when trying to call!');
+        logger.error('no peer client set when trying to call!');
 
         return;
       }
@@ -181,7 +205,7 @@ const useGameRoom = (
             );
 
             if (!user) {
-              console.error(`no user found matching call peer id`);
+              logger.error(`no user found matching call peer id`);
 
               return currentPeers;
             }

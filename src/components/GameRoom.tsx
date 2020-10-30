@@ -9,7 +9,7 @@ import RTCHostControls from './RTCHostControls';
 import RTCPlayerControls from './RTCPlayerControls';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import logger from '../utils/logger';
+import logger, { setDebug } from '../utils/logger';
 import { Backdrop, Fab, Typography } from '@material-ui/core';
 import Loader from './Loader';
 import { GameStatus, State } from '../types';
@@ -49,6 +49,10 @@ interface GameRoomProps {
   token: string | null;
   isHost?: boolean;
 }
+
+console.log('setting logger debug to true in gameroom component');
+
+setDebug(true);
 
 const MEDIA_CONSTRAINTS = {
   audio: true,

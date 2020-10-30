@@ -5,8 +5,8 @@ import { logout } from '../reducers/user.reducer';
 import { Typography, Button } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
-import { User } from '../types';
-import { useDispatch } from 'react-redux';
+import { State, User } from '../types';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 interface UserControlsProps {
@@ -15,17 +15,33 @@ interface UserControlsProps {
 
 const UserControls: React.FC<UserControlsProps> = ({ user }) => {
   const dispatch = useDispatch();
-
+  const gameRunning = useSelector((state: State) => !!state.rtc.game);
   const history = useHistory();
+
+  const handleClick = () => {
+    if (
+      gameRunning &&
+      !window.confirm(
+        'Tämä katkaisee yhteyden meneillään olevaan peliin. Haluatko silti jatkaa?'
+      )
+    ) {
+      return;
+    }
+
+    history.push('/kirjaudu');
+  };
 
   const handleLogout = () => {
     dispatch(logout());
-    history.push('/');
+
+    if (!gameRunning) {
+      history.push('/');
+    }
   };
 
   if (!user.loggedIn)
     return history.location.pathname !== '/kirjaudu' ? (
-      <Button color="inherit" onClick={() => history.push('/kirjaudu')}>
+      <Button color="inherit" onClick={handleClick}>
         <Typography>
           Kirjaudu<AccountCircleIcon></AccountCircleIcon>
         </Typography>

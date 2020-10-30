@@ -11,6 +11,7 @@ import dbConnection from '../utils/connection';
 import testHelpers from '../utils/testHelpers';
 import { NewGame, GameStatus, UserModel, Role, GameType } from '../types';
 import Word from '../models/word';
+import Url from '../models/url';
 
 const api = supertest(app);
 
@@ -25,12 +26,14 @@ const dummyGame: Omit<NewGame, 'host'> = {
       name: 'player1',
       points: 0,
       answers: {},
+      inviteCode: 'player1invite',
     },
     {
       id: 'id2',
       name: 'player2',
       points: 0,
       answers: {},
+      inviteCode: 'player2invite',
     },
   ],
   startTime: new Date(),
@@ -49,6 +52,7 @@ describe('games router', () => {
 
   beforeEach(async () => {
     await Game.deleteMany({});
+    await Url.deleteMany({});
   });
 
   it('should return 401 without valid token on protected routes', async () => {
@@ -82,17 +86,22 @@ describe('games router', () => {
       .expect(401);
   });
 
-  describe('GET /:hostName/:playerId', () => {
+  describe('GET /:hostName/:inviteCode', () => {
     it('should return object with token and display name with valid parameters', async () => {
       const game = await testHelpers.addDummyGame(user);
+
       const gameId: string = game._id.toString();
 
-      const player = dummyGame.players[0];
+      const player = game.players[0];
 
       const hostName = user.username;
 
+      if (!player.inviteCode) {
+        throw new Error('Player inviteCode was not set, check helper');
+      }
+
       const response = await api
-        .get(`${baseUrl}/join/${hostName}/${player.id}`)
+        .get(`${baseUrl}/join/${hostName}/${player.inviteCode}`)
         .expect(200)
         .expect('Content-Type', /application\/json/);
 

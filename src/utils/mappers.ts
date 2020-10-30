@@ -193,20 +193,24 @@ export const validateGameHost = (
 /**
  * Checks if a player matching given id is found from the given game. If not, throws error.
  * @param game - game returned from mongodb
- * @param playerId - id to check for in game players
+ * @param inviteCode - code to check for in game players
  *
- * @returns player matching id
+ * @returns player matching code
  */
 export const validateGamePlayer = (
   game: GameModel | null,
-  playerId: string
+  inviteCode: string
 ): GamePlayer => {
   if (!game) throw new Error('Missing game');
 
-  const matchingPlayer = game.players.find((player) => player.id === playerId);
+  const matchingPlayer = game.players.find(
+    (player) => player.inviteCode === inviteCode
+  );
 
   if (!matchingPlayer)
-    throw new Error(`Invalid request, no player found with id ${playerId}`);
+    throw new Error(
+      `Invalid request, no player found with invite code ${inviteCode}`
+    );
 
   return matchingPlayer;
 };

@@ -4,8 +4,8 @@
 
 import { Server } from 'socket.io';
 import socketioJwt from 'socketio-jwt';
-import config from '../utils/config';
-import { log } from '../utils/logger';
+import config from '../../utils/config';
+import logger from '../../utils/logger';
 import jwt from 'jsonwebtoken';
 import * as callbacks from './socketio.callbacks';
 import { v4 as uuidv4 } from 'uuid';
@@ -23,17 +23,17 @@ import {
   BroadcastedEvent,
   RTCGame,
   Answer,
-} from '../types';
+} from '../../types';
 
 import { Socket } from 'socket.io';
 
-import roomService from './rooms';
-import gameService from './games';
+import roomService from '../rooms';
+import gameService from '../games';
 
 export const emit = (socket: Socket, eventObj: EmittedEvent): void => {
   const { event, data } = eventObj;
 
-  log(`Emitting ${event}`);
+  logger.log(`Emitting ${event}`);
 
   socket.emit(event, data);
 };
@@ -45,7 +45,7 @@ export const broadcast = (
 ): void => {
   const { event, data } = eventObj;
 
-  log(`Broadcasting ${event}`);
+  logger.log(`Broadcasting ${event}`);
 
   socket.to(room).emit(event, data);
 };
@@ -126,7 +126,7 @@ export const attachListeners = (socket: SocketWithToken): void => {
   const { id, role } = socket.decoded_token;
 
   if (!id || !role) {
-    console.error(`ID and Role must be defined, got ${id}, ${role}`);
+    logger.error(`ID and Role must be defined, got ${id}, ${role}`);
   }
 
   // for testing
@@ -161,7 +161,7 @@ export const attachListeners = (socket: SocketWithToken): void => {
     case Role.PLAYER: {
       const { gameId } = socket.decoded_token;
 
-      if (!gameId) console.error('Warning: token gameId not defined');
+      if (!gameId) logger.error('Warning: token gameId not defined');
 
       socket.on(EventType.JOIN_GAME, () =>
         callbacks.joinGame(socket, gameId, id)
@@ -170,12 +170,12 @@ export const attachListeners = (socket: SocketWithToken): void => {
       break;
     }
     default:
-      console.error('Token role invalid or missing');
+      logger.error('Token role invalid or missing');
   }
 };
 
 const attachRTCListeners = (socket: SocketWithToken) => {
-  log('attaching listeners');
+  logger.log('attaching listeners');
 
   // can handle game types here
 
@@ -213,7 +213,7 @@ const attachRTCListeners = (socket: SocketWithToken) => {
 const handleRTCConnection = (socket: SocketWithToken) => {
   const { gameId } = socket.decoded_token;
 
-  log(`joining channel ${gameId}`);
+  logger.log(`joining channel ${gameId}`);
 
   socket.join(gameId);
 
@@ -248,10 +248,10 @@ const handler = (io: Server): void => {
       })
     )
     .on(EventType.AUTHENTICATED, (socket: SocketWithToken) => {
-      log(`user connected ${socket.decoded_token.username}`);
+      logger.log(`user connected ${socket.decoded_token.username}`);
 
       if (socket.decoded_token.type === 'rtc') {
-        log('using rtc');
+        logger.log('using rtc');
 
         handleRTCConnection(socket);
       } else {

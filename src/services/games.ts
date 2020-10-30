@@ -36,7 +36,9 @@ const getInitialInfo = (game: ActiveGame | GameModel): GameInfo => {
 const getGameById = async (gameId: string): Promise<GameModel> => {
   const gameInDB = await Game.findById(gameId);
 
-  if (!gameInDB) throw new Error(`No game found with id ${gameId}`);
+  if (!gameInDB) {
+    throw new Error(`No game found with id ${gameId}`);
+  }
 
   return gameInDB;
 };

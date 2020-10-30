@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import logger from './logger';
 
 const connect = async (MONGODB_URI: string): Promise<void> => {
   try {
@@ -8,9 +9,9 @@ const connect = async (MONGODB_URI: string): Promise<void> => {
       useCreateIndex: true,
     });
 
-    if (process.env.NODE_ENV !== 'test') console.log('Connected to MongoDB');
+    if (process.env.NODE_ENV !== 'test') logger.log('Connected to MongoDB');
   } catch (error) {
-    console.log('Error connecting to MongoDB:', error);
+    logger.log('Error connecting to MongoDB:', error);
   }
 };
 
@@ -18,7 +19,7 @@ const close = async (): Promise<void> => {
   try {
     await mongoose.connection.close();
   } catch (error) {
-    console.log('Error closing mongoDB connection');
+    logger.log('Error closing mongoDB connection');
   }
 };
 

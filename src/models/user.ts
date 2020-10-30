@@ -1,8 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import { UserModel } from '../types';
 
-/** @TODO games ? */
-
 const userSchema: Schema = new Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
@@ -11,8 +9,13 @@ const userSchema: Schema = new Schema({
   joinDate: { type: String, required: true },
 });
 
+interface JSONUserModel extends Omit<UserModel, 'email' | 'passwordHash'> {
+  email?: string;
+  passwordHash?: string;
+}
+
 userSchema.set('toJSON', {
-  transform: (_document, returnedObject: UserModel) => {
+  transform: (_document, returnedObject: JSONUserModel) => {
     delete returnedObject.__v;
     delete returnedObject.email;
     delete returnedObject.passwordHash;

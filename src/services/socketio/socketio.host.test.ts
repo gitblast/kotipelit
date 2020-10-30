@@ -14,21 +14,21 @@ import {
   WaitingGame,
   GameType,
   RunningGame,
-} from '../types';
+} from '../../types';
 
 import { AddressInfo } from 'net';
 import ioClient from 'socket.io-client';
-import * as ioService from './socketio';
+import * as ioService from '.';
 import http from 'http';
 import ioBack, { Server } from 'socket.io';
 import jwt from 'jsonwebtoken';
-import testHelpers, { SocketIOParams } from '../utils/testHelpers';
-import { setRooms } from './rooms';
-import config from '../utils/config';
+import testHelpers, { SocketIOParams } from '../../utils/testHelpers';
+import { setRooms } from '../rooms';
+import config from '../../utils/config';
 import { UnauthorizedError } from 'socketio-jwt';
-import connection from '../utils/connection';
-import Game from '../models/game';
-import roomService from './rooms';
+import connection from '../../utils/connection';
+import Game from '../../models/game';
+import roomService from '../rooms';
 
 const tokenPayload = {
   username: 'host',

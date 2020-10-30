@@ -1,5 +1,5 @@
 import * as events from './socketio.events';
-import { EmittedEvent, EventType, ActiveGame } from '../types';
+import { EmittedEvent, EventType, ActiveGame } from '../../types';
 
 describe('event creators', () => {
   it('should create event for succesful room creation', () => {

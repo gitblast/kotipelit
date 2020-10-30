@@ -1,9 +1,9 @@
 import * as callbacks from './socketio.callbacks';
-import * as socketService from './socketio';
-import roomService from './rooms';
-import Url from '../models/url';
+import * as socketService from '.';
+import roomService from '../rooms';
+import Url from '../../models/url';
 import * as events from './socketio.events';
-import gameService from '../services/games';
+import gameService from '../games';
 import {
   SocketWithToken,
   JitsiReadyData,
@@ -14,22 +14,22 @@ import {
   GameRoom,
   EventType,
   Role,
-} from '../types';
+} from '../../types';
 import { Server } from 'socket.io';
 
-jest.mock('./socketio', () => ({
+jest.mock('./index', () => ({
   broadcast: jest.fn(),
   emit: jest.fn(),
   initRoom: jest.fn(),
 }));
 
-jest.mock('./rooms');
+jest.mock('../rooms');
 
-jest.mock('../models/url', () => ({
+jest.mock('../../models/url', () => ({
   deleteOne: jest.fn(),
 }));
 
-jest.mock('../services/games');
+jest.mock('../games');
 
 const mockSocket = {
   id: 'mockSocketID',

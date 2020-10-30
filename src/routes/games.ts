@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import express from 'express';
+import shortid from 'shortid';
 
 import {
   toNewGame,
@@ -26,24 +27,25 @@ const router = express.Router();
 
 /** public routes */
 
-router.get('/join/:hostName/:playerId', async (req, res, next) => {
+router.get('/join/:hostName/:inviteCode', async (req, res, next) => {
   try {
     const rtc = req.query.rtc;
 
     const hostName = toID(req.params.hostName);
-    const playerId = toID(req.params.playerId);
-    const urlData = await Url.findOne({ hostName, playerId });
+    const inviteCode = toID(req.params.inviteCode);
+
+    const urlData = await Url.findOne({ hostName, inviteCode });
 
     if (!urlData) {
       throw new Error(
-        `Invalid url: no game found with host name '${hostName}' and player ID '${playerId}'`
+        `Invalid url: no game found with host name '${hostName}' and invite code '${inviteCode}'`
       );
     }
 
     const { gameId } = urlData;
 
     const game = await Game.findOne({ _id: gameId });
-    const player = validateGamePlayer(game, playerId);
+    const player = validateGamePlayer(game, inviteCode);
 
     const payload = {
       username: player.name,
@@ -102,16 +104,28 @@ router.post('/', async (req, res, next) => {
     const game = new Game({
       ...newGame,
       createDate: new Date(),
+      players: newGame.players.map((player) => {
+        return {
+          ...player,
+          id: shortid.generate(),
+          inviteCode: shortid.generate(),
+        };
+      }),
     });
 
     const savedGame = await game.save();
 
     /** save short urls to database */
     for (const player of savedGame.players) {
+      if (!player.inviteCode) {
+        throw new Error(`Player ${player.name} has no invite code set`);
+      }
+
       const urlObject = {
         playerId: player.id,
         gameId: savedGame._id.toString(),
         hostName: user.username,
+        inviteCode: player.inviteCode,
       };
 
       const newUrl = new Url(urlObject);

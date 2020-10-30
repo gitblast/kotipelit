@@ -12,17 +12,17 @@ import {
   ActiveGamePlayer,
   ActiveGame,
   WaitingGame,
-} from '../types';
+} from '../../types';
 
 import { AddressInfo } from 'net';
 import { UnauthorizedError } from 'socketio-jwt';
-import testHelpers, { SocketIOParams } from '../utils/testHelpers';
-import config from '../utils/config';
-import roomService, { setRooms } from './rooms';
-import * as ioService from './socketio';
+import testHelpers, { SocketIOParams } from '../../utils/testHelpers';
+import config from '../../utils/config';
+import roomService, { setRooms } from '../rooms';
+import * as ioService from '.';
 
 import jwt from 'jsonwebtoken';
-import connection from '../utils/connection';
+import connection from '../../utils/connection';
 
 const tokenPayload = {
   username: 'player',

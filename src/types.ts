@@ -25,6 +25,7 @@ export interface UrlModel extends Document {
   hostName: string;
   gameId: string;
   playerId: string;
+  inviteCode: string;
 }
 
 export interface UserModel extends Document {
@@ -60,6 +61,8 @@ export interface BaseGamePlayer {
   name: string;
   id: string;
   points: number;
+
+  inviteCode?: string;
 }
 
 export interface KotitonniPlayer extends BaseGamePlayer {

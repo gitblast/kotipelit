@@ -50,12 +50,14 @@ const addDummyGame = async (user: UserModel): Promise<GameModel> => {
         name: 'player1',
         points: 0,
         answers: {},
+        inviteCode: 'player1code',
       },
       {
         id: 'id2',
         name: 'player2',
         points: 0,
         answers: {},
+        inviteCode: 'player2code',
       },
     ],
     startTime: new Date(),
@@ -73,6 +75,7 @@ const addDummyGame = async (user: UserModel): Promise<GameModel> => {
       hostName: user.username,
       playerId: player.id,
       gameId: savedGame._id.toString(),
+      inviteCode: player.inviteCode,
     };
 
     await new Url(newUrl).save();

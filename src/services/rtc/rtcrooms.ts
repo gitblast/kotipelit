@@ -4,8 +4,8 @@ import {
   SocketWithToken,
   Role,
   GameType,
-} from '../types';
-import { log } from '../utils/logger';
+} from '../../types';
+import logger from '../../utils/logger';
 
 const rooms = new Map<string, RTCGameRoom>();
 
@@ -25,7 +25,7 @@ const joinHostToRoom = (
     },
   };
 
-  log(
+  logger.log(
     `joining host '${socket.decoded_token.username}' to room ${room.game.id}`
   );
 
@@ -52,7 +52,7 @@ const joinPlayerToRoom = (
     }),
   };
 
-  log(
+  logger.log(
     `joining player '${socket.decoded_token.username}' to room ${room.game.id}`
   );
 
@@ -147,7 +147,7 @@ const createRoom = (game: RTCGame): void => {
     }),
   };
 
-  log(`creating room for game ${game.id}`);
+  logger.log(`creating room for game ${game.id}`);
 
   rooms.set(game.id, newRoom);
 };
@@ -157,13 +157,13 @@ const leaveRoom = (gameId: string, userId: string): void => {
 
   if (room) {
     if (userId === room.host.id) {
-      log(`host left`);
+      logger.log(`host left`);
       rooms.set(gameId, {
         ...room,
         host: { ...room.host, socketId: null, peerId: null },
       });
     } else {
-      log(`player ${userId} left`);
+      logger.log(`player ${userId} left`);
       rooms.set(gameId, {
         ...room,
         players: room.players.map((player) =>

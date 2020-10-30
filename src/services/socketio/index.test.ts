@@ -4,15 +4,15 @@
 import ioClient from 'socket.io-client';
 import ioBack, { Server } from 'socket.io';
 import http from 'http';
-import testHelpers, { SocketIOParams } from '../utils/testHelpers';
-import connection from '../utils/connection';
-import config from '../utils/config';
+import testHelpers, { SocketIOParams } from '../../utils/testHelpers';
+import connection from '../../utils/connection';
+import config from '../../utils/config';
 import jwt from 'jsonwebtoken';
 
 import { AddressInfo } from 'net';
 
-import * as ioService from './socketio';
-import { EventType, Role, TestEventType } from '../types';
+import * as ioService from '.';
+import { EventType, Role, TestEventType } from '../../types';
 import { UnauthorizedError } from 'socketio-jwt';
 
 const hostToken = jwt.sign(

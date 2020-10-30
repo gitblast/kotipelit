@@ -7,7 +7,7 @@ import {
 } from '../types';
 import { getJitsiToken } from './socketio';
 
-import { log } from '../utils/logger';
+import logger from '../utils/logger';
 
 export let rooms: Record<string, GameRoom> = {};
 
@@ -19,7 +19,7 @@ export const addSocketToRoom = (
   roomId: string,
   socket: SocketIO.Socket
 ): void => {
-  log(`adding ${socket.id} to socket.io room ${roomId}`);
+  logger.log(`adding ${socket.id} to socket.io room ${roomId}`);
   socket.join(roomId);
 };
 
@@ -126,7 +126,7 @@ const joinRoom = (
     throw new Error(`Player with id '${playerId}' not found`);
 
   if (playerForSocket.socket)
-    log(`Player already has socket set: ${playerForSocket.socket}. Replacing`);
+  logger.log(`Player already has socket set: ${playerForSocket.socket}. Replacing`);
 
   playerForSocket.socket = socketId;
   playerForSocket.online = true;

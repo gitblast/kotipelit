@@ -3,7 +3,7 @@ import {
   BroadcastedEvent,
   EmittedEvent,
   ActiveGame,
-} from '../types';
+} from '../../types';
 
 export const createSuccess = (
   game: ActiveGame,

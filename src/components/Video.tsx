@@ -23,20 +23,23 @@ interface VideoProps {
 
 const Video: React.FC<VideoProps> = ({ peer }) => {
   const classes = useStyles();
+
   const isMuted = useSelector(
     (state: State) => state.rtc.localData.mutedMap[peer.id]
   );
 
-  console.log(`rendering video of ${peer.displayName}`);
+  const vidRef = React.useRef<HTMLVideoElement | null>(null);
+
+  React.useEffect(() => {
+    if (vidRef.current) {
+      vidRef.current.srcObject = peer.stream;
+    }
+  }, [peer]);
 
   return (
     <video
       className={classes.absolute}
-      ref={(videoRef) => {
-        if (videoRef) {
-          videoRef.srcObject = peer.stream;
-        }
-      }}
+      ref={vidRef}
       autoPlay
       playsInline
       muted={peer.isMe || isMuted}

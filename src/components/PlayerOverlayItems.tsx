@@ -10,7 +10,6 @@ import {
   Paper,
   Typography,
   IconButton,
-  Tooltip,
   FormControlLabel,
   Checkbox,
   Fade,
@@ -217,6 +216,14 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
   if (game.type === GameType.KOTITONNI) {
     return (
       <div className={classes.flexCol}>
+        {
+          // eslint-disable-next-line no-undef
+          forHost && process && process.env.NODE_ENV === 'development' && (
+            <div style={{ position: 'absolute' }}>
+              <Typography>{`http://localhost:3000/username/rtc/${player.inviteCode}`}</Typography>
+            </div>
+          )
+        }
         {forHost && answer && answerBox(answer)}
         {game.status === GameStatus.FINISHED && (
           <div className={classes.positionLabel}>

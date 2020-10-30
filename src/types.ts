@@ -29,6 +29,7 @@ export interface KotitonniPlayer {
   points: number;
   online: boolean;
   hasTurn?: boolean;
+  inviteCode?: string;
 }
 
 export interface RTCKotitonniPlayer extends KotitonniPlayer {

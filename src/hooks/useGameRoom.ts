@@ -213,9 +213,10 @@ const useGameRoom = (
             /** only set stream if not already set. otherwise the stream might get set twice (from calling and answering) */
 
             if (user.stream) {
-              logger.log('user stream already set');
+              logger.log('user stream already set:', user.stream);
+              logger.log('replacing with:', stream);
 
-              return currentPeers;
+              // return currentPeers;
             }
 
             logger.log(`recieving stream from ${call.peer}`);

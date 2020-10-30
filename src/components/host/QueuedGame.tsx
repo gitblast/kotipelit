@@ -48,30 +48,35 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const getInviteUrl = (hostName: string, playerId: string): string =>
-  `https://www.kotipelit.com/${hostName}/${playerId}`;
+const getInviteUrl = (hostName: string, inviteCode: string): string =>
+  `https://www.kotipelit.com/${hostName}/${inviteCode}`;
 
 const getInviteText = (
   game: Kotitonni,
   hostName: string,
   player: KotitonniPlayer
-): string =>
-  `Tervetuloa pelaamaan ${capitalize(game.type)}a!
+): string => {
+  if (!player.inviteCode) {
+    return 'Odottamaton virhe: pelaajan kutsukoodi puuttuu';
+  }
+
+  return `Tervetuloa pelaamaan ${capitalize(game.type)}a!
   
-Sanasi ovat: ${player ? player.words.join(' ') : '<Pelaajan sanat>'}
-      
-Tehtävänäsi on miettiä sanoille niitä kuvaavat vihjeet.
-      
-Peli alkaa ${format(new Date(game.startTime), 'd. MMMM HH:mm', {
+  Sanasi ovat: ${player ? player.words.join(' ') : '<Pelaajan sanat>'}
+        
+  Tehtävänäsi on miettiä sanoille niitä kuvaavat vihjeet.
+        
+  Peli alkaa ${format(new Date(game.startTime), 'd. MMMM HH:mm', {
     locale: fiLocale,
   })}.
-
-Pelin hinta on ${
+  
+  Pelin hinta on ${
     game.price ? game.price : 0
   } euroa. Ohjeet alla olevassa linkissä.
-      
-Nähdään peleillä osoitteessa:
-${getInviteUrl(hostName, player.id)}`;
+        
+  Nähdään peleillä osoitteessa:
+  ${getInviteUrl(hostName, player.inviteCode)}`;
+};
 
 interface QueuedGameProps {
   game: SelectableGame;

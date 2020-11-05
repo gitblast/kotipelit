@@ -176,6 +176,8 @@ const leaveRoom = (gameId: string, userId: string): void => {
   }
 };
 
+const getRooms = (): Map<string, RTCGameRoom> => rooms;
+
 const updateRoomGame = (gameId: string, newGame: RTCGame): RTCGame => {
   const room = rooms.get(gameId);
 
@@ -195,4 +197,5 @@ export default {
   leaveRoom,
   updateRoomGame,
   filterGameForPlayer,
+  getRooms,
 };

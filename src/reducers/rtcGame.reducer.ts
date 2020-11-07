@@ -1,6 +1,6 @@
 import { Reducer, Dispatch } from 'redux';
 
-import kotitonniLocalData from './kotitonni.local.reducer';
+import kotitonniLocalDataReducer from './kotitonni.local.reducer';
 import store, { injectLocalDataReducer } from '../store';
 
 import {
@@ -56,10 +56,8 @@ export const initRTCGame = (
   return (dispatch: Dispatch) => {
     if (rtcRoom.game.type === GameType.KOTITONNI) {
       logger.log('injecting local data reducer');
-      injectLocalDataReducer(store, kotitonniLocalData);
+      injectLocalDataReducer(store, kotitonniLocalDataReducer);
     }
-
-    console.log('perseen reikä');
 
     const allPeers = rtcRoom.players.concat(rtcRoom.host);
 
@@ -73,7 +71,7 @@ export const initRTCGame = (
 
     const initialSelf = { ...selfObj, socket, peer, stream: null };
 
-    const initialPeers = rtcRoom.players.concat(rtcRoom.host).map((user) => {
+    const initialPeers = allPeers.map((user) => {
       return {
         ...user,
         stream: null,

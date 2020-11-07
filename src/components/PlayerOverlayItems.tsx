@@ -240,11 +240,6 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
                   <Typography component="div">{`stream: ${!!peer.stream}`}</Typography>
                   <div style={{ width: 10 }} />
                   <Typography component="div">{`socket: ${!!peer.socketId}`}</Typography>
-                  {peer.call && (
-                    <Button onClick={() => peer.call?.close()}>
-                      Close call
-                    </Button>
-                  )}
                 </div>
               )}
 

@@ -262,8 +262,16 @@ export const joinRTCRoom = async (
   }
 };
 
-export const leaveRTCRoom = (socket: SocketWithToken): void => {
+export const socketDisconnected = (socket: SocketWithToken): void => {
   logger.log(`recieved disconnect from ${socket.decoded_token.username}`);
+
+  const { id, gameId } = socket.decoded_token;
+
+  socket.to(gameId).emit('user-socket-disconnected', id);
+};
+
+export const leaveRTCRoom = (socket: SocketWithToken): void => {
+  logger.log(`recieved leave-room from ${socket.decoded_token.username}`);
 
   const { id, gameId } = socket.decoded_token;
 

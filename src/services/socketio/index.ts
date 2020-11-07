@@ -188,6 +188,10 @@ const attachRTCListeners = (socket: SocketWithToken) => {
   });
 
   socket.on(EventType.DISCONNECT, () => {
+    void callbacks.socketDisconnected(socket);
+  });
+
+  socket.on('leave-room', () => {
     void callbacks.leaveRTCRoom(socket);
   });
 

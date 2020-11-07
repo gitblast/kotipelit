@@ -1,8 +1,10 @@
 import reducer, { setGame } from './rtcGame.reducer';
 
-import { RTCGame, RTCGameAction } from '../types';
+import { RTCGame, RTCGameAction, RTCInitGamePayload } from '../types';
 
-describe('local data reducer', () => {
+jest.mock('../store');
+
+describe('rtc game reducer', () => {
   it('should return initial state null', () => {
     expect(reducer(undefined, {} as RTCGameAction)).toBeNull();
   });
@@ -16,6 +18,23 @@ describe('local data reducer', () => {
     const expectedState = action.payload;
 
     expect(reducer(undefined, action)).toEqual(expectedState);
+  });
+
+  it('should handle INIT_GAME', () => {
+    const initialState = {
+      initialSelf: { self: true },
+      initialGame: { game: true },
+      initialPeers: { peers: true },
+    };
+
+    const action: RTCGameAction = {
+      type: 'INIT_GAME',
+      payload: (initialState as unknown) as RTCInitGamePayload,
+    };
+
+    const expectedState = initialState.initialGame;
+
+    expect(reducer(undefined, action)).toBe(expectedState);
   });
 
   describe('action creators', () => {

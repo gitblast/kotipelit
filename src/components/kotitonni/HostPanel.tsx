@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Typography, Fab, Divider } from '@material-ui/core';
+import { Typography, Fab } from '@material-ui/core';
 import ScoreBoard from './ScoreBoard';
 import { KotitonniActive, KotitonniPlayer, State } from '../../types';
 import { useSelector } from 'react-redux';

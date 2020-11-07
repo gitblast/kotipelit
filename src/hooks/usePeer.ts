@@ -3,7 +3,9 @@ import React from 'react';
 
 import logger from '../utils/logger';
 
-const usePeer = (): [Peer | null, string | null] => {
+const usePeer = (
+  onLeave?: (client: Peer) => void
+): [Peer | null, string | null] => {
   const [peerClient, setPeerClient] = React.useState<Peer | null>(null);
   const [error, setError] = React.useState<null | string>(null);
 
@@ -46,10 +48,17 @@ const usePeer = (): [Peer | null, string | null] => {
     return () => {
       if (peerClient) {
         logger.log(`disconnecting peer`);
+
+        if (onLeave) {
+          logger.log(`calling peer leave callback`);
+
+          onLeave(peerClient);
+        }
+
         peerClient.destroy();
       }
     };
-  }, [peerClient]);
+  }, [peerClient, onLeave]);
 
   return [peerClient, error];
 };

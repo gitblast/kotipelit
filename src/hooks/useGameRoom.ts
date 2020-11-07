@@ -3,10 +3,11 @@ import { MediaConnection } from 'peerjs';
 
 import { useDispatch } from 'react-redux';
 import { setSelf } from '../reducers/rtcSelf.reducer';
-import { setGame } from '../reducers/rtcGame.reducer';
+import { initRTCGame, setGame } from '../reducers/rtcGame.reducer';
 
 import useAuthSocket from './useAuthSocket';
 import usePeer from './usePeer';
+import useMediaStream from './useMediaStream';
 
 import kotitonniLocalData from '../reducers/kotitonni.local.reducer';
 import store, { injectLocalDataReducer } from '../store';
@@ -17,38 +18,34 @@ import { setTimer } from '../reducers/kotitonni.local.reducer';
 
 const useGameRoom = (
   token: string | null,
-  mediaStream: MediaStream | null
-): [RTCPeer[] | null] => {
+  onCall: boolean,
+  mediaConstraints: MediaStreamConstraints
+): RTCPeer[] | null => {
+  const [peersCalled, setPeersCalled] = React.useState(false);
   const [peers, setPeers] = React.useState<RTCPeer[] | null>(null);
   const [peer, peerError] = usePeer();
-  const [onCall, setOnCall] = React.useState<boolean>(false);
   const dispatch = useDispatch();
-  const [socket, socketError] = useAuthSocket(token);
+  const socketLeaveCallback = React.useCallback(
+    (socket: SocketIOClient.Socket) => socket.emit('leave-room'),
+    []
+  );
+  const [socket, socketError] = useAuthSocket(token, socketLeaveCallback);
+  const [mediaStream, mediaStreamError] = useMediaStream(
+    onCall,
+    mediaConstraints
+  );
 
-  if (peerError || socketError) {
+  if (peerError || socketError || mediaStreamError) {
     console.error('handle errors!');
   }
 
-  // for testing
-  React.useEffect(() => {
-    logger.log('peer changed');
-  }, [peer]);
-
   React.useEffect(() => {
     return () => {
-      if (peer?.destroyed && peers) {
-        logger.log('closing all calls');
-
-        peers.forEach((peerObj) => {
-          if (peerObj.call) {
-            console.log('closing call with peer', peerObj.displayName);
-
-            peerObj.call.close();
-          }
-        });
+      if (socket) {
+        socket.emit('leave-room');
       }
     };
-  }, [peer, peers]);
+  }, [socket]);
 
   React.useEffect(() => {
     if (socket && peer) {
@@ -58,6 +55,8 @@ const useGameRoom = (
 
       socket.on('room-joined', (rtcRoom: RTCGameRoom) => {
         logger.log(`recieved a game room`, rtcRoom);
+
+        dispatch(initRTCGame(rtcRoom, socket, peer));
 
         if (rtcRoom.game.type === GameType.KOTITONNI) {
           logger.log('injecting local data reducer');
@@ -74,6 +73,8 @@ const useGameRoom = (
                 id: user.id,
                 isHost: user.isHost,
                 socket,
+                peer,
+                stream: null,
               };
 
               dispatch(setSelf(self));
@@ -113,9 +114,11 @@ const useGameRoom = (
       });
 
       socket.on('timer-changed', (value: number) => {
-        logger.log(`recieved timer change to value ${value}`);
-
         dispatch(setTimer(value));
+      });
+
+      socket.on('user-socket-disconnected', (id: string) => {
+        logger.log(`recieved socket disconnected from ${id}`);
       });
 
       socket.on('user-left', (id: string) => {
@@ -131,30 +134,19 @@ const useGameRoom = (
               return peerObj;
             }
 
-            logger.log('test: not setting call / stream to null on user left');
-
-            /**
-             
-              if (peerObj.call) {
-              peerObj.call.close();
-            } 
-            
-            */
-
             return {
               ...peerObj,
               socketId: null,
-              //peerId: null,
-              //call: null,
-              //stream: null,
+              peerId: null,
+              call: null,
+              stream: null,
             };
           });
         });
       });
 
       socket.on('user-joined', (newUser: RTCPeer) => {
-        logger.log(`recieved new user`);
-        logger.log(newUser);
+        logger.log(`recieved new user:`, newUser);
 
         logger.log(
           `setting new ${newUser.isHost ? `host` : `player`}: ${
@@ -210,15 +202,6 @@ const useGameRoom = (
               return currentPeers;
             }
 
-            /** only set stream if not already set. otherwise the stream might get set twice (from calling and answering) */
-
-            if (user.stream) {
-              logger.log('user stream already set:', user.stream);
-              logger.log('replacing with:', stream);
-
-              // return currentPeers;
-            }
-
             logger.log(`recieving stream from ${call.peer}`);
 
             return currentPeers.map((peerObj) =>
@@ -267,16 +250,26 @@ const useGameRoom = (
   );
 
   React.useEffect(() => {
-    if (mediaStream && !onCall) {
+    if (mediaStream && onCall && !peersCalled) {
       logger.log('calling all peers');
 
-      setOnCall(true);
+      setPeersCalled(true);
 
       joinCall(mediaStream);
     }
-  }, [joinCall, mediaStream, onCall]);
+  }, [joinCall, mediaStream, onCall, peersCalled]);
 
-  return [peers];
+  const peersWithOwnStreamSet = React.useMemo(() => {
+    if (!peers) {
+      return null;
+    }
+
+    return peers.map((peerObj) =>
+      peerObj.isMe ? { ...peerObj, stream: mediaStream } : peerObj
+    );
+  }, [mediaStream, peers]);
+
+  return peersWithOwnStreamSet;
 };
 
 export default useGameRoom;

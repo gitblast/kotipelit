@@ -8,7 +8,6 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
   Typography,
   Divider,
-  Fab,
   FormControl,
   MenuItem,
   Select,

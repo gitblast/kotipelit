@@ -51,7 +51,6 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "start:nocam": "BROWSER=chrome BROWSER_ARGS='--use-fake-device-for-media-stream --use-file-for-fake-audio-capture='G:/koodi/kotipelit.com/audio.wav' --use-file-for-fake-video-capture='G:/koodi/kotipelit.com/video.y4m'' react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

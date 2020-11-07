@@ -1,6 +1,6 @@
 // JITSI
 
-import { MediaConnection } from 'peerjs';
+import Peer, { MediaConnection } from 'peerjs';
 
 export interface JitsiApi {
   on: (event: string, listener: () => void) => void;
@@ -102,6 +102,7 @@ export interface RTCState {
   game: RTCGame | null;
   localData: LocalData;
   self: RTCSelf | null;
+  peers: RTCPeer[] | null;
 }
 
 export type AlertState = string | null;
@@ -307,15 +308,53 @@ export type KotitonniLocalAction =
       type: 'RESET';
     };
 
-export type RTCGameAction = {
-  type: 'SET_GAME';
-  payload: RTCGame;
-};
+export type RTCGameAction =
+  | {
+      type: 'SET_GAME';
+      payload: RTCGame;
+    }
+  | {
+      type: 'INIT_GAME';
+      payload: {
+        initialPeers: RTCPeer[];
+        initialGame: RTCGame;
+        initialSelf: RTCSelf;
+      };
+    };
 
-export type RTCSelfAction = {
-  type: 'SET_SELF';
-  payload: RTCSelf;
-};
+export interface RTCInitGamePayload {
+  initialPeers: RTCPeer[];
+  initialGame: RTCGame;
+  initialSelf: RTCSelf;
+}
+
+export type RTCSelfAction =
+  | {
+      type: 'SET_SELF';
+      payload: RTCSelf;
+    }
+  | {
+      type: 'INIT_GAME';
+      payload: RTCInitGamePayload;
+    }
+  | {
+      type: 'SET_STREAM';
+      payload: MediaStream;
+    };
+
+export type RTCPeersAction =
+  | {
+      type: 'SET_PEERS';
+      payload: RTCPeer[];
+    }
+  | {
+      type: 'INIT_GAME';
+      payload: {
+        initialPeers: RTCPeer[];
+        initialGame: RTCGame;
+        initialSelf: RTCSelf;
+      };
+    };
 
 // SOCKET IO EVENTS
 
@@ -428,6 +467,8 @@ export interface RTCSelf {
   id: string;
   isHost: boolean;
   socket: SocketIOClient.Socket;
+  peer: Peer;
+  stream: MediaStream | null;
 }
 
 export interface RTCGameRoom {

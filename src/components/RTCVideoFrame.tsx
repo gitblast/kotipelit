@@ -58,15 +58,13 @@ interface RTCVideoFrameProps {
 
 const ErrorMsg: React.FC<{ text: string }> = ({ text, children }) => {
   const classes = useStyles();
-  // eslint-disable-next-line no-undef
-  const showPointsAnyway = process && process.env.NODE_ENV === 'development';
 
   return (
     <div className={classes.frame}>
       <div className={classes.placeHolderText}>
         <Typography variant="body2">{text}</Typography>
       </div>
-      {showPointsAnyway && <div className={classes.absolute}>{children}</div>}
+      <div className={classes.absolute}>{children}</div>
     </div>
   );
 };

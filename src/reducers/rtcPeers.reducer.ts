@@ -123,8 +123,10 @@ export const callPeers = () => {
 
       call.answer(ownStream);
 
-      callHelpers.attachCallListeners(call, () =>
-        dispatch(setStreamForPeer(call, ownStream))
+      callHelpers.attachCallListeners(
+        call,
+        (mediaCall: MediaConnection, stream: MediaStream) =>
+          dispatch(setStreamForPeer(mediaCall, stream))
       );
     });
 
@@ -139,8 +141,10 @@ export const callPeers = () => {
 
         const call = ownPeerClient.call(peerObj.peerId, ownStream);
 
-        callHelpers.attachCallListeners(call, () =>
-          dispatch(setStreamForPeer(call, ownStream))
+        callHelpers.attachCallListeners(
+          call,
+          (mediaCall: MediaConnection, stream: MediaStream) =>
+            dispatch(setStreamForPeer(mediaCall, stream))
         );
       }
     });

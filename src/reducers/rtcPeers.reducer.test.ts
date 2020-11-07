@@ -300,6 +300,8 @@ describe('rtc peers reducer', () => {
 
         callPeers()(dispatch, getState);
 
+        // todo: check that callbacks are what they should
+
         mockState.rtc.peers.forEach((peer) => {
           expect(mockPeerClient.call).toHaveBeenCalledWith(
             peer.peerId,

@@ -1,5 +1,4 @@
 import React from 'react';
-import { MediaConnection } from 'peerjs';
 
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { initRTCGame, setGame } from '../reducers/rtcGame.reducer';
@@ -11,11 +10,7 @@ import useMediaStream from './useMediaStream';
 import { RTCGame, RTCGameRoom, RTCPeer, State } from '../types';
 import logger from '../utils/logger';
 import { setTimer } from '../reducers/kotitonni.local.reducer';
-import {
-  setStreamForPeer,
-  userJoined,
-  userLeft,
-} from '../reducers/rtcPeers.reducer';
+import { callPeers, userJoined, userLeft } from '../reducers/rtcPeers.reducer';
 import { setStream } from '../reducers/rtcSelf.reducer';
 
 const useGameRoom = (
@@ -111,71 +106,15 @@ const useGameRoom = (
     }
   }, [socket, peer, dispatch]);
 
-  const joinCall = React.useCallback(
-    (mediaStream: MediaStream) => {
-      if (!peers) {
-        logger.error('no peers set when trying to call!');
-
-        return;
-      }
-
-      if (!peer) {
-        logger.error('no peer client set when trying to call!');
-
-        return;
-      }
-
-      const attachListeners = (call: MediaConnection) => {
-        call.on('stream', (stream) => {
-          dispatch(setStreamForPeer(call, stream));
-        });
-
-        call.on('error', (error) => {
-          logger.error('call error:', error.message);
-        });
-
-        call.on('close', () => {
-          logger.log(`call closed with peer ${call.peer}`);
-        });
-      };
-
-      logger.log(`attaching call listener`);
-
-      peer.on('call', (call) => {
-        logger.log(`incoming call from ${call.peer}`);
-
-        call.answer(mediaStream);
-
-        attachListeners(call);
-      });
-
-      peers.forEach((peerObj) => {
-        if (peerObj.peerId) {
-          // not calling self
-          if (peer.id === peerObj.peerId) {
-            return;
-          }
-
-          logger.log(`calling peer ${peerObj.displayName}`);
-
-          const call = peer.call(peerObj.peerId, mediaStream);
-
-          attachListeners(call);
-        }
-      });
-    },
-    [peers, peer, dispatch]
-  );
-
   React.useEffect(() => {
     if (mediaStream && onCall && !peersCalled) {
       logger.log('calling all peers');
 
       setPeersCalled(true);
 
-      joinCall(mediaStream);
+      dispatch(callPeers());
     }
-  }, [joinCall, mediaStream, onCall, peersCalled]);
+  }, [mediaStream, onCall, peersCalled, dispatch]);
 
   const peersWithOwnStreamSet = React.useMemo(() => {
     if (!peers) {

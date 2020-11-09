@@ -44,10 +44,19 @@ const useGameRoom = (
   }, [mediaStream, streamSet, dispatch]);
 
   React.useEffect(() => {
-    return () => {
+    const cleanup = () => {
       if (socket) {
+        logger.log('emitting leave room');
         socket.emit('leave-room');
       }
+    };
+
+    window.addEventListener('beforeunload', cleanup);
+
+    return () => {
+      window.removeEventListener('beforeunload', cleanup);
+
+      cleanup();
     };
   }, [socket]);
 

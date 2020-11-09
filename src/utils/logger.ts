@@ -5,7 +5,7 @@ export const log = (msg: unknown): void => {
     console.log(msg);
 };
 
-export default {
+const logger = {
   debug: false,
   log: function (...args: unknown[]) {
     if (this.debug) {
@@ -28,3 +28,9 @@ export default {
     }
   },
 };
+
+export const setDebug = (debug: boolean) => {
+  logger.debug = debug;
+};
+
+export default logger;

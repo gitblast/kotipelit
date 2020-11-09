@@ -4,7 +4,6 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { GameStatus, State } from '../types';
 import { Paper, Typography } from '@material-ui/core';
 import { useSelector } from 'react-redux';
-import { url } from 'inspector';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

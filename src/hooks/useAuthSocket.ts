@@ -6,7 +6,8 @@ import { CommonEvent } from '../types';
 import logger from '../utils/logger';
 
 const useAuthSocket = (
-  token: string | null
+  token: string | null,
+  onLeave?: (socket: SocketIOClient.Socket) => void
 ): [SocketIOClient.Socket | null, string | null] => {
   const [
     socketClient,
@@ -47,10 +48,16 @@ const useAuthSocket = (
       if (socketClient && socketClient.connected) {
         logger.log(`disconnecting socket`);
 
+        if (onLeave) {
+          logger.log(`calling socket leave callback`);
+
+          onLeave(socketClient);
+        }
+
         socketClient.disconnect();
       }
     };
-  }, [token, socketClient]);
+  }, [token, socketClient, onLeave]);
 
   return [socketClient, error];
 };

@@ -2,15 +2,7 @@ import React from 'react';
 
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
-import {
-  Container,
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  Paper,
-  TableFooter,
-} from '@material-ui/core';
+import { AppBar, Toolbar, Typography, Button, Paper } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';

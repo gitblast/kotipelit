@@ -22,4 +22,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# local dev files
 example_token.*
+video.y4m
+audio.wav

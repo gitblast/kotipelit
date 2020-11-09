@@ -149,7 +149,11 @@ const FrontPage: React.FC = () => {
           </Grid>
           <Grid item sm={1}></Grid>
           <Grid item xs={12} sm={6}>
-            <img className={classes.image} src="images/Kotitonni.png"></img>
+            <img
+              className={classes.image}
+              src="images/Kotitonni.png"
+              alt=""
+            ></img>
           </Grid>
         </Grid>
       </Paper>

@@ -10,10 +10,10 @@ import {
   Paper,
   Typography,
   IconButton,
-  Tooltip,
   FormControlLabel,
   Checkbox,
   Fade,
+  Button,
 } from '@material-ui/core';
 
 import logger from '../utils/logger';
@@ -86,6 +86,17 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+
+const DevBtns: React.FC = () => {
+  const self = useSelector((state: State) => state.rtc.self, shallowEqual);
+
+  return (
+    <div>
+      <Button onClick={() => self?.socket.disconnect()}>dc socket</Button>
+      <Button onClick={() => self?.peer.destroy()}>dc peer</Button>
+    </div>
+  );
+};
 
 interface PlayerOverlayItemsProps {
   peer: RTCPeer;
@@ -217,6 +228,32 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
   if (game.type === GameType.KOTITONNI) {
     return (
       <div className={classes.flexCol}>
+        {
+          // eslint-disable-next-line no-undef
+          process && process.env.NODE_ENV === 'development' && (
+            <div style={{ position: 'absolute' }}>
+              {forHost && (
+                <Typography component="div">{`http://localhost:3000/username/rtc/${player.inviteCode}`}</Typography>
+              )}
+              {!peer.isMe && (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Typography component="div">{`stream: ${!!peer.stream}`}</Typography>
+                  <div style={{ width: 10 }} />
+                  <Typography component="div">{`socket: ${!!peer.socketId}`}</Typography>
+                </div>
+              )}
+
+              {peer.isMe && (
+                <div>
+                  <Typography color="error" variant="h4">
+                    ME
+                  </Typography>
+                  <DevBtns />
+                </div>
+              )}
+            </div>
+          )
+        }
         {forHost && answer && answerBox(answer)}
         {game.status === GameStatus.FINISHED && (
           <div className={classes.positionLabel}>

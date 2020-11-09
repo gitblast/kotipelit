@@ -15,9 +15,11 @@ import {
 
 const newGame: SelectableGame = {
   startTime: new Date(),
-  type: GameType.SANAKIERTO,
+  type: GameType.KOTITONNI,
   status: GameStatus.UPCOMING,
   rounds: 3,
+  price: 0,
+  hostOnline: true,
   id: '123',
   players: [
     {

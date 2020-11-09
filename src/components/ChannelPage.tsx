@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import NewGame from './host/NewGame';
@@ -12,20 +10,11 @@ import Dashboard from './host/Dashboard';
 import { useSelector } from 'react-redux';
 import { State, BaseUser } from '../types';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    container: {},
-  })
-);
-
 interface ChannelPageProps {
   labelText: string;
 }
 
-/** @TODO guestview */
-const ChannelPage: React.FC<ChannelPageProps> = ({ labelText }) => {
-  const classes = useStyles();
-
+const ChannelPage: React.FC<ChannelPageProps> = () => {
   const user = useSelector((state: State) => state.user);
 
   return (

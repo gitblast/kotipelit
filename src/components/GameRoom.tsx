@@ -1,7 +1,6 @@
 import React from 'react';
 
 import useGameRoom from '../hooks/useGameRoom';
-import useMediaStream from '../hooks/useMediaStream';
 
 import InfoBar from './InfoBar';
 import RTCVideoConference from './RTCVideoConference';
@@ -9,7 +8,7 @@ import RTCHostControls from './RTCHostControls';
 import RTCPlayerControls from './RTCPlayerControls';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import logger from '../utils/logger';
+import logger, { setDebug } from '../utils/logger';
 import { Backdrop, Fab, Typography } from '@material-ui/core';
 import Loader from './Loader';
 import { GameStatus, State } from '../types';
@@ -50,6 +49,10 @@ interface GameRoomProps {
   isHost?: boolean;
 }
 
+console.log('setting logger debug to true in gameroom component');
+
+setDebug(true);
+
 const MEDIA_CONSTRAINTS = {
   audio: true,
   // eslint-disable-next-line no-undef
@@ -63,28 +66,10 @@ if (!MEDIA_CONSTRAINTS.video) {
 const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   const classes = useStyles();
   const [onCall, setOnCall] = React.useState<boolean>(false);
-  const [mediaStream, mediaStreamError] = useMediaStream(
-    onCall,
-    MEDIA_CONSTRAINTS
-  );
-  const [peers] = useGameRoom(token, mediaStream);
-
-  const peersWithOwnStreamSet = React.useMemo(() => {
-    if (!peers) {
-      return null;
-    }
-
-    return peers.map((peer) => {
-      return peer.isMe ? { ...peer, stream: mediaStream } : peer;
-    });
-  }, [mediaStream, peers]);
+  const peers = useGameRoom(token, onCall, MEDIA_CONSTRAINTS);
 
   const game = useSelector((state: State) => state.rtc.game);
   const socket = useSelector((state: State) => state.rtc.self?.socket);
-
-  if (mediaStreamError) {
-    console.error('error', mediaStreamError);
-  }
 
   React.useEffect(() => {
     if (peers) {
@@ -123,7 +108,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   if (!onCall) {
     return (
       <div className={classes.centered}>
-        <Fab variant="extended" onClick={handleJoinCall}>
+        <Fab variant="extended" onClick={handleJoinCall} id="start">
           Käynnistä video
         </Fab>
       </div>
@@ -133,7 +118,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   return (
     <div className={classes.container}>
       <InfoBar />
-      <RTCVideoConference peers={peersWithOwnStreamSet} />
+      <RTCVideoConference peers={peers} />
       {isHost ? (
         <RTCHostControls />
       ) : (

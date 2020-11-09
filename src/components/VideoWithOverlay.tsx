@@ -2,7 +2,6 @@ import React from 'react';
 
 import Video from './Video';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
-import { RTCPeer } from '../types';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -17,25 +16,28 @@ const useStyles = makeStyles(() =>
     frame: {
       width: '100%',
       paddingTop: '75%',
-      backgroundColor: 'grey',
+      backgroundColor: 'darkgrey',
       position: 'relative',
     },
   })
 );
 
 interface VideoWithOverlayProps {
-  peer: RTCPeer;
+  stream: MediaStream;
+  isMuted: boolean;
+  children: React.ReactNode;
 }
 
 const VideoWithOverlay: React.FC<VideoWithOverlayProps> = ({
-  peer,
+  stream,
+  isMuted,
   children,
 }) => {
   const classes = useStyles();
 
   return (
     <div className={classes.frame}>
-      <Video peer={peer} />
+      <Video stream={stream} isMuted={isMuted} />
       <div className={classes.absolute} id="overlayContainer">
         {children}
       </div>

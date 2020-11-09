@@ -85,6 +85,11 @@ const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({ peer, order }) => {
       ),
     [peer]
   );
+
+  const isMuted = useSelector(
+    (state: State) => !!state.rtc.localData.mutedMap[peer.id] || !!peer.isMe
+  );
+
   const highlighted =
     playerWithTurnId &&
     playerWithTurnId === peer.id &&
@@ -98,7 +103,9 @@ const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({ peer, order }) => {
       style={style}
     >
       {peer.stream ? (
-        <VideoWithOverlay peer={peer}>{overlayContent}</VideoWithOverlay>
+        <VideoWithOverlay stream={peer.stream} isMuted={isMuted}>
+          {overlayContent}
+        </VideoWithOverlay>
       ) : (
         <ErrorMsg text={'Ei videoyhteyttä'}>{overlayContent}</ErrorMsg>
       )}

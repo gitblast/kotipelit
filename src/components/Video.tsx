@@ -1,8 +1,6 @@
 import React from 'react';
 
 import { makeStyles, createStyles } from '@material-ui/core/styles';
-import { RTCPeer, State } from '../types';
-import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -18,23 +16,20 @@ const useStyles = makeStyles(() =>
 );
 
 interface VideoProps {
-  peer: RTCPeer;
+  stream: MediaStream;
+  isMuted: boolean;
 }
 
-const Video: React.FC<VideoProps> = ({ peer }) => {
+const Video: React.FC<VideoProps> = ({ stream, isMuted }) => {
   const classes = useStyles();
-
-  const isMuted = useSelector(
-    (state: State) => state.rtc.localData.mutedMap[peer.id]
-  );
 
   const vidRef = React.useRef<HTMLVideoElement | null>(null);
 
   React.useEffect(() => {
     if (vidRef.current) {
-      vidRef.current.srcObject = peer.stream;
+      vidRef.current.srcObject = stream;
     }
-  }, [peer]);
+  }, [stream]);
 
   return (
     <video
@@ -42,7 +37,7 @@ const Video: React.FC<VideoProps> = ({ peer }) => {
       ref={vidRef}
       autoPlay
       playsInline
-      muted={peer.isMe || isMuted}
+      muted={isMuted}
     />
   );
 };

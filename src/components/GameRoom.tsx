@@ -6,6 +6,7 @@ import InfoBar from './InfoBar';
 import RTCVideoConference from './RTCVideoConference';
 import RTCHostControls from './RTCHostControls';
 import RTCPlayerControls from './RTCPlayerControls';
+import AudioHandler from './AudioHandler';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import logger, { setDebug } from '../utils/logger';
@@ -116,6 +117,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
 
   return (
     <div className={classes.container}>
+      <AudioHandler />
       <InfoBar />
       <RTCVideoConference peers={peers} />
       {isHost ? (

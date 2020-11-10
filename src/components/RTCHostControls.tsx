@@ -145,7 +145,7 @@ const RTCHostControls: React.FC = () => {
   );
 
   const toggleTimer = () => {
-    if (game && !game.info.answeringOpen && timer === 90) {
+    if (game && !game.info.answeringOpen && timer === 60) {
       logger.log('setting answering open to true');
 
       handleUpdate({

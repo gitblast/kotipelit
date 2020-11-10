@@ -22,13 +22,17 @@ const useAuthSocket = (
 
       const socket = socketIOClient('/');
 
-      // const authSocket = socketIOClient('/auth');
-
       socket.on(CommonEvent.CONNECT, () => {
         socket.emit(CommonEvent.AUTH_REQUEST, { token });
 
         socket.on(CommonEvent.AUTHENTICATED, () => {
           logger.log('socketio authorized');
+
+          window.onbeforeunload = () => {
+            socket.emit('leave-room');
+
+            return null;
+          };
 
           setSocketClient(socket);
         });
@@ -59,7 +63,12 @@ const useAuthSocket = (
     };
   }, [token, socketClient, onLeave]);
 
-  return [socketClient, error];
+  const returnedTuple: [
+    SocketIOClient.Socket | null,
+    string | null
+  ] = React.useMemo(() => [socketClient, error], [socketClient, error]);
+
+  return returnedTuple;
 };
 
 export default useAuthSocket;

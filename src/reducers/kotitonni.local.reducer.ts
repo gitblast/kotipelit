@@ -4,7 +4,7 @@ import { KotitonniLocalData, KotitonniLocalAction } from '../types';
 
 const initialData = {
   clickedMap: {},
-  timer: 90,
+  timer: 60,
   mutedMap: {},
 };
 
@@ -38,7 +38,7 @@ const reducer: Reducer<KotitonniLocalData, KotitonniLocalAction> = (
       return {
         ...state,
         clickedMap: {},
-        timer: 90,
+        timer: 60,
       };
     default:
       return state;

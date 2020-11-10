@@ -60,7 +60,12 @@ const usePeer = (
     };
   }, [peerClient, onLeave]);
 
-  return [peerClient, error];
+  const returnedTuple: [Peer | null, string | null] = React.useMemo(
+    () => [peerClient, error],
+    [peerClient, error]
+  );
+
+  return returnedTuple;
 };
 
 export default usePeer;

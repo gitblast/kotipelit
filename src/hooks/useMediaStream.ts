@@ -36,7 +36,12 @@ export const useMediaStream = (
     }
   }, [stream, showVideo, constraints]);
 
-  return [stream, error];
+  const returnedTuple: [
+    MediaStream | null,
+    string | null
+  ] = React.useMemo(() => [stream, error], [stream, error]);
+
+  return returnedTuple;
 };
 
 export default useMediaStream;

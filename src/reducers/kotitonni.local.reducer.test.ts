@@ -11,7 +11,7 @@ describe('kotitonni local reducer', () => {
   it('should return initial state', () => {
     const expectedState = {
       clickedMap: {},
-      timer: 90,
+      timer: 60,
       mutedMap: {},
     };
 
@@ -33,7 +33,7 @@ describe('kotitonni local reducer', () => {
       clickedMap: {
         testID: true,
       },
-      timer: 90,
+      timer: 60,
       mutedMap: {},
     };
 
@@ -51,7 +51,7 @@ describe('kotitonni local reducer', () => {
       clickedMap: {
         testID: false,
       },
-      timer: 90,
+      timer: 60,
       mutedMap: {},
     };
 
@@ -69,7 +69,7 @@ describe('kotitonni local reducer', () => {
 
     const expectedState = {
       clickedMap: {},
-      timer: 90,
+      timer: 60,
       mutedMap: {
         testID: true,
       },
@@ -87,7 +87,7 @@ describe('kotitonni local reducer', () => {
 
     const newState = {
       clickedMap: {},
-      timer: 90,
+      timer: 60,
       mutedMap: {
         testID: false,
       },
@@ -144,7 +144,7 @@ describe('kotitonni local reducer', () => {
     const expectedStateAfterReset = {
       // muted map should persist
       clickedMap: {},
-      timer: 90,
+      timer: 60,
       mutedMap: {
         testID: true,
       },

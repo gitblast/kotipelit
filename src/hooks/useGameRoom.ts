@@ -44,23 +44,6 @@ const useGameRoom = (
   }, [mediaStream, streamSet, dispatch]);
 
   React.useEffect(() => {
-    const cleanup = () => {
-      if (socket) {
-        logger.log('emitting leave room');
-        socket.emit('leave-room');
-      }
-    };
-
-    window.addEventListener('beforeunload', cleanup);
-
-    return () => {
-      window.removeEventListener('beforeunload', cleanup);
-
-      cleanup();
-    };
-  }, [socket]);
-
-  React.useEffect(() => {
     if (socket && peer) {
       logger.log(`emitting join-gameroom with peer id ${peer.id}`);
 

@@ -10,7 +10,7 @@ import AudioHandler from './AudioHandler';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import logger, { setDebug } from '../utils/logger';
-import { Backdrop, Fab, Typography } from '@material-ui/core';
+import { Backdrop, Fab, Typography, Paper } from '@material-ui/core';
 import Loader from './Loader';
 import { GameStatus, State } from '../types';
 import { useSelector } from 'react-redux';
@@ -108,6 +108,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   if (!onCall) {
     return (
       <div className={classes.centered}>
+        <Paper></Paper>
         <Fab variant="extended" onClick={handleJoinCall} id="start">
           Käynnistä video
         </Fab>

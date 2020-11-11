@@ -8,7 +8,7 @@ import { GameStatus, State } from '../types';
  * @param oldStatus
  * @param newStatus
  */
-const useStatusChangeRef = (
+const useStatusChangeAudioRef = (
   ref: React.MutableRefObject<HTMLAudioElement | null>,
   oldStatus: GameStatus,
   newStatus: GameStatus
@@ -34,4 +34,4 @@ const useStatusChangeRef = (
   return ref;
 };
 
-export default useStatusChangeRef;
+export default useStatusChangeAudioRef;

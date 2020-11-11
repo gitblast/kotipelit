@@ -1,5 +1,5 @@
 import { renderHook, cleanup } from '@testing-library/react-hooks';
-import useStatusChangeRef from './useStatusChangeRef';
+import useStatusChangeAudioRef from './useStatusChangeAudioRef';
 import * as redux from 'react-redux';
 import { GameStatus } from '../types';
 
@@ -21,7 +21,11 @@ describe('useIntroRef hook', () => {
 
   it('should return the passed ref', () => {
     const { result } = renderHook(() =>
-      useStatusChangeRef(statusChangeRef, '' as GameStatus, '' as GameStatus)
+      useStatusChangeAudioRef(
+        statusChangeRef,
+        '' as GameStatus,
+        '' as GameStatus
+      )
     );
 
     expect(result.current).toBe(mockRef);
@@ -34,7 +38,7 @@ describe('useIntroRef hook', () => {
     mockSelector.mockReturnValueOnce(oldStatus);
 
     const { rerender } = renderHook(() =>
-      useStatusChangeRef(statusChangeRef, oldStatus, newStatus)
+      useStatusChangeAudioRef(statusChangeRef, oldStatus, newStatus)
     );
 
     expect(mockRef.current.play).not.toHaveBeenCalled();
@@ -58,7 +62,7 @@ describe('useIntroRef hook', () => {
             mockSelector.mockReturnValueOnce(first);
 
             const { rerender } = renderHook(() =>
-              useStatusChangeRef(statusChangeRef, oldValue, newValue)
+              useStatusChangeAudioRef(statusChangeRef, oldValue, newValue)
             );
 
             expect(mockRef.current.play).not.toHaveBeenCalled();

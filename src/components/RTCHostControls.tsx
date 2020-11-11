@@ -12,6 +12,7 @@ import { GameStatus, RTCGame, State } from '../types';
 import { useDispatch, useSelector } from 'react-redux';
 import logger from '../utils/logger';
 import { reset, setTimer } from '../reducers/kotitonni.local.reducer';
+import { setGame } from '../reducers/rtcGame.reducer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -144,6 +145,8 @@ const RTCHostControls: React.FC = () => {
       : null
   );
 
+  const historyRef = React.useRef<RTCGame | null>(null);
+
   const toggleTimer = () => {
     if (game && !game.info.answeringOpen && timer === 60) {
       logger.log('setting answering open to true');
@@ -180,6 +183,8 @@ const RTCHostControls: React.FC = () => {
 
       return;
     }
+
+    historyRef.current = game;
 
     const getPointAddition = (playerId: string, hasTurn: boolean): number => {
       const playerCount = game.players.length;
@@ -222,7 +227,7 @@ const RTCHostControls: React.FC = () => {
       turn = game.players[playerInTurnIndex + 1].id;
     }
 
-    const updatedGame = {
+    const updatedGame: RTCGame = {
       ...game,
       status: round > 3 ? GameStatus.FINISHED : game.status,
       players: newPlayers,
@@ -233,6 +238,8 @@ const RTCHostControls: React.FC = () => {
       },
     };
 
+    logger.log('updating game with', updatedGame);
+
     socket.emit('update-game', updatedGame);
 
     if (timerRunning) {
@@ -240,6 +247,55 @@ const RTCHostControls: React.FC = () => {
     }
 
     dispatch(reset());
+  };
+
+  const returnToPrevious = () => {
+    if (!game) {
+      logger.log('no game set');
+
+      return;
+    }
+
+    if (!historyRef.current) {
+      logger.log('no history set');
+
+      return;
+    }
+
+    const previousGame = historyRef.current;
+
+    const fixedPlayers = game.players.map((player) => {
+      const prevPlayer = previousGame.players.find((p) => p.id === player.id);
+
+      if (!prevPlayer) {
+        logger.error(
+          'unexpected error: no match found for player in history ref'
+        );
+
+        return player;
+      }
+
+      return {
+        ...player,
+        points: prevPlayer.points,
+        hasTurn: prevPlayer.hasTurn,
+      };
+    });
+
+    const gameWithPreviousPointsAndInfo = {
+      ...game,
+      players: fixedPlayers,
+      info: {
+        ...previousGame.info,
+        answeringOpen: false,
+      },
+    };
+
+    logger.log('returning to game state:', gameWithPreviousPointsAndInfo);
+
+    historyRef.current = null;
+
+    dispatch(setGame(gameWithPreviousPointsAndInfo));
   };
 
   return (
@@ -274,7 +330,12 @@ const RTCHostControls: React.FC = () => {
             </Fab>
           </div>
           <div className={classes.btnContainer}>
-            <Fab size="medium" color="secondary">
+            <Fab
+              size="medium"
+              color="secondary"
+              onClick={returnToPrevious}
+              disabled={!historyRef.current}
+            >
               <UndoIcon />
             </Fab>
           </div>

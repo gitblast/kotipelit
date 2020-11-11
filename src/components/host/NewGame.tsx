@@ -108,7 +108,7 @@ const NewGame: React.FC = () => {
     try {
       init();
     } catch (error) {
-      console.error('TODO: handle errors');
+      console.error('error initializing players for new game:', error.message);
     }
   }, []);
 

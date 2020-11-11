@@ -129,7 +129,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
     return values.some((val) => !!val);
   }, [clickMap, timer]);
 
-  const checked = clickMap[playerId];
+  const checked = !!clickMap[playerId];
 
   const handleChange = () => {
     dispatch(setClicked(playerId, !checked));
@@ -291,7 +291,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
                 color="primary"
                 control={
                   <Checkbox
-                    value={checked}
+                    checked={checked}
                     onChange={handleChange}
                     icon={<span className={classes.controlIcon} />}
                   />

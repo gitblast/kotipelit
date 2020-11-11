@@ -9,6 +9,7 @@ import QueuedGame from './QueuedGame';
 
 import { State, LoggedUser, GameStatus } from '../../types';
 import { useSelector } from 'react-redux';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -16,7 +17,9 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '90%',
       margin: 'auto',
     },
-    marginTop: { marginTop: theme.spacing(2) },
+    newGame: {
+      margin: theme.spacing(2),
+    },
   })
 );
 
@@ -52,14 +55,15 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
       {filterGamesByStatus('Odottaa pelaajia', GameStatus.WAITING)}
       {filterGamesByStatus('Tulevat pelit', GameStatus.UPCOMING)}
       {filterGamesByStatus('Menneet pelit', GameStatus.FINISHED)}
-      <div className={classes.marginTop}>
+      <div className={classes.newGame}>
         <Fab
           color="primary"
           variant="extended"
           component={Link}
           to={`/${user.username}/newgame`}
         >
-          UUSI PELI
+          <AddCircleIcon />
+          <Typography variant="h6">UUSI PELI</Typography>
         </Fab>
       </div>
     </div>

@@ -44,6 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
       opacity: 0.8,
       minWidth: 30,
     },
+    correctBadge: {},
     flexCol: {
       height: '100%',
       display: 'flex',
@@ -285,7 +286,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
           </Paper>
           <div className={classes.spacer} />
           {forHost && answer && (
-            <Paper className={classes.nameBadge}>
+            <Paper className={classes.correctBadge}>
               <FormControlLabel
                 color="primary"
                 control={

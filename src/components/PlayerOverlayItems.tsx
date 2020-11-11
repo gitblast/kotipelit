@@ -10,7 +10,6 @@ import {
   Paper,
   Typography,
   IconButton,
-  FormControlLabel,
   Checkbox,
   Fade,
   Button,
@@ -23,7 +22,7 @@ import { setClicked, setMuted } from '../reducers/kotitonni.local.reducer';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     additionBadge: {
-      color: 'grey',
+      color: 'white',
       margin: theme.spacing(0.5),
       padding: theme.spacing(1),
     },
@@ -62,6 +61,8 @@ const useStyles = makeStyles((theme: Theme) =>
       width: 'fit-content',
       padding: theme.spacing(1),
       margin: theme.spacing(1),
+      display: 'flex',
+      alignItems: 'center',
     },
     // tooltipRoot: {
     //   position: 'absolute',
@@ -77,7 +78,7 @@ const useStyles = makeStyles((theme: Theme) =>
     // },
     // Repeating same code from HostOverlayItems
     controlIcon: {
-      color: 'white',
+      color: 'black',
     },
     positionLabel: {
       position: 'absolute',
@@ -155,6 +156,9 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
     return (
       <Paper className={classes.answerBubble}>
         <Typography variant="h5">{answer}</Typography>
+        {forHost && answer && (
+          <Checkbox checked={checked} onChange={handleChange} />
+        )}
       </Paper>
       // <Tooltip
       //   title={
@@ -258,7 +262,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
         {forHost && answer && answerBox(answer)}
         {game.status === GameStatus.FINISHED && (
           <div className={classes.positionLabel}>
-            <Typography variant="h1">{getPosition()}</Typography>
+            <Typography variant="h3">{getPosition()}</Typography>
           </div>
         )}
         <div className={classes.flex}>
@@ -285,7 +289,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
             <Typography variant="h5">{player.name}</Typography>
           </Paper>
           <div className={classes.spacer} />
-          {forHost && answer && (
+          {/* {forHost && answer && (
             <Paper className={classes.correctBadge}>
               <FormControlLabel
                 color="primary"
@@ -298,9 +302,9 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
                 }
                 label={<Typography variant="h6">Oikein</Typography>}
               />
-              <div className={classes.spacer} />
+              <div className={classes.spacer} /> 
             </Paper>
-          )}
+          )}*/}
 
           <IconButton
             size="small"

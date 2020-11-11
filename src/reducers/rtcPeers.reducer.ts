@@ -121,6 +121,12 @@ export const callPeers = () => {
     ownPeerClient.on('call', (call) => {
       logger.log(`incoming call from ${call.peer}`);
 
+      const peer = currentPeers.find((peer) => peer.peerId === call.peer);
+
+      if (peer?.call && peer.call.peer === call.peer) {
+        console.warn('call with peer already exists, check for duplicates!');
+      }
+
       call.answer(ownStream);
 
       callHelpers.attachCallListeners(
@@ -135,6 +141,10 @@ export const callPeers = () => {
         // not calling self
         if (ownPeerClient.id === peerObj.peerId) {
           return;
+        }
+
+        if (peerObj.call && peerObj.call.peer === peerObj.peerId) {
+          console.warn('call with peer already exists, check for duplicates!');
         }
 
         logger.log(`calling peer ${peerObj.displayName}`);

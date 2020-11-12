@@ -4,7 +4,6 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import MicOffIcon from '@material-ui/icons/MicOff';
 import MicIcon from '@material-ui/icons/Mic';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { GameStatus, GameType, RTCPeer, State } from '../types';
 import {
   Paper,
@@ -312,9 +311,6 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
             className={classes.controlIcon}
           >
             {mutedMap[player.id] ? <MicOffIcon color="error" /> : <MicIcon />}
-          </IconButton>
-          <IconButton size="small" className={classes.controlIcon}>
-            <MoreVertIcon />
           </IconButton>
         </div>
       </div>

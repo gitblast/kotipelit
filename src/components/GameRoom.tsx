@@ -25,12 +25,19 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     centered: {
       minHeight: 400,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
     },
     startBtnContainer: {
       marginTop: theme.spacing(2),
+    },
+    infoContent: {
+      margin: 15,
+    },
+    infoTitle: {
+      margin: 15,
+    },
+    startVideoBtn: {
+      padding: theme.spacing(2),
+      margin: 15,
     },
     backdrop: {
       zIndex: theme.zIndex.drawer + 1,
@@ -56,7 +63,10 @@ setDebug(true);
 
 const MEDIA_CONSTRAINTS = {
   audio: true,
-  video: true,
+  video: {
+    width: { max: 400 },
+    height: { max: 600 },
+  },
 };
 
 if (!MEDIA_CONSTRAINTS.video) {
@@ -108,10 +118,31 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   if (!onCall) {
     return (
       <div className={classes.centered}>
-        <Paper></Paper>
-        <Fab variant="extended" onClick={handleJoinCall} id="start">
-          Käynnistä video
-        </Fab>
+        <Paper elevation={0}>
+          <Typography className={classes.infoTitle} variant="h5">
+            Tervetuloa pelaamaan Kotitonnia!
+          </Typography>
+          <div className={classes.infoContent}>
+            <Typography>
+              Huomioithan, että peli toimii toistaiseksi vain pöytäkoneella ja
+              -läppärillä.
+            </Typography>
+            <Typography>Tarvitset pelaamiseen web-kameran.</Typography>
+            <Typography variant="body2">
+              **Jotkin työpaikan tietokoneet blokkaavat pelaamiseen tarvittavan
+              yhteyden. Jos mahdollista, käytä kotikonetta.
+            </Typography>
+          </div>
+          <Fab
+            className={classes.startVideoBtn}
+            variant="extended"
+            color="secondary"
+            onClick={handleJoinCall}
+            id="start"
+          >
+            Käynnistä video
+          </Fab>
+        </Paper>
       </div>
     );
   }
@@ -135,11 +166,20 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
             Kotitonni
           </Typography>
           {isHost ? (
-            <div className={classes.startBtnContainer}>
-              <Fab variant="extended" size="large" onClick={handleStart}>
-                Aloita peli
-              </Fab>
-            </div>
+            <>
+              <Typography>Odota kunnes pelaajat on online. </Typography>
+              <Typography>Hauskaa kotipeli-iltaa! </Typography>
+              <div className={classes.startBtnContainer}>
+                <Fab
+                  color="secondary"
+                  variant="extended"
+                  size="large"
+                  onClick={handleStart}
+                >
+                  Aloita peli
+                </Fab>
+              </div>
+            </>
           ) : (
             <Typography variant="h6" component="div">
               Peli alkaa hetken kuluttua...

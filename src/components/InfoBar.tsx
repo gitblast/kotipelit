@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     nextUpText: {
       // Keep the same as videoframe hasTurn
-      color: 'rgba(199, 204, 57)',
+      color: 'rgba(229, 197, 39)',
     },
   })
 );

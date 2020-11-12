@@ -5,7 +5,6 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Paper, Typography, IconButton } from '@material-ui/core';
 import MicIcon from '@material-ui/icons/Mic';
 import MicOffIcon from '@material-ui/icons/MicOff';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import { setMuted } from '../reducers/kotitonni.local.reducer';
@@ -91,9 +90,6 @@ const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({ host }) => {
           <div className={classes.spacer} />
           <IconButton size="small" onClick={toggleMuted}>
             {mutedMap[host.id] ? <MicOffIcon color="error" /> : <MicIcon />}
-          </IconButton>
-          <IconButton size="small" className={classes.controlIcon}>
-            <MoreVertIcon />
           </IconButton>
         </div>
       </div>

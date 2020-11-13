@@ -137,7 +137,7 @@ const NewGame: React.FC = () => {
             value={price}
             onChange={(e) => setPrice(Number(e.target.value))}
           >
-            <MenuItem value={1}>0€</MenuItem>
+            <MenuItem value={0}>0€</MenuItem>
             <MenuItem value={2}>2€</MenuItem>
             <MenuItem value={3}>3€</MenuItem>
             <MenuItem value={4}>4€</MenuItem>

@@ -10,7 +10,7 @@ import AudioHandler from './AudioHandler';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import logger, { setDebug } from '../utils/logger';
-import { Backdrop, Fab, Typography, Paper } from '@material-ui/core';
+import { Backdrop, Fab, Typography } from '@material-ui/core';
 import Loader from './Loader';
 import { GameStatus, State } from '../types';
 import { useSelector } from 'react-redux';
@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
+      textAlign: 'center',
     },
     centered: {
       minHeight: 400,
@@ -120,44 +121,42 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
 
   if (!onCall) {
     return (
-      <div className={classes.centered}>
-        <Paper elevation={0}>
-          <Typography className={classes.infoTitle} variant="h5">
-            Tervetuloa pelaamaan Kotitonnia!
+      <div className={classes.container}>
+        <Typography className={classes.infoTitle} variant="h5">
+          Tervetuloa pelaamaan Kotitonnia!
+        </Typography>
+        <div className={classes.infoContent}>
+          <Typography>
+            Pidä vinkkisi ytimekkäinä, jotta kanssapelaajien ja pelijuontajan on
+            helppo muistaa ne.
           </Typography>
-          <div className={classes.infoContent}>
-            <Typography>
-              Pidä vinkkisi ytimekkäinä, jotta kanssapelaajien ja pelijuontajan
-              on helppo muistaa ne.
-            </Typography>
-            <Typography>
-              Tarvitset pelaamiseen web-kameran. Mikäli yhteydessä on ongelmia,
-              voit kokeilla päivittää selaimen.
-            </Typography>
-            <Typography variant="body2">
-              **Jotkin työpaikan tietokoneet blokkaavat pelaamiseen tarvittavan
-              yhteyden. Jos mahdollista, käytä kotikonetta.
-            </Typography>
+          <Typography>
+            Tarvitset pelaamiseen web-kameran. Mikäli yhteydessä on ongelmia,
+            voit kokeilla päivittää selaimen.
+          </Typography>
+          <Typography variant="body2">
+            **Jotkin työpaikan tietokoneet blokkaavat pelaamiseen tarvittavan
+            yhteyden. Jos mahdollista, käytä kotikonetta.
+          </Typography>
 
-            <Typography className={classes.examples}>
-              "Löytyy Espanjasta ja tähtimerkeistä" <br />
-              -Sexy Arvi (Spektaakkelin viihdelajien mestari)
-            </Typography>
-            <Typography className={classes.examples}>
-              "Dostojevski käsittelee tätä teoksessaan" <br />
-              -King Pampo (Historian ensimmäinen Kotitonnivihje)
-            </Typography>
-          </div>
-          <Fab
-            className={classes.startVideoBtn}
-            variant="extended"
-            color="secondary"
-            onClick={handleJoinCall}
-            id="start"
-          >
-            Käynnistä video
-          </Fab>
-        </Paper>
+          <Typography className={classes.examples}>
+            "Löytyy Espanjasta ja tähtimerkeistä" <br />
+            -Sexy Arvi (Spektaakkelin viihdelajien mestari)
+          </Typography>
+          <Typography className={classes.examples}>
+            "Dostojevski käsittelee tätä teoksessaan" <br />
+            -King Pampo (Historian ensimmäinen Kotitonnivihje)
+          </Typography>
+        </div>
+        <Fab
+          className={classes.startVideoBtn}
+          variant="extended"
+          color="secondary"
+          onClick={handleJoinCall}
+          id="start"
+        >
+          Käynnistä video
+        </Fab>
       </div>
     );
   }

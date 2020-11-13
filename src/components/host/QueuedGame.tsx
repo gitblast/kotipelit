@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const getInviteUrl = (hostName: string, inviteCode: string): string =>
-  `https://www.kotipelit.com/${hostName}/${inviteCode}`;
+  `https://www.kotipelit.com/${hostName}/rtc/${inviteCode}`;
 
 const getInviteText = (
   game: Kotitonni,
@@ -163,7 +163,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
         </div>
 
         <div>
-          {username === 'username' && startRTCButton()}
+          {startRTCButton()}
           {startButton()}
           <IconButton
             size="small"

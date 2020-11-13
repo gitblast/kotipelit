@@ -18,6 +18,10 @@ const useStyles = makeStyles((theme: Theme) =>
       width: `32%`,
       margin: theme.spacing(0.5),
       textAlign: 'center',
+      [theme.breakpoints.down('xs')]: {
+        width: '46%',
+        margin: 3,
+      },
     },
     videoContainer: {
       backgroundColor: 'grey',
@@ -31,6 +35,19 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     hasTurn: {
       boxShadow: '0 0 4px 5px rgba(229, 197, 39)',
+      [theme.breakpoints.down('xs')]: {
+        width: '95%',
+      },
+    },
+    hostStyle: {
+      [theme.breakpoints.down('xs')]: {
+        width: '95%',
+      },
+    },
+    notActive: {
+      [theme.breakpoints.down('xs')]: {
+        display: 'none',
+      },
     },
     placeHolderText: {
       position: 'absolute',
@@ -99,7 +116,13 @@ const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({ peer, order }) => {
   return (
     <Card
       elevation={3}
-      className={`${classes.videoWindow} ${highlighted ? classes.hasTurn : ''}`}
+      className={`${classes.videoWindow} ${
+        highlighted
+          ? classes.hasTurn
+          : peer.isHost
+          ? classes.hostStyle
+          : classes.notActive
+      }`}
       style={style}
     >
       {peer.stream ? (

@@ -49,6 +49,9 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
       alignItems: 'center',
     },
+    examples: {
+      marginTop: theme.spacing(2),
+    },
   })
 );
 
@@ -64,8 +67,8 @@ setDebug(true);
 const MEDIA_CONSTRAINTS = {
   audio: true,
   video: {
-    width: { max: 400 },
-    height: { max: 600 },
+    width: { max: 200 },
+    height: { max: 480 },
   },
 };
 
@@ -124,13 +127,25 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
           </Typography>
           <div className={classes.infoContent}>
             <Typography>
-              Huomioithan, että peli toimii toistaiseksi vain pöytäkoneella ja
-              -läppärillä.
+              Pidä vinkkisi ytimekkäinä, jotta kanssapelaajien ja pelijuontajan
+              on helppo muistaa ne.
             </Typography>
-            <Typography>Tarvitset pelaamiseen web-kameran.</Typography>
+            <Typography>
+              Tarvitset pelaamiseen web-kameran. Mikäli yhteydessä on ongelmia,
+              voit kokeilla päivittää selaimen.
+            </Typography>
             <Typography variant="body2">
               **Jotkin työpaikan tietokoneet blokkaavat pelaamiseen tarvittavan
               yhteyden. Jos mahdollista, käytä kotikonetta.
+            </Typography>
+
+            <Typography className={classes.examples}>
+              "Löytyy Espanjasta ja tähtimerkeistä" <br />
+              -Sexy Arvi (Spektaakkelin viihdelajien mestari)
+            </Typography>
+            <Typography className={classes.examples}>
+              "Dostojevski käsittelee tätä teoksessaan" <br />
+              -King Pampo (Historian ensimmäinen Kotitonnivihje)
             </Typography>
           </div>
           <Fab

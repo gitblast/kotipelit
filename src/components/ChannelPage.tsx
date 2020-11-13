@@ -21,7 +21,7 @@ const ChannelPage: React.FC<ChannelPageProps> = () => {
     <Router>
       <Switch>
         <Route path="/:username/newgame">{user.loggedIn && <NewGame />}</Route>
-        <Route path="/username/pelit/rtc/:gameID">
+        <Route path="/:username/pelit/rtc/:gameID">
           {user.loggedIn && <RTCGameRoom isHost />}
         </Route>
         <Route path="/:username/pelit/:gameID">

@@ -10,6 +10,8 @@ import EuroSymbolIcon from '@material-ui/icons/EuroSymbol';
 import AppsIcon from '@material-ui/icons/Apps';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
+import kotitonniImg from '../assets/images/Kotitonni.png';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     mainContainer: {
@@ -22,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     media: { height: 150 },
     showcase: {
-      backgroundImage: 'url(images/background2.png)',
+      backgroundImage: 'url(images-css/background2.png)',
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'center center',
       backgroundSize: 'cover',
@@ -32,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       justifyContent: 'flex-start',
       [theme.breakpoints.down('xs')]: {
-        backgroundImage: 'url(images/background2Xs.png)',
+        backgroundImage: 'url(images-css/background2Xs.png)',
       },
     },
 
@@ -149,11 +151,7 @@ const FrontPage: React.FC = () => {
           </Grid>
           <Grid item sm={1}></Grid>
           <Grid item xs={12} sm={6}>
-            <img
-              className={classes.image}
-              src="images/Kotitonni.png"
-              alt=""
-            ></img>
+            <img className={classes.image} src={kotitonniImg} alt="Kotitonni" />
           </Grid>
         </Grid>
       </Paper>

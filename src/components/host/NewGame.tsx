@@ -30,6 +30,8 @@ import { useDispatch } from 'react-redux';
 import { addGame } from '../../reducers/games.reducer';
 import { GameType, GameStatus, KotitonniPlayer } from '../../types';
 
+import kotitonniImg from '../../assets/images/Kotitonni.png';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
@@ -165,7 +167,7 @@ const NewGame: React.FC = () => {
               component="img"
               alt="Kotitonni"
               height="200"
-              image="/images/Kotitonni.png"
+              image={kotitonniImg}
               title="Kotitonni"
             />
             <CardContent>

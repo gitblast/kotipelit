@@ -204,6 +204,11 @@ const attachRTCListeners = (socket: SocketWithToken) => {
       void callbacks.startRTCGame(socket);
     });
 
+    socket.on('end', () => {
+      console.log('got end, todo');
+      // void callbacks.endRTCGame(socket);
+    });
+
     socket.on('update-game', (game: RTCGame) => {
       void callbacks.updateRTCGame(socket, game);
     });

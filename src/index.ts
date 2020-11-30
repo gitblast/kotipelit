@@ -16,7 +16,10 @@ console.log('setting logger debugging true in index');
 setDebug(true);
 
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server, {
+  pingInterval: 10000,
+  pingTimeout: 5000,
+});
 
 socketIOhandler(io);
 

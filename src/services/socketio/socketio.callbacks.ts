@@ -364,6 +364,31 @@ export const updateRTCGame = (socket: SocketWithToken, game: RTCGame): void => {
   }
 };
 
+/**
+ * 
+ * export const endRTCGame = async (socket: SocketWithToken): Promise<void> => {
+  logger.log(`recieved 'end' from ${socket.decoded_token.username}`);
+
+  try {
+    const { gameId } = socket.decoded_token;
+
+    const room = rtcrooms.getRoom(gameId);
+
+    if (!room) {
+      throw new Error(`no room set when ending game, id ${gameId}`);
+    }
+
+    // save to db, remove room
+
+    console.log('TODO');
+  } catch (e) {
+    logger.error(e.message);
+
+    socket.emit('rtc_error', e.message);
+  }
+};
+ */
+
 export const handleTimerChange = (
   socket: SocketWithToken,
   value: number

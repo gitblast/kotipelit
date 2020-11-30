@@ -517,3 +517,9 @@ export interface HostGameTokenConfig {
 }
 
 export type GameTokenConfig = PlayerGameTokenConfig | HostGameTokenConfig;
+
+export interface IceServers {
+  username: string;
+  urls: string[];
+  credential: string;
+}

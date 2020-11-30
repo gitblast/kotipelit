@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import express from 'express';
 require('express-async-errors');
 
@@ -14,6 +13,7 @@ import errorHandler from './utils/errorHandler';
 import loginRouter from './routes/login';
 import userRouter from './routes/users';
 import gameRouter from './routes/games';
+import xirsysRouter from './routes/xirsys';
 
 const app = express();
 
@@ -31,6 +31,7 @@ app.use(express.static('build'));
 app.use('/api/login', loginRouter);
 app.use('/api/users', userRouter);
 app.use('/api/games', gameRouter);
+app.use('/api/webrtc', xirsysRouter);
 
 app.use(errorHandler);
 

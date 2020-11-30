@@ -10,3 +10,5 @@ build/
 coverage/
 
 scripts/*.txt
+
+test.js

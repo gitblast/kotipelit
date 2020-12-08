@@ -56,15 +56,23 @@ describe('usePeer hook', () => {
   });
 
   it('should init with peer and error as null', async () => {
-    const { result, waitForNextUpdate } = renderHook(() => usePeer());
+    const { result, waitForNextUpdate } = renderHook(() => usePeer('token'));
 
     await waitForNextUpdate();
 
     expect(result.current).toEqual([null, null]);
   });
 
+  it('should do nothing if token is null', () => {
+    const { result } = renderHook(() => usePeer(null));
+
+    expect(result.current).toEqual([null, null]);
+
+    expect(getIceServers).toHaveBeenCalledTimes(0);
+  });
+
   it('should call getIceServers only on first render', async () => {
-    const { waitForNextUpdate, rerender } = renderHook(() => usePeer());
+    const { waitForNextUpdate, rerender } = renderHook(() => usePeer('token'));
 
     await waitForNextUpdate();
 
@@ -78,7 +86,7 @@ describe('usePeer hook', () => {
   it('should set error and not init peer if iceServer fetching fails', async () => {
     getIceServers.mockRejectedValueOnce({ message: 'test error' });
 
-    const { result, waitForNextUpdate } = renderHook(() => usePeer());
+    const { result, waitForNextUpdate } = renderHook(() => usePeer('token'));
 
     await waitForNextUpdate();
 
@@ -90,7 +98,7 @@ describe('usePeer hook', () => {
   });
 
   it('should init peer after first render if iceServer are set', async () => {
-    const { result, waitForNextUpdate } = renderHook(() => usePeer());
+    const { result, waitForNextUpdate } = renderHook(() => usePeer('token'));
 
     await waitForNextUpdate();
 
@@ -116,7 +124,7 @@ describe('usePeer hook', () => {
       },
     };
 
-    const { waitForNextUpdate } = renderHook(() => usePeer());
+    const { waitForNextUpdate } = renderHook(() => usePeer('token'));
 
     await waitForNextUpdate();
 
@@ -124,7 +132,7 @@ describe('usePeer hook', () => {
   });
 
   it('shouldnt init peer if already exists', async () => {
-    const { rerender, waitForNextUpdate } = renderHook(() => usePeer());
+    const { rerender, waitForNextUpdate } = renderHook(() => usePeer('token'));
 
     await waitForNextUpdate();
 
@@ -136,7 +144,7 @@ describe('usePeer hook', () => {
   });
 
   it('should set event listeners', async () => {
-    const { waitForNextUpdate } = renderHook(() => usePeer());
+    const { waitForNextUpdate } = renderHook(() => usePeer('token'));
 
     await waitForNextUpdate();
 
@@ -147,7 +155,7 @@ describe('usePeer hook', () => {
   });
 
   it('should do nothing atm on close or disconnect', async () => {
-    const { waitForNextUpdate } = renderHook(() => usePeer());
+    const { waitForNextUpdate } = renderHook(() => usePeer('token'));
 
     await waitForNextUpdate();
 
@@ -158,7 +166,7 @@ describe('usePeer hook', () => {
   });
 
   it('should set peer client on "open"', async () => {
-    const { result, waitForNextUpdate } = renderHook(() => usePeer());
+    const { result, waitForNextUpdate } = renderHook(() => usePeer('token'));
 
     await waitForNextUpdate();
 
@@ -175,7 +183,7 @@ describe('usePeer hook', () => {
   });
 
   it('should set error message on "error"', async () => {
-    const { result, waitForNextUpdate } = renderHook(() => usePeer());
+    const { result, waitForNextUpdate } = renderHook(() => usePeer('token'));
 
     await waitForNextUpdate();
 
@@ -193,7 +201,9 @@ describe('usePeer hook', () => {
   });
 
   it('should call destroy as cleanup if client is set', async () => {
-    const { result, unmount, waitForNextUpdate } = renderHook(() => usePeer());
+    const { result, unmount, waitForNextUpdate } = renderHook(() =>
+      usePeer('token')
+    );
 
     await waitForNextUpdate();
 

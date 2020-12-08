@@ -21,7 +21,7 @@ const useGameRoom = (
   const [peersCalled, setPeersCalled] = React.useState(false);
   const peers = useSelector((state: State) => state.rtc.peers, shallowEqual);
   const streamSet = useSelector((state: State) => !!state.rtc.self?.stream);
-  const [peer, peerError] = usePeer();
+  const [peer, peerError] = usePeer(token);
   const dispatch = useDispatch();
   const socketLeaveCallback = React.useCallback(
     (socket: SocketIOClient.Socket) => socket.emit('leave-room'),

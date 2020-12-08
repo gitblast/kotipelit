@@ -6,6 +6,7 @@ import { IceServers } from '../types';
 import logger from '../utils/logger';
 
 const usePeer = (
+  token: string | null,
   onLeave?: (client: Peer) => void
 ): [Peer | null, string | null] => {
   const [peerClient, setPeerClient] = React.useState<Peer | null>(null);
@@ -13,9 +14,9 @@ const usePeer = (
   const [iceServers, setIceServers] = React.useState<null | IceServers>(null);
 
   React.useEffect(() => {
-    const fetchIceServers = async () => {
+    const fetchIceServers = async (gameToken: string) => {
       try {
-        const servers = await xirsysService.getIceServers();
+        const servers = await xirsysService.getIceServers(gameToken);
 
         setIceServers(servers);
       } catch (e) {
@@ -23,8 +24,10 @@ const usePeer = (
       }
     };
 
-    fetchIceServers();
-  }, []);
+    if (token && !iceServers) {
+      fetchIceServers(token);
+    }
+  }, [token, iceServers]);
 
   React.useEffect(() => {
     if (!peerClient && iceServers) {
@@ -37,7 +40,7 @@ const usePeer = (
       const peer = new Peer({
         host: '/',
         port: port,
-        debug: 3,
+        debug: 2,
         path: '/api/peerjs',
         config: {
           iceServers: [

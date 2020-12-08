@@ -1,8 +1,11 @@
 import express from 'express';
 import axios from 'axios';
 import config from '../utils/config';
+import expressJwt from 'express-jwt';
 
 const router = express.Router();
+
+router.use(expressJwt({ secret: config.SECRET }));
 
 // sends secure requests to fetch xirsys ICE server list
 router.get('/', async (_req, res, next) => {

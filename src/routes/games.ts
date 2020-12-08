@@ -22,6 +22,7 @@ import Word from '../models/word';
 import Url from '../models/url';
 
 import { Role, WordModel } from '../types';
+import { onlyForRole } from '../utils/middleware';
 
 const router = express.Router();
 
@@ -66,22 +67,7 @@ router.get('/join/:hostName/:inviteCode', async (req, res, next) => {
 });
 
 /** token protected routes */
-router.use(expressJwt({ secret: config.SECRET }));
-
-/** middleware that checks host role */
-router.use((req, _res, next) => {
-  try {
-    const user = req.user;
-
-    if (!user || user.role !== Role.HOST) {
-      throw new Error('Unauthorized: invalid token role');
-    }
-
-    next();
-  } catch (e) {
-    next(e);
-  }
-});
+router.use(expressJwt({ secret: config.SECRET }), onlyForRole(Role.HOST));
 
 router.get('/', async (req, res, next) => {
   /** return all games where host id matches user token id */

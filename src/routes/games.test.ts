@@ -9,7 +9,14 @@ import config from '../utils/config';
 import Game from '../models/game';
 import dbConnection from '../utils/connection';
 import testHelpers from '../utils/testHelpers';
-import { NewGame, GameStatus, UserModel, Role, GameType } from '../types';
+import {
+  NewGame,
+  GameStatus,
+  UserModel,
+  Role,
+  GameType,
+  GamePlayer,
+} from '../types';
 import Word from '../models/word';
 import Url from '../models/url';
 
@@ -27,6 +34,7 @@ const dummyGame: Omit<NewGame, 'host'> = {
       points: 0,
       answers: {},
       inviteCode: 'player1invite',
+      reservedFor: null,
     },
     {
       id: 'id2',
@@ -34,6 +42,7 @@ const dummyGame: Omit<NewGame, 'host'> = {
       points: 0,
       answers: {},
       inviteCode: 'player2invite',
+      reservedFor: null,
     },
   ],
   startTime: new Date(),
@@ -86,7 +95,67 @@ describe('games router', () => {
       .expect(401);
   });
 
-  describe('GET /:hostName/:inviteCode', () => {
+  describe('PUT /reserve ', () => {
+    it('should set reservation if available slots exist', async () => {
+      const game = await testHelpers.addDummyGame(user);
+
+      const gameId: string = game._id.toString();
+
+      let reservations = game.players.map((p) => p.reservedFor);
+
+      const reqBody = {
+        gameId,
+        reservationId: 'TEST_ID',
+      };
+
+      expect(reservations.indexOf(reqBody.reservationId)).toBe(-1);
+
+      const response = await api
+        .put(`${baseUrl}/reserve`)
+        .send(reqBody)
+        .expect(200);
+
+      reservations = response.body.players?.map(
+        (player: GamePlayer) => player.reservedFor
+      );
+
+      expect(reservations.indexOf(reqBody.reservationId)).not.toBe(-1);
+    });
+
+    it('should throw 400 if reservation fails', async () => {
+      const game = await testHelpers.addDummyGame(user);
+
+      const gameId: string = game._id.toString();
+
+      game.players = game.players.map((player) => ({
+        ...player,
+        reservedFor: 'reserved',
+      }));
+
+      await game.save();
+
+      const reservations = game.players.map((p) => p.reservedFor);
+
+      const reqBody = {
+        gameId,
+        reservationId: 'TEST_ID',
+      };
+
+      expect(reservations.indexOf(null)).toBe(-1);
+      expect(reservations.indexOf(reqBody.reservationId)).toBe(-1);
+
+      await api.put(`${baseUrl}/reserve`).send(reqBody).expect(400);
+
+      const gameNow = await Game.findById(gameId);
+
+      const reservationsNow = gameNow?.players.map((p) => p.reservedFor);
+
+      expect(reservationsNow?.indexOf(null)).toBe(-1);
+      expect(reservationsNow?.indexOf(reqBody.reservationId)).toBe(-1);
+    });
+  });
+
+  describe('GET /join/:hostName/:inviteCode', () => {
     it('should return object with token and display name with valid parameters', async () => {
       const game = await testHelpers.addDummyGame(user);
 

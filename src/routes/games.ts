@@ -16,6 +16,7 @@ import {
 import expressJwt from 'express-jwt';
 import jwt from 'jsonwebtoken';
 import config from '../utils/config';
+import mongoose from 'mongoose';
 
 import Game from '../models/game';
 import Word from '../models/word';
@@ -27,6 +28,48 @@ import { onlyForRole } from '../utils/middleware';
 const router = express.Router();
 
 /** public routes */
+
+router.put('/reserve', async (req, res, next) => {
+  try {
+    const gameId = toID(req.body.gameId);
+
+    const reservationId = toID(req.body.reservationId);
+
+    // update only if null reserverFor -field found in players
+    await Game.updateOne(
+      {
+        _id: mongoose.Types.ObjectId(gameId),
+        'players.reservedFor': null,
+      },
+      {
+        $set: {
+          'players.$.reservedFor': reservationId,
+        },
+      },
+      { new: true, runValidators: true }
+    );
+
+    const game = await Game.findById(gameId);
+
+    if (!game) {
+      throw new Error('Invalid request: no game found');
+    }
+
+    const reservations = game.players.map((player) => player.reservedFor);
+
+    if (!reservations.includes(reservationId)) {
+      if (reservations.indexOf(null) === -1) {
+        throw new Error('Invalid request: game is full');
+      }
+
+      throw new Error('Unexpected error reserving');
+    }
+
+    res.json(game);
+  } catch (e) {
+    next(e);
+  }
+});
 
 router.get('/join/:hostName/:inviteCode', async (req, res, next) => {
   try {
@@ -95,6 +138,7 @@ router.post('/', async (req, res, next) => {
           ...player,
           id: shortid.generate(),
           inviteCode: shortid.generate(),
+          reservedFor: null,
         };
       }),
     });

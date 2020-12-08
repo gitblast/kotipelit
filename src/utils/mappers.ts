@@ -216,7 +216,7 @@ export const validateGamePlayer = (
 };
 
 export const toID = (object: any): string => {
-  return parseString(object, 'game id');
+  return parseString(object, 'game/reservation id');
 };
 
 interface ErrorToHandle {

@@ -61,7 +61,7 @@ export interface BaseGamePlayer {
   name: string;
   id: string;
   points: number;
-
+  reservedFor: string | null;
   inviteCode?: string;
 }
 

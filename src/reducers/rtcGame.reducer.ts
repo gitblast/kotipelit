@@ -1,7 +1,7 @@
 import { Reducer, Dispatch } from 'redux';
 
 import kotitonniLocalDataReducer from './kotitonni.local.reducer';
-import store, { injectLocalDataReducer } from '../store';
+import { injectLocalDataReducer } from '../store';
 
 import {
   GameType,
@@ -56,7 +56,7 @@ export const initRTCGame = (
   return (dispatch: Dispatch) => {
     if (rtcRoom.game.type === GameType.KOTITONNI) {
       logger.log('injecting local data reducer');
-      injectLocalDataReducer(store, kotitonniLocalDataReducer);
+      injectLocalDataReducer(kotitonniLocalDataReducer);
     }
 
     const allPeers = rtcRoom.players.concat(rtcRoom.host);

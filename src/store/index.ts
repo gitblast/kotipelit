@@ -13,10 +13,10 @@ const store = createStore(
 );
 
 export const injectLocalDataReducer = (
-  store: Store,
   reducer: Reducer<LocalData, LocalDataAction>
 ) => {
-  store.replaceReducer(createReducer(reducer));
+  const typedStore: Store = store;
+  typedStore.replaceReducer(createReducer(reducer));
 };
 
 export default store;

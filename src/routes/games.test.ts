@@ -95,6 +95,80 @@ describe('games router', () => {
       .expect(401);
   });
 
+  describe('GET /lobby/:hostName/:gameId', () => {
+    it('should throw error if no game is found or if status is not upcoming', async () => {
+      const game = await testHelpers.addDummyGame(user);
+
+      const gameId: string = game._id.toString();
+      const hostName = user.username;
+
+      expect(game.status).toBe(GameStatus.UPCOMING);
+
+      await api.get(`${baseUrl}/lobby/${hostName}/invalidID`).expect(400);
+
+      game.status = GameStatus.WAITING;
+
+      await game.save();
+
+      await api.get(`${baseUrl}/lobby/${hostName}/${gameId}`).expect(400);
+    });
+
+    it('should throw error if host not found or not matching game host', async () => {
+      const game = await testHelpers.addDummyGame(user);
+
+      const gameId: string = game._id.toString();
+
+      await api.get(`${baseUrl}/lobby/INVALID_FOR_TESTS/${gameId}`).expect(400);
+
+      const newUser = await testHelpers.addDummyUser('DIFFERENT USERNAME');
+
+      await api
+        .get(`${baseUrl}/lobby/${newUser.username}/${gameId}`)
+        .expect(400);
+    });
+
+    it('should return game type, price, hostname and starttime and locked player names if no errors', async () => {
+      const game = await testHelpers.addDummyGame(user);
+
+      game.players = game.players.map((player, index) => {
+        return index === 0
+          ? {
+              ...player,
+              reservedFor: {
+                id: 'reservation id',
+                expires: 666,
+                locked: true, // set one player reserver for to be locked
+              },
+            }
+          : player;
+      });
+
+      await game.save();
+
+      const gameId: string = game._id.toString();
+
+      const response = await api
+        .get(`${baseUrl}/lobby/${user.username}/${gameId}`)
+        .expect(200);
+
+      expect(response.body.type).toBe(game.type);
+      expect(response.body.price).toBe(game.price);
+      expect(response.body.hostName).toBe(user.username);
+      expect(new Date(response.body.startTime)).toEqual(game.startTime);
+
+      response.body.players?.forEach(
+        (player: { name: string; id: string }, index: number) => {
+          if (index === 0) {
+            expect(player.name).toBe(game.players[0].name);
+            expect(player.id).toBe(game.players[0].id);
+          } else {
+            expect(player).toBeNull();
+          }
+        }
+      );
+    });
+  });
+
   describe('PUT /reserve ', () => {
     it('should set reservation if available slots exist', async () => {
       const game = await testHelpers.addDummyGame(user);

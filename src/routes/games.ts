@@ -21,9 +21,11 @@ import mongoose from 'mongoose';
 import Game from '../models/game';
 import Word from '../models/word';
 import Url from '../models/url';
+import User from '../models/user';
 
-import { Role, WordModel } from '../types';
+import { GameStatus, Role, WordModel } from '../types';
 import { onlyForRole } from '../utils/middleware';
+import logger from '../utils/logger';
 
 const router = express.Router();
 
@@ -37,6 +39,10 @@ router.put('/reserve', async (req, res, next) => {
 
     if (!game) {
       throw new Error(`Invalid request: no game found with id ${gameId}`);
+    }
+
+    if (game.status !== GameStatus.UPCOMING) {
+      throw new Error(`Invalid request: game status is not upcoming`);
     }
 
     game.players = game.players.map((player) => {
@@ -54,6 +60,8 @@ router.put('/reserve', async (req, res, next) => {
 
     const reservationId = toID(req.body.reservationId);
 
+    const expiresAt = Date.now() + 300000; // 5 min
+
     await Game.updateOne(
       {
         _id: mongoose.Types.ObjectId(gameId),
@@ -64,7 +72,7 @@ router.put('/reserve', async (req, res, next) => {
         $set: {
           'players.$.reservedFor': {
             id: reservationId,
-            expires: Date.now() + 300000, // 5 min
+            expires: expiresAt,
           },
         },
       }
@@ -94,7 +102,25 @@ router.put('/reserve', async (req, res, next) => {
       (player) => player.reservedFor?.id === reservationId
     );
 
-    res.json(reservedPlayer?.id);
+    if (!reservedPlayer) {
+      throw new Error(
+        'Unexpected error reserving, reserved player was undefined'
+      );
+    }
+
+    logger.log(
+      'reserved a slot with id',
+      reservationId,
+      'player id:',
+      reservedPlayer.id,
+      'expires at:',
+      expiresAt
+    );
+
+    res.json({
+      playerId: reservedPlayer.id,
+      expiresAt,
+    });
   } catch (e) {
     next(e);
   }
@@ -135,6 +161,50 @@ router.get('/join/:hostName/:inviteCode', async (req, res, next) => {
     res.json(response);
   } catch (error) {
     next(error);
+  }
+});
+
+router.get('/lobby/:hostName/:gameId', async (req, res, next) => {
+  try {
+    const gameId = toID(req.params.gameId);
+    const hostName = toID(req.params.hostName);
+
+    const game = await Game.findById(gameId);
+
+    if (!game) {
+      throw new Error(`Invalid request: no game found with id ${gameId}`);
+    }
+
+    if (game.status !== GameStatus.UPCOMING) {
+      throw new Error(`Invalid request: game status is not upcoming`);
+    }
+
+    const host = await User.findOne({ username: hostName });
+
+    if (!host || game.host.toString() !== host._id.toString()) {
+      throw new Error(
+        `Invalid request: host missing or not matching fetched game`
+      );
+    }
+
+    const response = {
+      type: game.type,
+      price: game.price,
+      hostName: hostName,
+      startTime: game.startTime,
+      players: game.players.map((player) => {
+        return {
+          id: player.id,
+          name: player.name,
+          expires: player.reservedFor ? player.reservedFor.expires : null,
+          locked: !!player.reservedFor?.locked,
+        };
+      }),
+    };
+
+    res.json(response);
+  } catch (e) {
+    next(e);
   }
 });
 

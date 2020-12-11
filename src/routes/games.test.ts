@@ -101,7 +101,9 @@ describe('games router', () => {
 
       const gameId: string = game._id.toString();
 
-      let reservations = game.players.map((p) => p.reservedFor);
+      const reservations = game.players.map((p) =>
+        p.reservedFor ? p.reservedFor.id : null
+      );
 
       const reqBody = {
         gameId,
@@ -110,16 +112,55 @@ describe('games router', () => {
 
       expect(reservations.indexOf(reqBody.reservationId)).toBe(-1);
 
-      const response = await api
-        .put(`${baseUrl}/reserve`)
-        .send(reqBody)
-        .expect(200);
+      await api.put(`${baseUrl}/reserve`).send(reqBody).expect(200);
 
-      reservations = response.body.players?.map(
-        (player: GamePlayer) => player.reservedFor
+      const gameNow = await Game.findById(gameId);
+
+      const reservationsNow = gameNow?.players.map((player: GamePlayer) =>
+        player.reservedFor ? player.reservedFor.id : null
       );
 
-      expect(reservations.indexOf(reqBody.reservationId)).not.toBe(-1);
+      expect(reservationsNow?.indexOf(reqBody.reservationId)).not.toBe(-1);
+    });
+
+    it('should set reservation if expired, non locked reservation slots exist', async () => {
+      const game = await testHelpers.addDummyGame(user);
+
+      const gameId: string = game._id.toString();
+
+      game.players = game.players.map((player, index) => ({
+        ...player,
+        reservedFor: {
+          id: `reservation ${index}`,
+          expires: Date.now() - 1000,
+          locked: index !== 0,
+        },
+      }));
+
+      await game.save();
+
+      const reservations = game.players.map((p) =>
+        p.reservedFor ? p.reservedFor.id : null
+      );
+
+      const reqBody = {
+        gameId,
+        reservationId: 'TEST_ID',
+      };
+
+      expect(reservations.indexOf(null)).toBe(-1);
+      expect(reservations.indexOf(reqBody.reservationId)).toBe(-1);
+
+      await api.put(`${baseUrl}/reserve`).send(reqBody).expect(200);
+
+      const gameNow = await Game.findById(gameId);
+
+      const reservationsNow = gameNow?.players.map((p: GamePlayer) =>
+        p.reservedFor ? p.reservedFor.id : null
+      );
+
+      expect(reservationsNow?.indexOf(null)).toBe(-1);
+      expect(reservationsNow?.indexOf(reqBody.reservationId)).not.toBe(-1);
     });
 
     it('should throw 400 if reservation fails', async () => {
@@ -127,14 +168,19 @@ describe('games router', () => {
 
       const gameId: string = game._id.toString();
 
-      game.players = game.players.map((player) => ({
+      game.players = game.players.map((player, index) => ({
         ...player,
-        reservedFor: 'reserved',
+        reservedFor: {
+          id: `reservation ${index}`,
+          expires: Date.now() * 2,
+        },
       }));
 
       await game.save();
 
-      const reservations = game.players.map((p) => p.reservedFor);
+      const reservations = game.players.map((p) =>
+        p.reservedFor ? p.reservedFor.id : null
+      );
 
       const reqBody = {
         gameId,
@@ -148,7 +194,9 @@ describe('games router', () => {
 
       const gameNow = await Game.findById(gameId);
 
-      const reservationsNow = gameNow?.players.map((p) => p.reservedFor);
+      const reservationsNow = gameNow?.players.map((p) =>
+        p.reservedFor ? p.reservedFor.id : null
+      );
 
       expect(reservationsNow?.indexOf(null)).toBe(-1);
       expect(reservationsNow?.indexOf(reqBody.reservationId)).toBe(-1);

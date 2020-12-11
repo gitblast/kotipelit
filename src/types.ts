@@ -61,7 +61,11 @@ export interface BaseGamePlayer {
   name: string;
   id: string;
   points: number;
-  reservedFor: string | null;
+  reservedFor: {
+    id: string;
+    expires: number;
+    locked?: boolean;
+  } | null;
   inviteCode?: string;
 }
 

@@ -2,6 +2,6 @@ PUT http://localhost:3333/api/games/reserve
 Content-Type: application/json
 
 {
-  "reservationId": "rererer",
-  "gameId": "5fcfe24a0b6bdb400c8e0b94"
+  "reservationId": "petteri",
+  "gameId": "5fcff568126fa44478e715bc"
 }

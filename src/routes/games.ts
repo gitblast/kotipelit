@@ -33,29 +33,54 @@ router.put('/reserve', async (req, res, next) => {
   try {
     const gameId = toID(req.body.gameId);
 
+    const game = await Game.findById(gameId);
+
+    if (!game) {
+      throw new Error(`Invalid request: no game found with id ${gameId}`);
+    }
+
+    game.players = game.players.map((player) => {
+      return player.reservedFor &&
+        !player.reservedFor.locked &&
+        player.reservedFor.expires < Date.now()
+        ? {
+            ...player,
+            reservedFor: null,
+          }
+        : player;
+    });
+
+    await game.save();
+
     const reservationId = toID(req.body.reservationId);
 
-    // update only if null reserverFor -field found in players
     await Game.updateOne(
       {
         _id: mongoose.Types.ObjectId(gameId),
         'players.reservedFor': null,
       },
+
       {
         $set: {
-          'players.$.reservedFor': reservationId,
+          'players.$.reservedFor': {
+            id: reservationId,
+            expires: Date.now() + 300000, // 5 min
+          },
         },
-      },
-      { new: true, runValidators: true }
+      }
     );
 
-    const game = await Game.findById(gameId);
+    const gameAfterUpdate = await Game.findById(gameId);
 
-    if (!game) {
-      throw new Error('Invalid request: no game found');
+    if (!gameAfterUpdate) {
+      throw new Error(
+        `Unexpected error: no game found after update with id ${gameId}`
+      );
     }
 
-    const reservations = game.players.map((player) => player.reservedFor);
+    const reservations = gameAfterUpdate.players.map((player) =>
+      player.reservedFor ? player.reservedFor.id : null
+    );
 
     if (!reservations.includes(reservationId)) {
       if (reservations.indexOf(null) === -1) {
@@ -65,7 +90,11 @@ router.put('/reserve', async (req, res, next) => {
       throw new Error('Unexpected error reserving');
     }
 
-    res.json(game);
+    const reservedPlayer = gameAfterUpdate.players.find(
+      (player) => player.reservedFor?.id === reservationId
+    );
+
+    res.json(reservedPlayer?.id);
   } catch (e) {
     next(e);
   }

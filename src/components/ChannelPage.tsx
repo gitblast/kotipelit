@@ -6,6 +6,7 @@ import NewGame from './host/NewGame';
 import KotitonniHostView from './kotitonni/KotitonniHostView';
 import KotitonniPlayerView from './kotitonni/KotitonniPlayerView';
 import RTCGameRoom from './RTCGameRoom';
+import GameLobby from './GameLobby';
 import Dashboard from './host/Dashboard';
 import { useSelector } from 'react-redux';
 import { State, BaseUser } from '../types';
@@ -21,6 +22,9 @@ const ChannelPage: React.FC<ChannelPageProps> = () => {
     <Router>
       <Switch>
         <Route path="/:username/newgame">{user.loggedIn && <NewGame />}</Route>
+        <Route path="/:username/kutsut/:gameID">
+          <GameLobby />
+        </Route>
         <Route path="/:username/pelit/rtc/:gameID">
           {user.loggedIn && <RTCGameRoom isHost />}
         </Route>

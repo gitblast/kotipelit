@@ -10,7 +10,7 @@ import {
   RTCPeer,
   RTCSelf,
 } from '../types';
-import store, { injectLocalDataReducer } from '../store';
+import { injectLocalDataReducer } from '../store';
 import Peer from 'peerjs';
 
 jest.mock('../store');
@@ -118,7 +118,6 @@ describe('rtc game reducer', () => {
         )(dispatch);
 
         expect(injectLocalDataReducerMock).toHaveBeenLastCalledWith(
-          store,
           kotitonniLocalReducer
         );
       });

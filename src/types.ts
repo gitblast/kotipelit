@@ -13,13 +13,34 @@ export enum GameType {
   KOTITONNI = 'kotitonni',
 }
 
-export interface Game {
+export interface Game extends BaseGame {
   id: string;
+  hostOnline: boolean;
+  status: GameStatus;
+}
+
+export interface BaseGame {
   type: GameType;
   startTime: Date;
-  status: GameStatus;
-  hostOnline: boolean;
   price: number;
+}
+
+export interface ReservationResponse {
+  playerId: string;
+  expiresAt: number;
+}
+
+export interface LobbyGamePlayer {
+  name: string;
+  id: string;
+  expires: number | null;
+  locked: boolean;
+  reservedForMe?: boolean;
+}
+
+export interface LobbyGame extends BaseGame {
+  players: LobbyGamePlayer[];
+  hostName: string;
 }
 
 export interface KotitonniPlayer {
@@ -517,3 +538,9 @@ export interface HostGameTokenConfig {
 }
 
 export type GameTokenConfig = PlayerGameTokenConfig | HostGameTokenConfig;
+
+export interface IceServers {
+  username: string;
+  urls: string[];
+  credential: string;
+}

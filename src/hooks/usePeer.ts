@@ -1,16 +1,36 @@
 import Peer from 'peerjs';
 import React from 'react';
+import xirsysService from '../services/xirsys';
+import { IceServers } from '../types';
 
 import logger from '../utils/logger';
 
 const usePeer = (
+  token: string | null,
   onLeave?: (client: Peer) => void
 ): [Peer | null, string | null] => {
   const [peerClient, setPeerClient] = React.useState<Peer | null>(null);
   const [error, setError] = React.useState<null | string>(null);
+  const [iceServers, setIceServers] = React.useState<null | IceServers>(null);
 
   React.useEffect(() => {
-    if (!peerClient) {
+    const fetchIceServers = async (gameToken: string) => {
+      try {
+        const servers = await xirsysService.getIceServers(gameToken);
+
+        setIceServers(servers);
+      } catch (e) {
+        setError(e.message);
+      }
+    };
+
+    if (token && !iceServers) {
+      fetchIceServers(token);
+    }
+  }, [token, iceServers]);
+
+  React.useEffect(() => {
+    if (!peerClient && iceServers) {
       const port =
         // eslint-disable-next-line no-undef
         process && process.env.NODE_ENV === 'development' ? 3333 : 443;
@@ -20,8 +40,17 @@ const usePeer = (
       const peer = new Peer({
         host: '/',
         port: port,
-        debug: 1,
+        debug: 2,
         path: '/api/peerjs',
+        config: {
+          iceServers: [
+            {
+              username: iceServers.username,
+              urls: iceServers.urls,
+              credential: iceServers.credential,
+            },
+          ],
+        },
       });
 
       peer.on('error', (error) => {
@@ -58,7 +87,7 @@ const usePeer = (
         peerClient.destroy();
       }
     };
-  }, [peerClient, onLeave]);
+  }, [peerClient, onLeave, iceServers]);
 
   const returnedTuple: [Peer | null, string | null] = React.useMemo(
     () => [peerClient, error],

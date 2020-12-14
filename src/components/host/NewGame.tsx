@@ -193,45 +193,6 @@ const NewGame: React.FC = () => {
           </CardActionArea>
         </Card>
       </div>
-      {/* <Fab
-          onClick={() => setGameType(GameType.KOTITONNI)}
-          variant="extended"
-          className={classes.gameBtn}
-          color="secondary"
-        >
-          Kotitonni
-        </Fab>
-        <Typography>
-          Kotitonnissa arvuutellaan kanssapelaajien sanoja vihjeiden avulla.
-          Jokainen pelaajista antaa vuorollaan vihjeen hänelle ennalta
-          lähetettyyn sanaan. Pelaajilla on 90 sekuntia aikaa keksiä oikea sana.
-          Vihjeen tulisi olla sellainen, että vähintään yksi arvaa mutta ei
-          liian helppo, jotta kaikki ei arvaa. Peli pelataan 5:llä pelaajalla ja
-          kestää noin tunnin.
-        </Typography>
-      </div>
-      <div className={classes.gameRow}>
-        <Fab disabled variant="extended" className={classes.gameBtn}>
-          Liars Poker
-        </Fab>
-        <Typography className={classes.unactiveGame}>
-          Liars Poker- pelissä jokainen pelaaja saa numerosarjan. Ensimmäinen
-          pelaaja aloittaa sanomalla esimerkiksi kolme kolmosta. Seuraavan
-          pelaajan täytyy joko epäillä tai "ylittää" tämä sanomalla minimissään
-          kolme nelosta. Jos pelaaja epäilee ja kaikkien numeroista ei yhteensä
-          muodostu vähintään kolmea kolmosta, menettää ensimmäinen pelaaja
-          pisteen. Peliä voi pelata 2 - 6 pelaajaa.
-        </Typography>
-      </div>
-      <div className={classes.gameRow}>
-        <Fab disabled variant="extended" className={classes.gameBtn}>
-          Kolmas peli
-        </Fab>
-        <Typography>
-          Voit ehdottaa peliä, jota voisi olla videopuhelun välityksellä hauska
-          pelata. Ehdotukset osoitteeseen info@kotipelit.com
-        </Typography>
-      </div> */}
     </div>
   );
 

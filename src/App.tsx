@@ -10,6 +10,7 @@ import { checkForUser } from './reducers/user.reducer';
 import { initChannels } from './reducers/channels.reducer';
 
 import FrontPage from './components/FrontPage';
+import Footer from './components/Footer';
 import LoginForm from './components/LoginForm';
 import UserControls from './components/UserControls';
 
@@ -28,14 +29,9 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'space-between',
     },
-    footer: {
-      padding: theme.spacing(2),
-      textAlign: 'center',
-      color: 'white',
-      backgroundColor: 'rgba(129,129,129)',
-    },
     container: {
       width: '100%',
+      paddingBottom: '60px',
     },
   })
 );
@@ -94,11 +90,7 @@ const App = () => {
           </Route>
         </Switch>
       </div>
-      <Paper>
-        <Typography className={classes.footer} variant="body2">
-          &copy; 2020 Spektaakkeli Events
-        </Typography>
-      </Paper>
+      <Footer />
     </Router>
   );
 };

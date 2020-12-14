@@ -133,7 +133,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
       {error && <Typography color="error">{error}</Typography>}
       {game ? (
         <>
-          <Typography>{`Tervetuloa pelaamaan ${capitalize(
+          <Typography variant="h5">{`Tervetuloa pelaamaan ${capitalize(
             game.type
           )}a!`}</Typography>
           <Typography>{`Peli alkaa ${format(

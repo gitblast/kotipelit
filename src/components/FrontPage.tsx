@@ -46,7 +46,6 @@ const useStyles = makeStyles((theme: Theme) =>
         alignSelf: 'flex-end',
         justifyContent: 'space-around',
         marginBottom: 14,
-        width: '75%',
       },
     },
     buttonStyle: {
@@ -121,8 +120,8 @@ const FrontPage: React.FC = () => {
             <EuroSymbolIcon></EuroSymbolIcon>
 
             <Typography variant="h5">
-              Voit asettaa pelin hinnan itse, 80% peli-illan tuotosta tulee
-              sinulle.
+              Voit halutessasi myös asettaa pelille hinnan ja tienata hauskalla
+              tavalla.
             </Typography>
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -166,8 +165,8 @@ const FrontPage: React.FC = () => {
           </Grid>
           <Grid item xs={12} sm={4}>
             <Typography variant="h5">
-              Ota yhteyttä info@kotipelit.com ja aloita tienaaminen hauskalla
-              tavalla.
+              Ota yhteyttä info@kotipelit.com ja voit aloittaa peli-iltojen
+              järjestämisen.
             </Typography>
           </Grid>
           <Grid item xs={12} sm={4}>

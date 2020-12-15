@@ -68,8 +68,14 @@ setDebug(true);
 const MEDIA_CONSTRAINTS = {
   audio: true,
   video: {
-    width: { max: 200 },
-    height: { max: 480 },
+    width: {
+      min: 320,
+      max: 720,
+    },
+    height: {
+      min: 240,
+      max: 480,
+    },
   },
 };
 

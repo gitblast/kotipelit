@@ -2,26 +2,22 @@ import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { GameStatus, State } from '../types';
-import { Paper, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
-      paddingTop: theme.spacing(1),
-      paddingBottom: theme.spacing(1),
-      display: 'flex',
-      alignItems: 'center',
-      backgroundColor: 'rgba(15, 17, 15)',
       color: 'rgba(218, 214, 214)',
       width: '100%',
-    },
-    textContainer: {
-      marginLeft: theme.spacing(2),
+      // Maybe better to position by flexing all the elements in Controls?
     },
     nextUpText: {
       // Keep the same as videoframe hasTurn
       color: 'rgba(229, 197, 39)',
+    },
+    infoBarText: {
+      marginLeft: theme.spacing(2),
     },
   })
 );
@@ -48,6 +44,7 @@ const InfoBar: React.FC = () => {
 
     if (gameStatus === GameStatus.FINISHED) {
       return (
+        // korjaa tämä!
         <span>
           Peli on päättynyt! Kiitos osallistumisesta. Muista antaa palautetta.
         </span>
@@ -55,27 +52,21 @@ const InfoBar: React.FC = () => {
     }
 
     return (
-      <>
-        <span className={classes.nextUpText}>
+      <div className={classes.infoBarText}>
+        <Typography variant="h5" className={classes.nextUpText}>
           {playerWithTurn.id === self?.id
             ? `Sinun vuorosi! - Sanasi: ${playerWithTurn.words.join(', ')}`
             : `Vuorossa: ${playerWithTurn.name}`}
-        </span>
+        </Typography>
         {self?.isHost && (
-          <span>{` - Sanat: ${playerWithTurn.words.join(', ')}`}</span>
+          <Typography>{` ${playerWithTurn.words.join(' / ')}`}</Typography>
         )}
-      </>
+      </div>
     );
   };
 
   return (
-    <Paper className={classes.container} square>
-      {players && (
-        <div className={classes.textContainer}>
-          <Typography>{getText()}</Typography>
-        </div>
-      )}
-    </Paper>
+    <div className={classes.container}>{players && <div>{getText()}</div>}</div>
   );
 };
 

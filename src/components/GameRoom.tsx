@@ -2,7 +2,6 @@ import React from 'react';
 
 import useGameRoom from '../hooks/useGameRoom';
 
-import InfoBar from './InfoBar';
 import RTCVideoConference from './RTCVideoConference';
 import RTCHostControls from './RTCHostControls';
 import RTCPlayerControls from './RTCPlayerControls';
@@ -22,7 +21,6 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      textAlign: 'center',
     },
     centered: {
       minHeight: 400,
@@ -146,11 +144,11 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
           </Typography>
 
           <Typography className={classes.examples}>
-            "Löytyy Espanjasta ja tähtimerkeistä" <br />
+            &quot;Löytyy Espanjasta ja tähtimerkeistä&quot; <br />
             -Sexy Arvi (Spektaakkelin viihdelajien mestari)
           </Typography>
           <Typography className={classes.examples}>
-            "Dostojevski käsittelee tätä teoksessaan" <br />
+            &quot;Dostojevski käsittelee tätä teoksessaan&quot; <br />
             -King Pampo (Historian ensimmäinen Kotitonnivihje)
           </Typography>
         </div>
@@ -170,7 +168,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   return (
     <div className={classes.container}>
       <AudioHandler />
-      <InfoBar />
+
       <RTCVideoConference peers={peers} />
       {isHost ? (
         <RTCHostControls />

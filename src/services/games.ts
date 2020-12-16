@@ -1,7 +1,12 @@
 import axios from 'axios';
 
 import userService from './users';
-import { LobbyGame, ReservationResponse, SelectableGame } from '../types';
+import {
+  GamePlayer,
+  LobbyGame,
+  ReservationResponse,
+  SelectableGame,
+} from '../types';
 
 const baseUrl = '/api/games';
 
@@ -71,6 +76,22 @@ const reserveSpotForGame = async (
   return response.data;
 };
 
+const lockSpotForGame = async (
+  reservationId: string,
+  gameId: string,
+  displayName: string
+): Promise<GamePlayer> => {
+  const data = {
+    gameId,
+    reservationId,
+    displayName,
+  };
+
+  const response = await axios.put(`${baseUrl}/lock`, data);
+
+  return response.data;
+};
+
 const getLobbyGame = async (
   hostName: string,
   id: string
@@ -88,4 +109,5 @@ export default {
   getPlayerTokenForGame,
   reserveSpotForGame,
   getLobbyGame,
+  lockSpotForGame,
 };

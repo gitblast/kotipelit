@@ -17,14 +17,14 @@ const useStyles = makeStyles((theme: Theme) =>
       boxShadow: '0 0 1px 1px rgba(255,254,255)',
       width: `32%`,
       margin: theme.spacing(0.5),
-      textAlign: 'center',
+
       [theme.breakpoints.down('xs')]: {
         width: '46%',
         margin: 3,
       },
     },
     videoContainer: {
-      backgroundColor: 'grey',
+      backgroundColor: 'black',
       width: '100%',
     },
     frame: {
@@ -64,6 +64,9 @@ const useStyles = makeStyles((theme: Theme) =>
       bottom: 0,
       left: 0,
       right: 0,
+    },
+    noConnection: {
+      textAlign: 'center',
     },
   })
 );
@@ -130,7 +133,9 @@ const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({ peer, order }) => {
           {overlayContent}
         </VideoWithOverlay>
       ) : (
-        <ErrorMsg text={'Ei videoyhteyttä'}>{overlayContent}</ErrorMsg>
+        <div className={classes.noConnection}>
+          <ErrorMsg text={'Ei videoyhteyttä'}>{overlayContent}</ErrorMsg>
+        </div>
       )}
     </Card>
   );

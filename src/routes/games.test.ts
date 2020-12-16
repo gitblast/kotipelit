@@ -16,6 +16,7 @@ import {
   Role,
   GameType,
   GamePlayer,
+  GameModel,
 } from '../types';
 import Word from '../models/word';
 import Url from '../models/url';
@@ -52,6 +53,8 @@ const dummyGame: Omit<NewGame, 'host'> = {
 
 let user: UserModel;
 let token: string;
+let game: GameModel;
+let gameId: string;
 
 describe('games router', () => {
   beforeAll(async () => {
@@ -62,6 +65,9 @@ describe('games router', () => {
   beforeEach(async () => {
     await Game.deleteMany({});
     await Url.deleteMany({});
+
+    game = await testHelpers.addDummyGame(user);
+    gameId = game._id.toString();
   });
 
   it('should return 401 without valid token on protected routes', async () => {
@@ -97,9 +103,6 @@ describe('games router', () => {
 
   describe('GET /lobby/:hostName/:gameId', () => {
     it('should throw error if no game is found or if status is not upcoming', async () => {
-      const game = await testHelpers.addDummyGame(user);
-
-      const gameId: string = game._id.toString();
       const hostName = user.username;
 
       expect(game.status).toBe(GameStatus.UPCOMING);
@@ -114,10 +117,6 @@ describe('games router', () => {
     });
 
     it('should throw error if host not found or not matching game host', async () => {
-      const game = await testHelpers.addDummyGame(user);
-
-      const gameId: string = game._id.toString();
-
       await api.get(`${baseUrl}/lobby/INVALID_FOR_TESTS/${gameId}`).expect(400);
 
       const newUser = await testHelpers.addDummyUser('DIFFERENT USERNAME');
@@ -128,15 +127,13 @@ describe('games router', () => {
     });
 
     it('should return game type, price, hostname and starttime and locked player names if no errors', async () => {
-      const game = await testHelpers.addDummyGame(user);
-
       game.players = game.players.map((player, index) => {
         return index === 0
           ? {
               ...player,
               reservedFor: {
                 id: 'reservation id',
-                expires: 666,
+                expires: Date.now() * 2,
                 locked: true, // set one player reserver for to be locked
               },
             }
@@ -144,8 +141,6 @@ describe('games router', () => {
       });
 
       await game.save();
-
-      const gameId: string = game._id.toString();
 
       const response = await api
         .get(`${baseUrl}/lobby/${user.username}/${gameId}`)
@@ -157,24 +152,136 @@ describe('games router', () => {
       expect(new Date(response.body.startTime)).toEqual(game.startTime);
 
       response.body.players?.forEach(
-        (player: { name: string; id: string }, index: number) => {
+        (
+          player: {
+            name: string;
+            id: string;
+            expires: number;
+            locked: boolean;
+          },
+          index: number
+        ) => {
           if (index === 0) {
             expect(player.name).toBe(game.players[0].name);
             expect(player.id).toBe(game.players[0].id);
+            expect(player.expires).toBe(game.players[0].reservedFor?.expires);
+            expect(player.locked).toBe(game.players[0].reservedFor?.locked);
           } else {
-            expect(player).toBeNull();
+            expect(player.expires).toBeNull();
+            expect(player.locked).toBe(false);
           }
         }
       );
     });
   });
 
+  describe('PUT /lock', () => {
+    it('should throw error if no game found', async () => {
+      await api
+        .put(`${baseUrl}/lock`)
+        .send({
+          gameId: 'INVALID',
+          reservationId: 'reservation',
+        })
+        .expect(400);
+    });
+
+    it('should throw error if no reservation found', async () => {
+      const reqBody = {
+        gameId,
+        reservationId: 'INVALID_reservation',
+      };
+
+      await api.put(`${baseUrl}/lock`).send(reqBody).expect(400);
+    });
+
+    it('should throw error if reservation has expired', async () => {
+      const reqBody = {
+        gameId,
+        reservationId: 'valid_reservation_id',
+      };
+
+      const reservation = {
+        id: reqBody.reservationId,
+        expires: Date.now() - 100000, // expired
+        locked: false,
+      };
+
+      game.players = game.players.map((player, index) => {
+        return index === 0
+          ? {
+              ...player,
+              reservedFor: reservation,
+            }
+          : player;
+      });
+
+      await game.save();
+
+      await api.put(`${baseUrl}/lock`).send(reqBody).expect(400);
+    });
+
+    it('should throw error if reservation is locked', async () => {
+      const reqBody = {
+        gameId,
+        reservationId: 'valid_reservation_id',
+      };
+
+      const reservation = {
+        id: reqBody.reservationId,
+        expires: Date.now() * 2, // valid
+        locked: true,
+      };
+
+      game.players = game.players.map((player, index) => {
+        return index === 0
+          ? {
+              ...player,
+              reservedFor: reservation,
+            }
+          : player;
+      });
+
+      await game.save();
+
+      await api.put(`${baseUrl}/lock`).send(reqBody).expect(400);
+    });
+
+    it('should lock reservation if everything is ok', async () => {
+      const reqBody = {
+        gameId,
+        reservationId: 'valid_reservation_id',
+      };
+
+      const reservation = {
+        id: reqBody.reservationId,
+        expires: Date.now() * 2, // valid
+        locked: false,
+      };
+
+      game.players = game.players.map((player, index) => {
+        return index === 0
+          ? {
+              ...player,
+              reservedFor: reservation,
+            }
+          : player;
+      });
+
+      await game.save();
+
+      const response = await api
+        .put(`${baseUrl}/lock`)
+        .send(reqBody)
+        .expect(200);
+
+      expect(response.body.reservedFor?.id).toBe(reqBody.reservationId);
+      expect(response.body.reservedFor?.locked).toBe(true);
+    });
+  });
+
   describe('PUT /reserve ', () => {
     it('should set reservation if available slots exist', async () => {
-      const game = await testHelpers.addDummyGame(user);
-
-      const gameId: string = game._id.toString();
-
       const reservations = game.players.map((p) =>
         p.reservedFor ? p.reservedFor.id : null
       );
@@ -198,10 +305,6 @@ describe('games router', () => {
     });
 
     it('should set reservation if expired, non locked reservation slots exist', async () => {
-      const game = await testHelpers.addDummyGame(user);
-
-      const gameId: string = game._id.toString();
-
       game.players = game.players.map((player, index) => ({
         ...player,
         reservedFor: {
@@ -238,10 +341,6 @@ describe('games router', () => {
     });
 
     it('should throw 400 if reservation fails', async () => {
-      const game = await testHelpers.addDummyGame(user);
-
-      const gameId: string = game._id.toString();
-
       game.players = game.players.map((player, index) => ({
         ...player,
         reservedFor: {
@@ -279,10 +378,6 @@ describe('games router', () => {
 
   describe('GET /join/:hostName/:inviteCode', () => {
     it('should return object with token and display name with valid parameters', async () => {
-      const game = await testHelpers.addDummyGame(user);
-
-      const gameId: string = game._id.toString();
-
       const player = game.players[0];
 
       const hostName = user.username;
@@ -317,8 +412,6 @@ describe('games router', () => {
     });
 
     it('should return 400 with invalid host name or player id', async () => {
-      const game = await testHelpers.addDummyGame(user);
-
       await api
         .get(`${baseUrl}/join/${user.username}/INCORRECT_ID`)
         .expect(400);
@@ -351,7 +444,7 @@ describe('games router', () => {
         .expect('Content-Type', /application\/json/);
 
       expect(response.body).toBeDefined();
-      expect(response.body.length).toBe(2);
+      expect(response.body.length).toBe(initialGames.length + 2);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       response.body.forEach((game: any) => {
@@ -422,16 +515,16 @@ describe('games router', () => {
     it('should allow deleting games added by id matching token', async () => {
       const initialGames = await testHelpers.gamesInDb();
 
-      const game = await testHelpers.addDummyGame(user);
+      const newGame = await testHelpers.addDummyGame(user);
 
       const tempGames = await testHelpers.gamesInDb();
 
       expect(tempGames.length).toBe(initialGames.length + 1);
 
-      const id: string = game._id.toString();
+      const newGameId: string = newGame._id.toString();
 
       await api
-        .delete(`${baseUrl}/${id}`)
+        .delete(`${baseUrl}/${newGameId}`)
         .set('Authorization', `bearer ${token}`)
         .expect(204);
 

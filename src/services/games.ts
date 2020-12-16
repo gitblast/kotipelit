@@ -11,6 +11,31 @@ import {
   RTCGame,
 } from '../types';
 
+const refreshGameReservations = async (gameId: string): Promise<GameModel> => {
+  const game = await Game.findById(gameId);
+
+  if (!game) {
+    throw new Error(`Invalid request: no game found with id ${gameId}`);
+  }
+
+  if (game.status !== GameStatus.UPCOMING) {
+    throw new Error(`Invalid request: game status is not upcoming`);
+  }
+
+  game.players = game.players.map((player) => {
+    return player.reservedFor &&
+      !player.reservedFor.locked &&
+      player.reservedFor.expires < Date.now()
+      ? {
+          ...player,
+          reservedFor: null,
+        }
+      : player;
+  });
+
+  return await game.save();
+};
+
 const getInitialInfo = (game: ActiveGame | GameModel): GameInfo => {
   /** handle different game types here */
   switch (game.type) {
@@ -90,4 +115,5 @@ export default {
   getInitialInfo,
   getGameById,
   convertToRTCGame,
+  refreshGameReservations,
 };

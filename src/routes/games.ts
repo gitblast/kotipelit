@@ -22,8 +22,9 @@ import Game from '../models/game';
 import Word from '../models/word';
 import Url from '../models/url';
 import User from '../models/user';
+import gameService from '../services/games';
 
-import { GameStatus, Role, WordModel } from '../types';
+import { Role, WordModel } from '../types';
 import { onlyForRole } from '../utils/middleware';
 import logger from '../utils/logger';
 
@@ -31,36 +32,76 @@ const router = express.Router();
 
 /** public routes */
 
-router.put('/reserve', async (req, res, next) => {
+router.put('/lock', async (req, res, next) => {
   try {
     const gameId = toID(req.body.gameId);
+    const reservationId = toID(req.body.reservationId);
 
     const game = await Game.findById(gameId);
 
     if (!game) {
-      throw new Error(`Invalid request: no game found with id ${gameId}`);
+      throw new Error('Invalid request: no game found');
     }
 
-    if (game.status !== GameStatus.UPCOMING) {
-      throw new Error(`Invalid request: game status is not upcoming`);
+    const playerReservationToLock = game.players.find((player) => {
+      return player.reservedFor?.id === reservationId;
+    });
+
+    if (!playerReservationToLock || !playerReservationToLock.reservedFor) {
+      throw new Error(
+        `Invalid request: no reservation found with id '${reservationId}'`
+      );
     }
+
+    const reservationData = playerReservationToLock.reservedFor;
+
+    if (reservationData.expires < Date.now()) {
+      throw new Error(
+        `Invalid request: reservation with id '${reservationId}' has expired`
+      );
+    }
+
+    if (reservationData.locked) {
+      throw new Error(
+        `Invalid request: reservation with id '${reservationId}' is locked`
+      );
+    }
+
+    logger.log('locking reservation with id', reservationId);
+
+    const playerWithReservationLocked = {
+      ...playerReservationToLock,
+      reservedFor: {
+        ...reservationData,
+        locked: true,
+      },
+    };
 
     game.players = game.players.map((player) => {
-      return player.reservedFor &&
-        !player.reservedFor.locked &&
-        player.reservedFor.expires < Date.now()
-        ? {
-            ...player,
-            reservedFor: null,
-          }
-        : player;
+      if (player.id === playerReservationToLock.id) {
+        return playerWithReservationLocked;
+      }
+
+      return player;
     });
 
     await game.save();
 
+    res.json(playerWithReservationLocked);
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.put('/reserve', async (req, res, next) => {
+  try {
+    const gameId = toID(req.body.gameId);
+
     const reservationId = toID(req.body.reservationId);
 
-    const expiresAt = Date.now() + 300000; // 5 min
+    await gameService.refreshGameReservations(gameId);
+
+    const expiresAt = Date.now() + 300000 + 10000; // 5 min + 10 sec buffer
 
     await Game.updateOne(
       {
@@ -109,7 +150,7 @@ router.put('/reserve', async (req, res, next) => {
     }
 
     logger.log(
-      'reserved a slot with id',
+      'reserved a slot with id:',
       reservationId,
       'player id:',
       reservedPlayer.id,
@@ -169,15 +210,7 @@ router.get('/lobby/:hostName/:gameId', async (req, res, next) => {
     const gameId = toID(req.params.gameId);
     const hostName = toID(req.params.hostName);
 
-    const game = await Game.findById(gameId);
-
-    if (!game) {
-      throw new Error(`Invalid request: no game found with id ${gameId}`);
-    }
-
-    if (game.status !== GameStatus.UPCOMING) {
-      throw new Error(`Invalid request: game status is not upcoming`);
-    }
+    const game = await gameService.refreshGameReservations(gameId);
 
     const host = await User.findOne({ username: hostName });
 

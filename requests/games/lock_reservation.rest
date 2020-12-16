@@ -1,4 +1,4 @@
-PUT http://localhost:3333/api/games/reserve
+PUT http://localhost:3333/api/games/lock
 Content-Type: application/json
 
 {

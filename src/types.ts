@@ -36,6 +36,9 @@ export interface LobbyGamePlayer {
   expires: number | null;
   locked: boolean;
   reservedForMe?: boolean;
+  lockedForMe?: boolean;
+  words?: string[];
+  url?: string;
 }
 
 export interface LobbyGame extends BaseGame {

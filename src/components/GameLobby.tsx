@@ -1,9 +1,7 @@
 import React from 'react';
 
-import { v4 as uuidv4 } from 'uuid';
+import useLobbySystem from '../hooks/useLobbySystem';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { useParams } from 'react-router-dom';
-import gameService from '../services/games';
 import {
   Fab,
   Paper,
@@ -12,14 +10,15 @@ import {
   GridList,
   GridListTile,
   GridListTileBar,
+  TextField,
 } from '@material-ui/core';
-import { LobbyGame, LobbyGamePlayer } from '../types';
-import logger from '../utils/logger';
+import { LobbyGamePlayer } from '../types';
 import Loader from './Loader';
 import { capitalize } from 'lodash';
 import { format } from 'date-fns';
 import fiLocale from 'date-fns/locale/fi';
 import userImg from '../assets/images/user.png';
+import logger from '../utils/logger';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -69,13 +68,50 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       height: 'auto',
     },
+    padded: {
+      padding: theme.spacing(2),
+    },
   })
 );
 
-interface ParamTypes {
-  username: string;
-  gameID: string;
+interface LockReservationFormProps {
+  handleClick: (displayName: string) => void;
 }
+
+const LockReservationForm: React.FC<LockReservationFormProps> = ({
+  handleClick,
+}) => {
+  const classes = useStyles();
+  const [name, setName] = React.useState('');
+  const [email, setEmail] = React.useState('');
+
+  return (
+    <div className={classes.padded}>
+      <div className={classes.padded}>
+        <TextField
+          value={name}
+          onChange={({ target }) => setName(target.value)}
+          label="Nimi"
+        />
+      </div>
+      <div className={classes.padded}>
+        <TextField
+          value={email}
+          onChange={({ target }) => setEmail(target.value)}
+          label="Sähköpostiosoite"
+        />
+      </div>
+      <Fab
+        className={classes.reserveBtn}
+        variant="extended"
+        onClick={() => handleClick(name)}
+        disabled={!name}
+      >
+        <Typography>Lukitse varaus</Typography>
+      </Fab>
+    </div>
+  );
+};
 
 interface GameLobbyProps {
   something?: boolean;
@@ -83,66 +119,16 @@ interface GameLobbyProps {
 
 const GameLobby: React.FC<GameLobbyProps> = () => {
   const classes = useStyles();
-  const { username, gameID } = useParams<ParamTypes>();
-  const [reservationId, setReservationId] = React.useState<string | null>(null);
-  const [error, setError] = React.useState<string | null>(null);
-  const [game, setGame] = React.useState<LobbyGame | null>(null);
 
-  React.useEffect(() => {
-    const fetchGame = async (host: string, id: string) => {
-      try {
-        const fetchedGame = await gameService.getLobbyGame(host, id);
+  const { game, error, reserveSpot, lockSpot } = useLobbySystem();
 
-        logger.log('setting game', fetchedGame);
+  const spotReservedForMe = React.useMemo(() => {
+    return game?.players.find((player) => player.reservedForMe);
+  }, [game]);
 
-        setGame(fetchedGame);
-      } catch (e) {
-        setError('Peliä ei löytynyt, tarkista osoite!');
-      }
-    };
-
-    if (!game && gameID && username) {
-      fetchGame(username, gameID);
-    }
-  }, [gameID, game, username]);
-
-  React.useEffect(() => {
-    setReservationId(uuidv4());
-  }, []);
-
-  const reserveSpot = async () => {
-    if (!reservationId || !gameID || !game) {
-      return;
-    }
-
-    try {
-      const reservationData = await gameService.reserveSpotForGame(
-        reservationId,
-        gameID
-      );
-
-      console.log(reservationData);
-
-      const newGame = {
-        ...game,
-        players: game.players.map((player) => {
-          return player && player.id === reservationData.playerId
-            ? {
-                ...player,
-                expires: reservationData.expiresAt,
-                reservedForMe: true,
-              }
-            : player;
-        }),
-      };
-
-      logger.log('setting new game', newGame);
-
-      setGame(newGame);
-    } catch (e) {
-      setError('Peliin liittyminen epäonnistui');
-    }
-  };
+  const spotLockedForMe = React.useMemo(() => {
+    return game?.players.find((player) => player.lockedForMe);
+  }, [game]);
 
   const getLabel = (player: LobbyGamePlayer) => {
     if (player.locked) {
@@ -168,6 +154,64 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
     return <span className={classes.freeSlotText}>Vapaa</span>;
   };
 
+  const getWordList = (words?: string[]) => {
+    if (!words) {
+      logger.error('no words set for locked player');
+
+      return null;
+    }
+
+    return (
+      <>
+        <Typography variant="h6">Sanasi:</Typography>
+        <Typography>{words.join(' / ')}</Typography>
+      </>
+    );
+  };
+
+  const getGameUrl = (url?: string) => {
+    if (!url) {
+      logger.error('no inviteCode set for locked player');
+
+      return null;
+    }
+
+    return (
+      <>
+        <Typography variant="h6">
+          Peliin pääset liittymään osoitteessa:
+        </Typography>
+        <Typography>{url}</Typography>
+      </>
+    );
+  };
+
+  const getContent = () => {
+    if (!spotLockedForMe && !spotReservedForMe) {
+      return (
+        <Fab
+          className={classes.reserveBtn}
+          variant="extended"
+          onClick={reserveSpot}
+        >
+          <Typography>Varaa paikka</Typography>
+        </Fab>
+      );
+    }
+
+    if (spotLockedForMe) {
+      return (
+        <div>
+          <Typography variant="h4">Paikan varaus onnistui!</Typography>
+          {getWordList(spotLockedForMe.words)}
+          {getGameUrl(spotLockedForMe.url)}
+        </div>
+      );
+    }
+
+    return <LockReservationForm handleClick={lockSpot} />;
+  };
+
   return (
     <Paper elevation={0} className={classes.container}>
       {error && <Typography color="error">{error}</Typography>}
@@ -191,14 +235,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
                   <Typography variant="h6">{`Pelin hinta on ${game.price} €`}</Typography>
                 )}
                 <Typography variant="h6">{`Peli-illan järjestää ${game.hostName}`}</Typography>
-                <Fab
-                  className={classes.reserveBtn}
-                  variant="extended"
-                  onClick={reserveSpot}
-                  disabled={!reservationId || !gameID}
-                >
-                  <Typography>Varaa paikka</Typography>
-                </Fab>
+                {getContent()}
               </div>
             </Grid>
 
@@ -229,17 +266,17 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
             {/* Toistaa itseään, tee mahd. objekti jossa koottuja vihjeitä, vaihtele näkymää */}
             <Grid item sm={4}>
               <Typography variant="h6">
-                "Hautajaishuijaus, johon et halua sijoittaa."
+                {'"Hautajaishuijaus, johon et halua sijoittaa."'}
               </Typography>
             </Grid>
             <Grid item sm={4}>
               <Typography variant="h6">
-                "Anthony Hopkinsin lemmikin oikeudellinen asema."
+                {'"Anthony Hopkinsin lemmikin oikeudellinen asema."'}
               </Typography>
             </Grid>
             <Grid item sm={4}>
               <Typography variant="h6">
-                "Löytyy tähtimerkeistä ja Espanjasta."
+                {'"Löytyy tähtimerkeistä ja Espanjasta."'}
               </Typography>
             </Grid>
           </Grid>

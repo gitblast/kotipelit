@@ -145,6 +145,16 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
     }
   };
 
+  const getLobbyLink = () => {
+    const host =
+      // eslint-disable-next-line no-undef
+      process && process.env.NODE_ENV === 'development'
+        ? 'http://localhost:3000'
+        : 'https://www.kotipelit.com';
+
+    return `${host}/${username}/kutsut/${game.id}`;
+  };
+
   return (
     <Paper elevation={2} className={classes.container}>
       <div className={`${classes.infoBar} ${classes.flex}`}>
@@ -189,6 +199,14 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
           </Menu>
         </div>
       </div>
+      {game.status === GameStatus.UPCOMING && (
+        <div>
+          <Typography variant="h6" gutterBottom>
+            Aulalinkki
+          </Typography>
+          <Typography>{getLobbyLink()}</Typography>
+        </div>
+      )}
       <div>
         <Typography variant="h6" gutterBottom>
           Pelaajat

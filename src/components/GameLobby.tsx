@@ -229,17 +229,17 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
             {/* Toistaa itseään, tee mahd. objekti jossa koottuja vihjeitä, vaihtele näkymää */}
             <Grid item sm={4}>
               <Typography variant="h6">
-                "Hautajaishuijaus, johon et halua sijoittaa."
+                &quot;Hautajaishuijaus, johon et halua sijoittaa.&quot;
               </Typography>
             </Grid>
             <Grid item sm={4}>
               <Typography variant="h6">
-                "Anthony Hopkinsin lemmikin oikeudellinen asema."
+                &quot;Anthony Hopkinsin lemmikin oikeudellinen asema.&quot;
               </Typography>
             </Grid>
             <Grid item sm={4}>
               <Typography variant="h6">
-                "Löytyy tähtimerkeistä ja Espanjasta."
+                &quot;Löytyy tähtimerkeistä ja Espanjasta.&quot;
               </Typography>
             </Grid>
           </Grid>

@@ -3,16 +3,18 @@ import React from 'react';
 import useInterval from '../hooks/useInterval';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Fab, Paper } from '@material-ui/core';
+import { Fab, Paper, Grid } from '@material-ui/core';
 
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import UndoIcon from '@material-ui/icons/Undo';
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import { GameStatus, RTCGame, State } from '../types';
 import { useDispatch, useSelector } from 'react-redux';
 import logger from '../utils/logger';
 import { reset, setTimer } from '../reducers/kotitonni.local.reducer';
 import { setGame } from '../reducers/rtcGame.reducer';
+import InfoBar from './InfoBar';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -24,9 +26,19 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'relative',
     },
     btnContainer: {
-      margin: theme.spacing(1),
-      paddingTop: theme.spacing(2),
-      paddingBottom: theme.spacing(2),
+      display: 'flex',
+      justifyContent: 'space-around',
+      alignItems: 'center',
+    },
+    controlsContent: {
+      padding: theme.spacing(4),
+    },
+    controlBarIcons: {
+      color: 'white',
+      // create a flex class and use it where ever
+      display: 'flex',
+      justifyContent: 'space-around',
+      alignItems: 'center',
     },
     updatePoints: {
       backgroundColor: 'rgba(63, 120, 76)',
@@ -307,8 +319,11 @@ const RTCHostControls: React.FC = () => {
           </Fab>
         </div>
       ) : (
-        <>
-          <div className={classes.btnContainer}>
+        <Grid container className={classes.controlsContent}>
+          <Grid item sm={4}>
+            <InfoBar />
+          </Grid>
+          <Grid className={classes.btnContainer} item sm={4}>
             <Fab
               variant="extended"
               size="large"
@@ -318,8 +333,7 @@ const RTCHostControls: React.FC = () => {
               {timerRunning ? <PauseIcon /> : <PlayArrowIcon />}
               <div className={classes.timerContainer}>{timer}</div>
             </Fab>
-          </div>
-          <div className={classes.btnContainer}>
+
             <Fab
               variant="extended"
               color="secondary"
@@ -328,8 +342,6 @@ const RTCHostControls: React.FC = () => {
             >
               Päivitä pisteet
             </Fab>
-          </div>
-          <div className={classes.btnContainer}>
             <Fab
               size="medium"
               color="secondary"
@@ -338,8 +350,12 @@ const RTCHostControls: React.FC = () => {
             >
               <UndoIcon />
             </Fab>
-          </div>
-        </>
+          </Grid>
+          <Grid item sm={3}></Grid>
+          <Grid className={classes.controlBarIcons} item sm={1}>
+            <FullscreenIcon fontSize="large"></FullscreenIcon>
+          </Grid>
+        </Grid>
       )}
     </Paper>
   );

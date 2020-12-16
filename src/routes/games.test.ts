@@ -176,6 +176,20 @@ describe('games router', () => {
   });
 
   describe('PUT /lock', () => {
+    let lockReqBody: {
+      gameId: string;
+      reservationId: string;
+      displayName: string;
+    };
+
+    beforeEach(() => {
+      lockReqBody = {
+        gameId,
+        reservationId: 'INVALID_reservation',
+        displayName: 'TestDisplayName',
+      };
+    });
+
     it('should throw error if no game found', async () => {
       await api
         .put(`${baseUrl}/lock`)
@@ -187,22 +201,12 @@ describe('games router', () => {
     });
 
     it('should throw error if no reservation found', async () => {
-      const reqBody = {
-        gameId,
-        reservationId: 'INVALID_reservation',
-      };
-
-      await api.put(`${baseUrl}/lock`).send(reqBody).expect(400);
+      await api.put(`${baseUrl}/lock`).send(lockReqBody).expect(400);
     });
 
     it('should throw error if reservation has expired', async () => {
-      const reqBody = {
-        gameId,
-        reservationId: 'valid_reservation_id',
-      };
-
       const reservation = {
-        id: reqBody.reservationId,
+        id: lockReqBody.reservationId,
         expires: Date.now() - 100000, // expired
         locked: false,
       };
@@ -218,17 +222,12 @@ describe('games router', () => {
 
       await game.save();
 
-      await api.put(`${baseUrl}/lock`).send(reqBody).expect(400);
+      await api.put(`${baseUrl}/lock`).send(lockReqBody).expect(400);
     });
 
     it('should throw error if reservation is locked', async () => {
-      const reqBody = {
-        gameId,
-        reservationId: 'valid_reservation_id',
-      };
-
       const reservation = {
-        id: reqBody.reservationId,
+        id: lockReqBody.reservationId,
         expires: Date.now() * 2, // valid
         locked: true,
       };
@@ -244,17 +243,12 @@ describe('games router', () => {
 
       await game.save();
 
-      await api.put(`${baseUrl}/lock`).send(reqBody).expect(400);
+      await api.put(`${baseUrl}/lock`).send(lockReqBody).expect(400);
     });
 
     it('should lock reservation if everything is ok', async () => {
-      const reqBody = {
-        gameId,
-        reservationId: 'valid_reservation_id',
-      };
-
       const reservation = {
-        id: reqBody.reservationId,
+        id: lockReqBody.reservationId,
         expires: Date.now() * 2, // valid
         locked: false,
       };
@@ -272,11 +266,12 @@ describe('games router', () => {
 
       const response = await api
         .put(`${baseUrl}/lock`)
-        .send(reqBody)
+        .send(lockReqBody)
         .expect(200);
 
-      expect(response.body.reservedFor?.id).toBe(reqBody.reservationId);
+      expect(response.body.reservedFor?.id).toBe(lockReqBody.reservationId);
       expect(response.body.reservedFor?.locked).toBe(true);
+      expect(response.body.name).toBe(lockReqBody.displayName);
     });
   });
 

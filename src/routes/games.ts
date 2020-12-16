@@ -11,6 +11,7 @@ import {
   validateGameHost,
   validateGamePlayer,
   toPositiveInteger,
+  parseString,
 } from '../utils/mappers';
 
 import expressJwt from 'express-jwt';
@@ -34,8 +35,9 @@ const router = express.Router();
 
 router.put('/lock', async (req, res, next) => {
   try {
-    const gameId = toID(req.body.gameId);
-    const reservationId = toID(req.body.reservationId);
+    const gameId = parseString(req.body.gameId);
+    const reservationId = parseString(req.body.reservationId);
+    const displayName = parseString(req.body.displayName);
 
     const game = await Game.findById(gameId);
 
@@ -67,10 +69,16 @@ router.put('/lock', async (req, res, next) => {
       );
     }
 
-    logger.log('locking reservation with id', reservationId);
+    logger.log(
+      'locking reservation with id',
+      reservationId,
+      'and setting displayName',
+      displayName
+    );
 
     const playerWithReservationLocked = {
       ...playerReservationToLock,
+      name: displayName,
       reservedFor: {
         ...reservationData,
         locked: true,

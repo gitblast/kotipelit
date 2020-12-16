@@ -53,11 +53,17 @@ const isNumber = (number: any): number is number => {
   return true;
 };
 
-const parseString = (str: any, fieldName: string): string => {
-  if (!str) throw new Error(`Missing field '${fieldName}'`);
+export const parseString = (str: any, fieldName?: string): string => {
+  if (!str) {
+    const errorMsg = 'Missing string to be parsed';
+
+    throw new Error(fieldName ? `Missing field '${fieldName}'` : errorMsg);
+  }
   if (!isString(str))
     throw new Error(
-      `Incorrect field ${fieldName}. Expected string, got ${typeof str}`
+      fieldName
+        ? `Incorrect field ${fieldName}. Expected string, got ${typeof str}`
+        : 'Object is not a string'
     );
 
   return str;

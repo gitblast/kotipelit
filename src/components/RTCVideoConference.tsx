@@ -1,16 +1,17 @@
 import React from 'react';
 
-import { makeStyles, createStyles } from '@material-ui/core/styles';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import Loader from './Loader';
 import RTCVideoFrame from './RTCVideoFrame';
 
 import { RTCPeer } from '../types';
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     videoConf: {
       display: 'flex',
+      paddingTop: theme.spacing(2),
       flexWrap: 'wrap',
       justifyContent: 'center',
       alignItems: 'center',

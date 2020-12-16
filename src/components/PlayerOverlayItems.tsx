@@ -12,6 +12,7 @@ import {
   Checkbox,
   Fade,
   Button,
+  Grid,
 } from '@material-ui/core';
 
 import logger from '../utils/logger';
@@ -20,29 +21,13 @@ import { setClicked, setMuted } from '../reducers/kotitonni.local.reducer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    additionBadge: {
-      color: 'white',
-      margin: theme.spacing(0.5),
-      padding: theme.spacing(1),
-    },
-    pointsBadge: {
-      margin: theme.spacing(0.5),
-      padding: theme.spacing(1.5),
-      borderRadius: '100%',
-      backgroundColor: 'black',
-      color: 'white',
-      opacity: 0.8,
-      minWidth: 50,
-    },
     nameBadge: {
-      paddingLeft: theme.spacing(1),
-      paddingRight: theme.spacing(1),
+      padding: theme.spacing(2),
       backgroundColor: 'black',
       color: 'white',
       opacity: 0.8,
-      minWidth: 30,
+      width: '100%',
     },
-    correctBadge: {},
     flexCol: {
       height: '100%',
       display: 'flex',
@@ -77,7 +62,7 @@ const useStyles = makeStyles((theme: Theme) =>
     // },
     // Repeating same code from HostOverlayItems
     controlIcon: {
-      color: 'black',
+      color: 'white',
     },
     positionLabel: {
       position: 'absolute',
@@ -266,52 +251,39 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
         )}
         <div className={classes.flex}>
           <div className={classes.spacer} />
-          <Paper className={classes.pointsBadge}>
-            <Typography variant="h5">{player.points}</Typography>
-          </Paper>
         </div>
-        {showPointAddition && addition !== 0 && (
-          <Fade in>
-            <div className={classes.flex}>
-              <div className={classes.spacer} />
-
-              <Typography className={classes.additionBadge}>
-                {addition}
-              </Typography>
-            </div>
-          </Fade>
-        )}
 
         <div className={classes.spacer} />
         <div className={classes.flex}>
-          <Paper className={classes.nameBadge}>
-            <Typography variant="h5">{player.name}</Typography>
-          </Paper>
+          <Grid container className={classes.nameBadge}>
+            <Grid item sm={5}>
+              <Typography variant="h5">{player.name}</Typography>
+            </Grid>
+            <Grid item sm={3}>
+              <Typography variant="h5">{player.points}</Typography>
+            </Grid>
+            <Grid item sm={2}>
+              {showPointAddition && addition !== 0 && (
+                <Fade in>
+                  <Typography>{addition}</Typography>
+                </Fade>
+              )}
+            </Grid>
+            <Grid item sm={2}>
+              <IconButton
+                size="small"
+                onClick={toggleMuted}
+                className={classes.controlIcon}
+              >
+                {mutedMap[player.id] ? (
+                  <MicOffIcon color="error" />
+                ) : (
+                  <MicIcon />
+                )}
+              </IconButton>
+            </Grid>
+          </Grid>
           <div className={classes.spacer} />
-          {/* {forHost && answer && (
-            <Paper className={classes.correctBadge}>
-              <FormControlLabel
-                color="primary"
-                control={
-                  <Checkbox
-                    checked={checked}
-                    onChange={handleChange}
-                    icon={<span className={classes.controlIcon} />}
-                  />
-                }
-                label={<Typography variant="h6">Oikein</Typography>}
-              />
-              <div className={classes.spacer} /> 
-            </Paper>
-          )}*/}
-
-          <IconButton
-            size="small"
-            onClick={toggleMuted}
-            className={classes.controlIcon}
-          >
-            {mutedMap[player.id] ? <MicOffIcon color="error" /> : <MicIcon />}
-          </IconButton>
         </div>
       </div>
     );

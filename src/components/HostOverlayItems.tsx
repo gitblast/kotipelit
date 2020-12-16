@@ -2,10 +2,9 @@ import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
-import { Paper, Typography, IconButton } from '@material-ui/core';
+import { Typography, IconButton, Grid } from '@material-ui/core';
 import MicIcon from '@material-ui/icons/Mic';
 import MicOffIcon from '@material-ui/icons/MicOff';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import { setMuted } from '../reducers/kotitonni.local.reducer';
 import { GameType, RTCPeer, State } from '../types';
@@ -14,18 +13,18 @@ import { useSelector, useDispatch } from 'react-redux';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    badge: {
-      paddingLeft: theme.spacing(1),
-      paddingRight: theme.spacing(1),
+    // Repeated code from PlayerOverlay!
+    nameBadge: {
+      padding: theme.spacing(2),
       backgroundColor: 'black',
       color: 'white',
       opacity: 0.8,
-      minWidth: 30,
+      width: '100%',
+      // .. except for this
+      textAlign: 'center',
     },
-    hostBadge: {
-      paddingLeft: theme.spacing(1),
-      paddingRight: theme.spacing(1),
-      margin: theme.spacing(1),
+    // Repeated code from PlayerOverlay!
+    controlIcon: {
       color: 'white',
     },
     flexCol: {
@@ -38,9 +37,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     spacer: {
       flex: '1 1 auto',
-    },
-    controlIcon: {
-      color: 'white',
     },
   })
 );
@@ -78,19 +74,24 @@ const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({ host }) => {
       <div className={classes.flexCol}>
         <div className={classes.flex}>
           <div className={classes.spacer} />
-          <IconButton className={classes.hostBadge}>
-            <AccountCircleIcon />
-          </IconButton>
         </div>
         <div className={classes.spacer} />
         <div className={classes.flex}>
-          <Paper className={classes.badge}>
-            <Typography variant="h5">{host.displayName}</Typography>
-          </Paper>
-          <div className={classes.spacer} />
-          <IconButton size="small" onClick={toggleMuted}>
-            {mutedMap[host.id] ? <MicOffIcon color="error" /> : <MicIcon />}
-          </IconButton>
+          <Grid container className={classes.nameBadge}>
+            <Grid item sm={10}>
+              <Typography variant="h5">{host.displayName}</Typography>
+            </Grid>
+            <Grid item sm={2}>
+              <IconButton
+                className={classes.controlIcon}
+                size="small"
+                onClick={toggleMuted}
+              >
+                {mutedMap[host.id] ? <MicOffIcon color="error" /> : <MicIcon />}
+              </IconButton>
+            </Grid>
+            <div className={classes.spacer} />
+          </Grid>
         </div>
       </div>
     );

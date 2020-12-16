@@ -20,6 +20,9 @@ const theme = createMuiTheme({
       main: 'rgba(179,49,49)',
       dark: 'rgba(129,29,29)',
     },
+    error: {
+      main: 'rgba(227, 23, 10)',
+    },
   },
   typography: {
     fontFamily: 'Itim',

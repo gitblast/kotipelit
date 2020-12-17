@@ -7,11 +7,13 @@ import logger from '../utils/logger';
 
 const usePeer = (
   token: string | null,
-  onLeave?: (client: Peer) => void
+  onLeave?: null | ((client: Peer) => void),
+  fallback?: boolean
 ): [Peer | null, string | null] => {
   const [peerClient, setPeerClient] = React.useState<Peer | null>(null);
   const [error, setError] = React.useState<null | string>(null);
   const [iceServers, setIceServers] = React.useState<null | IceServers>(null);
+  const [useDefaultStun, setUseDefaultStun] = React.useState(false);
 
   React.useEffect(() => {
     const fetchIceServers = async (gameToken: string) => {
@@ -20,29 +22,39 @@ const usePeer = (
 
         setIceServers(servers);
       } catch (e) {
-        setError(e.message);
+        if (fallback) {
+          logger.log('could not connect to xirsys, trying google stun');
+
+          setUseDefaultStun(true);
+        } else {
+          setError(e.message);
+        }
       }
     };
 
     if (token && !iceServers) {
       fetchIceServers(token);
     }
-  }, [token, iceServers]);
+  }, [token, iceServers, fallback]);
 
   React.useEffect(() => {
-    if (!peerClient && iceServers) {
+    if (!peerClient && (iceServers || useDefaultStun)) {
       const port =
         // eslint-disable-next-line no-undef
         process && process.env.NODE_ENV === 'development' ? 3333 : 443;
 
       logger.log(`using port ${port}`);
 
-      const peer = new Peer({
+      const settings = {
         host: '/',
         port: port,
         debug: 2,
         path: '/api/peerjs',
-        config: {
+        config: {},
+      };
+
+      if (iceServers) {
+        settings.config = {
           iceServers: [
             {
               username: iceServers.username,
@@ -50,8 +62,12 @@ const usePeer = (
               credential: iceServers.credential,
             },
           ],
-        },
-      });
+        };
+      } else {
+        logger.log('using google stun servers');
+      }
+
+      const peer = new Peer(settings);
 
       peer.on('error', (error) => {
         logger.error('peer error', error.message);
@@ -87,7 +103,7 @@ const usePeer = (
         peerClient.destroy();
       }
     };
-  }, [peerClient, onLeave, iceServers]);
+  }, [peerClient, onLeave, iceServers, useDefaultStun]);
 
   const returnedTuple: [Peer | null, string | null] = React.useMemo(
     () => [peerClient, error],

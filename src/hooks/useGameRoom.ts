@@ -21,7 +21,7 @@ const useGameRoom = (
   const [peersCalled, setPeersCalled] = React.useState(false);
   const peers = useSelector((state: State) => state.rtc.peers, shallowEqual);
   const streamSet = useSelector((state: State) => !!state.rtc.self?.stream);
-  const [peer, peerError] = usePeer(token);
+  const [peer, peerError] = usePeer(token, null, true);
   const dispatch = useDispatch();
   const socketLeaveCallback = React.useCallback(
     (socket: SocketIOClient.Socket) => socket.emit('leave-room'),
@@ -34,7 +34,7 @@ const useGameRoom = (
   );
 
   if (peerError || socketError || mediaStreamError) {
-    console.error('handle errors!');
+    console.error('handle errors!', peerError, socketError, mediaStreamError);
   }
 
   React.useEffect(() => {

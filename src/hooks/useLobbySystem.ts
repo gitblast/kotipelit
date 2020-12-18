@@ -74,7 +74,7 @@ const useLobbySystem = () => {
         setError('Paikan lukitseminen epäonnistui');
       }
     },
-    [reservationId, gameID, game]
+    [reservationId, gameID, game, username]
   );
 
   const reserveSpot = React.useCallback(async () => {

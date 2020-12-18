@@ -78,8 +78,9 @@ const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({ host }) => {
         <div className={classes.spacer} />
         <div className={classes.flex}>
           <Grid container className={classes.nameBadge}>
-            <Grid item sm={10}>
-              <Typography variant="h5">{host.displayName}</Typography>
+            <Grid item sm={1}></Grid>
+            <Grid item sm={9}>
+              <Typography variant="h6">{host.displayName}</Typography>
             </Grid>
             <Grid item sm={2}>
               <IconButton

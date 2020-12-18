@@ -45,9 +45,9 @@ const InfoBar: React.FC = () => {
     if (gameStatus === GameStatus.FINISHED) {
       return (
         // korjaa tämä!
-        <span>
+        <Typography>
           Peli on päättynyt! Kiitos osallistumisesta. Muista antaa palautetta.
-        </span>
+        </Typography>
       );
     }
 

@@ -139,7 +139,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
   const answerBox = (answer: string) => {
     return (
       <Paper className={classes.answerBubble}>
-        <Typography variant="h5">{answer}</Typography>
+        <Typography variant="subtitle2">{answer}</Typography>
         {forHost && answer && (
           <Checkbox checked={checked} onChange={handleChange} />
         )}
@@ -257,10 +257,10 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
         <div className={classes.flex}>
           <Grid container className={classes.nameBadge}>
             <Grid item sm={5}>
-              <Typography variant="h5">{player.name}</Typography>
+              <Typography variant="h6">{player.name}</Typography>
             </Grid>
             <Grid item sm={3}>
-              <Typography variant="h5">{player.points}</Typography>
+              <Typography variant="h6">{player.points}</Typography>
             </Grid>
             <Grid item sm={2}>
               {showPointAddition && addition !== 0 && (

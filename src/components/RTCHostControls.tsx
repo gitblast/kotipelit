@@ -3,7 +3,7 @@ import React from 'react';
 import useInterval from '../hooks/useInterval';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Fab, Paper, Grid } from '@material-ui/core';
+import { Fab, Paper, Grid, Typography } from '@material-ui/core';
 
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
       width: '100%',
-      backgroundColor: 'rgba(15, 17, 15)',
+      backgroundColor: '#2f0b3f',
       position: 'relative',
     },
     btnContainer: {
@@ -40,12 +40,28 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'space-around',
       alignItems: 'center',
     },
-    updatePoints: {
-      backgroundColor: 'rgba(63, 120, 76)',
+    pointsButton: {
+      background: 'linear-gradient(to top, #c31432, #240b36)',
       color: 'white',
+      padding: 36,
+      border: 'solid',
+      borderColor: 'white',
+    },
+    timerButton: {
+      background: 'linear-gradient(to top, #c31432, #240b36)',
+      color: 'white',
+      padding: 36,
+      border: 'solid',
+      borderColor: 'white',
     },
     returnPoints: {
-      backgroundColor: 'rgba(239, 100, 97)',
+      background: 'linear-gradient(to top, #c31432, #240b36)',
+      padding: 26,
+      border: 'solid',
+      borderColor: 'white',
+    },
+    undoArrow: {
+      color: 'white',
     },
     fullScreen: {
       color: 'white',
@@ -54,11 +70,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
       right: '2%',
     },
-    timerContainer: {
-      textAlign: 'center',
-      width: 30,
-      backgroundImage: 'url(images/timer.png)',
-    },
+
     timerBtn: {
       backgroundColor: 'secondary',
     },
@@ -320,35 +332,37 @@ const RTCHostControls: React.FC = () => {
         </div>
       ) : (
         <Grid container className={classes.controlsContent}>
-          <Grid item sm={4}>
+          <Grid item sm={1}></Grid>
+          <Grid item sm={3}>
             <InfoBar />
           </Grid>
           <Grid className={classes.btnContainer} item sm={4}>
             <Fab
-              variant="extended"
               size="large"
               color={timerRunning ? 'primary' : 'secondary'}
               onClick={toggleTimer}
+              className={classes.timerButton}
             >
               {timerRunning ? <PauseIcon /> : <PlayArrowIcon />}
-              <div className={classes.timerContainer}>{timer}</div>
+              <Typography variant="h6">{timer}</Typography>
             </Fab>
 
             <Fab
-              variant="extended"
-              color="secondary"
+              className={classes.pointsButton}
               onClick={handlePointUpdate}
               disabled={!game ? true : game.info.answeringOpen}
+              variant="extended"
             >
-              Päivitä pisteet
+              <Typography variant="h6">Päivitä pisteet</Typography>
             </Fab>
             <Fab
               size="medium"
               color="secondary"
               onClick={returnToPrevious}
               disabled={!historyRef.current}
+              className={classes.returnPoints}
             >
-              <UndoIcon />
+              <UndoIcon className={classes.undoArrow} />
             </Fab>
           </Grid>
           <Grid item sm={3}></Grid>

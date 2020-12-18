@@ -12,7 +12,7 @@ const theme = createMuiTheme({
   palette: {
     primary: {
       light: '#f1dac2',
-      main: 'rgba(33, 99, 146)',
+      main: 'rgba(12, 06, 12)',
       contrastText: 'rgba(218, 214, 214)',
     },
     secondary: {
@@ -30,8 +30,16 @@ const theme = createMuiTheme({
     h5: {
       fontSize: 22,
     },
+    h6: {
+      fontFamily: 'Bebas Neue',
+      fontSize: 24,
+    },
     subtitle1: {
       fontFamily: 'Fascinate Inline',
+      fontSize: 18,
+    },
+    subtitle2: {
+      fontFamily: 'Russo One',
       fontSize: 18,
     },
   },

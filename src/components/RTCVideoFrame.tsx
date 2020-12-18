@@ -14,9 +14,9 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     videoWindow: {
       boxSizing: 'border-box',
-      boxShadow: '0 0 1px 1px rgba(255,254,255)',
-      width: `32%`,
-      margin: theme.spacing(0.5),
+      boxShadow: '0 0 2px 2px rgba(255,254,255)',
+      width: `28%`,
+      margin: theme.spacing(2),
 
       [theme.breakpoints.down('xs')]: {
         width: '46%',
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'white',
     },
     hasTurn: {
-      boxShadow: '0 0 4px 5px rgba(229, 197, 39)',
+      boxShadow: '0 0 8px 10px #52c234',
       [theme.breakpoints.down('xs')]: {
         width: '95%',
       },

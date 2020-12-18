@@ -11,13 +11,14 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     videoConf: {
       display: 'flex',
-      paddingTop: theme.spacing(2),
+      paddingTop: theme.spacing(3),
+      paddingBottom: theme.spacing(1),
       flexWrap: 'wrap',
       justifyContent: 'center',
       alignItems: 'center',
       height: '100%',
       width: '100%',
-      backgroundColor: 'rgba(15, 17, 15)',
+      background: 'linear-gradient(to bottom, #600417, #2f0b3f)',
     },
   })
 );

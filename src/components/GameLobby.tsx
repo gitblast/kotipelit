@@ -163,8 +163,12 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
 
     return (
       <>
-        <Typography variant="h6">Sanasi:</Typography>
-        <Typography>{words.join(' / ')}</Typography>
+        <Typography variant="h5">Sanasi:</Typography>
+        <Typography variant="h6">{words.join(' / ')}</Typography>
+        <Typography>
+          Tehtävänäsi on miettiä sanoillesi lyhyet vihjeet. Eniten pisteitä saat
+          kun vain yksi kanssapelaaja arvaa sanan.
+        </Typography>
       </>
     );
   };

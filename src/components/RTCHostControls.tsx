@@ -326,7 +326,13 @@ const RTCHostControls: React.FC = () => {
     <Paper elevation={3} className={classes.container} square>
       {game?.status === GameStatus.FINISHED ? (
         <div className={classes.btnContainer}>
-          <Fab variant="extended" color="secondary" onClick={() => null}>
+          <Fab
+            // Change the name of this class
+            className={classes.timerButton}
+            variant="extended"
+            color="secondary"
+            onClick={() => null}
+          >
             Lopeta peli
           </Fab>
         </div>

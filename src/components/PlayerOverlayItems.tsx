@@ -139,7 +139,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
   const answerBox = (answer: string) => {
     return (
       <Paper className={classes.answerBubble}>
-        <Typography variant="subtitle2">{answer}</Typography>
+        <Typography variant="h6">{answer}</Typography>
         {forHost && answer && (
           <Checkbox checked={checked} onChange={handleChange} />
         )}

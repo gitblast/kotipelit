@@ -15,19 +15,21 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingTop: theme.spacing(1),
       paddingBottom: theme.spacing(1),
       width: '100%',
-      backgroundColor: 'Black',
+      backgroundColor: '#2f0b3f',
     },
     btnContainer: {
+      background: 'linear-gradient(to top, #c31432, #240b36)',
+      color: 'white',
+      padding: theme.spacing(4),
       margin: theme.spacing(1),
-      backgroundColor: 'primary',
+      border: 'solid',
+      borderColor: 'white',
     },
     timer: {
+      color: 'white',
       padding: theme.spacing(2),
       margin: theme.spacing(1),
-      minWidth: 60,
-      textAlign: 'center',
-      backgroundColor: 'rgba(179,49,49)',
-      color: 'white',
+      fontSize: 45,
     },
     answerField: {
       backgroundColor: 'white',
@@ -92,26 +94,27 @@ const RTCPlayerControls: React.FC = () => {
 
   return (
     <Paper elevation={3} className={classes.container} square>
-      <Paper className={classes.timer}>
-        <Typography>{timer}</Typography>
-      </Paper>
+      <Typography className={classes.timer} variant="h6">
+        {timer}
+      </Typography>
+
       <div className={classes.answerField}>
         <TextField
           variant="filled"
-          label="Vastaus"
+          label="Vastaus.."
           value={answer}
           onChange={({ target }) => setAnswer(target.value)}
           disabled={disabled}
         />
       </div>
-      <div className={classes.btnContainer}>
+      <div>
         <Fab
+          className={classes.btnContainer}
           variant="extended"
-          color="primary"
           onClick={handleClick}
           disabled={disabled}
         >
-          Vastaa
+          <Typography variant="h6">Vastaa</Typography>
         </Fab>
       </div>
     </Paper>

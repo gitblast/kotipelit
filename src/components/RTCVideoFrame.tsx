@@ -14,10 +14,9 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     videoWindow: {
       boxSizing: 'border-box',
-      boxShadow: '0 0 2px 2px rgba(255,254,255)',
       width: `28%`,
-      margin: theme.spacing(2),
-
+      boxShadow: '0 0 2px 2px rgba(255,254,255)',
+      margin: theme.spacing(3),
       [theme.breakpoints.down('xs')]: {
         width: '46%',
         margin: 3,

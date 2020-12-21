@@ -12,11 +12,9 @@ const useStyles = makeStyles((theme: Theme) =>
     videoConf: {
       display: 'flex',
       paddingTop: theme.spacing(3),
-      paddingBottom: theme.spacing(1),
       flexWrap: 'wrap',
       justifyContent: 'center',
       alignItems: 'center',
-      height: '100%',
       width: '100%',
       background: 'linear-gradient(to bottom, #600417, #2f0b3f)',
     },

@@ -3,14 +3,13 @@ import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 import { AppBar, Toolbar, Typography, Button } from '@material-ui/core';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles, createStyles } from '@material-ui/core/styles';
 
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { checkForUser } from './reducers/user.reducer';
 import { initChannels } from './reducers/channels.reducer';
 
 import FrontPage from './components/FrontPage';
-import Footer from './components/Footer';
 import LoginForm from './components/LoginForm';
 import UserControls from './components/UserControls';
 
@@ -18,12 +17,16 @@ import ChannelPage from './components/ChannelPage';
 import { State, HostChannel } from './types';
 import { initGames } from './reducers/games.reducer';
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     navbar: {
       // marginBottom: theme.spacing(3),
       // maxWidth: 1230,
       margin: 'auto',
+      backgroundColor: '#94ccc6',
+    },
+    logo: {
+      textTransform: 'lowercase',
     },
     toolbar: {
       display: 'flex',
@@ -31,7 +34,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     container: {
       width: '100%',
-      paddingBottom: '60px',
     },
   })
 );
@@ -73,9 +75,15 @@ const App = () => {
     <Router>
       <AppBar position="static" className={classes.navbar}>
         <Toolbar className={classes.toolbar}>
-          <Button color="inherit" component={Link} to="/">
+          <Button
+            color="inherit"
+            component={Link}
+            to="/"
+            className={classes.logo}
+          >
             <Typography variant="subtitle1">Kotipelit.com</Typography>
           </Button>
+
           <UserControls user={user} />
         </Toolbar>
       </AppBar>
@@ -90,7 +98,6 @@ const App = () => {
           </Route>
         </Switch>
       </div>
-      <Footer />
     </Router>
   );
 };

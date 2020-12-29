@@ -9,16 +9,27 @@ import QueuedGame from './QueuedGame';
 
 import { State, LoggedUser, GameStatus } from '../../types';
 import { useSelector } from 'react-redux';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
-      width: '90%',
       margin: 'auto',
+      padding: theme.spacing(3),
+    },
+    hostInfo: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-around',
+      textAlign: 'center',
+      marginTop: theme.spacing(2),
+      marginBottom: theme.spacing(2),
+      padding: theme.spacing(2),
+      [theme.breakpoints.down('xs')]: {
+        flexDirection: 'column',
+      },
     },
     newGame: {
-      margin: theme.spacing(2),
+      padding: theme.spacing(4),
     },
   })
 );
@@ -38,34 +49,46 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
     return filtered.length ? (
       <>
         <div>
-          <Typography variant="overline">{label}</Typography>
+          <Typography variant="h5">{label}</Typography>
         </div>
-        <div>
-          {filtered.map((game) => (
-            <QueuedGame key={game.id} game={game} username={user.username} />
-          ))}
-        </div>
+        {filtered.map((game) => (
+          <QueuedGame key={game.id} game={game} username={user.username} />
+        ))}
       </>
     ) : null;
   };
 
   return (
     <div className={classes.container}>
+      <div className={classes.hostInfo}>
+        <div>
+          <Typography variant="h5">Peli-iltoja</Typography>
+          <Typography variant="h3">0</Typography>
+        </div>
+        <div>
+          <Typography variant="h5">Pelituotot</Typography>
+          <Typography variant="h3">0€</Typography>
+        </div>
+        <div>
+          <Typography variant="h5">Rating</Typography>
+          <Typography variant="h3">5/5</Typography>
+        </div>
+        <div>
+          <Fab
+            className={classes.newGame}
+            color="primary"
+            variant="extended"
+            component={Link}
+            to={`/${user.username}/newgame`}
+          >
+            <Typography variant="h6">Uusi peli</Typography>
+          </Fab>
+        </div>
+      </div>
       {filterGamesByStatus('Käynnissä olevat pelit', GameStatus.RUNNING)}
       {filterGamesByStatus('Odottaa pelaajia', GameStatus.WAITING)}
       {filterGamesByStatus('Tulevat pelit', GameStatus.UPCOMING)}
       {filterGamesByStatus('Menneet pelit', GameStatus.FINISHED)}
-      <div className={classes.newGame}>
-        <Fab
-          color="primary"
-          variant="extended"
-          component={Link}
-          to={`/${user.username}/newgame`}
-        >
-          <AddCircleIcon />
-          <Typography variant="h6">UUSI PELI</Typography>
-        </Fab>
-      </div>
     </div>
   );
 };

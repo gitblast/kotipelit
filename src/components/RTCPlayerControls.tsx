@@ -1,21 +1,25 @@
 import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Fab, Paper, TextField, Typography } from '@material-ui/core';
+import { Fab, Paper, TextField, Typography, Grid } from '@material-ui/core';
 import { shallowEqual, useSelector } from 'react-redux';
 import { State } from '../types';
 import logger from '../utils/logger';
 
+import InfoBar from './InfoBar';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
       paddingTop: theme.spacing(1),
       paddingBottom: theme.spacing(1),
       width: '100%',
       backgroundColor: '#2f0b3f',
+    },
+    controls: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     btnContainer: {
       background: 'linear-gradient(to top, #c31432, #240b36)',
@@ -94,29 +98,37 @@ const RTCPlayerControls: React.FC = () => {
 
   return (
     <Paper elevation={3} className={classes.container} square>
-      <Typography className={classes.timer} variant="h6">
-        {timer}
-      </Typography>
+      <Grid container>
+        <Grid item sm={1}></Grid>
+        <Grid className={classes.controls} item sm={3}>
+          <InfoBar />
+        </Grid>
+        <Grid className={classes.controls} item sm={4}>
+          <Typography className={classes.timer} variant="h6">
+            {timer}
+          </Typography>
 
-      <div className={classes.answerField}>
-        <TextField
-          variant="filled"
-          label="Vastaus.."
-          value={answer}
-          onChange={({ target }) => setAnswer(target.value)}
-          disabled={disabled}
-        />
-      </div>
-      <div>
-        <Fab
-          className={classes.btnContainer}
-          variant="extended"
-          onClick={handleClick}
-          disabled={disabled}
-        >
-          <Typography variant="h6">Vastaa</Typography>
-        </Fab>
-      </div>
+          <div className={classes.answerField}>
+            <TextField
+              variant="filled"
+              label="Vastaus.."
+              value={answer}
+              onChange={({ target }) => setAnswer(target.value)}
+              disabled={disabled}
+            />
+          </div>
+
+          <Fab
+            className={classes.btnContainer}
+            variant="extended"
+            onClick={handleClick}
+            disabled={disabled}
+          >
+            <Typography variant="h6">Vastaa</Typography>
+          </Fab>
+        </Grid>
+        <Grid item sm={4}></Grid>
+      </Grid>
     </Paper>
   );
 };

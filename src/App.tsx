@@ -24,6 +24,8 @@ const useStyles = makeStyles(() =>
       // maxWidth: 1230,
       margin: 'auto',
       backgroundColor: '#94ccc6',
+      minHeight: '8vh',
+      color: 'black',
     },
     logo: {
       textTransform: 'lowercase',
@@ -34,6 +36,9 @@ const useStyles = makeStyles(() =>
     },
     container: {
       width: '100%',
+      minHeight: '92vh',
+      overflow: 'hidden',
+      background: 'linear-gradient(to top, #c2e59c, #94ccc6)',
     },
   })
 );
@@ -75,12 +80,7 @@ const App = () => {
     <Router>
       <AppBar position="static" className={classes.navbar}>
         <Toolbar className={classes.toolbar}>
-          <Button
-            color="inherit"
-            component={Link}
-            to="/"
-            className={classes.logo}
-          >
+          <Button component={Link} to="/" className={classes.logo}>
             <Typography variant="subtitle1">Kotipelit.com</Typography>
           </Button>
 

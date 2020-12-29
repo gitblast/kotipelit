@@ -6,12 +6,18 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
   Button,
   Typography,
-  Paper,
   IconButton,
   Menu,
   MenuItem,
+  Avatar,
+  Card,
+  CardHeader,
+  CardContent,
+  CardActions,
 } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import ShareIcon from '@material-ui/icons/Share';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 import {
   SelectableGame,
   Kotitonni,
@@ -30,6 +36,25 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(1),
       padding: theme.spacing(2),
     },
+    cardStyle: {
+      maxWidth: 350,
+      marginTop: theme.spacing(2),
+    },
+    players: {
+      padding: theme.spacing(1),
+    },
+    playerRow: {
+      display: 'flex',
+      justifyContent: 'space-between',
+    },
+    actions: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      marginRight: theme.spacing(1),
+    },
+    avatar: {
+      backgroundColor: '#3d0833',
+    },
     infoBar: {
       alignItems: 'center',
     },
@@ -40,7 +65,6 @@ const useStyles = makeStyles((theme: Theme) =>
     editButton: {
       marginLeft: theme.spacing(1),
     },
-    playerRow: {},
     inviteText: {
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
@@ -110,7 +134,25 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
     setInviteText(getInviteText(game, hostName, player));
   };
 
-  const startButton = () => {
+  // const startButton = () => {
+  //   if (game.status !== GameStatus.FINISHED) {
+  //     const label =
+  //       game.status === GameStatus.UPCOMING ? 'Käynnistä Jitsi' : 'Liity Jitsi';
+
+  //     return (
+  //       <Button
+  //         variant="contained"
+  //         color="secondary"
+  //         component={Link}
+  //         to={`/${username}/pelit/${game.id}`}
+  //       >
+  //         {label}
+  //       </Button>
+  //     );
+  //   }
+  // };
+
+  const startRTCButton = () => {
     if (game.status !== GameStatus.FINISHED) {
       const label = game.status === GameStatus.UPCOMING ? 'Käynnistä' : 'Liity';
 
@@ -119,24 +161,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
           variant="contained"
           color="secondary"
           component={Link}
-          to={`/${username}/pelit/${game.id}`}
-        >
-          {label}
-        </Button>
-      );
-    }
-  };
-
-  const startRTCButton = () => {
-    if (game.status !== GameStatus.FINISHED) {
-      const label =
-        game.status === GameStatus.UPCOMING ? 'Käynnistä RTC' : 'Liity RTC';
-
-      return (
-        <Button
-          variant="contained"
-          color="primary"
-          component={Link}
+          // Toimiiko myös esim matleenalle vaikka host sijaan username?
           to={`/${username}/pelit/rtc/${game.id}`}
         >
           {label}
@@ -145,105 +170,191 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
     }
   };
 
-  const getLobbyLink = () => {
-    const host =
-      // eslint-disable-next-line no-undef
-      process && process.env.NODE_ENV === 'development'
-        ? 'http://localhost:3000'
-        : 'https://www.kotipelit.com';
-
-    return `${host}/${username}/kutsut/${game.id}`;
+  const lobbyButton = () => {
+    if (game.status !== GameStatus.FINISHED) {
+      return (
+        <Button
+          variant="contained"
+          color="secondary"
+          component={Link}
+          to={`/${username}/kutsut/${game.id}`}
+        >
+          Peliaula
+        </Button>
+      );
+    }
   };
 
-  return (
-    <Paper elevation={2} className={classes.container}>
-      <div className={`${classes.infoBar} ${classes.flex}`}>
-        <div>
-          <Typography>
-            {format(new Date(game.startTime), 'd. MMMM HH:mm', {
-              locale: fiLocale,
-            })}
-          </Typography>
-        </div>
-        <div>
-          <Typography>{capitalize(game.type)}</Typography>
-        </div>
-        <div>
-          <Typography>{`${game.players.length} pelaajaa`}</Typography>
-        </div>
+  // const getLobbyLink = () => {
+  //   const host =
+  //     // eslint-disable-next-line no-undef
+  //     process && process.env.NODE_ENV === 'development'
+  //       ? 'http://localhost:3000'
+  //       : 'https://www.kotipelit.com';
 
-        <div>
-          {startRTCButton()}
-          {startButton()}
-          <IconButton
-            size="small"
-            className={classes.editButton}
-            onClick={handleOpen}
-          >
-            <MoreVertIcon />
-          </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-            getContentAnchorEl={null}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-          >
-            <MenuItem disabled>
-              <Typography>Muokkaa</Typography>
-            </MenuItem>
-            <MenuItem onClick={handleRemove}>
-              <Typography color="secondary">Poista</Typography>
-            </MenuItem>
-          </Menu>
-        </div>
-      </div>
-      {game.status === GameStatus.UPCOMING && (
-        <div>
-          <Typography variant="h6" gutterBottom>
-            Aulalinkki
-          </Typography>
-          <Typography>{getLobbyLink()}</Typography>
-        </div>
-      )}
-      <div>
-        <Typography variant="h6" gutterBottom>
-          Pelaajat
-        </Typography>
-        {game.players.map((player) => (
-          <div
-            key={player.id}
-            className={`${classes.flex} ${classes.playerRow}`}
-          >
-            <Typography component="div">{player.name}</Typography>
-            <Typography component="div">
-              {game.status !== GameStatus.UPCOMING &&
-                `${player.points} pistettä`}
-            </Typography>
-            <Typography component="div">{player.words.join(' / ')}</Typography>
-            <div>
-              <Button
-                variant="outlined"
-                color="primary"
-                size="small"
-                onClick={() => showInviteText(game, username, player)}
+  //   return `${host}/${username}/kutsut/${game.id}`;
+  // };
+
+  return (
+    <>
+      <Card elevation={2} className={classes.cardStyle}>
+        <CardHeader
+          avatar={
+            <Avatar aria-label="recipe" className={classes.avatar}>
+              K
+            </Avatar>
+          }
+          action={
+            <>
+              <IconButton aria-label="settings" onClick={handleOpen}>
+                <MoreVertIcon />
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+                getContentAnchorEl={null}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'center' }}
               >
-                Näytä kutsuteksti
-              </Button>
+                <MenuItem disabled>
+                  <Typography>Muokkaa</Typography>
+                </MenuItem>
+                <MenuItem onClick={handleRemove}>
+                  <Typography color="secondary">Poista</Typography>
+                </MenuItem>
+              </Menu>
+            </>
+          }
+          title={<Typography variant="h5">{capitalize(game.type)}</Typography>}
+          subheader={format(new Date(game.startTime), 'd. MMMM HH:mm', {
+            locale: fiLocale,
+          })}
+        />
+        <CardContent>
+          {game.players.map((player) => (
+            <>
+              <div className={classes.playerRow}>
+                <div key={player.id} className={classes.players}>
+                  <Typography>{player.name}</Typography>
+                </div>
+                {/* Displaying points only after gamestatus finished. Atm games dont get finished */}
+                {game.status !== GameStatus.FINISHED ? (
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    size="small"
+                    onClick={() => showInviteText(game, username, player)}
+                  >
+                    Kutsu
+                  </Button>
+                ) : (
+                  <Typography component="div">
+                    {`${player.points} pistettä`}
+                  </Typography>
+                )}
+              </div>
+            </>
+          ))}
+          {inviteText && (
+            <div className={classes.inviteText}>
+              <Typography variant="h5" gutterBottom>
+                Lähetä pelaajalle alla oleva kutsuteksti.
+              </Typography>
+              <Typography style={{ whiteSpace: 'pre' }}>
+                {inviteText}
+              </Typography>
             </div>
+          )}
+        </CardContent>
+        <CardActions disableSpacing className={classes.actions}>
+          <IconButton aria-label="share">
+            <ShareIcon />
+          </IconButton>
+          <div>
+            {lobbyButton()}
+            <IconButton>
+              {/* This should copy output of getLobbyLink() */}
+              <FileCopyIcon />
+            </IconButton>
           </div>
-        ))}
-      </div>
-      {inviteText && (
-        <div className={classes.inviteText}>
-          <Typography variant="h6" gutterBottom>
-            Lähetä pelaajalle alla oleva kutsuteksti.
-          </Typography>
-          <Typography style={{ whiteSpace: 'pre' }}>{inviteText}</Typography>
+
+          {startRTCButton()}
+        </CardActions>
+      </Card>
+      {/* <Paper elevation={2} className={classes.container}>
+        <div className={`${classes.infoBar} ${classes.flex}`}>
+          <div>
+            <Typography>
+              {format(new Date(game.startTime), 'd. MMMM HH:mm', {
+                locale: fiLocale,
+              })}
+            </Typography>
+          </div>
+          <div>
+            <Typography>{capitalize(game.type)}</Typography>
+          </div>
+          <div>
+            <Typography>{`${game.players.length} pelaajaa`}</Typography>
+          </div>
+
+          <div>
+            {startRTCButton()}
+            {startButton()}
+            <IconButton
+              size="small"
+              className={classes.editButton}
+              onClick={handleOpen}
+            >
+              <MoreVertIcon />
+            </IconButton>
+          </div>
         </div>
-      )}
-    </Paper>
+        {game.status === GameStatus.UPCOMING && (
+          <div>
+            <Typography variant="h6" gutterBottom>
+              Aulalinkki
+            </Typography>
+            <Typography>{getLobbyLink()}</Typography>
+          </div>
+        )}
+        <div>
+          <Typography variant="h6" gutterBottom>
+            Pelaajat
+          </Typography>
+          {game.players.map((player) => (
+            <div key={player.id}>
+              <Typography component="div">{player.name}</Typography>
+              <Typography component="div">
+                {game.status !== GameStatus.UPCOMING &&
+                  `${player.points} pistettä`}
+              </Typography>
+              <Typography component="div">
+                {player.words.join(' / ')}
+              </Typography>
+              <div>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  size="small"
+                  onClick={() => showInviteText(game, username, player)}
+                >
+                  Näytä kutsuteksti
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+        {inviteText && (
+          <div className={classes.inviteText}>
+            <Typography variant="h6" gutterBottom>
+              Lähetä pelaajalle alla oleva kutsuteksti.
+            </Typography>
+            <Typography style={{ whiteSpace: 'pre' }}>{inviteText}</Typography>
+          </div>
+        )}
+      </Paper> */}
+    </>
   );
 };
 

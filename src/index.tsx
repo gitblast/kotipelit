@@ -13,12 +13,13 @@ const theme = createMuiTheme({
     primary: {
       light: '#f1dac2',
       main: 'rgba(12, 06, 12)',
-      contrastText: 'rgba(218, 214, 214)',
+      contrastText: 'rgba(4, 4, 4)',
     },
     secondary: {
       light: 'rgba(179,69,49)',
-      main: 'rgba(179,49,49)',
-      dark: 'rgba(129,29,29)',
+      main: 'rgb(52 75 115)',
+      dark: 'rgba(98 2 2)',
+      contrastText: 'rgba(214, 214, 214)',
     },
     error: {
       main: 'rgba(227, 23, 10)',
@@ -35,8 +36,8 @@ const theme = createMuiTheme({
       fontSize: 24,
     },
     subtitle1: {
-      fontFamily: 'Fascinate Inline',
-      fontSize: 18,
+      fontFamily: 'Pacifico',
+      fontSize: 26,
     },
     subtitle2: {
       fontFamily: 'Russo One',

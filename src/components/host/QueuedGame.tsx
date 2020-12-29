@@ -16,7 +16,8 @@ import {
   CardActions,
 } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import ShareIcon from '@material-ui/icons/Share';
+// Enable when possible to share on social media
+// import ShareIcon from '@material-ui/icons/Share';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import {
   SelectableGame,
@@ -39,6 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
     cardStyle: {
       maxWidth: 350,
       marginTop: theme.spacing(2),
+      background: 'linear-gradient(to top, #cbddb9, #94ccc6)',
     },
     players: {
       padding: theme.spacing(1),
@@ -52,18 +54,11 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'space-between',
       marginRight: theme.spacing(1),
     },
+    actionIcon: {
+      padding: theme.spacing(0.5),
+    },
     avatar: {
       backgroundColor: '#3d0833',
-    },
-    infoBar: {
-      alignItems: 'center',
-    },
-    flex: {
-      display: 'flex',
-      justifyContent: 'space-between',
-    },
-    editButton: {
-      marginLeft: theme.spacing(1),
     },
     inviteText: {
       marginTop: theme.spacing(1),
@@ -159,7 +154,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
       return (
         <Button
           variant="contained"
-          color="secondary"
+          color="primary"
           component={Link}
           // Toimiiko myös esim matleenalle vaikka host sijaan username?
           to={`/${username}/pelit/rtc/${game.id}`}
@@ -200,7 +195,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
       <Card elevation={2} className={classes.cardStyle}>
         <CardHeader
           avatar={
-            <Avatar aria-label="recipe" className={classes.avatar}>
+            <Avatar aria-label="Game" className={classes.avatar}>
               K
             </Avatar>
           }
@@ -233,28 +228,26 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
         />
         <CardContent>
           {game.players.map((player) => (
-            <>
-              <div className={classes.playerRow}>
-                <div key={player.id} className={classes.players}>
-                  <Typography>{player.name}</Typography>
-                </div>
-                {/* Displaying points only after gamestatus finished. Atm games dont get finished */}
-                {game.status !== GameStatus.FINISHED ? (
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    size="small"
-                    onClick={() => showInviteText(game, username, player)}
-                  >
-                    Kutsu
-                  </Button>
-                ) : (
-                  <Typography component="div">
-                    {`${player.points} pistettä`}
-                  </Typography>
-                )}
+            <div key={player.id} className={classes.playerRow}>
+              <div className={classes.players}>
+                <Typography>{player.name}</Typography>
               </div>
-            </>
+              {/* Displaying points only after gamestatus finished. Atm games dont get finished */}
+              {game.status !== GameStatus.FINISHED ? (
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  size="small"
+                  onClick={() => showInviteText(game, username, player)}
+                >
+                  Kutsu
+                </Button>
+              ) : (
+                <Typography component="div">
+                  {`${player.points} pistettä`}
+                </Typography>
+              )}
+            </div>
           ))}
           {inviteText && (
             <div className={classes.inviteText}>
@@ -268,15 +261,16 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
           )}
         </CardContent>
         <CardActions disableSpacing className={classes.actions}>
-          <IconButton aria-label="share">
-            <ShareIcon />
-          </IconButton>
           <div>
             {lobbyButton()}
-            <IconButton>
+            <IconButton className={classes.actionIcon} aria-label="copy">
               {/* This should copy output of getLobbyLink() */}
               <FileCopyIcon />
             </IconButton>
+            {/* For sharing gameLobby page in social medias */}
+            {/* <IconButton className={classes.actionIcon} aria-label="share">
+              <ShareIcon />
+            </IconButton> */}
           </div>
 
           {startRTCButton()}

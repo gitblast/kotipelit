@@ -1,13 +1,12 @@
 import React from 'react';
 
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles, createStyles } from '@material-ui/core/styles';
 import { Paper, Typography } from '@material-ui/core';
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     footerContainer: {
       // Position absolute would be better if able to keep under the content && at the bottom of the page
-      position: 'fixed',
       backgroundColor: 'rgba(129,129,129)',
       left: 0,
       bottom: 0,

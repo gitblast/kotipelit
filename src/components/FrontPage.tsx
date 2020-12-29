@@ -21,7 +21,6 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       overflow: 'hidden',
       margin: 'auto',
-      background: 'linear-gradient(to top, #c2e59c, #94ccc6)',
     },
     container: {
       padding: theme.spacing(2),

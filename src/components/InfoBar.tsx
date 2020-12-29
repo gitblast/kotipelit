@@ -10,7 +10,6 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       color: 'rgba(218, 214, 214)',
       width: '100%',
-      // Maybe better to position by flexing all the elements in Controls?
     },
     nextUpText: {
       // Keep the same as videoframe hasTurn
@@ -45,9 +44,11 @@ const InfoBar: React.FC = () => {
     if (gameStatus === GameStatus.FINISHED) {
       return (
         // korjaa tämä!
-        <Typography>
-          Peli on päättynyt! Kiitos osallistumisesta. Muista antaa palautetta.
-        </Typography>
+        <div>
+          <Typography variant="h6" color="secondary">
+            Peli on päättynyt! Kiitos osallistumisesta. Muista antaa palautetta.
+          </Typography>
+        </div>
       );
     }
 

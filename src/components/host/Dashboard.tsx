@@ -51,7 +51,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
 
   return (
     <div className={classes.container}>
-      {filterGamesByStatus('Käynnissä nyt', GameStatus.RUNNING)}
+      {filterGamesByStatus('Käynnissä olevat pelit', GameStatus.RUNNING)}
       {filterGamesByStatus('Odottaa pelaajia', GameStatus.WAITING)}
       {filterGamesByStatus('Tulevat pelit', GameStatus.UPCOMING)}
       {filterGamesByStatus('Menneet pelit', GameStatus.FINISHED)}

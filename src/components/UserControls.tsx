@@ -37,7 +37,7 @@ const UserControls: React.FC<UserControlsProps> = ({ user }) => {
     ) : null;
 
   return (
-    <Button color="inherit" onClick={handleLogout}>
+    <Button onClick={handleLogout}>
       <Typography>{`Kirjaa ulos ${user.username}`}</Typography>
     </Button>
   );

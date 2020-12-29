@@ -4,7 +4,6 @@ import useLobbySystem from '../hooks/useLobbySystem';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
   Fab,
-  Paper,
   Typography,
   Grid,
   GridList,
@@ -39,8 +38,6 @@ const useStyles = makeStyles((theme: Theme) =>
     reserveBtn: {
       padding: theme.spacing(4),
       margin: theme.spacing(2),
-      color: 'white',
-      backgroundColor: 'rgb(78 156 63)',
     },
     gridTile: {
       backgroundColor: 'grey',
@@ -103,6 +100,7 @@ const LockReservationForm: React.FC<LockReservationFormProps> = ({
       </div>
       <Fab
         className={classes.reserveBtn}
+        color="primary"
         variant="extended"
         onClick={() => handleClick(name)}
         disabled={!name}
@@ -217,7 +215,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
   };
 
   return (
-    <Paper elevation={0} className={classes.container}>
+    <>
       {error && <Typography color="error">{error}</Typography>}
       {game ? (
         <>
@@ -288,7 +286,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
       ) : (
         <Loader msg={'Ladataan...'} spinner />
       )}
-    </Paper>
+    </>
   );
 };
 

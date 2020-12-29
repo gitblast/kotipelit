@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'white',
     },
     hasTurn: {
-      boxShadow: '0 0 8px 10px #52c234',
+      boxShadow: '0 0 8px 10px #e3c218',
       [theme.breakpoints.down('xs')]: {
         width: '95%',
       },

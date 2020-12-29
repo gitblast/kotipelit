@@ -189,7 +189,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
               <Typography>Hauskaa kotipeli-iltaa! </Typography>
               <div className={classes.startBtnContainer}>
                 <Fab
-                  color="secondary"
+                  color="primary"
                   variant="extended"
                   size="large"
                   onClick={handleStart}

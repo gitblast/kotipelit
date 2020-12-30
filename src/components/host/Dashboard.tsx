@@ -31,6 +31,10 @@ const useStyles = makeStyles((theme: Theme) =>
     newGame: {
       padding: theme.spacing(4),
     },
+    games: {
+      display: 'flex',
+      flexWrap: 'wrap',
+    },
   })
 );
 
@@ -51,9 +55,11 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
         <div>
           <Typography variant="h5">{label}</Typography>
         </div>
-        {filtered.map((game) => (
-          <QueuedGame key={game.id} game={game} username={user.username} />
-        ))}
+        <div className={classes.games}>
+          {filtered.map((game) => (
+            <QueuedGame key={game.id} game={game} username={user.username} />
+          ))}
+        </div>
       </>
     ) : null;
   };

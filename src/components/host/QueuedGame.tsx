@@ -38,8 +38,8 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(2),
     },
     cardStyle: {
-      maxWidth: 350,
-      marginTop: theme.spacing(2),
+      width: 350,
+      margin: theme.spacing(2),
       background: 'linear-gradient(to top, #cbddb9, #94ccc6)',
     },
     players: {

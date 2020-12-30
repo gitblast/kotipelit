@@ -34,10 +34,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     controlBarIcons: {
       color: 'white',
-      // create a flex class and use it where ever
-      display: 'flex',
-      justifyContent: 'space-around',
-      alignItems: 'center',
     },
     pointsButton: {
       background: 'linear-gradient(to top, #c31432, #240b36)',
@@ -372,9 +368,12 @@ const RTCHostControls: React.FC<{
               <UndoIcon className={classes.undoArrow} />
             </Fab>
           </Grid>
-          <Grid item sm={3}></Grid>
-          <Grid className={classes.controlBarIcons} item sm={1}>
-            <IconButton onClick={handleToggleFullscreen}>
+          <Grid item sm={2}></Grid>
+          <Grid item sm={2}>
+            <IconButton
+              className={classes.controlBarIcons}
+              onClick={handleToggleFullscreen}
+            >
               <FullscreenIcon fontSize="large"></FullscreenIcon>
             </IconButton>
           </Grid>

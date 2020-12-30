@@ -1,7 +1,15 @@
 import React from 'react';
 
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
+
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Fab, TextField, Typography, Grid } from '@material-ui/core';
+import {
+  Fab,
+  TextField,
+  Typography,
+  Grid,
+  IconButton,
+} from '@material-ui/core';
 import { shallowEqual, useSelector } from 'react-redux';
 import { State } from '../types';
 import logger from '../utils/logger';
@@ -37,10 +45,15 @@ const useStyles = makeStyles((theme: Theme) =>
     answerField: {
       backgroundColor: 'white',
     },
+    controlBarIcons: {
+      color: 'white',
+    },
   })
 );
 
-const RTCPlayerControls: React.FC = () => {
+const RTCPlayerControls: React.FC<{
+  handleToggleFullscreen: () => void;
+}> = ({ handleToggleFullscreen }) => {
   const classes = useStyles();
   const [answer, setAnswer] = React.useState<string>('');
   const timer = useSelector((state: State) => state.rtc.localData.timer);
@@ -126,7 +139,15 @@ const RTCPlayerControls: React.FC = () => {
             <Typography variant="h6">Vastaa</Typography>
           </Fab>
         </Grid>
-        <Grid item sm={4}></Grid>
+        <Grid item sm={3}></Grid>
+        <Grid item className={classes.controls} sm={1}>
+          <IconButton
+            className={classes.controlBarIcons}
+            onClick={handleToggleFullscreen}
+          >
+            <FullscreenIcon fontSize="large"></FullscreenIcon>
+          </IconButton>
+        </Grid>
       </Grid>
     </div>
   );

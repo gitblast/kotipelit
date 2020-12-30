@@ -10,7 +10,13 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { GameStatus, RTCPeer, State } from '../types';
 import { Card, Typography } from '@material-ui/core';
 
-const useStyles = makeStyles((theme: Theme) =>
+type PropStyles = {
+  order: number;
+};
+
+const colors = ['red', 'green', 'blue', 'yellow', 'black', 'white'];
+
+const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
   createStyles({
     videoWindow: {
       boxSizing: 'border-box',
@@ -33,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'white',
     },
     hasTurn: {
-      boxShadow: '0 0 8px 10px #e3c218',
+      boxShadow: (props) => `0 0 8px 10px ${colors[props.order]}`, // #e3c218
       [theme.breakpoints.down('xs')]: {
         width: '95%',
       },
@@ -76,7 +82,7 @@ interface RTCVideoFrameProps {
 }
 
 const ErrorMsg: React.FC<{ text: string }> = ({ text, children }) => {
-  const classes = useStyles();
+  const classes = useStyles({ order: 0 });
 
   return (
     <div className={classes.frame}>
@@ -89,7 +95,7 @@ const ErrorMsg: React.FC<{ text: string }> = ({ text, children }) => {
 };
 
 const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({ peer, order }) => {
-  const classes = useStyles();
+  const classes = useStyles({ order });
   const gameStatus = useSelector((state: State) => state.rtc.game?.status);
   const playerWithTurnId = useSelector(
     (state: State) => state.rtc.game?.info.turn

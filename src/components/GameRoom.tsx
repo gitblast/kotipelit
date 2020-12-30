@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
+      border: '10px solid black',
     },
     centered: {
       minHeight: 400,

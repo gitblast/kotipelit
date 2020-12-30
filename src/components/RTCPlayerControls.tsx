@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Fab, Paper, TextField, Typography, Grid } from '@material-ui/core';
+import { Fab, TextField, Typography, Grid } from '@material-ui/core';
 import { shallowEqual, useSelector } from 'react-redux';
 import { State } from '../types';
 import logger from '../utils/logger';
@@ -14,7 +14,6 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingTop: theme.spacing(1),
       paddingBottom: theme.spacing(1),
       width: '100%',
-      backgroundColor: '#2f0b3f',
     },
     controls: {
       display: 'flex',
@@ -97,7 +96,7 @@ const RTCPlayerControls: React.FC = () => {
   const disabled = isDisabled();
 
   return (
-    <Paper elevation={3} className={classes.container} square>
+    <div className={classes.container}>
       <Grid container>
         <Grid item sm={1}></Grid>
         <Grid className={classes.controls} item sm={3}>
@@ -129,7 +128,7 @@ const RTCPlayerControls: React.FC = () => {
         </Grid>
         <Grid item sm={4}></Grid>
       </Grid>
-    </Paper>
+    </div>
   );
 };
 

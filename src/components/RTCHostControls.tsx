@@ -3,7 +3,7 @@ import React from 'react';
 import useInterval from '../hooks/useInterval';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Fab, Paper, Grid, Typography, IconButton } from '@material-ui/core';
+import { Fab, Grid, Typography, IconButton } from '@material-ui/core';
 
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
@@ -22,7 +22,6 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
       width: '100%',
-      backgroundColor: '#2f0b3f',
       position: 'relative',
     },
     btnContainer: {
@@ -325,7 +324,7 @@ const RTCHostControls: React.FC<{
   };
 
   return (
-    <Paper elevation={3} className={classes.container} square>
+    <div className={classes.container}>
       {game?.status === GameStatus.FINISHED ? (
         <div className={classes.btnContainer}>
           <Fab
@@ -381,7 +380,7 @@ const RTCHostControls: React.FC<{
           </Grid>
         </Grid>
       )}
-    </Paper>
+    </div>
   );
 };
 

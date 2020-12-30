@@ -15,12 +15,12 @@ type PropStyles = {
 };
 
 const colors = [
-  '#caab0e',
-  '#0dc4bd',
-  '#42ad17',
-  '#7e1f1f',
+  'rgba(191, 2555, 0, 0.35)',
+  'rgba(247, 10, 9, 0.35)',
+  'rgba(0, 18, 254, 0.35)',
+  'rgba(238, 255, 0, 0.35)',
   'linear-gradient(to right, #530521, #2f0b3f)',
-  'white',
+  'rgba(238, 255, 244, 0.35)',
 ];
 
 const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>

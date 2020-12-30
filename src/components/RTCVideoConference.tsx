@@ -9,16 +9,13 @@ import { RTCPeer } from '../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    container: {
-      background: 'linear-gradient(to bottom, #600417, #2f0b3f)',
-      width: '100%',
-    },
     videoConf: {
       display: 'flex',
       paddingTop: theme.spacing(3),
       flexWrap: 'wrap',
       justifyContent: 'center',
       alignItems: 'center',
+      width: '100%',
     },
   })
 );
@@ -54,16 +51,14 @@ const RTCVideoConference: React.FC<RTCVideoConferenceProps> = ({ peers }) => {
   }
 
   return (
-    <div className={classes.container}>
-      <div className={classes.videoConf}>
-        {peers.map((peer, index) => (
-          <RTCVideoFrame
-            key={peer.id}
-            peer={peer}
-            order={getOrder(index, peers.length)}
-          />
-        ))}
-      </div>
+    <div className={classes.videoConf}>
+      {peers.map((peer, index) => (
+        <RTCVideoFrame
+          key={peer.id}
+          peer={peer}
+          order={getOrder(index, peers.length)}
+        />
+      ))}
     </div>
   );
 };

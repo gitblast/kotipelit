@@ -182,7 +182,9 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
       {isHost ? (
         <RTCHostControls handleToggleFullscreen={handleToggleFullscreen} />
       ) : (
-        game.status === GameStatus.RUNNING && <RTCPlayerControls />
+        game.status === GameStatus.RUNNING && (
+          <RTCPlayerControls handleToggleFullscreen={handleToggleFullscreen} />
+        )
       )}
       <Backdrop
         open={game.status === GameStatus.WAITING}

@@ -17,11 +17,11 @@ import { useSelector } from 'react-redux';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
-      minHeight: 400,
+      minHeight: '92vh',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      border: '10px solid black',
+      background: 'linear-gradient(to bottom, #94ccc6, #1c0825)',
     },
     centered: {
       minHeight: 400,

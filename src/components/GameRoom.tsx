@@ -90,11 +90,19 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   const game = useSelector((state: State) => state.rtc.game);
   const socket = useSelector((state: State) => state.rtc.self?.socket);
 
+  const fullscreenRef = React.useRef<null | HTMLDivElement>(null);
+
   React.useEffect(() => {
     if (peers) {
       logger.log('PEERS CHANGED:', peers);
     }
   }, [peers]);
+
+  const handleToggleFullscreen = React.useCallback(() => {
+    if (fullscreenRef.current) {
+      fullscreenRef.current.requestFullscreen();
+    }
+  }, [fullscreenRef]);
 
   const handleStart = () => {
     if (socket) {
@@ -167,12 +175,12 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   }
 
   return (
-    <div className={classes.container}>
+    <div className={classes.container} ref={fullscreenRef}>
       <AudioHandler />
 
       <RTCVideoConference peers={peers} />
       {isHost ? (
-        <RTCHostControls />
+        <RTCHostControls handleToggleFullscreen={handleToggleFullscreen} />
       ) : (
         game.status === GameStatus.RUNNING && <RTCPlayerControls />
       )}

@@ -3,7 +3,7 @@ import React from 'react';
 import useInterval from '../hooks/useInterval';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Fab, Paper, Grid, Typography } from '@material-ui/core';
+import { Fab, Paper, Grid, Typography, IconButton } from '@material-ui/core';
 
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
@@ -77,7 +77,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const RTCHostControls: React.FC = () => {
+const RTCHostControls: React.FC<{
+  handleToggleFullscreen: () => void;
+}> = ({ handleToggleFullscreen }) => {
   const classes = useStyles();
 
   const [timerRunning, setTimerRunning] = React.useState<boolean>(false);
@@ -373,7 +375,9 @@ const RTCHostControls: React.FC = () => {
           </Grid>
           <Grid item sm={3}></Grid>
           <Grid className={classes.controlBarIcons} item sm={1}>
-            <FullscreenIcon fontSize="large"></FullscreenIcon>
+            <IconButton onClick={handleToggleFullscreen}>
+              <FullscreenIcon fontSize="large"></FullscreenIcon>
+            </IconButton>
           </Grid>
         </Grid>
       )}

@@ -14,7 +14,14 @@ type PropStyles = {
   order: number;
 };
 
-const colors = ['red', 'green', 'blue', 'yellow', 'black', 'white'];
+const colors = [
+  '#caab0e',
+  '#0dc4bd',
+  '#42ad17',
+  '#7e1f1f',
+  'linear-gradient(to right, #530521, #2f0b3f)',
+  'white',
+];
 
 const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
   createStyles({

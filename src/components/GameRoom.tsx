@@ -14,6 +14,8 @@ import Loader from './Loader';
 import { GameStatus, State } from '../types';
 import { useSelector } from 'react-redux';
 
+import { Animated } from 'react-animated-css';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
@@ -139,6 +141,9 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   if (!onCall) {
     return (
       <div className={classes.container}>
+        {/* <Animated animationIn="bounce" animationOut="fadeOut" isVisible={true}>
+          <div>hello world ;)</div>
+        </Animated> */}
         <Typography className={classes.infoTitle} variant="h5">
           Tervetuloa pelaamaan Kotitonnia!
         </Typography>
@@ -147,6 +152,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
             Pidä vinkkisi ytimekkäinä, jotta kanssapelaajien ja pelijuontajan on
             helppo muistaa ne.
           </Typography>
+
           <Typography>
             Tarvitset pelaamiseen web-kameran. Mikäli yhteydessä on ongelmia,
             voit kokeilla päivittää selaimen.

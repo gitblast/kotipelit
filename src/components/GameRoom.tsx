@@ -26,6 +26,10 @@ const useStyles = makeStyles((theme: Theme) =>
     centered: {
       minHeight: 400,
     },
+    gameTitle: {
+      color: '#490d35',
+      fontSize: 40,
+    },
     startBtnContainer: {
       marginTop: theme.spacing(2),
     },
@@ -177,6 +181,9 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   return (
     <div className={classes.container} ref={fullscreenRef}>
       <AudioHandler />
+      <Typography className={classes.gameTitle} variant="subtitle1">
+        Kotitonni
+      </Typography>
 
       <RTCVideoConference peers={peers} />
       {isHost ? (

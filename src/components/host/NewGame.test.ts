@@ -1,4 +1,4 @@
-import { initializePlayers } from './NewGame';
+import { initializePlayers } from './NewGameB';
 import wordService from '../../services/words';
 
 jest.mock('../../services/words');

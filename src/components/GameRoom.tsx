@@ -14,7 +14,7 @@ import Loader from './Loader';
 import { GameStatus, State } from '../types';
 import { useSelector } from 'react-redux';
 
-import { Animated } from 'react-animated-css';
+// import { Animated } from 'react-animated-css';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

@@ -28,7 +28,7 @@ const Footer: React.FC = () => {
     <>
       <Paper className={classes.footerContainer}>
         <Typography className={classes.footer} variant="body2">
-          &copy; 2020 Spektaakkeli Events
+          {`${new Date().getFullYear()} Spektaakkeli Events`}
         </Typography>
       </Paper>
     </>

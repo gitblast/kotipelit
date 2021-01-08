@@ -26,7 +26,6 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(2),
       textAlign: 'center',
     },
-    media: { height: 150 },
     showcase: {
       height: 444,
       width: '100%',

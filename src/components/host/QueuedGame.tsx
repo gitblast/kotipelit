@@ -156,7 +156,6 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
           variant="contained"
           color="primary"
           component={Link}
-          // Toimiiko myös esim matleenalle vaikka host sijaan username?
           to={`/${username}/pelit/rtc/${game.id}`}
         >
           {label}

@@ -40,6 +40,9 @@ const useStyles = makeStyles((theme: Theme) =>
     resetContainer: {
       padding: theme.spacing(3),
     },
+    stepperStyle: {
+      backgroundColor: 'transparent',
+    },
   })
 );
 
@@ -214,7 +217,11 @@ const NewGameB: React.FC = () => {
 
   const chooseType = () => (
     <div className={classes.root}>
-      <Stepper activeStep={activeStep} orientation="vertical">
+      <Stepper
+        className={classes.stepperStyle}
+        activeStep={activeStep}
+        orientation="vertical"
+      >
         {steps.map((label, index) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>

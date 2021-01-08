@@ -188,6 +188,8 @@ export const addGame = (game: Omit<SelectableGame, 'id'>) => {
     try {
       const addedGame = await gameService.addNew(game);
       dispatch(addSuccess(addedGame));
+
+      return addedGame;
     } catch (error) {
       dispatch(addFailure());
     }

@@ -6,24 +6,19 @@ import StepLabel from '@material-ui/core/StepLabel';
 import StepContent from '@material-ui/core/StepContent';
 import Button from '@material-ui/core/Button';
 
-import { Typography, FormControl, MenuItem, Select } from '@material-ui/core';
+import ChooseDate from './ChooseDate';
+import ChooseGame from './ChooseGame';
+import ChoosePrice from './ChoosePrice';
 
-import shortid from 'shortid';
-import wordService from '../../services/words';
-
-import DateFnsUtils from '@date-io/date-fns';
-import fiLocale from 'date-fns/locale/fi';
-
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-
-import { Formik } from 'formik';
+import { Typography } from '@material-ui/core';
+import { initializePlayers } from '../../helpers/games';
 
 import { useHistory } from 'react-router-dom';
 
-import RenderForm from './RenderForm';
 import { useDispatch } from 'react-redux';
 import { addGame } from '../../reducers/games.reducer';
 import { GameType, GameStatus, KotitonniPlayer } from '../../types';
+import logger from '../../utils/logger';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,48 +41,25 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-/**
- * Generates initial player objects to be used in state
- * @param playerCount - number of players
- * @param wordsPerPlayer - words per player
- * @return {Promise} - Array of player objects with unique, randow words each
- */
-export const initializePlayers = async (
-  playerCount: number,
-  wordsPerPlayer: number
-): Promise<KotitonniPlayer[]> => {
-  const players = [];
-
-  const randomWords = await wordService.getMany(playerCount * wordsPerPlayer);
-  for (let i = 1; i <= playerCount; i++) {
-    const words: string[] = [];
-
-    for (let j = 0; j < wordsPerPlayer; j++) {
-      const word = randomWords.pop();
-
-      if (word) words.push(word);
-    }
-
-    players.push({
-      id: shortid.generate(),
-      name: `Pelaaja ${i}`,
-      words,
-      points: 0,
-      online: false,
-    });
-  }
-
-  return players;
-};
-
-const getSteps = () => {
-  return ['Ajankohta', 'Pelimuoto', 'Hinta'];
-};
+interface GameToAdd {
+  startTime: Date;
+  type: GameType;
+  players: KotitonniPlayer[];
+  status: GameStatus;
+  rounds: number;
+  hostOnline: boolean;
+  price: number;
+}
 
 const NewGameB: React.FC = () => {
+  const classes = useStyles();
   const [gameType, setGameType] = React.useState<GameType | null>(null);
-  const [price, setPrice] = React.useState<number>(2);
+  const [price, setPrice] = React.useState<number>(0);
   const [players, setPlayers] = React.useState<null | KotitonniPlayer[]>(null);
+  const [startTime, setStartTime] = React.useState<null | Date>(new Date());
+  const steps = React.useMemo(() => ['Ajankohta', 'Pelimuoto', 'Hinta'], []);
+  const [activeStep, setActiveStep] = React.useState(0);
+  const [error, setError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     const init = async () => {
@@ -102,7 +74,10 @@ const NewGameB: React.FC = () => {
     }
   }, []);
 
-  const classes = useStyles();
+  const handleSelectGame = React.useCallback((selection: GameType) => {
+    setGameType(selection);
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  }, []);
 
   const dispatch = useDispatch();
 
@@ -116,94 +91,51 @@ const NewGameB: React.FC = () => {
     history.goBack();
   };
 
-  const gameForm = () => {
-    if (!players || !gameType) {
-      return <div>Ladataan...</div>;
-    }
-    return (
-      <>
-        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={fiLocale}>
-          <Formik
-            initialValues={{
-              startTime: new Date(),
-              type: gameType,
-              price,
-              players,
-              status: GameStatus.UPCOMING,
-              rounds: 3,
-              hostOnline: false,
-            }}
-            onSubmit={(values) => {
-              dispatch(addGame(values));
-              handleReturn();
-            }}
-          >
-            {(formikProps) => (
-              <RenderForm
-                handleReturn={handleReturn}
-                formikProps={formikProps}
-              />
-            )}
-          </Formik>
-        </MuiPickersUtilsProvider>
-      </>
-    );
-  };
-
   const getStepContent = (step: number) => {
     switch (step) {
       case 0:
-        return (
-          <>
-            <Typography>Milloin haluat järjestää peli-illan?</Typography>
-            {gameForm()}
-          </>
-        );
+        return <ChooseDate selected={startTime} setSelected={setStartTime} />;
       case 1:
-        return (
-          <>
-            <Typography>Valitse mitä pelataan</Typography>
-            <Button
-              className={classes.button}
-              onClick={() => setGameType(GameType.KOTITONNI)}
-            >
-              Kotitonni
-            </Button>
-          </>
-        );
+        return <ChooseGame handleSelect={handleSelectGame} />;
       case 2:
-        return (
-          <>
-            <Typography>Aseta peli-illalle hinta</Typography>
-            <FormControl variant="standard">
-              <Select
-                value={price}
-                onChange={(e) => setPrice(Number(e.target.value))}
-              >
-                <MenuItem value={0}>0€</MenuItem>
-                <MenuItem value={2}>2€</MenuItem>
-                <MenuItem value={3}>3€</MenuItem>
-                <MenuItem value={4}>4€</MenuItem>
-                <MenuItem value={5}>5€</MenuItem>
-                <MenuItem value={6}>6€</MenuItem>
-                <MenuItem value={7}>7€</MenuItem>
-                <MenuItem value={8}>8€</MenuItem>
-                <MenuItem value={9}>9€</MenuItem>
-                <MenuItem value={10}>10€</MenuItem>
-              </Select>
-            </FormControl>
-          </>
-        );
+        return <ChoosePrice price={price} setPrice={setPrice} />;
 
       default:
         return 'Unknown step';
     }
   };
 
-  const [activeStep, setActiveStep] = React.useState(0);
-  const steps = getSteps();
+  const saveGame = async (gameToAdd: GameToAdd) => {
+    try {
+      logger.log(`adding new game`, gameToAdd);
+
+      const addedGame = dispatch(addGame(gameToAdd));
+
+      console.log(addedGame);
+    } catch (e) {
+      setError(e.message);
+    }
+  };
 
   const handleNext = () => {
+    if (activeStep === steps.length - 1) {
+      if (!players || !gameType || !startTime) {
+        setError('Odottamaton virhe: jokin vaadituista arvoista puuttuu');
+      } else {
+        const gameToAdd = {
+          players,
+          price,
+          startTime,
+          type: gameType,
+          status: GameStatus.UPCOMING,
+          rounds: 3,
+          hostOnline: false,
+        };
+
+        saveGame(gameToAdd);
+      }
+    }
+
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
@@ -211,11 +143,7 @@ const NewGameB: React.FC = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleReset = () => {
-    setActiveStep(0);
-  };
-
-  const chooseType = () => (
+  return (
     <div className={classes.root}>
       <Stepper
         className={classes.stepperStyle}
@@ -236,14 +164,16 @@ const NewGameB: React.FC = () => {
                   >
                     Palaa
                   </Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleNext}
-                    className={classes.button}
-                  >
-                    {activeStep === steps.length - 1 ? 'Valmis' : 'Seuraava'}
-                  </Button>
+                  {activeStep !== 1 && ( // not shown when choosing game type
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleNext}
+                      className={classes.button}
+                    >
+                      {activeStep === steps.length - 1 ? 'Valmis' : 'Seuraava'}
+                    </Button>
+                  )}
                 </div>
               </div>
             </StepContent>
@@ -255,9 +185,6 @@ const NewGameB: React.FC = () => {
           <Typography>
             Jaa tämä linkki pelaajille, jotka haluat kutsua pelaamaan.
           </Typography>
-          <Button onClick={handleReset} className={classes.button}>
-            Nollaa
-          </Button>
           <Button onClick={handleReturn} className={classes.button}>
             Dashboard
           </Button>
@@ -265,10 +192,6 @@ const NewGameB: React.FC = () => {
       )}
     </div>
   );
-
-  /** @TODO validate inputs with Yup ? */
-
-  return <div>{chooseType()}</div>;
 };
 
 export default NewGameB;

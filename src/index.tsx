@@ -44,6 +44,9 @@ const theme = createMuiTheme({
       fontFamily: 'Russo One',
       fontSize: 18,
     },
+    body2: {
+      fontWeight: 'bold',
+    },
   },
 });
 

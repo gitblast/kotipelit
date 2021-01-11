@@ -21,7 +21,9 @@ const ChannelPage: React.FC<ChannelPageProps> = () => {
   return (
     <Router>
       <Switch>
-        <Route path="/:username/newgame">{user.loggedIn && <NewGameB />}</Route>
+        <Route path="/:username/newgame">
+          {user.loggedIn && <NewGameB username={user.username} />}
+        </Route>
         <Route path="/:username/kutsut/:gameID">
           <GameLobby />
         </Route>

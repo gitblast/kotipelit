@@ -5,6 +5,7 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import StepContent from '@material-ui/core/StepContent';
 import Button from '@material-ui/core/Button';
+import { CircularProgress } from '@material-ui/core';
 
 import ChooseDate from './ChooseDate';
 import ChooseGame from './ChooseGame';
@@ -13,11 +14,15 @@ import ChoosePrice from './ChoosePrice';
 import { Typography } from '@material-ui/core';
 import { initializePlayers } from '../../helpers/games';
 
+import gameService from '../../services/games';
 import { useHistory } from 'react-router-dom';
 
-import { useDispatch } from 'react-redux';
-import { addGame } from '../../reducers/games.reducer';
-import { GameType, GameStatus, KotitonniPlayer } from '../../types';
+import {
+  GameType,
+  GameStatus,
+  KotitonniPlayer,
+  SelectableGame,
+} from '../../types';
 import logger from '../../utils/logger';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -51,15 +56,18 @@ interface GameToAdd {
   price: number;
 }
 
-const NewGameB: React.FC = () => {
+const NewGameB: React.FC<{ username: string }> = ({ username }) => {
   const classes = useStyles();
   const [gameType, setGameType] = React.useState<GameType | null>(null);
   const [price, setPrice] = React.useState<number>(0);
   const [players, setPlayers] = React.useState<null | KotitonniPlayer[]>(null);
   const [startTime, setStartTime] = React.useState<null | Date>(new Date());
-  const steps = React.useMemo(() => ['Ajankohta', 'Pelimuoto', 'Hinta'], []);
   const [activeStep, setActiveStep] = React.useState(0);
   const [error, setError] = React.useState<string | null>(null);
+  const [loading, setLoading] = React.useState(false);
+  const [addedGame, setAddedGame] = React.useState<SelectableGame | null>(null);
+  const steps = React.useMemo(() => ['Ajankohta', 'Pelimuoto', 'Hinta'], []);
+  const history = useHistory();
 
   React.useEffect(() => {
     const init = async () => {
@@ -71,6 +79,8 @@ const NewGameB: React.FC = () => {
       init();
     } catch (error) {
       console.error('error initializing players for new game:', error.message);
+
+      setError(error.message);
     }
   }, []);
 
@@ -78,11 +88,6 @@ const NewGameB: React.FC = () => {
     setGameType(selection);
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   }, []);
-
-  const dispatch = useDispatch();
-
-  // react router
-  const history = useHistory();
 
   /**
    * Redirects back to host main page
@@ -106,15 +111,19 @@ const NewGameB: React.FC = () => {
   };
 
   const saveGame = async (gameToAdd: GameToAdd) => {
+    setLoading(true);
+
+    logger.log(`adding new game`, gameToAdd);
+
     try {
-      logger.log(`adding new game`, gameToAdd);
+      const added = await gameService.addNew(gameToAdd);
 
-      const addedGame = dispatch(addGame(gameToAdd));
-
-      console.log(addedGame);
+      setAddedGame(added);
     } catch (e) {
       setError(e.message);
     }
+
+    setLoading(false);
   };
 
   const handleNext = () => {
@@ -141,6 +150,38 @@ const NewGameB: React.FC = () => {
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const bottomContent = () => {
+    if (error) {
+      return <div>{error}</div>;
+    }
+
+    if (loading) {
+      return <CircularProgress />;
+    }
+
+    if (addedGame) {
+      const baseUrl =
+        // eslint-disable-next-line no-undef
+        process && process.env.NODE_ENV === 'development'
+          ? 'http://localhost:3000'
+          : 'https://www.kotipelit.com';
+
+      return (
+        <div className={classes.resetContainer}>
+          <Typography>{`${baseUrl}/${username}/kutsut/${addedGame.id}`}</Typography>
+          <Typography>
+            Jaa tämä linkki pelaajille, jotka haluat kutsua pelaamaan.
+          </Typography>
+          <Button onClick={handleReturn} className={classes.button}>
+            Dashboard
+          </Button>
+        </div>
+      );
+    }
+
+    setError('Odottamaton virhe peliä lisätessä');
   };
 
   return (
@@ -180,16 +221,7 @@ const NewGameB: React.FC = () => {
           </Step>
         ))}
       </Stepper>
-      {activeStep === steps.length && (
-        <div className={classes.resetContainer}>
-          <Typography>
-            Jaa tämä linkki pelaajille, jotka haluat kutsua pelaamaan.
-          </Typography>
-          <Button onClick={handleReturn} className={classes.button}>
-            Dashboard
-          </Button>
-        </div>
-      )}
+      {activeStep === steps.length && bottomContent()}
     </div>
   );
 };

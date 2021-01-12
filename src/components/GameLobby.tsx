@@ -1,5 +1,7 @@
 import React from 'react';
 
+import References from './References';
+
 import useLobbySystem from '../hooks/useLobbySystem';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
@@ -264,24 +266,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
             </Grid>
             <Grid item sm={1}></Grid>
           </Grid>
-          <Grid container className={classes.sectionB} spacing={5}>
-            {/* Toistaa itseään, tee mahd. objekti jossa koottuja vihjeitä, vaihtele näkymää */}
-            <Grid item sm={4}>
-              <Typography variant="h6">
-                {'"Hautajaishuijaus, johon et halua sijoittaa."'}
-              </Typography>
-            </Grid>
-            <Grid item sm={4}>
-              <Typography variant="h6">
-                {'"Anthony Hopkinsin lemmikin oikeudellinen asema."'}
-              </Typography>
-            </Grid>
-            <Grid item sm={4}>
-              <Typography variant="h6">
-                {'"Löytyy tähtimerkeistä ja Espanjasta."'}
-              </Typography>
-            </Grid>
-          </Grid>
+          <References />
         </>
       ) : (
         <Loader msg={'Ladataan...'} spinner />

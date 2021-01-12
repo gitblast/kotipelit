@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Typography, FormControl, Select, MenuItem } from '@material-ui/core';
+import { FormControl, Select, MenuItem } from '@material-ui/core';
 
 interface ChoosePriceProps {
   price: number;
@@ -10,7 +10,6 @@ interface ChoosePriceProps {
 const ChoosePrice: React.FC<ChoosePriceProps> = ({ price, setPrice }) => {
   return (
     <>
-      <Typography>Aseta peli-illalle hinta</Typography>
       <FormControl variant="standard">
         <Select
           value={price}

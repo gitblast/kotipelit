@@ -5,7 +5,6 @@ import fiLocale from 'date-fns/locale/fi';
 
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { KeyboardDateTimePicker } from '@material-ui/pickers';
-import { Typography } from '@material-ui/core';
 
 interface ChooseDateProps {
   selected: Date | null;
@@ -15,7 +14,6 @@ interface ChooseDateProps {
 const ChooseDate: React.FC<ChooseDateProps> = ({ selected, setSelected }) => {
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils} locale={fiLocale}>
-      <Typography>Milloin haluat järjestää peli-illan?</Typography>
       <KeyboardDateTimePicker
         autoOk
         value={selected}

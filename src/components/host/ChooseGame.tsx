@@ -5,12 +5,9 @@ import { GameType } from '../../types';
 import {
   Card,
   CardActionArea,
-  CardMedia,
   CardContent,
   Typography,
 } from '@material-ui/core';
-
-import kotitonniImg from '../../assets/images/Kotitonni.png';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -34,28 +31,20 @@ const ChooseGame: React.FC<ChooseGameProps> = ({ handleSelect }) => {
 
   return (
     <>
-      <Typography>Valitse mitä pelataan</Typography>
       <Card
         className={classes.gameCard}
         onClick={() => handleSelect(GameType.KOTITONNI)}
         elevation={3}
       >
         <CardActionArea>
-          <CardMedia
-            component="img"
-            alt="Kotitonni"
-            height="200"
-            image={kotitonniImg}
-            title="Kotitonni"
-          />
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2">
               Kotitonni
             </Typography>
             <Typography variant="body1" color="textSecondary">
-              Pelaajille lähetetään ennen peliä 3 sanaa, joihin he miettivät
-              vihjeet. Pelaajat kirjoittavat sinulle vastauksensa. Vastausaika
-              on 60 sekuntia.
+              Pelaajat saavat ilmottautuessaan 3 sanaa, joihin he miettivät
+              vihjeet. Muut koittavat arvata sanan kirjoittamalla sinulle
+              vastauksensa.
             </Typography>
             <CardContent>
               <div className={classes.cardBottom}>

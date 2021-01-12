@@ -14,6 +14,7 @@ import kotitonniImg from '../assets/images/KotitonniB.png';
 import backgroundImg from '../assets/images/backgroundB.png';
 
 import Footer from './Footer';
+import References from './References';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,7 +28,6 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: 'center',
     },
     showcase: {
-      height: 444,
       width: '100%',
       display: 'flex',
       alignItems: 'center',
@@ -99,8 +99,12 @@ const FrontPage: React.FC = () => {
               Järjestä peli-ilta
             </Button>
           </Grid>
-          <Grid item sm={5} xs={12} className={classes.image}>
-            <img src={backgroundImg} alt="Background" />
+          <Grid item sm={5} xs={12}>
+            <img
+              className={classes.image}
+              src={backgroundImg}
+              alt="Background"
+            />
           </Grid>
           <Grid item sm></Grid>
         </Grid>
@@ -149,12 +153,12 @@ const FrontPage: React.FC = () => {
             </Typography>
           </Grid>
           <Grid item sm={1}></Grid>
-          <Grid item xs={12} sm={5} className={classes.image}>
-            <img src={kotitonniImg} alt="Kotitonni" />
+          <Grid item xs={12} sm={5}>
+            <img className={classes.image} src={kotitonniImg} alt="Kotitonni" />
           </Grid>
           <Grid item sm={1}></Grid>
         </Grid>
-
+        <References />
         {/* Pelinhoitajainfo B */}
         <Grid container spacing={4} className={classes.container}>
           <Grid item xs={12}>

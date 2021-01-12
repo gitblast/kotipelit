@@ -2,7 +2,7 @@ import React from 'react';
 
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import NewGameB from './host/NewGameB';
+import NewGame from './host/NewGame';
 import KotitonniHostView from './kotitonni/KotitonniHostView';
 import KotitonniPlayerView from './kotitonni/KotitonniPlayerView';
 import RTCGameRoom from './RTCGameRoom';
@@ -22,7 +22,7 @@ const ChannelPage: React.FC<ChannelPageProps> = () => {
     <Router>
       <Switch>
         <Route path="/:username/newgame">
-          {user.loggedIn && <NewGameB username={user.username} />}
+          {user.loggedIn && <NewGame username={user.username} />}
         </Route>
         <Route path="/:username/kutsut/:gameID">
           <GameLobby />

@@ -1,105 +1,73 @@
 import React from 'react';
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import Stepper from '@material-ui/core/Stepper';
+import Step from '@material-ui/core/Step';
+import StepLabel from '@material-ui/core/StepLabel';
+import StepContent from '@material-ui/core/StepContent';
+import Button from '@material-ui/core/Button';
+import { CircularProgress } from '@material-ui/core';
 
-import shortid from 'shortid';
-import wordService from '../../services/words';
+import ChooseDate from './ChooseDate';
+import ChooseGame from './ChooseGame';
+import ChoosePrice from './ChoosePrice';
 
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { Typography } from '@material-ui/core';
+import { initializePlayers } from '../../helpers/games';
 
-import {
-  Typography,
-  Divider,
-  FormControl,
-  MenuItem,
-  Select,
-  Card,
-  CardActionArea,
-  CardContent,
-  CardMedia,
-} from '@material-ui/core';
-
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
-import fiLocale from 'date-fns/locale/fi';
-
-import { Formik } from 'formik';
-
+import gameService from '../../services/games';
 import { useHistory } from 'react-router-dom';
 
-import RenderForm from './RenderForm';
-import { useDispatch } from 'react-redux';
-import { addGame } from '../../reducers/games.reducer';
-import { GameType, GameStatus, KotitonniPlayer } from '../../types';
-
-import kotitonniImg from '../../assets/images/Kotitonni.png';
+import {
+  GameType,
+  GameStatus,
+  KotitonniPlayer,
+  SelectableGame,
+} from '../../types';
+import logger from '../../utils/logger';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    container: {
-      margin: theme.spacing(2),
+    root: {
+      width: '100%',
     },
-    marginRight: {
-      marginRight: theme.spacing(2),
+    button: {
+      marginTop: theme.spacing(1),
+      marginRight: theme.spacing(1),
     },
-    gameBtn: {
-      padding: 50,
-      margin: 10,
+    actionsContainer: {
+      marginBottom: theme.spacing(2),
     },
-    gameRow: {
-      display: 'flex',
-      alignItems: 'center',
+    resetContainer: {
+      padding: theme.spacing(3),
     },
-    unactiveGame: {
-      color: 'grey',
-    },
-    gameCard: {
-      maxWidth: 280,
-    },
-    cardBottom: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-around',
+    stepperStyle: {
+      backgroundColor: 'transparent',
     },
   })
 );
 
-/**
- * Generates initial player objects to be used in state
- * @param playerCount - number of players
- * @param wordsPerPlayer - words per player
- * @return {Promise} - Array of player objects with unique, randow words each
- */
-export const initializePlayers = async (
-  playerCount: number,
-  wordsPerPlayer: number
-): Promise<KotitonniPlayer[]> => {
-  const players = [];
+interface GameToAdd {
+  startTime: Date;
+  type: GameType;
+  players: KotitonniPlayer[];
+  status: GameStatus;
+  rounds: number;
+  hostOnline: boolean;
+  price: number;
+}
 
-  const randomWords = await wordService.getMany(playerCount * wordsPerPlayer);
-  for (let i = 1; i <= playerCount; i++) {
-    const words: string[] = [];
-
-    for (let j = 0; j < wordsPerPlayer; j++) {
-      const word = randomWords.pop();
-
-      if (word) words.push(word);
-    }
-
-    players.push({
-      id: shortid.generate(),
-      name: `Pelaaja ${i}`,
-      words,
-      points: 0,
-      online: false,
-    });
-  }
-
-  return players;
-};
-
-const NewGame: React.FC = () => {
+const NewGame: React.FC<{ username: string }> = ({ username }) => {
+  const classes = useStyles();
   const [gameType, setGameType] = React.useState<GameType | null>(null);
-  const [price, setPrice] = React.useState<number>(2);
+  const [price, setPrice] = React.useState<number>(0);
   const [players, setPlayers] = React.useState<null | KotitonniPlayer[]>(null);
+  const [startTime, setStartTime] = React.useState<null | Date>(new Date());
+  const [activeStep, setActiveStep] = React.useState(0);
+  const [error, setError] = React.useState<string | null>(null);
+  const [loading, setLoading] = React.useState(false);
+  const [addedGame, setAddedGame] = React.useState<SelectableGame | null>(null);
+  const steps = React.useMemo(() => ['Ajankohta', 'Pelimuoto', 'Hinta'], []);
+  const history = useHistory();
 
   React.useEffect(() => {
     const init = async () => {
@@ -111,15 +79,15 @@ const NewGame: React.FC = () => {
       init();
     } catch (error) {
       console.error('error initializing players for new game:', error.message);
+
+      setError(error.message);
     }
   }, []);
 
-  const classes = useStyles();
-
-  const dispatch = useDispatch();
-
-  // react router
-  const history = useHistory();
+  const handleSelectGame = React.useCallback((selection: GameType) => {
+    setGameType(selection);
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  }, []);
 
   /**
    * Redirects back to host main page
@@ -128,117 +96,132 @@ const NewGame: React.FC = () => {
     history.goBack();
   };
 
-  const chooseType = () => (
-    <div className={classes.container}>
-      <div className={classes.gameRow}>
-        <Typography variant="h6" className={classes.marginRight}>
-          1. Pelin hinta per pelaaja
-        </Typography>
-        <FormControl className={classes.marginRight} variant="standard">
-          <Select
-            value={price}
-            onChange={(e) => setPrice(Number(e.target.value))}
-          >
-            <MenuItem value={0}>0€</MenuItem>
-            <MenuItem value={2}>2€</MenuItem>
-            <MenuItem value={3}>3€</MenuItem>
-            <MenuItem value={4}>4€</MenuItem>
-            <MenuItem value={5}>5€</MenuItem>
-            <MenuItem value={6}>6€</MenuItem>
-            <MenuItem value={7}>7€</MenuItem>
-            <MenuItem value={8}>8€</MenuItem>
-            <MenuItem value={9}>9€</MenuItem>
-            <MenuItem value={10}>10€</MenuItem>
-          </Select>
-        </FormControl>
-        <Typography variant="body2">
-          Saat 80% pelin tuotosta itsellesi.
-        </Typography>
-      </div>
-      <Typography variant="h6">2. Valitse peli</Typography>
-      <div className={classes.gameRow}>
-        <Card
-          className={classes.gameCard}
-          onClick={() => setGameType(GameType.KOTITONNI)}
-          elevation={3}
-        >
-          <CardActionArea>
-            <CardMedia
-              component="img"
-              alt="Kotitonni"
-              height="200"
-              image={kotitonniImg}
-              title="Kotitonni"
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="h2">
-                Kotitonni
-              </Typography>
-              <Typography variant="body1" color="textSecondary">
-                Pelaajille lähetetään ennen peliä 3 sanaa, joihin he miettivät
-                vihjeet. Pelaajat kirjoittavat sinulle vastauksensa. Vastausaika
-                on 90 sekuntia.
-              </Typography>
-              <CardContent>
-                <div className={classes.cardBottom}>
-                  <Typography variant="body2" component="p">
-                    • 5 pelaajaa
-                  </Typography>
-                  <Typography variant="body2" component="p">
-                    • 45-60min
-                  </Typography>
-                </div>
-              </CardContent>
-            </CardContent>
-          </CardActionArea>
-        </Card>
-      </div>
-    </div>
-  );
+  const getStepContent = (step: number) => {
+    switch (step) {
+      case 0:
+        return <ChooseDate selected={startTime} setSelected={setStartTime} />;
+      case 1:
+        return <ChooseGame handleSelect={handleSelectGame} />;
+      case 2:
+        return <ChoosePrice price={price} setPrice={setPrice} />;
 
-  const gameForm = () => {
-    if (!players || !gameType) {
-      return <div>Ladataan...</div>;
+      default:
+        return 'Unknown step';
     }
-
-    return (
-      <MuiPickersUtilsProvider utils={DateFnsUtils} locale={fiLocale}>
-        <Formik
-          initialValues={{
-            startTime: new Date(),
-            type: gameType,
-            price,
-            players,
-            status: GameStatus.UPCOMING,
-            rounds: 3,
-            hostOnline: false,
-          }}
-          onSubmit={(values) => {
-            dispatch(addGame(values));
-            handleReturn();
-          }}
-        >
-          {(formikProps) => (
-            <RenderForm handleReturn={handleReturn} formikProps={formikProps} />
-          )}
-        </Formik>
-      </MuiPickersUtilsProvider>
-    );
   };
 
-  /** @TODO validate inputs with Yup ? */
+  const saveGame = async (gameToAdd: GameToAdd) => {
+    setLoading(true);
+
+    logger.log(`adding new game`, gameToAdd);
+
+    try {
+      const added = await gameService.addNew(gameToAdd);
+
+      setAddedGame(added);
+    } catch (e) {
+      setError(e.message);
+    }
+
+    setLoading(false);
+  };
+
+  const handleNext = () => {
+    if (activeStep === steps.length - 1) {
+      if (!players || !gameType || !startTime) {
+        setError('Odottamaton virhe: jokin vaadituista arvoista puuttuu');
+      } else {
+        const gameToAdd = {
+          players,
+          price,
+          startTime,
+          type: gameType,
+          status: GameStatus.UPCOMING,
+          rounds: 3,
+          hostOnline: false,
+        };
+
+        saveGame(gameToAdd);
+      }
+    }
+
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const bottomContent = () => {
+    if (error) {
+      return <div>{error}</div>;
+    }
+
+    if (loading) {
+      return <CircularProgress />;
+    }
+
+    if (addedGame) {
+      const baseUrl =
+        // eslint-disable-next-line no-undef
+        process && process.env.NODE_ENV === 'development'
+          ? 'http://localhost:3000'
+          : 'https://www.kotipelit.com';
+
+      return (
+        <div className={classes.resetContainer}>
+          <Typography>{`${baseUrl}/${username}/kutsut/${addedGame.id}`}</Typography>
+          <Typography>
+            Jaa tämä linkki pelaajille, jotka haluat kutsua pelaamaan.
+          </Typography>
+          <Button onClick={handleReturn} className={classes.button}>
+            Dashboard
+          </Button>
+        </div>
+      );
+    }
+
+    setError('Odottamaton virhe peliä lisätessä');
+  };
 
   return (
-    <div>
-      <Typography variant="h4" gutterBottom>
-        Luo uusi peli
-      </Typography>
-      <Divider />
-      <Typography variant="body2" gutterBottom>
-        1. Aseta hinta -- 2. Valitse peli -- 3. Aseta aika - - 4. Syötä pelaajat
-      </Typography>
-      <Divider />
-      {gameType ? gameForm() : chooseType()}
+    <div className={classes.root}>
+      <Stepper
+        className={classes.stepperStyle}
+        activeStep={activeStep}
+        orientation="vertical"
+      >
+        {steps.map((label, index) => (
+          <Step key={label}>
+            <StepLabel>{label}</StepLabel>
+            <StepContent>
+              {getStepContent(index)}
+              <div className={classes.actionsContainer}>
+                <div>
+                  <Button
+                    disabled={activeStep === 0}
+                    onClick={handleBack}
+                    className={classes.button}
+                  >
+                    Palaa
+                  </Button>
+                  {activeStep !== 1 && ( // not shown when choosing game type
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleNext}
+                      className={classes.button}
+                    >
+                      {activeStep === steps.length - 1 ? 'Valmis' : 'Seuraava'}
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </StepContent>
+          </Step>
+        ))}
+      </Stepper>
+      {activeStep === steps.length && bottomContent()}
     </div>
   );
 };

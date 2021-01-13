@@ -57,7 +57,8 @@ router.put('/lock', async (req, res, next) => {
 
     const reservationData = playerReservationToLock.reservedFor;
 
-    if (reservationData.expires < Date.now()) {
+    // 10 sec buffer to make sure gameservice won't set spot as null in 10 seconds to avoid race conditions
+    if (reservationData.expires - 10000 < Date.now()) {
       throw new Error(
         `Invalid request: reservation with id '${reservationId}' has expired`
       );
@@ -70,10 +71,7 @@ router.put('/lock', async (req, res, next) => {
     }
 
     logger.log(
-      'locking reservation with id',
-      reservationId,
-      'and setting displayName',
-      displayName
+      `locking reservation with id ${reservationId} and setting displayName '${displayName}'`
     );
 
     const playerWithReservationLocked = {

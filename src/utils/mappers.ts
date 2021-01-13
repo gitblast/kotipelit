@@ -48,7 +48,9 @@ const isGameStatus = (status: any): status is GameStatus => {
 const isNumber = (number: any): number is number => {
   const casted = Number(number);
 
-  if (!casted) return false;
+  if (isNaN(casted)) {
+    return false;
+  }
 
   return true;
 };
@@ -99,8 +101,13 @@ const parseRounds = (rounds: any): number => {
 };
 
 const parseNumber = (number: any): number => {
-  if (!number) throw new Error('Missing number');
-  if (!isNumber(number)) throw new Error('Invalid number');
+  if (number === undefined || number === null) {
+    throw new Error('Missing number');
+  }
+
+  if (!isNumber(number)) {
+    throw new Error('Invalid number');
+  }
 
   return Number(number);
 };

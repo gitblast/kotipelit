@@ -42,6 +42,12 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: theme.spacing(6),
       backgroundColor: 'rgb(197 226 210)',
     },
+    registeredInfo: {
+      padding: theme.spacing(2),
+    },
+    emailConfText: {
+      marginBottom: theme.spacing(1),
+    },
   })
 );
 
@@ -133,8 +139,8 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
 
     return (
       <>
-        <Typography variant="h5">Tässä ovat pelin sanasi:</Typography>
-        <Typography variant="h6">{words.join(' / ')}</Typography>
+        <Typography>Tässä ovat pelin sanasi:</Typography>
+        <Typography>{words.join(' / ')}</Typography>
       </>
     );
   };
@@ -148,9 +154,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
 
     return (
       <>
-        <Typography variant="h6">
-          Peliin pääset liittymään osoitteessa:
-        </Typography>
+        <Typography>Peliin pääset liittymään osoitteessa:</Typography>
         <Typography>{url}</Typography>
       </>
     );
@@ -172,8 +176,8 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
 
     if (spotLockedForMe) {
       return (
-        <div>
-          <Typography variant="h4">
+        <div className={classes.registeredInfo}>
+          <Typography className={classes.emailConfText}>
             Lähetimme alla olevat tiedot sähköpostiisi.
           </Typography>
           {getWordList(spotLockedForMe.words)}
@@ -232,7 +236,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
             <Typography>
               <HelpOutlineIcon></HelpOutlineIcon>
               Kotitonnissa saat kolme sanaa, joihin sinun tulee keksiä vihjeet.
-              Muut pelaajat arvuuttlevat oikeaa sanaa. Vain yhden pelaajan
+              Muut pelaajat arvuuttelevat oikeaa sanaa. Vain yhden pelaajan
               arvatessa oikein, saatte molemmat 100 pistettä. Kahden arvatessa
               oikein saa kukin 30 pistettä ja kolmen arvatessa saa pelaajat 10
               pistettä. Mikäli kaikki tai ei kukaan arvaa, seuraa -50 pistettä.

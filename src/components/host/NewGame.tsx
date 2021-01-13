@@ -14,7 +14,7 @@ import { CircularProgress } from '@material-ui/core';
 
 import ChooseDate from './ChooseDate';
 import ChooseGame from './ChooseGame';
-import ChoosePrice from './ChoosePrice';
+import ChoosePriceB from './ChoosePriceB';
 
 import { initializePlayers } from '../../helpers/games';
 
@@ -112,7 +112,7 @@ const NewGame: React.FC<{ username: string }> = ({ username }) => {
       case 1:
         return <ChooseGame handleSelect={handleSelectGame} />;
       case 2:
-        return <ChoosePrice price={price} setPrice={setPrice} />;
+        return <ChoosePriceB price={price} setPrice={setPrice} />;
 
       default:
         return 'Unknown step';

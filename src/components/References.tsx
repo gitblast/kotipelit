@@ -10,7 +10,9 @@ import arviImg from '../assets/images/arvi.png';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     sectionB: {
-      marginTop: theme.spacing(2),
+      padding: theme.spacing(2),
+      // This the same as in FrontPage content
+      marginTop: theme.spacing(5),
       textAlign: 'center',
       [theme.breakpoints.down('xs')]: {
         marginTop: 30,
@@ -31,14 +33,14 @@ const References = () => {
     <>
       <Grid container className={classes.sectionB} spacing={5}>
         {/* Toistaa itseään, tee mahd. objekti jossa koottuja vihjeitä, vaihtele näkymää */}
-        <Grid item sm={4}>
+        <Grid item sm={4} xs={12}>
           <Typography color="primary" variant="h5">
             {'"Hautajaishuijaus, johon et halua sijoittaa."'}
           </Typography>
           <img className={classes.referenceImg} src={teemuImg} alt="Teemu" />
           <Typography>Teemu</Typography>
         </Grid>
-        <Grid item sm={4}>
+        <Grid item sm={4} xs={12}>
           <Typography color="primary" variant="h5">
             {'"Jengi, joka aloitti metsästyksen 80-luvulla."'}
           </Typography>
@@ -49,7 +51,7 @@ const References = () => {
           />
           <Typography>Matleena</Typography>
         </Grid>
-        <Grid item sm={4}>
+        <Grid item sm={4} xs={12}>
           <Typography color="primary" variant="h5">
             {'"Löytyy tähtimerkeistä ja Espanjasta."'}
           </Typography>

@@ -4,71 +4,43 @@ import References from './References';
 
 import useLobbySystem from '../hooks/useLobbySystem';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import {
-  Fab,
-  Typography,
-  Grid,
-  GridList,
-  GridListTile,
-  GridListTileBar,
-  TextField,
-} from '@material-ui/core';
+import { Fab, Typography, Grid, TextField, Paper } from '@material-ui/core';
 import { LobbyGamePlayer } from '../types';
 import Loader from './Loader';
 import { capitalize } from 'lodash';
 import { format } from 'date-fns';
 import fiLocale from 'date-fns/locale/fi';
-import userImg from '../assets/images/user.png';
 import logger from '../utils/logger';
+
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    container: {
-      margin: theme.spacing(2),
-      padding: theme.spacing(2),
+    centerAlign: {
+      display: 'flex',
+      justifyContent: 'center',
     },
-    infoBox: {
-      marginTop: theme.spacing(2),
-      marginLeft: theme.spacing(2),
+    seatLock: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
     },
-    // flexin: {
-    //   display: 'flex',
-    //   alignItems: 'center',
-    //   justifyContent: 'space-evenly',
-    // },
-
     reserveBtn: {
       padding: theme.spacing(4),
       margin: theme.spacing(2),
     },
-    gridTile: {
-      backgroundColor: 'grey',
-      border: 'solid white',
-    },
-    titleBar: {
-      backgroundColor: 'rgba(0, 0, 0, 0.9)',
-      height: 40,
-    },
-    freeSlotText: {
-      color: 'white',
+    lockBtn: {
+      margin: theme.spacing(4),
     },
     bookedText: {
       color: 'red',
     },
-    sectionB: {
-      marginTop: 150,
-      textAlign: 'center',
-      color: 'grey',
-      [theme.breakpoints.down('xs')]: {
-        marginTop: 30,
-      },
-    },
-    image: {
-      width: '100%',
-      height: 'auto',
-    },
-    padded: {
-      padding: theme.spacing(2),
+    gameRules: {
+      padding: theme.spacing(4),
+      marginTop: theme.spacing(6),
+      marginLeft: theme.spacing(6),
+      marginRight: theme.spacing(6),
+      backgroundColor: 'rgb(197 226 210)',
     },
   })
 );
@@ -85,29 +57,31 @@ const LockReservationForm: React.FC<LockReservationFormProps> = ({
   const [email, setEmail] = React.useState('');
 
   return (
-    <div className={classes.padded}>
-      <div className={classes.padded}>
-        <TextField
-          value={name}
-          onChange={({ target }) => setName(target.value)}
-          label="Nimi"
-        />
-      </div>
-      <div className={classes.padded}>
-        <TextField
-          value={email}
-          onChange={({ target }) => setEmail(target.value)}
-          label="Sähköpostiosoite"
-        />
+    <div className={classes.seatLock}>
+      <div>
+        <div>
+          <TextField
+            value={name}
+            onChange={({ target }) => setName(target.value)}
+            label="Nimi"
+          />
+        </div>
+        <div>
+          <TextField
+            value={email}
+            onChange={({ target }) => setEmail(target.value)}
+            label="Sähköpostiosoite"
+          />
+        </div>
       </div>
       <Fab
-        className={classes.reserveBtn}
+        className={classes.lockBtn}
         color="primary"
         variant="extended"
         onClick={() => handleClick(name)}
         disabled={!name}
       >
-        <Typography>Lukitse varaus</Typography>
+        <Typography>Lukitse </Typography>
       </Fab>
     </div>
   );
@@ -137,13 +111,9 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
 
     if (player.reservedForMe && player.expires) {
       return (
-        <span className={classes.freeSlotText}>{`Varattu sinulle ${format(
-          new Date(player.expires),
-          'HH:mm',
-          {
-            locale: fiLocale,
-          }
-        )} asti`}</span>
+        <span>{`Varattu sinulle ${format(new Date(player.expires), 'HH:mm', {
+          locale: fiLocale,
+        })} asti`}</span>
       );
     }
 
@@ -151,7 +121,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
       return <span className={classes.bookedText}>Varattu</span>;
     }
 
-    return <span className={classes.freeSlotText}>Vapaa</span>;
+    return <span>...</span>;
   };
 
   const getWordList = (words?: string[]) => {
@@ -163,12 +133,8 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
 
     return (
       <>
-        <Typography variant="h5">Sanasi:</Typography>
+        <Typography variant="h5">Tässä ovat pelin sanasi:</Typography>
         <Typography variant="h6">{words.join(' / ')}</Typography>
-        <Typography>
-          Tehtävänäsi on miettiä sanoillesi lyhyet vihjeet. Eniten pisteitä saat
-          kun vain yksi kanssapelaaja arvaa sanan.
-        </Typography>
       </>
     );
   };
@@ -197,8 +163,9 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
           className={classes.reserveBtn}
           variant="extended"
           onClick={reserveSpot}
+          color="primary"
         >
-          <Typography>Varaa paikka</Typography>
+          Varaa paikka
         </Fab>
       );
     }
@@ -206,7 +173,9 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
     if (spotLockedForMe) {
       return (
         <div>
-          <Typography variant="h4">Paikan varaus onnistui!</Typography>
+          <Typography variant="h4">
+            Lähetimme alla olevat tiedot sähköpostiisi.
+          </Typography>
           {getWordList(spotLockedForMe.words)}
           {getGameUrl(spotLockedForMe.url)}
         </div>
@@ -221,14 +190,15 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
       {error && <Typography color="error">{error}</Typography>}
       {game ? (
         <>
-          <Grid container spacing={3}>
-            <Grid item sm={1}></Grid>
-            <Grid item xs={12} sm={5}>
+          <Grid container spacing={4}>
+            <Grid item xs={12} className={classes.centerAlign}>
               <Typography variant="h4">{`Tervetuloa pelaamaan ${capitalize(
                 game.type
               )}a!`}</Typography>
-              <div className={classes.infoBox}>
-                <Typography variant="h6">{`Peli alkaa ${format(
+            </Grid>
+            <Grid item sm={6} xs={12} className={classes.centerAlign}>
+              <div>
+                <Typography variant="h5">{`Peli alkaa ${format(
                   new Date(game.startTime),
                   'd. MMMM HH:mm',
                   {
@@ -236,36 +206,41 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
                   }
                 )}`}</Typography>
                 {game.price !== 0 && (
-                  <Typography variant="h6">{`Pelin hinta on ${game.price} €`}</Typography>
+                  <Typography variant="h5">{`Pelin hinta on ${game.price} €`}</Typography>
                 )}
-                <Typography variant="h6">{`Peli-illan järjestää ${game.hostName}`}</Typography>
+                <Typography variant="h5">{`Peli-illan järjestää ${game.hostName}`}</Typography>
                 {getContent()}
               </div>
             </Grid>
 
-            <Grid item xs={12} sm={5}>
-              <GridList cellHeight={160} cols={3}>
+            <Grid item sm={6} xs={12} className={classes.centerAlign}>
+              <div>
+                <Typography variant="h5">Ilmoittautuneet pelaajat:</Typography>
                 {game.players.map((player, index) => {
                   return (
-                    <GridListTile
-                      key={index}
-                      cols={1}
-                      className={classes.gridTile}
-                    >
-                      <img className={classes.image} src={userImg} alt="user" />
+                    <Typography key={index}>
                       {/* <span>{`${index + 1}. `}</span> */}
 
-                      <GridListTileBar
-                        className={classes.titleBar}
-                        subtitle={getLabel(player)}
-                      />
-                    </GridListTile>
+                      {getLabel(player)}
+                    </Typography>
                   );
                 })}
-              </GridList>
+              </div>
             </Grid>
-            <Grid item sm={1}></Grid>
           </Grid>
+          <Paper className={classes.gameRules}>
+            <Typography>
+              <HelpOutlineIcon></HelpOutlineIcon>
+              Kotitonnissa saat kolme sanaa, joihin sinun tulee keksiä vihjeet.
+              Muut pelaajat arvuuttlevat oikeaa sanaa. Vain yhden pelaajan
+              arvatessa oikein, saatte molemmat 100 pistettä. Kahden arvatessa
+              oikein saa kukin 30 pistettä ja kolmen arvatessa saa pelaajat 10
+              pistettä. Mikäli kaikki tai ei kukaan arvaa, seuraa -50 pistettä.
+              Vältä antamasta sisäpiirivihjeitä, jotta kaikkien on mahdollista
+              tietää oikea vastaus.
+            </Typography>
+          </Paper>
+
           <References />
         </>
       ) : (

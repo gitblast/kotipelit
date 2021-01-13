@@ -1,17 +1,21 @@
 import React from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
-import StepContent from '@material-ui/core/StepContent';
-import Button from '@material-ui/core/Button';
+import {
+  Typography,
+  Paper,
+  Button,
+  Stepper,
+  Step,
+  StepLabel,
+  StepContent,
+} from '@material-ui/core';
+
 import { CircularProgress } from '@material-ui/core';
 
 import ChooseDate from './ChooseDate';
 import ChooseGame from './ChooseGame';
 import ChoosePrice from './ChoosePrice';
 
-import { Typography } from '@material-ui/core';
 import { initializePlayers } from '../../helpers/games';
 
 import gameService from '../../services/games';
@@ -29,6 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: '100%',
+      marginLeft: theme.spacing(4),
     },
     button: {
       marginTop: theme.spacing(1),
@@ -38,7 +43,11 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: theme.spacing(2),
     },
     resetContainer: {
-      padding: theme.spacing(3),
+      padding: theme.spacing(4),
+      marginTop: theme.spacing(6),
+      marginLeft: theme.spacing(6),
+      marginRight: theme.spacing(6),
+      backgroundColor: 'rgb(197 226 210)',
     },
     stepperStyle: {
       backgroundColor: 'transparent',
@@ -169,15 +178,16 @@ const NewGame: React.FC<{ username: string }> = ({ username }) => {
           : 'https://www.kotipelit.com';
 
       return (
-        <div className={classes.resetContainer}>
+        <Paper className={classes.resetContainer}>
+          <Typography variant="h5">Peliaula:</Typography>
           <Typography>{`${baseUrl}/${username}/kutsut/${addedGame.id}`}</Typography>
           <Typography>
             Jaa tämä linkki pelaajille, jotka haluat kutsua pelaamaan.
           </Typography>
           <Button onClick={handleReturn} className={classes.button}>
-            Dashboard
+            Oma profiili
           </Button>
-        </div>
+        </Paper>
       );
     }
 
@@ -186,6 +196,7 @@ const NewGame: React.FC<{ username: string }> = ({ username }) => {
 
   return (
     <div className={classes.root}>
+      <Typography variant="h5">Luo uusi peli</Typography>
       <Stepper
         className={classes.stepperStyle}
         activeStep={activeStep}
@@ -193,7 +204,9 @@ const NewGame: React.FC<{ username: string }> = ({ username }) => {
       >
         {steps.map((label, index) => (
           <Step key={label}>
-            <StepLabel>{label}</StepLabel>
+            <StepLabel>
+              <Typography variant="h5">{label}</Typography>
+            </StepLabel>
             <StepContent>
               {getStepContent(index)}
               <div className={classes.actionsContainer}>

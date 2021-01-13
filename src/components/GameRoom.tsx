@@ -38,9 +38,6 @@ const useStyles = makeStyles((theme: Theme) =>
     infoContent: {
       margin: 15,
     },
-    infoTitle: {
-      margin: 15,
-    },
     startVideoBtn: {
       padding: theme.spacing(2),
       margin: 15,
@@ -144,31 +141,16 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
         {/* <Animated animationIn="bounce" animationOut="fadeOut" isVisible={true}>
           <div>hello world ;)</div>
         </Animated> */}
-        <Typography className={classes.infoTitle} variant="h5">
-          Tervetuloa pelaamaan Kotitonnia!
-        </Typography>
+        <Typography variant="h5">Peli alkaa pian!</Typography>
         <div className={classes.infoContent}>
           <Typography>
-            Pidä vinkkisi ytimekkäinä, jotta kanssapelaajien ja pelijuontajan on
-            helppo muistaa ne.
+            Jos mahdollista, käytä kuulokkeita, niin pelin äänet eivät kuulu
+            muille pelaajille läpi.
           </Typography>
 
           <Typography>
-            Tarvitset pelaamiseen web-kameran. Mikäli yhteydessä on ongelmia,
-            voit kokeilla päivittää selaimen.
-          </Typography>
-          <Typography variant="body2">
-            **Jotkin työpaikan tietokoneet blokkaavat pelaamiseen tarvittavan
-            yhteyden. Jos mahdollista, käytä kotikonetta.
-          </Typography>
-
-          <Typography className={classes.examples}>
-            &quot;Löytyy Espanjasta ja tähtimerkeistä&quot; <br />
-            -Sexy Arvi (Spektaakkelin viihdelajien mestari)
-          </Typography>
-          <Typography className={classes.examples}>
-            &quot;Dostojevski käsittelee tätä teoksessaan&quot; <br />
-            -King Pampo (Historian ensimmäinen Kotitonnivihje)
+            Mikäli yhteydessä on ongelmia, voit kokeilla päivittää selaimen.
+            Onnea peliin!
           </Typography>
         </div>
         <Fab

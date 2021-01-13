@@ -14,6 +14,8 @@ import logger from '../utils/logger';
 
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
+import Footer from './Footer';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     centerAlign: {
@@ -246,6 +248,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
           </Paper>
 
           <References />
+          <Footer />
         </>
       ) : (
         <Loader msg={'Ladataan...'} spinner />

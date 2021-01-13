@@ -76,7 +76,7 @@ const PlayerTable: React.FC<PlayerTableProps> = ({
             <TableCell>
               <FastField component={TextField} name={`players.${index}.name`} />
             </TableCell>
-            {player.words.map((word, index) => (
+            {player.data.words.map((word, index) => (
               <TableCell key={`${word}${index}`} style={{ minWidth: 190 }}>
                 <span>{word} </span>
                 <IconButton
@@ -128,7 +128,7 @@ const RenderForm: React.FC<RenderFormProps> = ({
 
     const newPlayers = formikProps.values.players.map((player) => {
       if (player.id === playerToUpdate.id) {
-        const newWords = player.words;
+        const newWords = player.data.words;
         newWords[wordIndex] = randomWord;
         return { ...player, words: newWords };
       }

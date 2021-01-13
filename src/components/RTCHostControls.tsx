@@ -108,7 +108,7 @@ const RTCHostControls: React.FC<{
           return true;
         }
 
-        const answers = player.answers[playerWithTurnId];
+        const answers = player.data.answers[playerWithTurnId];
 
         return (
           answers && answers[game.info.round] && answers[game.info.round].length

@@ -72,17 +72,17 @@ const RTCPlayerControls: React.FC<{
       !game ||
       !game.info.answeringOpen ||
       !playerSelf ||
-      !playerSelf.answers ||
+      !playerSelf.data.answers ||
       playerSelf.hasTurn
     ) {
       return true;
     }
 
-    if (!playerSelf.answers[game.info.turn]) {
+    if (!playerSelf.data.answers[game.info.turn]) {
       return false;
     }
 
-    const answer = playerSelf.answers[game.info.turn][game.info.round];
+    const answer = playerSelf.data.answers[game.info.turn][game.info.round];
 
     return !!answer;
   };

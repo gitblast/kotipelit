@@ -61,7 +61,7 @@ const useLobbySystem = () => {
                   name: lockedPlayerData.name,
                   lockedForMe: true,
                   locked: true,
-                  words: lockedPlayerData.words,
+                  words: lockedPlayerData.data.words,
                   url: `https://www.kotipelit.com/${username}/${lockedPlayerData.inviteCode}`,
                 }
               : player;

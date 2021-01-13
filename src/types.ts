@@ -49,15 +49,26 @@ export interface LobbyGame extends BaseGame {
 export interface KotitonniPlayer {
   id: string;
   name: string;
-  words: string[];
   points: number;
   online: boolean;
   hasTurn?: boolean;
   inviteCode?: string;
+  data: {
+    answers: Record<string, Record<string, string>>;
+    words: string[];
+  };
 }
 
-export interface RTCKotitonniPlayer extends KotitonniPlayer {
-  answers: Record<string, Record<string, string>>;
+export interface RTCKotitonniPlayer {
+  id: string;
+  name: string;
+  points: number;
+  hasTurn?: boolean;
+  inviteCode: string;
+  data: {
+    answers: Record<string, Record<string, string>>;
+    words: string[];
+  };
 }
 
 export interface Kotitonni extends Game {
@@ -160,6 +171,8 @@ export enum ActionType {
   ADD_GAME_SUCCESS = 'ADD_GAME_SUCCESS',
   ADD_GAME_FAILURE = 'ADD_GAME_FAILURE',
 
+  ADD_LOCAL_GAME = 'ADD_LOCAL_GAME',
+
   // delete game
   DELETE_GAME_REQUEST = 'DELETE_GAME_REQUEST',
   DELETE_GAME_SUCCESS = 'DELETE_GAME_SUCCESS',
@@ -224,6 +237,10 @@ export type Action =
     }
   | {
       type: ActionType.ADD_GAME_FAILURE;
+    }
+  | {
+      type: ActionType.ADD_LOCAL_GAME;
+      payload: SelectableGame;
     }
 
   // DELETE GAME

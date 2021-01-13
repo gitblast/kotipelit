@@ -111,7 +111,7 @@ const HostPanel: React.FC<HostPanelProps> = ({ game }) => {
           Sanat:
         </Typography>
         <Typography component="div" gutterBottom>
-          {playerWithTurn.words.join(' / ')}
+          {playerWithTurn.data.words.join(' / ')}
         </Typography>
       </div>
       <div className={classes.infoRow}>

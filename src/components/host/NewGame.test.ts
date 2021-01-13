@@ -27,7 +27,7 @@ describe('new game form', () => {
 
       expect(typeof player.id).toBe('string');
       expect(typeof player.name).toBe('string');
-      expect(Array.isArray(player.words)).toBe(true);
+      expect(Array.isArray(player.data.words)).toBe(true);
       expect(player.points).toBe(0);
       expect(player.online).toBe(false);
     });
@@ -46,7 +46,7 @@ describe('new game form', () => {
         getMany.mockResolvedValueOnce(new Array(1 * i).fill('word'));
         const players = await initializePlayers(1, i);
 
-        expect(players[0].words.length).toBe(i);
+        expect(players[0].data.words.length).toBe(i);
       }
     });
   });

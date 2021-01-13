@@ -16,35 +16,50 @@ export const hardcodedGames: SelectableGame[] = [
       {
         id: '1',
         name: 'Risto',
-        words: ['jojo', 'kasvi', 'hattu'],
+        data: {
+          words: ['jojo', 'kasvi', 'hattu'],
+          answers: {},
+        },
         points: 0,
         online: false,
       },
       {
         id: '2',
         name: 'Jorma',
-        words: ['sana', 'kirja', 'väline'],
+        data: {
+          words: ['sana', 'kirja', 'väline'],
+          answers: {},
+        },
         points: 0,
         online: false,
       },
       {
         id: '3',
         name: 'Kalevi',
-        words: ['kaiutin', 'kuuloke', 'lasi'],
+        data: {
+          words: ['kaiutin', 'kuuloke', 'lasi'],
+          answers: {},
+        },
         points: 0,
         online: false,
       },
       {
         id: '4',
         name: 'Jenni',
-        words: ['johto', 'hiiri', 'puhelin'],
+        data: {
+          words: ['johto', 'hiiri', 'puhelin'],
+          answers: {},
+        },
         points: 0,
         online: false,
       },
       {
         id: '5',
         name: 'Petra',
-        words: ['rasia', 'kuppi', 'vihko'],
+        data: {
+          words: ['rasia', 'kuppi', 'vihko'],
+          answers: {},
+        },
         points: 0,
         online: false,
       },
@@ -62,35 +77,50 @@ export const hardcodedGames: SelectableGame[] = [
       {
         id: '6',
         name: 'Matti',
-        words: ['lamppu', 'pöytä', 'sohva'],
+        data: {
+          words: ['lamppu', 'pöytä', 'sohva'],
+          answers: {},
+        },
         points: 0,
         online: false,
       },
       {
         id: '7',
         name: 'Pertti',
-        words: ['laulu', 'tuoli', 'peitto'],
+        data: {
+          words: ['laulu', 'tuoli', 'peitto'],
+          answers: {},
+        },
         points: 0,
         online: false,
       },
       {
         id: '8',
         name: 'Lauri',
-        words: ['naru', 'ikkuna', 'ovi'],
+        data: {
+          words: ['naru', 'ikkuna', 'ovi'],
+          answers: {},
+        },
         points: 0,
         online: false,
       },
       {
         id: '9',
         name: 'Abraham',
-        words: ['presidentti', 'päällikkö', 'lattia'],
+        data: {
+          words: ['presidentti', 'päällikkö', 'lattia'],
+          answers: {},
+        },
         points: 0,
         online: false,
       },
       {
         id: '10',
         name: 'Sauli',
-        words: ['sammakko', 'tikku', 'lanka'],
+        data: {
+          words: ['sammakko', 'tikku', 'lanka'],
+          answers: {},
+        },
         points: 0,
         online: false,
       },
@@ -125,35 +155,50 @@ export const hardcodedActiveSanakierto: KotitonniActive = {
     {
       id: '1',
       name: 'Risto',
-      words: ['jojo', 'kasvi', 'hattu'],
+      data: {
+        words: ['jojo', 'kasvi', 'hattu'],
+        answers: {},
+      },
       points: 0,
       online: false,
     },
     {
       id: '2',
       name: 'Jorma',
-      words: ['sana', 'kirja', 'väline'],
+      data: {
+        words: ['sana', 'kirja', 'väline'],
+        answers: {},
+      },
       points: 0,
       online: false,
     },
     {
       id: '3',
       name: 'Kalevi',
-      words: ['kaiutin', 'kuuloke', 'lasi'],
+      data: {
+        words: ['kaiutin', 'kuuloke', 'lasi'],
+        answers: {},
+      },
       points: 0,
       online: false,
     },
     {
       id: '4',
       name: 'Jenni',
-      words: ['johto', 'hiiri', 'puhelin'],
+      data: {
+        words: ['johto', 'hiiri', 'puhelin'],
+        answers: {},
+      },
       points: 0,
       online: false,
     },
     {
       id: '5',
       name: 'Petra',
-      words: ['rasia', 'kuppi', 'vihko'],
+      data: {
+        words: ['rasia', 'kuppi', 'vihko'],
+        answers: {},
+      },
       points: 0,
       online: false,
     },

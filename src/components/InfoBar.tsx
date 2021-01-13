@@ -60,7 +60,7 @@ const InfoBar: React.FC = () => {
             : `Vuorossa: ${playerWithTurn.name}`}
         </Typography>
         {(self?.isHost || playerWithTurn.id === self?.id) && (
-          <Typography variant="h6">{` ${playerWithTurn.words.join(
+          <Typography variant="h6">{` ${playerWithTurn.data.words.join(
             ' / '
           )}`}</Typography>
         )}

@@ -42,6 +42,12 @@ const reducer: Reducer<GamesState, Action> = (
   action: Action
 ) => {
   switch (action.type) {
+    case ActionType.ADD_LOCAL_GAME: {
+      return {
+        ...state,
+        allGames: state.allGames.concat(action.payload),
+      };
+    }
     case ActionType.SET_GAMES: {
       return {
         ...state,
@@ -193,6 +199,13 @@ export const addGame = (game: Omit<SelectableGame, 'id'>) => {
     } catch (error) {
       dispatch(addFailure());
     }
+  };
+};
+
+export const addLocalGame = (game: SelectableGame) => {
+  return {
+    type: ActionType.ADD_LOCAL_GAME,
+    payload: game,
   };
 };
 

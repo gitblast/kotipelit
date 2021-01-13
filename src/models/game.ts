@@ -4,16 +4,19 @@
 import mongoose, { Schema } from 'mongoose';
 import { GameStatus, GameModel } from '../types';
 
-const gameSchema: Schema = new Schema({
-  type: { type: String, required: true },
-  startTime: { type: Date, required: true },
-  players: { type: Array, required: true },
-  status: { type: GameStatus, required: true },
-  host: { type: mongoose.Types.ObjectId, required: true },
-  createDate: { type: Date, required: true },
-  rounds: Number,
-  price: { type: Number, required: true },
-});
+const gameSchema: Schema = new Schema(
+  {
+    type: { type: String, required: true },
+    startTime: { type: Date, required: true },
+    players: { type: Array, required: true },
+    status: { type: GameStatus, required: true },
+    host: { type: mongoose.Types.ObjectId, required: true },
+    createDate: { type: Date, required: true },
+    rounds: Number,
+    price: { type: Number, required: true },
+  },
+  { minimize: false }
+); // minimize omits empty objects (causes errors in kotitonni answers)
 
 gameSchema.set('toJSON', {
   transform: (_document, returnedObject: GameModel) => {

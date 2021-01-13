@@ -9,6 +9,7 @@ import config from '../utils/config';
 import Game from '../models/game';
 import dbConnection from '../utils/connection';
 import testHelpers from '../utils/testHelpers';
+import mailService from '../services/mail';
 import {
   NewGame,
   GameStatus,
@@ -20,6 +21,13 @@ import {
 } from '../types';
 import Word from '../models/word';
 import Url from '../models/url';
+import User from '../models/user';
+
+jest.mock('../services/mail', () => ({ sendInvite: jest.fn() }));
+
+const mailerMock = mailService.sendInvite as jest.Mock;
+
+mailerMock.mockResolvedValue({});
 
 const api = supertest(app);
 
@@ -33,15 +41,21 @@ const dummyGame: Omit<NewGame, 'host'> = {
       id: 'id1',
       name: 'player1',
       points: 0,
-      answers: {},
       inviteCode: 'player1invite',
       reservedFor: null,
+      data: {
+        answers: {},
+        words: [],
+      },
     },
     {
       id: 'id2',
       name: 'player2',
       points: 0,
-      answers: {},
+      data: {
+        answers: {},
+        words: [],
+      },
       inviteCode: 'player2invite',
       reservedFor: null,
     },
@@ -57,14 +71,13 @@ let game: GameModel;
 let gameId: string;
 
 describe('games router', () => {
-  beforeAll(async () => {
-    user = await testHelpers.addDummyUser();
-    token = testHelpers.getValidToken(user, config.SECRET, Role.HOST);
-  });
-
   beforeEach(async () => {
     await Game.deleteMany({});
     await Url.deleteMany({});
+    await User.deleteMany({});
+
+    user = await testHelpers.addDummyUser();
+    token = testHelpers.getValidToken(user, config.SECRET, Role.HOST);
 
     game = await testHelpers.addDummyGame(user);
     gameId = game._id.toString();
@@ -134,7 +147,7 @@ describe('games router', () => {
               reservedFor: {
                 id: 'reservation id',
                 expires: Date.now() * 2,
-                locked: true, // set one player reserver for to be locked
+                locked: true, // set one player reserved for to be locked
               },
             }
           : player;
@@ -180,6 +193,7 @@ describe('games router', () => {
       gameId: string;
       reservationId: string;
       displayName: string;
+      email: string;
     };
 
     beforeEach(() => {
@@ -187,6 +201,7 @@ describe('games router', () => {
         gameId,
         reservationId: 'INVALID_reservation',
         displayName: 'TestDisplayName',
+        email: 'testEmailAddress',
       };
     });
 
@@ -272,6 +287,10 @@ describe('games router', () => {
       expect(response.body.reservedFor?.id).toBe(lockReqBody.reservationId);
       expect(response.body.reservedFor?.locked).toBe(true);
       expect(response.body.name).toBe(lockReqBody.displayName);
+      expect(mailerMock).toHaveBeenLastCalledWith(
+        lockReqBody.email,
+        expect.any(Object)
+      );
     });
   });
 

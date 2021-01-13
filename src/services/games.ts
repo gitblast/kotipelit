@@ -9,7 +9,38 @@ import {
   GameType,
   GameInfo,
   RTCGame,
+  InviteInfo,
 } from '../types';
+
+const getInviteMailData = (
+  game: GameModel,
+  playerId: string,
+  displayName: string,
+  hostName: string
+): InviteInfo => {
+  switch (game.type) {
+    case GameType.KOTITONNI: {
+      const player = game.players.find((player) => player.id === playerId);
+
+      if (!player || !player.data.words) {
+        throw new Error('Missing or invalid player when getting mail data');
+      }
+
+      return {
+        url: `https://www.kotipelit.com/${hostName}/${player.inviteCode}`,
+        gameType: GameType.KOTITONNI,
+        displayName,
+        startTime: game.startTime,
+        data: {
+          words: player.data.words,
+        },
+      };
+    }
+    default: {
+      throw new Error('unknown game type');
+    }
+  }
+};
 
 const refreshGameReservations = async (gameId: string): Promise<GameModel> => {
   const game = await Game.findById(gameId);
@@ -116,4 +147,5 @@ export default {
   getGameById,
   convertToRTCGame,
   refreshGameReservations,
+  getInviteMailData,
 };

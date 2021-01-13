@@ -66,12 +66,20 @@ export interface BaseGamePlayer {
     expires: number;
     locked?: boolean;
   } | null;
-  inviteCode?: string;
+  inviteCode: string;
+  data: GameData;
 }
 
 export interface KotitonniPlayer extends BaseGamePlayer {
-  answers: Record<string, Record<string, string>>;
+  data: KotitonniData;
 }
+
+export interface KotitonniData {
+  answers: Record<string, Record<string, string>>;
+  words: string[];
+}
+
+export type GameData = KotitonniData; // additional games here
 
 export type GamePlayer = KotitonniPlayer;
 
@@ -321,4 +329,27 @@ export interface RTCGame {
 export interface Answer {
   answer: string;
   info: GameInfo;
+}
+
+// emails
+
+export interface BaseInviteInfo {
+  url: string;
+  displayName: string;
+  gameType: GameType;
+  startTime: Date;
+}
+
+export interface KotitonniInviteInfo extends BaseInviteInfo {
+  gameType: GameType.KOTITONNI;
+  data: {
+    words: string[];
+  };
+}
+
+export type InviteInfo = KotitonniInviteInfo; // additional games here
+
+export interface InviteMailContent {
+  text: string;
+  html: string;
 }

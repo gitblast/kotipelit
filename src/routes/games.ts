@@ -23,7 +23,9 @@ import Game from '../models/game';
 import Word from '../models/word';
 import Url from '../models/url';
 import User from '../models/user';
+
 import gameService from '../services/games';
+import mailService from '../services/mail';
 
 import { Role, WordModel } from '../types';
 import { onlyForRole } from '../utils/middleware';
@@ -38,11 +40,18 @@ router.put('/lock', async (req, res, next) => {
     const gameId = parseString(req.body.gameId);
     const reservationId = parseString(req.body.reservationId);
     const displayName = parseString(req.body.displayName);
+    const email = parseString(req.body.email);
 
     const game = await Game.findById(gameId);
 
     if (!game) {
       throw new Error('Invalid request: no game found');
+    }
+
+    const host = await User.findById(game.host);
+
+    if (!host) {
+      throw new Error('Invalid request: no host found for game');
     }
 
     const playerReservationToLock = game.players.find((player) => {
@@ -91,7 +100,16 @@ router.put('/lock', async (req, res, next) => {
       return player;
     });
 
-    await game.save();
+    const savedGame = await game.save();
+
+    const inviteMailData = gameService.getInviteMailData(
+      savedGame,
+      playerWithReservationLocked.id,
+      displayName,
+      host.username
+    );
+
+    await mailService.sendInvite(email, inviteMailData);
 
     res.json(playerWithReservationLocked);
   } catch (e) {
@@ -268,6 +286,8 @@ router.post('/', async (req, res, next) => {
     const user = toAuthenticatedUser(req);
     const newGame = toNewGame(req.body, user.id);
 
+    console.log('pplayers:', newGame.players);
+
     const game = new Game({
       ...newGame,
       createDate: new Date(),
@@ -282,6 +302,8 @@ router.post('/', async (req, res, next) => {
     });
 
     const savedGame = await game.save();
+
+    console.log('savef game', savedGame.players);
 
     /** save short urls to database */
     for (const player of savedGame.players) {

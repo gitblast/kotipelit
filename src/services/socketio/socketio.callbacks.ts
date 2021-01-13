@@ -424,11 +424,14 @@ export const handleAnswer = (socket: SocketWithToken, answer: Answer): void => {
         return player.id === id
           ? {
               ...player,
-              answers: {
-                ...player.answers,
-                [answer.info.turn]: {
-                  ...player.answers[answer.info.turn],
-                  [answer.info.round]: answer.answer,
+              data: {
+                ...player.data,
+                answers: {
+                  ...player.data.answers,
+                  [answer.info.turn]: {
+                    ...player.data.answers[answer.info.turn],
+                    [answer.info.round]: answer.answer,
+                  },
                 },
               },
             }

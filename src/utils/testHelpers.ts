@@ -49,7 +49,10 @@ const addDummyGame = async (user: UserModel): Promise<GameModel> => {
         id: 'id1',
         name: 'player1',
         points: 0,
-        answers: {},
+        data: {
+          answers: {},
+          words: [],
+        },
         inviteCode: 'player1code',
         reservedFor: null,
       },
@@ -57,7 +60,10 @@ const addDummyGame = async (user: UserModel): Promise<GameModel> => {
         id: 'id2',
         name: 'player2',
         points: 0,
-        answers: {},
+        data: {
+          answers: {},
+          words: [],
+        },
         inviteCode: 'player2code',
         reservedFor: null,
       },

@@ -40,9 +40,11 @@ const theme = createMuiTheme({
       fontFamily: 'Pacifico',
       fontSize: 26,
     },
+    // Used to display the game name in GameRoom
     subtitle2: {
-      fontFamily: 'Russo One',
-      fontSize: 18,
+      fontFamily: 'Great Vibes',
+      fontSize: 50,
+      lineHeight: 1,
     },
     body2: {
       fontWeight: 'bold',

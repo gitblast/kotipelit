@@ -186,8 +186,8 @@ const NewGame: React.FC<{ username: string }> = ({ username }) => {
         <Paper className={classes.resetContainer}>
           <Typography variant="h5">Peliaula:</Typography>
           <Typography>{`${baseUrl}/${username}/kutsut/${addedGame.id}`}</Typography>
-          <Typography>
-            Jaa tämä linkki pelaajille, jotka haluat kutsua pelaamaan.
+          <Typography color="error">
+            Jaa ylläoleva linkki pelaajille, jotka haluat kutsua pelaamaan.
           </Typography>
           <Button onClick={handleReturn} className={classes.button}>
             Oma profiili

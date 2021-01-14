@@ -28,9 +28,20 @@ const useStyles = makeStyles((theme: Theme) =>
     centered: {
       minHeight: 400,
     },
+    gameTitleBar: {
+      display: 'flex',
+      justifyContent: 'space-around',
+      width: '90%',
+    },
     gameTitle: {
-      color: '#490d35',
-      fontSize: 40,
+      color: 'rgb(185 231 229)',
+      marginTop: theme.spacing(3),
+    },
+    topStyle: {
+      borderTop: '5px dotted rgb(185 231 229)',
+      width: '33vw',
+      alignSelf: 'center',
+      marginTop: '15px',
     },
     startBtnContainer: {
       marginTop: theme.spacing(2),
@@ -169,9 +180,13 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   return (
     <div className={classes.container} ref={fullscreenRef}>
       <AudioHandler />
-      <Typography className={classes.gameTitle} variant="subtitle1">
-        Kotitonni
-      </Typography>
+      <div className={classes.gameTitleBar}>
+        <div className={classes.topStyle}></div>
+        <Typography className={classes.gameTitle} variant="subtitle2">
+          Kotitonni
+        </Typography>
+        <div className={classes.topStyle}></div>
+      </div>
 
       <RTCVideoConference peers={peers} />
       {isHost ? (
@@ -181,12 +196,13 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
           <RTCPlayerControls handleToggleFullscreen={handleToggleFullscreen} />
         )
       )}
+
       <Backdrop
         open={game.status === GameStatus.WAITING}
         className={classes.backdrop}
       >
         <div className={classes.backdropContent}>
-          <Typography variant="h2" component="div">
+          <Typography variant="subtitle2" component="div">
             Kotitonni
           </Typography>
           {isHost ? (

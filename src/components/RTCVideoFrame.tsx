@@ -15,12 +15,12 @@ type PropStyles = {
 };
 
 const colors = [
-  'rgba(204, 241, 94, 0.35)',
-  'rgba(251, 70, 70, 0.35)',
-  'rgba(47, 203, 239, 0.35)',
-  'rgba(251, 232, 0, 0.35)',
-  'linear-gradient(to right, #530521, #2f0b3f)',
-  'rgba(238, 255, 244, 0.35)',
+  'rgba(204, 241, 94, 0.8)',
+  'rgba(251, 70, 70, 0.8)',
+  'rgba(47, 203, 239, 0.8)',
+  'rgba(251, 232, 0, 0.8)',
+  'white',
+  'rgba(238, 255, 244, 0.8)',
 ];
 
 const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
@@ -28,8 +28,13 @@ const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
     videoWindow: {
       boxSizing: 'border-box',
       width: `28%`,
-      boxShadow: '0 0 2px 2px rgba(255,254,255)',
-      margin: theme.spacing(3),
+      background: (props) => `${colors[props.order]}`,
+      borderBottom: '3px dotted ',
+
+      marginLeft: theme.spacing(3),
+      marginRight: theme.spacing(3),
+      marginBottom: theme.spacing(3),
+      marginTop: theme.spacing(1),
       [theme.breakpoints.down('xs')]: {
         width: '46%',
         margin: 3,
@@ -46,7 +51,9 @@ const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
       color: 'white',
     },
     hasTurn: {
-      boxShadow: (props) => `0 0 8px 10px ${colors[props.order]}`, // #e3c218
+      background: (props) => `${colors[props.order]}`,
+      boxShadow: (props) => `5px 10px 18px ${colors[props.order]}`,
+      border: '3px dotted white',
       [theme.breakpoints.down('xs')]: {
         width: '95%',
       },

@@ -37,7 +37,7 @@ const useLobbySystem = () => {
   }, [gameID, game, username]);
 
   const lockSpot = React.useCallback(
-    async (displayName: string) => {
+    async (displayName: string, email: string) => {
       if (!reservationId || !gameID || !game) {
         return;
       }
@@ -46,7 +46,8 @@ const useLobbySystem = () => {
         const lockedPlayerData = await gameService.lockSpotForGame(
           reservationId,
           gameID,
-          displayName
+          displayName,
+          email
         );
 
         logger.log('got locked player', lockedPlayerData);
@@ -60,7 +61,7 @@ const useLobbySystem = () => {
                   name: lockedPlayerData.name,
                   lockedForMe: true,
                   locked: true,
-                  words: lockedPlayerData.words,
+                  words: lockedPlayerData.data.words,
                   url: `https://www.kotipelit.com/${username}/${lockedPlayerData.inviteCode}`,
                 }
               : player;

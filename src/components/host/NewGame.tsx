@@ -17,6 +17,7 @@ import ChooseGame from './ChooseGame';
 import ChoosePriceB from './ChoosePriceB';
 
 import { initializePlayers } from '../../helpers/games';
+import { addLocalGame } from '../../reducers/games.reducer';
 
 import gameService from '../../services/games';
 import { useHistory } from 'react-router-dom';
@@ -28,6 +29,7 @@ import {
   SelectableGame,
 } from '../../types';
 import logger from '../../utils/logger';
+import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -77,6 +79,7 @@ const NewGame: React.FC<{ username: string }> = ({ username }) => {
   const [addedGame, setAddedGame] = React.useState<SelectableGame | null>(null);
   const steps = React.useMemo(() => ['Ajankohta', 'Pelimuoto', 'Hinta'], []);
   const history = useHistory();
+  const dispatch = useDispatch();
 
   React.useEffect(() => {
     const init = async () => {
@@ -128,6 +131,8 @@ const NewGame: React.FC<{ username: string }> = ({ username }) => {
       const added = await gameService.addNew(gameToAdd);
 
       setAddedGame(added);
+
+      dispatch(addLocalGame(added));
     } catch (e) {
       setError(e.message);
     }

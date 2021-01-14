@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface LockReservationFormProps {
-  handleClick: (displayName: string) => void;
+  handleClick: (displayName: string, email: string) => void;
 }
 
 const LockReservationForm: React.FC<LockReservationFormProps> = ({
@@ -86,7 +86,7 @@ const LockReservationForm: React.FC<LockReservationFormProps> = ({
         className={classes.lockBtn}
         color="primary"
         variant="extended"
-        onClick={() => handleClick(name)}
+        onClick={() => handleClick(name, email)}
         disabled={!name}
       >
         <Typography>Lukitse </Typography>

@@ -132,26 +132,30 @@ describe('useAnswerAudioRef hook', () => {
           game: {
             players: [
               {
-                answers: {
-                  player1: {
-                    '1': 'answer1', // 1. answer,
-                    '2': 'answer2', // 2. answer, and so on
-                  },
-                  player2: {
-                    '1': 'answer1',
-                    '2': 'answer2',
+                data: {
+                  answers: {
+                    player1: {
+                      '1': 'answer1', // 1. answer,
+                      '2': 'answer2', // 2. answer, and so on
+                    },
+                    player2: {
+                      '1': 'answer1',
+                      '2': 'answer2',
+                    },
                   },
                 },
               },
               {
-                answers: {
-                  player3: {
-                    '1': 'answer1',
-                    '2': 'answer2',
-                  },
-                  player4: {
-                    '1': 'answer1',
-                    '2': 'answer2',
+                data: {
+                  answers: {
+                    player3: {
+                      '1': 'answer1',
+                      '2': 'answer2',
+                    },
+                    player4: {
+                      '1': 'answer1',
+                      '2': 'answer2',
+                    },
                   },
                 },
               },

@@ -81,7 +81,7 @@ const getInviteText = (
 
   return `Tervetuloa pelaamaan ${capitalize(game.type)}a!
   
-  Sanasi ovat: ${player ? player.words.join(' ') : '<Pelaajan sanat>'}
+  Sanasi ovat: ${player ? player.data.words.join(' ') : '<Pelaajan sanat>'}
         
   Tehtävänäsi on miettiä sanoille niitä kuvaavat vihjeet.
         

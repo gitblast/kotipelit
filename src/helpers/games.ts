@@ -27,9 +27,12 @@ export const initializePlayers = async (
     players.push({
       id: shortid.generate(),
       name: `Pelaaja ${i}`,
-      words,
       points: 0,
       online: false,
+      data: {
+        words,
+        answers: {},
+      },
     });
   }
 

@@ -79,12 +79,14 @@ const reserveSpotForGame = async (
 const lockSpotForGame = async (
   reservationId: string,
   gameId: string,
-  displayName: string
+  displayName: string,
+  email: string
 ): Promise<GamePlayer> => {
   const data = {
     gameId,
     reservationId,
     displayName,
+    email,
   };
 
   const response = await axios.put(`${baseUrl}/lock`, data);

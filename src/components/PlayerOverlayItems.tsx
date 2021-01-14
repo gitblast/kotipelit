@@ -121,13 +121,13 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
   };
 
   const getAnswer = () => {
-    if (!game || !player || !player.answers) {
+    if (!game || !player || !player.data.answers) {
       return null;
     }
 
     const { turn, round } = game.info;
 
-    const answers = player.answers[turn];
+    const answers = player.data.answers[turn];
 
     if (!answers || !answers[round] || !answers[round].length) {
       return null;

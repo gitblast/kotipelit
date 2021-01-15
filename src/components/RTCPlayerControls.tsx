@@ -139,8 +139,8 @@ const RTCPlayerControls: React.FC<{
             <Typography variant="h6">Vastaa</Typography>
           </Fab>
         </Grid>
-        <Grid item sm={3}></Grid>
-        <Grid item className={classes.controls} sm={1}>
+        <Grid item sm={2}></Grid>
+        <Grid item className={classes.controls} sm={2}>
           <IconButton
             className={classes.controlBarIcons}
             onClick={handleToggleFullscreen}

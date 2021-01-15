@@ -13,6 +13,7 @@ const useStyles = makeStyles(() =>
   createStyles({
     gameCard: {
       maxWidth: 280,
+      backgroundColor: 'rgb(159 210 187)',
     },
     cardBottom: {
       display: 'flex',
@@ -31,6 +32,7 @@ const ChooseGame: React.FC<ChooseGameProps> = ({ handleSelect }) => {
 
   return (
     <>
+      {/* Probably better to make i.e. as a Paper because of default Card styles */}
       <Card
         className={classes.gameCard}
         onClick={() => handleSelect(GameType.KOTITONNI)}
@@ -38,21 +40,15 @@ const ChooseGame: React.FC<ChooseGameProps> = ({ handleSelect }) => {
       >
         <CardActionArea>
           <CardContent>
-            <Typography gutterBottom variant="h5" component="h2">
-              Kotitonni
-            </Typography>
-            <Typography variant="body1" color="textSecondary">
-              Pelaajat saavat ilmottautuessaan 3 sanaa, joihin he miettivät
-              vihjeet. Muut koittavat arvata sanan kirjoittamalla sinulle
-              vastauksensa.
-            </Typography>
+            <Typography variant="subtitle2">Kotitonni</Typography>
+
             <CardContent>
               <div className={classes.cardBottom}>
                 <Typography variant="body2" component="p">
                   • 5 pelaajaa
                 </Typography>
                 <Typography variant="body2" component="p">
-                  • 45-60min
+                  • 45 - 60 min
                 </Typography>
               </div>
             </CardContent>

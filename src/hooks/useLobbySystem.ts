@@ -72,7 +72,9 @@ const useLobbySystem = () => {
 
         setGame(newGame);
       } catch (e) {
-        setError('Paikan lukitseminen epäonnistui');
+        setError(
+          'Paikan lukitseminen epäonnistui. Varmista, että kirjoitit sähköpostisi oikein.'
+        );
       }
     },
     [reservationId, gameID, game, username]

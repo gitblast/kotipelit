@@ -222,7 +222,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
           process && process.env.NODE_ENV === 'development' && (
             <div style={{ position: 'absolute' }}>
               {forHost && (
-                <Typography component="div">{`http://localhost:3000/username/rtc/${player.inviteCode}`}</Typography>
+                <Typography component="div">{`http://localhost:3000/username/${player.inviteCode}`}</Typography>
               )}
               {!peer.isMe && (
                 <div style={{ display: 'flex', alignItems: 'center' }}>

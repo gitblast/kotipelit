@@ -233,14 +233,15 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
               </div>
               {/* Displaying points only after gamestatus finished. Atm games dont get finished */}
               {game.status !== GameStatus.FINISHED ? (
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  size="small"
-                  onClick={() => showInviteText(game, username, player)}
-                >
-                  Kutsu
-                </Button>
+                // <Button
+                //   variant="outlined"
+                //   color="primary"
+                //   size="small"
+                //   onClick={() => showInviteText(game, username, player)}
+                // >
+                //   Kutsu
+                // </Button>
+                <Typography>...</Typography>
               ) : (
                 <Typography component="div">
                   {`${player.points} pistettä`}

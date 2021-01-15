@@ -32,6 +32,9 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'space-around',
       width: '90%',
+      [theme.breakpoints.down('sm')]: {
+        display: 'none',
+      },
     },
     gameTitle: {
       color: 'rgb(185 231 229)',

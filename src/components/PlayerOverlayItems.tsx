@@ -27,6 +27,9 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'white',
       opacity: 0.8,
       width: '100%',
+      [theme.breakpoints.down('sm')]: {
+        padding: theme.spacing(1),
+      },
     },
     flexCol: {
       height: '100%',
@@ -256,20 +259,20 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
         <div className={classes.spacer} />
         <div className={classes.flex}>
           <Grid container className={classes.nameBadge}>
-            <Grid item sm={5}>
+            <Grid item md={5} sm={5}>
               <Typography variant="h6">{player.name}</Typography>
             </Grid>
-            <Grid item sm={3}>
+            <Grid item md={3} sm={3}>
               <Typography variant="h6">{player.points}</Typography>
             </Grid>
-            <Grid item sm={2}>
+            <Grid item md={2} sm={2}>
               {showPointAddition && addition !== 0 && (
                 <Fade in>
                   <Typography>{addition}</Typography>
                 </Fade>
               )}
             </Grid>
-            <Grid item sm={2}>
+            <Grid item md={2} sm={2}>
               <IconButton
                 size="small"
                 onClick={toggleMuted}

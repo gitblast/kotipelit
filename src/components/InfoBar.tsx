@@ -14,6 +14,14 @@ const useStyles = makeStyles((theme: Theme) =>
     nextUpText: {
       // Keep the same as videoframe hasTurn
       color: 'rgba(229, 197, 39)',
+      [theme.breakpoints.down('sm')]: {
+        fontSize: '16px',
+      },
+    },
+    wordsText: {
+      [theme.breakpoints.down('sm')]: {
+        fontSize: '16px',
+      },
     },
     infoBarText: {
       marginLeft: theme.spacing(2),
@@ -60,9 +68,10 @@ const InfoBar: React.FC = () => {
             : `Vuorossa: ${playerWithTurn.name}`}
         </Typography>
         {(self?.isHost || playerWithTurn.id === self?.id) && (
-          <Typography variant="h5">{` ${playerWithTurn.data.words.join(
-            ', '
-          )}`}</Typography>
+          <Typography
+            variant="h5"
+            className={classes.wordsText}
+          >{` ${playerWithTurn.data.words.join(', ')}`}</Typography>
         )}
       </div>
     );

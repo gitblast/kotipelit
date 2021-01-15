@@ -202,7 +202,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
                 game.type
               )}a!`}</Typography>
             </Grid>
-            <Grid item sm={6} xs={12} className={classes.centerAlign}>
+            <Grid item md={6} xs={12} className={classes.centerAlign}>
               <div>
                 <Typography variant="h5">{`Peli alkaa ${format(
                   new Date(game.startTime),
@@ -219,7 +219,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
               </div>
             </Grid>
 
-            <Grid item sm={6} xs={12} className={classes.centerAlign}>
+            <Grid item md={6} xs={12} className={classes.centerAlign}>
               <div>
                 <Typography variant="h5">Ilmoittautuneet pelaajat:</Typography>
                 {game.players.map((player, index) => {

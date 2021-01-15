@@ -22,6 +22,9 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingTop: theme.spacing(1),
       paddingBottom: theme.spacing(1),
       width: '100%',
+      [theme.breakpoints.down('sm')]: {
+        padding: 0,
+      },
     },
     controls: {
       display: 'flex',
@@ -45,8 +48,15 @@ const useStyles = makeStyles((theme: Theme) =>
     answerField: {
       backgroundColor: 'white',
     },
+    // Repeat from RTCHostControls
     controlBarIcons: {
       color: 'white',
+      [theme.breakpoints.down('sm')]: {
+        display: 'none',
+      },
+      [theme.breakpoints.down('xs')]: {
+        display: 'none',
+      },
     },
   })
 );
@@ -111,11 +121,11 @@ const RTCPlayerControls: React.FC<{
   return (
     <div className={classes.container}>
       <Grid container>
-        <Grid item sm={1}></Grid>
-        <Grid className={classes.controls} item sm={3}>
+        <Grid item md={1}></Grid>
+        <Grid className={classes.controls} item md={3} sm={3}>
           <InfoBar />
         </Grid>
-        <Grid className={classes.controls} item sm={4}>
+        <Grid className={classes.controls} item md={4} sm={6}>
           <Typography className={classes.timer} variant="h6">
             {timer}
           </Typography>
@@ -139,8 +149,8 @@ const RTCPlayerControls: React.FC<{
             <Typography variant="h6">Vastaa</Typography>
           </Fab>
         </Grid>
-        <Grid item sm={2}></Grid>
-        <Grid item className={classes.controls} sm={2}>
+        <Grid item md={2} sm={3}></Grid>
+        <Grid item className={classes.controls} md={2}>
           <IconButton
             className={classes.controlBarIcons}
             onClick={handleToggleFullscreen}

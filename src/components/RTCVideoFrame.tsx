@@ -35,6 +35,10 @@ const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
       marginRight: theme.spacing(3),
       marginBottom: theme.spacing(3),
       marginTop: theme.spacing(1),
+      [theme.breakpoints.down('sm')]: {
+        width: '32%',
+        margin: 3,
+      },
       [theme.breakpoints.down('xs')]: {
         width: '46%',
         margin: 3,

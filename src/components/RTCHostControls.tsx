@@ -31,9 +31,18 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     controlsContent: {
       padding: theme.spacing(4),
+      [theme.breakpoints.down('sm')]: {
+        padding: theme.spacing(1),
+      },
     },
     controlBarIcons: {
       color: 'white',
+      [theme.breakpoints.down('sm')]: {
+        display: 'none',
+      },
+      [theme.breakpoints.down('xs')]: {
+        display: 'none',
+      },
     },
     pointsButton: {
       background: 'linear-gradient(to top, #c31432, #240b36)',
@@ -41,6 +50,9 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: 36,
       border: 'solid',
       borderColor: 'white',
+      [theme.breakpoints.down('sm')]: {
+        padding: theme.spacing(3.5),
+      },
     },
     timerButton: {
       background: 'linear-gradient(to top, #c31432, #240b36)',
@@ -48,6 +60,9 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: 36,
       border: 'solid',
       borderColor: 'white',
+      [theme.breakpoints.down('sm')]: {
+        padding: theme.spacing(3.5),
+      },
     },
     returnPoints: {
       background: 'linear-gradient(to top, #c31432, #240b36)',
@@ -335,11 +350,11 @@ const RTCHostControls: React.FC<{
         </div>
       ) : (
         <Grid container className={classes.controlsContent}>
-          <Grid item sm={1}></Grid>
-          <Grid item sm={3}>
+          <Grid item md={1}></Grid>
+          <Grid item md={3} sm={3}>
             <InfoBar />
           </Grid>
-          <Grid className={classes.btnContainer} item sm={4}>
+          <Grid className={classes.btnContainer} item md={4} sm={6}>
             <Fab
               size="large"
               color={timerRunning ? 'primary' : 'secondary'}
@@ -368,8 +383,8 @@ const RTCHostControls: React.FC<{
               <UndoIcon className={classes.undoArrow} />
             </Fab>
           </Grid>
-          <Grid item sm={2}></Grid>
-          <Grid item sm={2}>
+          <Grid item md={2} sm={3}></Grid>
+          <Grid item md={2}>
             <IconButton
               className={classes.controlBarIcons}
               onClick={handleToggleFullscreen}

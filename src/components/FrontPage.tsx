@@ -82,8 +82,8 @@ const FrontPage: React.FC = () => {
   return (
     <div>
       <Grid container className={classes.showcase}>
-        <Grid item sm></Grid>
-        <Grid item sm={4} xs={12} className={classes.mainInfo}>
+        <Grid item md></Grid>
+        <Grid item md={4} xs={12} className={classes.mainInfo}>
           <Typography color="primary" variant="h5">
             Peli-iltojen yhteinen osoite.
           </Typography>
@@ -98,10 +98,10 @@ const FrontPage: React.FC = () => {
             Järjestä peli-ilta
           </Button>
         </Grid>
-        <Grid className={classes.image} item sm={5} xs={12}>
+        <Grid className={classes.image} item md={5} xs={12}>
           <img src={backgroundImg} alt="Background" />
         </Grid>
-        <Grid item sm></Grid>
+        <Grid item md></Grid>
       </Grid>
 
       {/* Pelinhoitajainfo A */}
@@ -134,7 +134,7 @@ const FrontPage: React.FC = () => {
       </Grid>
       {/* Kotitonni-info */}
       <Grid container spacing={2} className={classes.gamePreview}>
-        <Grid item sm></Grid>
+        <Grid item md></Grid>
         <Grid className={classes.flex} item xs={12} sm={4}>
           <div>
             <Typography color="primary" variant="h4">
@@ -149,11 +149,11 @@ const FrontPage: React.FC = () => {
             </Typography>
           </div>
         </Grid>
-        <Grid item sm></Grid>
+        <Grid item md></Grid>
         <Grid className={classes.image} item xs={12} sm={4}>
           <img src={kotitonniImg} alt="Kotitonni" />
         </Grid>
-        <Grid item sm></Grid>
+        <Grid item md></Grid>
       </Grid>
       <References />
       {/* Pelinhoitajainfo B */}

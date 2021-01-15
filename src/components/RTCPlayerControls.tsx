@@ -19,19 +19,22 @@ import InfoBar from './InfoBar';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
-      paddingTop: theme.spacing(1),
-      paddingBottom: theme.spacing(1),
-      width: '100%',
-      [theme.breakpoints.down('sm')]: {
-        padding: 0,
-      },
-    },
-    controls: {
       display: 'flex',
       justifyContent: 'center',
-      alignItems: 'center',
+      width: '100%',
+    },
+    controlsContent: {
+      padding: theme.spacing(4),
+      [theme.breakpoints.down('sm')]: {
+        padding: theme.spacing(1),
+      },
     },
     btnContainer: {
+      display: 'flex',
+      justifyContent: 'space-around',
+      alignItems: 'center',
+    },
+    sendAnswerBtn: {
       background: 'linear-gradient(to top, #c31432, #240b36)',
       color: 'white',
       padding: theme.spacing(4),
@@ -41,7 +44,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     timer: {
       color: 'white',
-      padding: theme.spacing(2),
       margin: theme.spacing(1),
       fontSize: 45,
     },
@@ -120,12 +122,12 @@ const RTCPlayerControls: React.FC<{
 
   return (
     <div className={classes.container}>
-      <Grid container>
+      <Grid container className={classes.controlsContent}>
         <Grid item md={1}></Grid>
-        <Grid className={classes.controls} item md={3} sm={3}>
+        <Grid item md={3} sm={3}>
           <InfoBar />
         </Grid>
-        <Grid className={classes.controls} item md={4} sm={6}>
+        <Grid item md={4} sm={8} className={classes.btnContainer}>
           <Typography className={classes.timer} variant="h6">
             {timer}
           </Typography>
@@ -141,7 +143,7 @@ const RTCPlayerControls: React.FC<{
           </div>
 
           <Fab
-            className={classes.btnContainer}
+            className={classes.sendAnswerBtn}
             variant="extended"
             onClick={handleClick}
             disabled={disabled}
@@ -149,8 +151,8 @@ const RTCPlayerControls: React.FC<{
             <Typography variant="h6">Vastaa</Typography>
           </Fab>
         </Grid>
-        <Grid item md={2} sm={3}></Grid>
-        <Grid item className={classes.controls} md={2}>
+        <Grid item md={2} sm={1}></Grid>
+        <Grid item md={2}>
           <IconButton
             className={classes.controlBarIcons}
             onClick={handleToggleFullscreen}

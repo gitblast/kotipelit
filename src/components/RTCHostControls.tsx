@@ -354,7 +354,7 @@ const RTCHostControls: React.FC<{
           <Grid item md={3} sm={3}>
             <InfoBar />
           </Grid>
-          <Grid className={classes.btnContainer} item md={4} sm={6}>
+          <Grid item md={4} sm={6} className={classes.btnContainer}>
             <Fab
               size="large"
               color={timerRunning ? 'primary' : 'secondary'}

@@ -266,7 +266,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
               <Typography variant="h6">{player.points}</Typography>
             </Grid>
             <Grid item md={2} sm={2}>
-              {showPointAddition && addition !== 0 && (
+              {forHost && showPointAddition && addition !== 0 && (
                 <Fade in>
                   <Typography>{addition}</Typography>
                 </Fade>

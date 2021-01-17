@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     nameBadge: {
       padding: theme.spacing(2),
+      alignItems: 'center',
       backgroundColor: 'black',
       color: 'white',
       opacity: 0.8,
@@ -72,6 +73,11 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(2),
       margin: theme.spacing(1),
+    },
+    playerName: {
+      [theme.breakpoints.down('sm')]: {
+        fontSize: 15,
+      },
     },
   })
 );
@@ -260,7 +266,9 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
         <div className={classes.flex}>
           <Grid container className={classes.nameBadge}>
             <Grid item md={5} sm={5}>
-              <Typography variant="h6">{player.name}</Typography>
+              <Typography variant="h6" className={classes.playerName}>
+                {player.name}
+              </Typography>
             </Grid>
             <Grid item md={3} sm={3}>
               <Typography variant="h6">{player.points}</Typography>

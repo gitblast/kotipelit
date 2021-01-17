@@ -18,6 +18,12 @@ import Footer from './Footer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    container: {
+      [theme.breakpoints.down('xs')]: {
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
+      },
+    },
     centerAlign: {
       display: 'flex',
       justifyContent: 'center',
@@ -43,6 +49,10 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: theme.spacing(6),
       marginRight: theme.spacing(6),
       backgroundColor: 'rgb(197 226 210)',
+      [theme.breakpoints.down('xs')]: {
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
+      },
     },
     registeredInfo: {
       padding: theme.spacing(2),
@@ -193,66 +203,70 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
 
   return (
     <>
-      {error && <Typography color="error">{error}</Typography>}
-      {game ? (
-        <>
-          <Grid container spacing={4}>
-            <Grid item xs={12} className={classes.centerAlign}>
-              <Typography variant="h4">{`Tervetuloa pelaamaan ${capitalize(
-                game.type
-              )}a!`}</Typography>
-            </Grid>
-            <Grid item md={6} xs={12} className={classes.centerAlign}>
-              <div>
-                <Typography variant="h5">{`Peli alkaa ${format(
-                  new Date(game.startTime),
-                  'd. MMMM HH:mm',
-                  {
-                    locale: fiLocale,
-                  }
-                )}`}</Typography>
-                {game.price !== 0 && (
-                  <Typography variant="h5">{`Pelin hinta on ${game.price} €`}</Typography>
-                )}
-                <Typography variant="h5">{`Peli-illan järjestää ${game.hostName}`}</Typography>
-                {getContent()}
-              </div>
-            </Grid>
+      <div className={classes.container}>
+        {error && <Typography color="error">{error}</Typography>}
+        {game ? (
+          <>
+            <Grid container spacing={4}>
+              <Grid item xs={12} className={classes.centerAlign}>
+                <Typography variant="h4">{`Tervetuloa pelaamaan ${capitalize(
+                  game.type
+                )}a!`}</Typography>
+              </Grid>
+              <Grid item md={6} xs={12} className={classes.centerAlign}>
+                <div>
+                  <Typography variant="h5">{`Peli alkaa ${format(
+                    new Date(game.startTime),
+                    'd. MMMM HH:mm',
+                    {
+                      locale: fiLocale,
+                    }
+                  )}`}</Typography>
+                  {game.price !== 0 && (
+                    <Typography variant="h5">{`Pelin hinta on ${game.price} €`}</Typography>
+                  )}
+                  <Typography variant="h5">{`Peli-illan järjestää ${game.hostName}`}</Typography>
+                  {getContent()}
+                </div>
+              </Grid>
 
-            <Grid item md={6} xs={12} className={classes.centerAlign}>
-              <div>
-                <Typography variant="h5">Ilmoittautuneet pelaajat:</Typography>
-                {game.players.map((player, index) => {
-                  return (
-                    <Typography key={index}>
-                      {/* <span>{`${index + 1}. `}</span> */}
+              <Grid item md={6} xs={12} className={classes.centerAlign}>
+                <div>
+                  <Typography variant="h5">
+                    Ilmoittautuneet pelaajat:
+                  </Typography>
+                  {game.players.map((player, index) => {
+                    return (
+                      <Typography key={index}>
+                        {/* <span>{`${index + 1}. `}</span> */}
 
-                      {getLabel(player)}
-                    </Typography>
-                  );
-                })}
-              </div>
+                        {getLabel(player)}
+                      </Typography>
+                    );
+                  })}
+                </div>
+              </Grid>
             </Grid>
-          </Grid>
-          <Paper className={classes.gameRules}>
-            <Typography>
-              <HelpOutlineIcon></HelpOutlineIcon>
-              Kotitonnissa saat kolme sanaa, joihin sinun tulee keksiä vihjeet.
-              Muut pelaajat arvuuttelevat oikeaa sanaa. Vain yhden pelaajan
-              arvatessa oikein, saatte molemmat 100 pistettä. Kahden arvatessa
-              oikein saa kukin 30 pistettä ja kolmen arvatessa saa pelaajat 10
-              pistettä. Mikäli kaikki tai ei kukaan arvaa, seuraa -50 pistettä.
-              Vältä antamasta sisäpiirivihjeitä, jotta kaikkien on mahdollista
-              tietää oikea vastaus.
-            </Typography>
-          </Paper>
+            <Paper className={classes.gameRules}>
+              <Typography>
+                <HelpOutlineIcon></HelpOutlineIcon>
+                Kotitonnissa saat kolme sanaa, joihin sinun tulee keksiä
+                vihjeet. Muut pelaajat arvuuttelevat oikeaa sanaa. Vain yhden
+                pelaajan arvatessa oikein, saatte molemmat 100 pistettä. Kahden
+                arvatessa oikein saa kukin 30 pistettä ja kolmen arvatessa saa
+                pelaajat 10 pistettä. Mikäli kaikki tai ei kukaan arvaa, seuraa
+                -50 pistettä. Vältä antamasta sisäpiirivihjeitä, jotta kaikkien
+                on mahdollista tietää oikea vastaus.
+              </Typography>
+            </Paper>
 
-          <References />
-          <Footer />
-        </>
-      ) : (
-        <Loader msg={'Ladataan...'} spinner />
-      )}
+            <References />
+          </>
+        ) : (
+          <Loader msg={'Ladataan...'} spinner />
+        )}
+      </div>
+      <Footer />
     </>
   );
 };

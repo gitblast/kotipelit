@@ -28,8 +28,8 @@ const syncWords = async () => {
     const wordsInDbAsList = wordsInDb.map((w) => w.word);
 
     for (const word of words) {
-      if (!wordsInDbAsList.includes(word)) {
-        const wordToAdd = new Word({ word });
+      if (word && !wordsInDbAsList.includes(word)) {
+        const wordToAdd = new Word({ word: word.trim() });
 
         await wordToAdd.save();
 

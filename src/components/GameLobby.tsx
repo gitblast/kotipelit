@@ -32,6 +32,9 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
+      [theme.breakpoints.down('xs')]: {
+        flexWrap: 'wrap',
+      },
     },
     reserveBtn: {
       padding: theme.spacing(4),
@@ -90,6 +93,10 @@ const LockReservationForm: React.FC<LockReservationFormProps> = ({
             onChange={({ target }) => setEmail(target.value)}
             label="Sähköpostiosoite"
           />
+          <Typography variant="body1">
+            *Saat pelin tiedot sähköpostiisi. Tietosi poistuu järjestelmästä
+            kolmen päivän kuluessa.
+          </Typography>
         </div>
       </div>
       <Fab

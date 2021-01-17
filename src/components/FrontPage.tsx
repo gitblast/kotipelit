@@ -18,6 +18,10 @@ import References from './References';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    mainContainer: {
+      marginLeft: theme.spacing(1.5),
+      marginRight: theme.spacing(1.5),
+    },
     container: {
       marginTop: theme.spacing(5),
       textAlign: 'center',
@@ -65,11 +69,17 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       justifyContent: 'center',
     },
-    // Makes images responsive
+    // Fix these, wickedish solution
     image: {
       width: '100%',
       height: 'auto',
       textAlign: 'center',
+    },
+    imageMobile: {
+      [theme.breakpoints.down('xs')]: {
+        width: '100%',
+        height: 'auto',
+      },
     },
   })
 );
@@ -81,107 +91,117 @@ const FrontPage: React.FC = () => {
 
   return (
     <div>
-      <Grid container className={classes.showcase}>
-        <Grid item md></Grid>
-        <Grid item md={4} xs={12} className={classes.mainInfo}>
-          <Typography color="primary" variant="h5">
-            Peli-iltojen yhteinen osoite.
-          </Typography>
-
-          <Button
-            variant="contained"
-            color="secondary"
-            className={classes.buttonStyle}
-            component={Link}
-            to="/kirjaudu"
-          >
-            Järjestä peli-ilta
-          </Button>
-        </Grid>
-        <Grid className={classes.image} item md={5} xs={12}>
-          <img src={backgroundImg} alt="Background" />
-        </Grid>
-        <Grid item md></Grid>
-      </Grid>
-
-      {/* Pelinhoitajainfo A */}
-      <Grid container spacing={4} className={classes.container}>
-        <Grid item xs={12}>
-          <Typography color="primary" variant="h4">
-            Järjestä kotipelit
-          </Typography>
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <AppsIcon></AppsIcon>
-          <Typography variant="h5">
-            Ilahduta järjestämällä peli-iltoja etänä.
-          </Typography>
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <EuroSymbolIcon></EuroSymbolIcon>
-
-          <Typography variant="h5">
-            Voit halutessasi myös asettaa pelille hinnan ja tienata hauskalla
-            tavalla.
-          </Typography>
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <AccountCircleIcon></AccountCircleIcon>
-          <Typography variant="h5">
-            Tarvitset vain käyttäjätilin ja web-kameran niin olet valmis!
-          </Typography>
-        </Grid>
-      </Grid>
-      {/* Kotitonni-info */}
-      <Grid container spacing={2} className={classes.gamePreview}>
-        <Grid item md></Grid>
-        <Grid className={classes.flex} item xs={12} sm={4}>
-          <div>
-            <Typography color="primary" variant="h4">
-              Kotitonni
+      <div className={classes.mainContainer}>
+        <Grid container className={classes.showcase}>
+          <Grid item md></Grid>
+          <Grid item md={4} sm={4} xs={12} className={classes.mainInfo}>
+            <Typography color="primary" variant="h5">
+              Peli-iltojen yhteinen osoite.
             </Typography>
+
+            <Button
+              variant="contained"
+              color="secondary"
+              className={classes.buttonStyle}
+              component={Link}
+              to="/kirjaudu"
+            >
+              Järjestä peli-ilta
+            </Button>
+          </Grid>
+          <Grid className={classes.image} item md={5} sm={8} xs={12}>
+            <img
+              src={backgroundImg}
+              alt="Background"
+              className={classes.imageMobile}
+            />
+          </Grid>
+          <Grid item md></Grid>
+        </Grid>
+
+        {/* Pelinhoitajainfo A */}
+        <Grid container spacing={4} className={classes.container}>
+          <Grid item xs={12}>
+            <Typography color="primary" variant="h4">
+              Järjestä kotipelit
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <AppsIcon></AppsIcon>
+            <Typography variant="h5">
+              Ilahduta järjestämällä peli-iltoja etänä.
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <EuroSymbolIcon></EuroSymbolIcon>
 
             <Typography variant="h5">
-              Kotitonni on viihdyttävä peli, jossa pelaajat arvuuttelevat
-              toistensa sanoja vihjeiden avulla. Eniten pisteitä saa kun vain
-              yksi arvaa sanan. Peli kestää noin tunnin ja pyörii pelaamiseen
-              kustomoidulla videopuhelualustalla.
+              Voit halutessasi myös asettaa pelille hinnan ja tienata hauskalla
+              tavalla.
             </Typography>
-          </div>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <AccountCircleIcon></AccountCircleIcon>
+            <Typography variant="h5">
+              Tarvitset vain käyttäjätilin ja web-kameran niin olet valmis!
+            </Typography>
+          </Grid>
         </Grid>
-        <Grid item md></Grid>
-        <Grid className={classes.image} item xs={12} sm={4}>
-          <img src={kotitonniImg} alt="Kotitonni" />
+        {/* Kotitonni-info */}
+        <Grid container spacing={2} className={classes.gamePreview}>
+          <Grid item md></Grid>
+          <Grid className={classes.flex} item xs={12} sm={4}>
+            <div>
+              <Typography color="primary" variant="h4">
+                Kotitonni
+              </Typography>
+
+              <Typography variant="h5">
+                Kotitonni on viihdyttävä peli, jossa pelaajat arvuuttelevat
+                toistensa sanoja vihjeiden avulla. Eniten pisteitä saa kun vain
+                yksi arvaa sanan. Peli kestää noin tunnin ja pyörii pelaamiseen
+                kustomoidulla videopuhelualustalla.
+              </Typography>
+            </div>
+          </Grid>
+          <Grid item md></Grid>
+          <Grid className={classes.image} item xs={12} sm={4}>
+            <img
+              src={kotitonniImg}
+              alt="Kotitonni"
+              className={classes.imageMobile}
+            />
+          </Grid>
+          <Grid item md></Grid>
         </Grid>
-        <Grid item md></Grid>
-      </Grid>
-      <References />
-      {/* Pelinhoitajainfo B */}
-      <Grid container spacing={4} className={classes.container}>
-        <Grid item xs={12}>
-          <Typography color="primary" variant="h4">
-            Kiinnostuitko?
-          </Typography>
+        <References />
+        {/* Pelinhoitajainfo B */}
+        <Grid container spacing={4} className={classes.container}>
+          <Grid item xs={12}>
+            <Typography color="primary" variant="h4">
+              Kiinnostuitko?
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <Typography variant="h5">
+              Ota yhteyttä info@kotipelit.com ja voit aloittaa peli-iltojen
+              järjestämisen.
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <Typography variant="h5">
+              Peli-illan järjestäminen sivustolla on helppoa ja voit kysyä apua
+              milloin vain.
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <Typography variant="h5">
+              Halutessasi voimme järjestää pelaajat ensimmäistä peli-iltaasi
+              varten.
+            </Typography>
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={4}>
-          <Typography variant="h5">
-            Ota yhteyttä info@kotipelit.com ja voit aloittaa peli-iltojen
-            järjestämisen.
-          </Typography>
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <Typography variant="h5">
-            Peli-illan järjestäminen sivustolla on helppoa ja voit kysyä apua
-            milloin vain.
-          </Typography>
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <Typography variant="h5">
-            Halutessasi voimme järjestää pelaajat ensimmäistä peli-iltaasi
-            varten.
-          </Typography>
-        </Grid>
-      </Grid>
+      </div>
       <Footer />
     </div>
   );

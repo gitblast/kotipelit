@@ -26,7 +26,7 @@ export const initializePlayers = async (
 
     players.push({
       id: shortid.generate(),
-      name: `Pelaaja ${i}`,
+      name: 'Avoinna', // `Pelaaja ${i}`,
       points: 0,
       online: false,
       data: {

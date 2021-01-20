@@ -1,9 +1,10 @@
 import React from 'react';
 
 import { Link } from 'react-router-dom';
+import Rating from '@material-ui/lab/Rating';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Fab, Typography } from '@material-ui/core';
+import { Fab, Typography, Paper, Avatar } from '@material-ui/core';
 
 import QueuedGame from './QueuedGame';
 
@@ -17,16 +18,41 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(3),
     },
     hostInfo: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-around',
-      textAlign: 'center',
       marginTop: theme.spacing(2),
       marginBottom: theme.spacing(2),
       padding: theme.spacing(2),
+      background: 'linear-gradient(to top, #cbddb9, #94ccc6)',
+      width: 300,
       [theme.breakpoints.down('xs')]: {
         flexDirection: 'column',
       },
+    },
+    userBadge: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      '& > * + *': {
+        margin: theme.spacing(1),
+      },
+    },
+    userSection: {
+      display: 'flex',
+      justifyContent: 'start',
+      alignItems: 'center',
+      flexWrap: 'wrap',
+      '& > * + *': {
+        margin: theme.spacing(3),
+      },
+    },
+    userStats: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: theme.spacing(3),
+    },
+    stars: {
+      textAlign: 'center',
+      padding: theme.spacing(2),
     },
     newGame: {
       padding: theme.spacing(4),
@@ -35,8 +61,28 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexWrap: 'wrap',
     },
+    avatar: {
+      backgroundColor: '#3d0833',
+      width: theme.spacing(7),
+      height: theme.spacing(7),
+    },
   })
 );
+
+const RatingStars = () => {
+  const classes = useStyles();
+  return (
+    <div className={classes.stars}>
+      <Rating
+        name="rating-read"
+        size="large"
+        defaultValue={4.5}
+        precision={0.5}
+        readOnly
+      />
+    </div>
+  );
+};
 
 interface DashboardProps {
   user: LoggedUser;
@@ -66,19 +112,21 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
 
   return (
     <div className={classes.container}>
-      <div className={classes.hostInfo}>
-        <div>
-          <Typography variant="h5">Peli-iltoja</Typography>
-          <Typography variant="h3">0</Typography>
-        </div>
-        <div>
-          <Typography variant="h5">Pelituotot</Typography>
-          <Typography variant="h3">0€</Typography>
-        </div>
-        <div>
-          <Typography variant="h5">Rating</Typography>
-          <Typography variant="h3">5/5</Typography>
-        </div>
+      <div className={classes.userSection}>
+        <Paper className={classes.hostInfo}>
+          <div className={classes.userBadge}>
+            <Avatar aria-label="User" className={classes.avatar}>
+              K
+            </Avatar>
+            <Typography>{user.username}</Typography>
+          </div>
+          <RatingStars />
+          <div className={classes.userStats}>
+            <Typography>Peli-iltoja: 0</Typography>
+
+            <Typography>Pelituotot: 0€</Typography>
+          </div>
+        </Paper>
         <div>
           <Fab
             className={classes.newGame}

@@ -32,13 +32,14 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       [theme.breakpoints.down('xs')]: {
         textAlign: 'center',
+        flexDirection: 'column-reverse',
       },
     },
 
     mainInfo: {
       [theme.breakpoints.down('xs')]: {
         marginLeft: 0,
-        alignSelf: 'flex-end',
+        alignSelf: 'center',
         justifyContent: 'space-around',
         marginBottom: 14,
       },
@@ -83,6 +84,41 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+
+const GamePreview = () => {
+  const classes = useStyles();
+  return (
+    <>
+      {/* Kotitonni-info */}
+      <Grid container spacing={2} className={classes.gamePreview}>
+        <Grid item md></Grid>
+        <Grid className={classes.flex} item xs={12} sm={4}>
+          <div>
+            <Typography color="primary" variant="h4">
+              Kotitonni
+            </Typography>
+
+            <Typography variant="h5">
+              Kotitonni on viihdyttävä peli, jossa pelaajat arvuuttelevat
+              toistensa sanoja vihjeiden avulla. Eniten pisteitä saa kun vain
+              yksi arvaa sanan. Peli kestää noin tunnin ja pyörii pelaamiseen
+              kustomoidulla videopuhelualustalla.
+            </Typography>
+          </div>
+        </Grid>
+        <Grid item md></Grid>
+        <Grid className={classes.image} item xs={12} sm={4}>
+          <img
+            src={kotitonniImg}
+            alt="Kotitonni"
+            className={classes.imageMobile}
+          />
+        </Grid>
+        <Grid item md></Grid>
+      </Grid>
+    </>
+  );
+};
 
 // interface FrontPageProps {}
 
@@ -147,33 +183,7 @@ const FrontPage: React.FC = () => {
             </Typography>
           </Grid>
         </Grid>
-        {/* Kotitonni-info */}
-        <Grid container spacing={2} className={classes.gamePreview}>
-          <Grid item md></Grid>
-          <Grid className={classes.flex} item xs={12} sm={4}>
-            <div>
-              <Typography color="primary" variant="h4">
-                Kotitonni
-              </Typography>
-
-              <Typography variant="h5">
-                Kotitonni on viihdyttävä peli, jossa pelaajat arvuuttelevat
-                toistensa sanoja vihjeiden avulla. Eniten pisteitä saa kun vain
-                yksi arvaa sanan. Peli kestää noin tunnin ja pyörii pelaamiseen
-                kustomoidulla videopuhelualustalla.
-              </Typography>
-            </div>
-          </Grid>
-          <Grid item md></Grid>
-          <Grid className={classes.image} item xs={12} sm={4}>
-            <img
-              src={kotitonniImg}
-              alt="Kotitonni"
-              className={classes.imageMobile}
-            />
-          </Grid>
-          <Grid item md></Grid>
-        </Grid>
+        <GamePreview />
         <References />
         {/* Pelinhoitajainfo B */}
         <Grid container spacing={4} className={classes.container}>

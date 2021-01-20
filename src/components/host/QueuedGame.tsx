@@ -38,16 +38,15 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(2),
     },
     cardStyle: {
-      width: 350,
+      width: 400,
       margin: theme.spacing(2),
       background: 'linear-gradient(to top, #cbddb9, #94ccc6)',
-    },
-    players: {
-      padding: theme.spacing(1),
     },
     playerRow: {
       display: 'flex',
       justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: theme.spacing(1),
     },
     actions: {
       display: 'flex',
@@ -68,7 +67,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const getInviteUrl = (hostName: string, inviteCode: string): string =>
-  `https://www.kotipelit.com/${hostName}/rtc/${inviteCode}`;
+  `https://www.kotipelit.com/${hostName}/${inviteCode}`;
 
 const getInviteText = (
   game: Kotitonni,
@@ -228,9 +227,12 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
         <CardContent>
           {game.players.map((player) => (
             <div key={player.id} className={classes.playerRow}>
-              <div className={classes.players}>
+              <div>
                 <Typography>{player.name}</Typography>
               </div>
+              <Typography variant="body2">
+                {player ? player.data.words.join(', ') : '<Pelaajan sanat>'}
+              </Typography>
               {/* Displaying points only after gamestatus finished. Atm games dont get finished */}
               {game.status !== GameStatus.FINISHED ? (
                 // <Button
@@ -249,7 +251,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
               )}
             </div>
           ))}
-          {inviteText && (
+          {/* {inviteText && (
             <div className={classes.inviteText}>
               <Typography variant="h5" gutterBottom>
                 Lähetä pelaajalle alla oleva kutsuteksti.
@@ -258,7 +260,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
                 {inviteText}
               </Typography>
             </div>
-          )}
+          )} */}
         </CardContent>
         <CardActions disableSpacing className={classes.actions}>
           <div>

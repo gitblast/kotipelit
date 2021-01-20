@@ -29,8 +29,7 @@ const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
       boxSizing: 'border-box',
       width: `28%`,
       background: (props) => `${colors[props.order]}`,
-      borderBottom: '3px dotted ',
-
+      borderBottom: '4px dotted ',
       marginLeft: theme.spacing(3),
       marginRight: theme.spacing(3),
       marginBottom: theme.spacing(3),
@@ -56,8 +55,8 @@ const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
     },
     hasTurn: {
       background: (props) => `${colors[props.order]}`,
-      boxShadow: (props) => `5px 10px 18px ${colors[props.order]}`,
-      border: '3px dotted white',
+      boxShadow: (props) => `5px 10px 22px ${colors[props.order]}`,
+      border: '7px dotted white',
       [theme.breakpoints.down('xs')]: {
         width: '95%',
       },

@@ -83,6 +83,7 @@ setDebug(true);
 
 const MEDIA_CONSTRAINTS = {
   audio: true,
+  // Standard Definition video quality (x = 720, y = 480)
   video: {
     width: {
       min: 320,

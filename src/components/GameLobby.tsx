@@ -36,6 +36,9 @@ const useStyles = makeStyles((theme: Theme) =>
         flexWrap: 'wrap',
       },
     },
+    availableSeat: {
+      color: 'rgb(104 122 106)',
+    },
     reserveBtn: {
       padding: theme.spacing(4),
       margin: theme.spacing(2),
@@ -146,7 +149,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
       return <span className={classes.bookedText}>Varattu</span>;
     }
 
-    return <span>...</span>;
+    return <span className={classes.availableSeat}>Vapaa</span>;
   };
 
   const getWordList = (words?: string[]) => {
@@ -245,7 +248,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
                   {game.players.map((player, index) => {
                     return (
                       <Typography key={index}>
-                        {/* <span>{`${index + 1}. `}</span> */}
+                        <span>{`${index + 1}. `}</span>
 
                         {getLabel(player)}
                       </Typography>

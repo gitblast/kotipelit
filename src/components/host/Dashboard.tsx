@@ -21,7 +21,8 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(2),
       marginBottom: theme.spacing(2),
       padding: theme.spacing(2),
-      background: 'linear-gradient(to top, #cbddb9, #94ccc6)',
+      background: 'rgba(52, 75, 115, 0.7)',
+      color: 'white',
       width: 300,
       [theme.breakpoints.down('xs')]: {
         flexDirection: 'column',

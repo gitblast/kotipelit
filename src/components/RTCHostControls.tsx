@@ -9,6 +9,7 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import UndoIcon from '@material-ui/icons/Undo';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import SyncIcon from '@material-ui/icons/Sync';
 import { GameStatus, RTCGame, State } from '../types';
 import { useDispatch, useSelector } from 'react-redux';
 import logger from '../utils/logger';
@@ -390,6 +391,9 @@ const RTCHostControls: React.FC<{
               onClick={handleToggleFullscreen}
             >
               <FullscreenIcon fontSize="large"></FullscreenIcon>
+            </IconButton>
+            <IconButton className={classes.controlBarIcons}>
+              <SyncIcon fontSize="large"></SyncIcon>
             </IconButton>
           </Grid>
         </Grid>

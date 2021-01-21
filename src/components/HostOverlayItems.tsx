@@ -5,6 +5,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Typography, IconButton, Grid } from '@material-ui/core';
 import MicIcon from '@material-ui/icons/Mic';
 import MicOffIcon from '@material-ui/icons/MicOff';
+import SyncIcon from '@material-ui/icons/Sync';
 
 import { setMuted } from '../reducers/kotitonni.local.reducer';
 import { GameType, RTCPeer, State } from '../types';
@@ -93,6 +94,9 @@ const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({ host }) => {
                 onClick={toggleMuted}
               >
                 {mutedMap[host.id] ? <MicOffIcon color="error" /> : <MicIcon />}
+              </IconButton>
+              <IconButton className={classes.controlIcon} size="small">
+                <SyncIcon></SyncIcon>
               </IconButton>
             </Grid>
             <div className={classes.spacer} />

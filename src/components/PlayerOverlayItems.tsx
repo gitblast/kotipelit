@@ -4,6 +4,8 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import MicOffIcon from '@material-ui/icons/MicOff';
 import MicIcon from '@material-ui/icons/Mic';
+import SyncIcon from '@material-ui/icons/Sync';
+
 import { GameStatus, GameType, RTCPeer, State } from '../types';
 import {
   Paper,
@@ -291,6 +293,9 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
                 ) : (
                   <MicIcon />
                 )}
+              </IconButton>
+              <IconButton className={classes.controlIcon} size="small">
+                <SyncIcon></SyncIcon>
               </IconButton>
             </Grid>
           </Grid>

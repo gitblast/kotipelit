@@ -1,6 +1,7 @@
 import React from 'react';
 
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import SyncIcon from '@material-ui/icons/Sync';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
@@ -158,6 +159,9 @@ const RTCPlayerControls: React.FC<{
             onClick={handleToggleFullscreen}
           >
             <FullscreenIcon fontSize="large"></FullscreenIcon>
+          </IconButton>
+          <IconButton className={classes.controlBarIcons}>
+            <SyncIcon fontSize="large"></SyncIcon>
           </IconButton>
         </Grid>
       </Grid>

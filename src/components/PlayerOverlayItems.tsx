@@ -280,17 +280,19 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
                 {player.name}
               </Typography>
             </Grid>
-            <Grid item md={3} sm={3}>
+            <Grid item md={2} sm={2}>
               <Typography variant="h6">{player.points}</Typography>
             </Grid>
-            <Grid item md={2} sm={2}>
-              {forHost && showPointAddition && addition !== 0 && (
+
+            {forHost && showPointAddition && addition !== 0 && (
+              <Grid item md={2} sm={2}>
                 <Fade in>
                   <Typography>{addition}</Typography>
                 </Fade>
-              )}
-            </Grid>
-            <Grid item md={2} sm={2}>
+              </Grid>
+            )}
+
+            <Grid item md={3} sm>
               <IconButton
                 size="small"
                 onClick={toggleMuted}

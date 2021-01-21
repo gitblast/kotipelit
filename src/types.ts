@@ -395,6 +395,10 @@ export type RTCPeersAction =
         initialGame: RTCGame;
         initialSelf: RTCSelf;
       };
+    }
+  | {
+      type: 'NULLIFY_CONNECTION';
+      payload: string; // peer id
     };
 
 // SOCKET IO EVENTS

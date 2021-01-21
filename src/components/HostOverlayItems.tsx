@@ -11,6 +11,7 @@ import { setMuted } from '../reducers/kotitonni.local.reducer';
 import { GameType, RTCPeer, State } from '../types';
 import logger from '../utils/logger';
 import { useSelector, useDispatch } from 'react-redux';
+import { refreshPeerConnection } from '../reducers/rtcPeers.reducer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -73,6 +74,14 @@ const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({ host }) => {
     dispatch(setMuted(host.id, !mutedMap[host.id]));
   };
 
+  const handleRefreshConnection = () => {
+    if (!host.peerId) {
+      return;
+    }
+
+    dispatch(refreshPeerConnection(host.peerId));
+  };
+
   // handle different game types here, "if gameType === kotitonni return kotitonni-items" etc
   if (gameType === GameType.KOTITONNI) {
     return (
@@ -95,9 +104,15 @@ const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({ host }) => {
               >
                 {mutedMap[host.id] ? <MicOffIcon color="error" /> : <MicIcon />}
               </IconButton>
-              <IconButton className={classes.controlIcon} size="small">
-                <SyncIcon></SyncIcon>
-              </IconButton>
+              {!host.isMe && host.peerId && (
+                <IconButton
+                  className={classes.controlIcon}
+                  size="small"
+                  onClick={handleRefreshConnection}
+                >
+                  <SyncIcon></SyncIcon>
+                </IconButton>
+              )}
             </Grid>
             <div className={classes.spacer} />
           </Grid>

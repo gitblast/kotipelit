@@ -19,12 +19,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 // Enable when possible to share on social media
 // import ShareIcon from '@material-ui/icons/Share';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
-import {
-  SelectableGame,
-  Kotitonni,
-  KotitonniPlayer,
-  GameStatus,
-} from '../../types';
+import { SelectableGame, GameStatus } from '../../types';
 import { useDispatch } from 'react-redux';
 import { deleteGame } from '../../reducers/games.reducer';
 import { Link } from 'react-router-dom';
@@ -66,36 +61,6 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const getInviteUrl = (hostName: string, inviteCode: string): string =>
-  `https://www.kotipelit.com/${hostName}/${inviteCode}`;
-
-const getInviteText = (
-  game: Kotitonni,
-  hostName: string,
-  player: KotitonniPlayer
-): string => {
-  if (!player.inviteCode) {
-    return 'Odottamaton virhe: pelaajan kutsukoodi puuttuu';
-  }
-
-  return `Tervetuloa pelaamaan ${capitalize(game.type)}a!
-  
-  Sanasi ovat: ${player ? player.data.words.join(' ') : '<Pelaajan sanat>'}
-        
-  Tehtävänäsi on miettiä sanoille niitä kuvaavat vihjeet.
-        
-  Peli alkaa ${format(new Date(game.startTime), 'd. MMMM HH:mm', {
-    locale: fiLocale,
-  })}.
-  
-  Pelin hinta on ${
-    game.price ? game.price : 0
-  } euroa. Ohjeet alla olevassa linkissä.
-        
-  Nähdään peleillä osoitteessa:
-  ${getInviteUrl(hostName, player.inviteCode)}`;
-};
-
 interface QueuedGameProps {
   game: SelectableGame;
   username: string;
@@ -105,7 +70,6 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
   const classes = useStyles();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [inviteText, setInviteText] = React.useState<null | string>(null);
   const dispatch = useDispatch();
 
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -118,14 +82,6 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
     const agree = window.confirm('Poistetaanko peli?');
 
     if (agree) dispatch(deleteGame(game.id));
-  };
-
-  const showInviteText = (
-    game: SelectableGame,
-    hostName: string,
-    player: KotitonniPlayer
-  ): void => {
-    setInviteText(getInviteText(game, hostName, player));
   };
 
   // const startButton = () => {

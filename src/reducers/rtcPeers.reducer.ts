@@ -16,6 +16,22 @@ const reducer: Reducer<RTCPeer[] | null, RTCPeersAction> = (
       return action.payload.initialPeers;
     case 'SET_PEERS':
       return action.payload;
+    case 'NULLIFY_CONNECTION':
+      if (!state) return state;
+
+      return state.map((peerObj) => {
+        if (peerObj.peerId === action.payload) {
+          peerObj.call?.close();
+
+          return {
+            ...peerObj,
+            call: null,
+            stream: null,
+          };
+        }
+
+        return peerObj;
+      });
     default:
       return state;
   }
@@ -25,6 +41,13 @@ export const setPeers = (peers: RTCPeer[]): RTCPeersAction => {
   return {
     type: 'SET_PEERS',
     payload: peers,
+  };
+};
+
+export const nullifyConnection = (id: string): RTCPeersAction => {
+  return {
+    type: 'NULLIFY_CONNECTION',
+    payload: id,
   };
 };
 
@@ -86,6 +109,45 @@ export const setStreamForPeer = (
     );
 
     dispatch(setPeers(newPeers));
+  };
+};
+
+export const refreshPeerConnection = (peerId: string) => {
+  return (
+    dispatch: ThunkDispatch<State, unknown, Action>,
+    getState: () => State
+  ) => {
+    const ownPeerClient = getState().rtc.self?.peer;
+
+    if (!ownPeerClient) {
+      logger.error('no peer client set when trying to call!');
+
+      return;
+    }
+
+    if (ownPeerClient.id === peerId) {
+      logger.error('cannot connect to self');
+
+      return;
+    }
+
+    const ownStream = getState().rtc.self?.stream;
+
+    if (!ownStream) {
+      logger.error('no own stream set when trying to call!');
+
+      return;
+    }
+
+    dispatch(nullifyConnection(peerId));
+
+    const newCall = ownPeerClient.call(peerId, ownStream);
+
+    callHelpers.attachCallListeners(
+      newCall,
+      (mediaCall: MediaConnection, stream: MediaStream) =>
+        dispatch(setStreamForPeer(mediaCall, stream))
+    );
   };
 };
 

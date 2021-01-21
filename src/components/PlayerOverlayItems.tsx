@@ -20,6 +20,7 @@ import {
 import logger from '../utils/logger';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { setClicked, setMuted } from '../reducers/kotitonni.local.reducer';
+import { refreshPeerConnection } from '../reducers/rtcPeers.reducer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -101,7 +102,6 @@ interface PlayerOverlayItemsProps {
 
 const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
   const playerId = peer.id;
-
   const classes = useStyles();
   const clickMap = useSelector(
     (state: State) => state.rtc.localData.clickedMap
@@ -220,6 +220,14 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
     dispatch(setMuted(player.id, !mutedMap[playerId]));
   };
 
+  const handleRefreshConnection = () => {
+    if (!peer.peerId) {
+      return;
+    }
+
+    dispatch(refreshPeerConnection(peer.peerId));
+  };
+
   const answer = getAnswer();
 
   const addition = getPointAddition(player.id, !!player.hasTurn);
@@ -294,9 +302,15 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
                   <MicIcon />
                 )}
               </IconButton>
-              <IconButton className={classes.controlIcon} size="small">
-                <SyncIcon></SyncIcon>
-              </IconButton>
+              {!peer.isMe && peer.peerId && (
+                <IconButton
+                  className={classes.controlIcon}
+                  size="small"
+                  onClick={handleRefreshConnection}
+                >
+                  <SyncIcon></SyncIcon>
+                </IconButton>
+              )}
             </Grid>
           </Grid>
           <div className={classes.spacer} />

@@ -100,6 +100,10 @@ const RTCPlayerControls: React.FC<{
     return !!answer;
   };
 
+  const handleRefreshConnection = () => {
+    console.log('todo');
+  };
+
   const handleClick = () => {
     if (!self || !game) {
       logger.error('self object or game missing when trying to emit');
@@ -160,7 +164,10 @@ const RTCPlayerControls: React.FC<{
           >
             <FullscreenIcon fontSize="large"></FullscreenIcon>
           </IconButton>
-          <IconButton className={classes.controlBarIcons}>
+          <IconButton
+            className={classes.controlBarIcons}
+            onClick={handleRefreshConnection}
+          >
             <SyncIcon fontSize="large"></SyncIcon>
           </IconButton>
         </Grid>

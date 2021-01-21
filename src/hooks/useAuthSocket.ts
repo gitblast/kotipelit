@@ -22,6 +22,22 @@ const useAuthSocket = (
 
       const socket = socketIOClient('/');
 
+      socket.on('error', (error: Error) => {
+        logger.error('socket.io error:', error.message);
+      });
+
+      socket.on('disconnect', (reason: string) => {
+        logger.log('socket.io disconnected. reason:', reason);
+      });
+
+      socket.on('reconnect', () => {
+        logger.log('socket.io reconnected');
+      });
+
+      socket.on('reconnect_attempt', (attempt: number) => {
+        logger.log('socketio trying to reconnect, attempt number:', attempt);
+      });
+
       socket.on(CommonEvent.CONNECT, () => {
         socket.emit(CommonEvent.AUTH_REQUEST, { token });
 

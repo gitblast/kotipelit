@@ -12,10 +12,11 @@ import {
   Typography,
   IconButton,
   Checkbox,
-  Fade,
   Button,
   Grid,
 } from '@material-ui/core';
+
+import { Animated } from 'react-animated-css';
 
 import logger from '../utils/logger';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
@@ -56,9 +57,12 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
     },
     pointsAddition: {
+      color: 'white',
+      display: 'flex',
+      justifyContent: 'flex-end',
+      fontSize: theme.spacing(6),
       position: 'absolute',
       top: '36%',
-      left: '42%',
     },
     // Repeating same code from HostOverlayItems
     controlIcon: {
@@ -257,11 +261,16 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
         }
         {forHost && showPointAddition && addition !== 0 && (
           <div>
-            <Fade in>
+            <Animated
+              animationIn="fadeIn"
+              animationInDuration={2000}
+              animationOut="fadeOut"
+              isVisible={true}
+            >
               <Typography variant="h6" className={classes.pointsAddition}>
                 {addition}
               </Typography>
-            </Fade>
+            </Animated>
           </div>
         )}
         {forHost && answer && answerBox(answer)}
@@ -278,16 +287,16 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
         <div className={classes.spacer} />
         <div className={classes.flex}>
           <Grid container className={classes.nameBadge}>
-            <Grid item md={7} sm={7}>
+            <Grid item md={7} sm={6}>
               <Typography variant="h6" className={classes.playerName}>
                 {player.name}
               </Typography>
             </Grid>
-            <Grid item md={3} sm={3}>
+            <Grid item md={2} sm={2}>
               <Typography variant="h6">{player.points}</Typography>
             </Grid>
 
-            <Grid item md={2} sm>
+            <Grid item md={3} sm={4}>
               <IconButton
                 size="small"
                 onClick={toggleMuted}

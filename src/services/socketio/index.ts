@@ -179,6 +179,10 @@ const attachRTCListeners = (socket: SocketWithToken) => {
 
   // can handle game types here
 
+  socket.on('get-room-game', () => {
+    void callbacks.getRoomGame(socket);
+  });
+
   socket.on('join-gameroom', (peerId: string) => {
     void callbacks.joinRTCRoom(socket, peerId);
   });
@@ -187,8 +191,8 @@ const attachRTCListeners = (socket: SocketWithToken) => {
     void callbacks.handleAnswer(socket, answerObj);
   });
 
-  socket.on(EventType.DISCONNECT, () => {
-    void callbacks.socketDisconnected(socket);
+  socket.on(EventType.DISCONNECT, (reason: string) => {
+    void callbacks.socketDisconnected(socket, reason);
   });
 
   socket.on('leave-room', () => {

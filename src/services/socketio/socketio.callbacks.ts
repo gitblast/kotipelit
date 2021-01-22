@@ -262,8 +262,13 @@ export const joinRTCRoom = async (
   }
 };
 
-export const socketDisconnected = (socket: SocketWithToken): void => {
-  logger.log(`recieved disconnect from ${socket.decoded_token.username}`);
+export const socketDisconnected = (
+  socket: SocketWithToken,
+  reason: string
+): void => {
+  logger.log(
+    `recieved disconnect from ${socket.decoded_token.username}. reason: ${reason}`
+  );
 
   const { id, gameId } = socket.decoded_token;
 
@@ -406,6 +411,33 @@ export const handleTimerChange = (
   }
 };
 
+const logRecievedMsg = (event: string, socket: SocketWithToken): void => {
+  logger.log(`recieved '${event}' from ${socket.decoded_token.username}`);
+};
+
+export const getRoomGame = (socket: SocketWithToken): void => {
+  logRecievedMsg('get-room-game', socket);
+
+  try {
+    const { gameId, id } = socket.decoded_token;
+
+    const room = rtcrooms.getRoom(gameId);
+
+    if (!room) {
+      throw new Error(
+        `no room set when trying to get room game, game id ${gameId}`
+      );
+    }
+
+    const filteredGame = rtcrooms.filterGameForUser(room.game, id);
+
+    socket.emit(EventType.GAME_UPDATED, filteredGame);
+  } catch (e) {
+    logger.error(e.message);
+    socket.emit('rtc_error', e.message);
+  }
+};
+
 export const handleAnswer = (socket: SocketWithToken, answer: Answer): void => {
   logger.log(`recieved 'answer' from ${socket.decoded_token.username}`);
 
@@ -449,7 +481,7 @@ export const handleAnswer = (socket: SocketWithToken, answer: Answer): void => {
 
     socket.emit(
       EventType.GAME_UPDATED,
-      rtcrooms.filterGameForPlayer(updatedGame, id)
+      rtcrooms.filterGameForUser(updatedGame, id)
     );
   } catch (e) {
     logger.error(e.message);
@@ -478,7 +510,7 @@ const emitUpdatedGame = (
             .to(peer.socketId)
             .emit(
               EventType.GAME_UPDATED,
-              rtcrooms.filterGameForPlayer(newGame, peer.id)
+              rtcrooms.filterGameForUser(newGame, peer.id)
             );
         }
       });

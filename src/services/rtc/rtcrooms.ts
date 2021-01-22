@@ -61,22 +61,32 @@ const joinPlayerToRoom = (
   // dont return other players' words
   return {
     ...newRoom,
-    game: filterGameForPlayer(newRoom.game, socket.decoded_token.id),
+    game: filterGameForUser(newRoom.game, socket.decoded_token.id),
   };
 };
 
-const filterGameForPlayer = (game: RTCGame, playerId: string): RTCGame => {
+const filterGameForUser = (game: RTCGame, userId: string): RTCGame => {
+  if (userId === game.host) {
+    // return all data to host
+
+    return game;
+  }
+
   if (game.type === GameType.KOTITONNI) {
     // hide words and answers not self
     return {
       ...game,
       players: game.players.map((player) => {
-        return player.id === playerId
+        return player.id === userId
           ? player
           : {
               ...player,
-              words: null,
-              answers: {},
+              reservedFor: null,
+              inviteCode: '',
+              data: {
+                answers: {},
+                words: [],
+              },
             };
       }),
     };
@@ -122,18 +132,12 @@ const createRoom = (game: RTCGame): void => {
   }
 
   const newRoom: RTCGameRoom = {
-    game: {
-      ...game,
-      players: game.players.map((player) => ({
-        ...player,
-        answers: {},
-      })),
-    },
+    game,
     host: {
       id: game.host,
       socketId: null,
       peerId: null,
-      displayName: 'handle host name',
+      displayName: 'HOST',
       isHost: true,
     },
     players: game.players.map((player) => {
@@ -196,6 +200,6 @@ export default {
   getRoom,
   leaveRoom,
   updateRoomGame,
-  filterGameForPlayer,
+  filterGameForUser,
   getRooms,
 };

@@ -86,7 +86,6 @@ export type GamePlayer = KotitonniPlayer;
 export interface ActiveGamePlayer extends BaseGamePlayer {
   socket: null | string;
   online: boolean;
-  answers: Record<string, Record<string, string>>;
 }
 
 export interface KotitonniInfo {

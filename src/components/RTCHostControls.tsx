@@ -335,6 +335,16 @@ const RTCHostControls: React.FC<{
     dispatch(setGame(gameWithPreviousPointsAndInfo));
   };
 
+  const fetchLatestGameStatus = () => {
+    if (!socket) {
+      logger.error('no socket set when trying to fetch new game status');
+
+      return;
+    }
+
+    socket.emit('get-room-game');
+  };
+
   return (
     <div className={classes.container}>
       {game?.status === GameStatus.FINISHED ? (
@@ -392,7 +402,10 @@ const RTCHostControls: React.FC<{
             >
               <FullscreenIcon fontSize="large"></FullscreenIcon>
             </IconButton>
-            <IconButton className={classes.controlBarIcons}>
+            <IconButton
+              className={classes.controlBarIcons}
+              onClick={fetchLatestGameStatus}
+            >
               <SyncIcon fontSize="large"></SyncIcon>
             </IconButton>
           </Grid>

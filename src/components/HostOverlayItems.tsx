@@ -23,12 +23,16 @@ const useStyles = makeStyles((theme: Theme) =>
       opacity: 0.8,
       width: '100%',
       // .. except for this
-      textAlign: 'center',
+
       [theme.breakpoints.down('sm')]: {
         padding: theme.spacing(1),
       },
     },
-    hostName: {},
+    hostName: {
+      [theme.breakpoints.down('sm')]: {
+        fontSize: 15,
+      },
+    },
     // Repeated code from PlayerOverlay!
     controlIcon: {
       color: 'white',
@@ -92,11 +96,12 @@ const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({ host }) => {
         <div className={classes.spacer} />
         <div className={classes.flex}>
           <Grid container className={classes.nameBadge}>
-            <Grid item md={1} sm={1}></Grid>
-            <Grid item md={9} sm={9}>
-              <Typography variant="h6">{host.displayName}</Typography>
+            <Grid item md={8} sm={8}>
+              <Typography variant="h6" className={classes.hostName}>
+                {host.displayName}
+              </Typography>
             </Grid>
-            <Grid item md={2} sm={2}>
+            <Grid item md={4} sm={4}>
               <IconButton
                 className={classes.controlIcon}
                 size="small"

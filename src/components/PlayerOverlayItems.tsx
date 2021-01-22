@@ -55,18 +55,11 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
     },
-    // tooltipRoot: {
-    //   position: 'absolute',
-    //   height: 1,
-    //   width: 1,
-    //   top: '27.5%',
-    //   left: '30%',
-    // },
-    // tooltipContent: {
-    //   paddingLeft: theme.spacing(1),
-    //   paddingRight: theme.spacing(1),
-    //   backgroundColor: 'rgba(244, 172, 69)',
-    // },
+    pointsAddition: {
+      position: 'absolute',
+      top: '36%',
+      left: '42%',
+    },
     // Repeating same code from HostOverlayItems
     controlIcon: {
       color: 'white',
@@ -262,12 +255,22 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
             </div>
           )
         }
+        {forHost && showPointAddition && addition !== 0 && (
+          <div>
+            <Fade in>
+              <Typography variant="h6" className={classes.pointsAddition}>
+                {addition}
+              </Typography>
+            </Fade>
+          </div>
+        )}
         {forHost && answer && answerBox(answer)}
         {game.status === GameStatus.FINISHED && (
           <div className={classes.positionLabel}>
             <Typography variant="h3">{getPosition()}</Typography>
           </div>
         )}
+
         <div className={classes.flex}>
           <div className={classes.spacer} />
         </div>
@@ -275,24 +278,16 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
         <div className={classes.spacer} />
         <div className={classes.flex}>
           <Grid container className={classes.nameBadge}>
-            <Grid item md={5} sm={5}>
+            <Grid item md={7} sm={7}>
               <Typography variant="h6" className={classes.playerName}>
                 {player.name}
               </Typography>
             </Grid>
-            <Grid item md={2} sm={2}>
+            <Grid item md={3} sm={3}>
               <Typography variant="h6">{player.points}</Typography>
             </Grid>
 
-            {forHost && showPointAddition && addition !== 0 && (
-              <Grid item md={2} sm={2}>
-                <Fade in>
-                  <Typography>{addition}</Typography>
-                </Fade>
-              </Grid>
-            )}
-
-            <Grid item md={3} sm>
+            <Grid item md={2} sm>
               <IconButton
                 size="small"
                 onClick={toggleMuted}

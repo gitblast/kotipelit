@@ -72,6 +72,7 @@ const RTCPlayerControls: React.FC<{
   const timer = useSelector((state: State) => state.rtc.localData.timer);
   const game = useSelector((state: State) => state.rtc.game);
   const self = useSelector((state: State) => state.rtc.self);
+  const socket = useSelector((state: State) => state.rtc.self?.socket);
   const playerSelf = useSelector((state: State) => {
     if (!self) {
       return null;
@@ -100,10 +101,6 @@ const RTCPlayerControls: React.FC<{
     return !!answer;
   };
 
-  const handleRefreshConnection = () => {
-    console.log('todo');
-  };
-
   const handleClick = () => {
     if (!self || !game) {
       logger.error('self object or game missing when trying to emit');
@@ -121,6 +118,16 @@ const RTCPlayerControls: React.FC<{
 
       setAnswer('');
     }
+  };
+
+  const fetchLatestGameStatus = () => {
+    if (!socket) {
+      logger.error('no socket set when trying to fetch new game status');
+
+      return;
+    }
+
+    socket.emit('get-room-game');
   };
 
   const disabled = isDisabled();
@@ -166,7 +173,7 @@ const RTCPlayerControls: React.FC<{
           </IconButton>
           <IconButton
             className={classes.controlBarIcons}
-            onClick={handleRefreshConnection}
+            onClick={fetchLatestGameStatus}
           >
             <SyncIcon fontSize="large"></SyncIcon>
           </IconButton>

@@ -153,9 +153,6 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   if (!onCall) {
     return (
       <div className={classes.container}>
-        {/* <Animated animationIn="bounce" animationOut="fadeOut" isVisible={true}>
-          <div>hello world ;)</div>
-        </Animated> */}
         <Typography variant="h5">Peli alkaa pian!</Typography>
         <div className={classes.infoContent}>
           <Typography>
@@ -164,10 +161,10 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
           </Typography>
 
           <Typography>
-            Mikäli yhteydessä on ongelmia, voit kokeilla päivittää selaimen.
-            Onnea peliin!
+            Puhelimella pelattaessa suosittelemme kääntämään näytön sivuttain.
           </Typography>
         </div>
+        <Typography variant="h5">Onnea peliin!</Typography>
         <Fab
           className={classes.startVideoBtn}
           variant="extended"

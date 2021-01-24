@@ -27,7 +27,9 @@ const useLobbySystem = () => {
 
         setGame(fetchedGame);
       } catch (e) {
-        setError('Peliä ei löytynyt, tarkista osoite!');
+        setError(
+          'Ilmoittautuminen on päättynyt! Tarkista pelin linkki sähköpostistasi.'
+        );
       }
     };
 

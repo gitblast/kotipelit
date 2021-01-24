@@ -29,9 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
     },
     seatLock: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
+      padding: theme.spacing(2),
       [theme.breakpoints.down('xs')]: {
         flexWrap: 'wrap',
       },
@@ -65,6 +63,10 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     emailConfText: {
       marginBottom: theme.spacing(1),
+    },
+    errorMsg: {
+      padding: theme.spacing(2),
+      textAlign: 'center',
     },
   })
 );
@@ -214,7 +216,11 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
   return (
     <>
       <div className={classes.container}>
-        {error && <Typography color="error">{error}</Typography>}
+        {error && (
+          <Typography variant="h5" color="error" className={classes.errorMsg}>
+            {error}
+          </Typography>
+        )}
         {game ? (
           <>
             <Grid container spacing={4}>

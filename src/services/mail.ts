@@ -24,6 +24,8 @@ Tervetuloa pelaamaan Kotitonnia ${dateString} klo ${timeString}!
         
 Tässä ovat sanasi: 
 ${inviteInfo.data.words.join(', ')} 
+
+Huomioi, että pelissä käytetään myös yhdyssanoja ja erisnimiä.
         
 Peliin pääset tästä linkistä:
 ${inviteInfo.url}
@@ -43,11 +45,13 @@ Kotipelit.com`,
         Tässä ovat sanasi: 
         <br />
         ${inviteInfo.data.words.join(', ')} 
-        <br /><br />   
+        <br /><br /> 
+        Huomioi, että pelissä käytetään myös yhdyssanoja ja erisnimiä. <br /><br />
         Peliin pääset tästä linkistä:
         <br />
         <a href=${inviteInfo.url}>${inviteInfo.url}</a>
-        <br /><br />
+        <br />
+        <br />
         Jos tulee kysyttävää, voit olla yhteydessä vastaamalla tähän viestiin.
         <br /><br />
         Hyviä pelejä!

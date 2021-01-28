@@ -219,7 +219,7 @@ router.get('/join/:hostName/:inviteCode', async (req, res, next) => {
       type: rtc ? 'rtc' : 'jitsi',
     };
 
-    const token = jwt.sign(payload, config.SECRET);
+    const token = jwt.sign(payload, config.SECRET, { expiresIn: '10h' });
 
     const response = rtc ? token : { token, displayName: player.name };
 
@@ -286,8 +286,6 @@ router.post('/', async (req, res, next) => {
     const user = toAuthenticatedUser(req);
     const newGame = toNewGame(req.body, user.id);
 
-    console.log('pplayers:', newGame.players);
-
     const game = new Game({
       ...newGame,
       createDate: new Date(),
@@ -302,8 +300,6 @@ router.post('/', async (req, res, next) => {
     });
 
     const savedGame = await game.save();
-
-    console.log('savef game', savedGame.players);
 
     /** save short urls to database */
     for (const player of savedGame.players) {

@@ -19,6 +19,7 @@ router.get('/', async (_req, res, next) => {
 
     const body = {
       format: 'urls',
+      expire: '7200',
     };
 
     const response = await axios.put(config.XIRSYS_URL, body, reqConfig);

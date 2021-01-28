@@ -101,8 +101,8 @@ const getGameById = async (gameId: string): Promise<GameModel> => {
 
 const saveFinishedGame = async (
   gameId: string,
-  game: ActiveGame
-): Promise<void> => {
+  game: RTCGame | ActiveGame // active game only for jitsi version
+): Promise<GameModel> => {
   const gameInDB = await Game.findById(gameId);
 
   if (!gameInDB) throw new Error(`No game found with id ${gameId}`);
@@ -111,7 +111,7 @@ const saveFinishedGame = async (
 
   gameInDB.status = GameStatus.FINISHED;
 
-  await gameInDB.save();
+  return await gameInDB.save();
 };
 
 const setGameStatus = async (
@@ -137,6 +137,7 @@ const convertToRTCGame = (game: GameModel): RTCGame => {
     players: game.players,
     info: getInitialInfo(game),
     host: game.host.toString(),
+    rounds: game.rounds,
   };
 };
 

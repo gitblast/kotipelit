@@ -323,6 +323,7 @@ export interface RTCGame {
   players: GamePlayer[];
   info: GameInfo;
   host: string;
+  rounds: number;
 }
 
 export interface Answer {

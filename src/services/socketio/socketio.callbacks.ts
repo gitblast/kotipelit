@@ -223,6 +223,10 @@ export const joinRTCRoom = async (
     if (!existingRoom) {
       const game = await gameService.getGameById(gameId);
 
+      if (game.status === GameStatus.FINISHED) {
+        throw new Error('cannot join, game status is finished!');
+      }
+
       const rtcGame = gameService.convertToRTCGame(game);
 
       rtcrooms.createRoom(rtcGame);
@@ -271,6 +275,10 @@ export const socketDisconnected = (
   );
 
   const { id, gameId } = socket.decoded_token;
+
+  if (reason !== 'Ping timeout') {
+    // emit user-left?
+  }
 
   socket.to(gameId).emit('user-socket-disconnected', id);
 };
@@ -332,12 +340,34 @@ export const launchRTCGame = async (socket: SocketWithToken): Promise<void> => {
       throw new Error(`game with id ${gameId} already launched`);
     }
 
-    await gameService.setGameStatus(gameId, GameStatus.WAITING);
+    const updatedGameInDB = await gameService.setGameStatus(
+      gameId,
+      GameStatus.WAITING
+    );
 
-    const updatedGame = rtcrooms.updateRoomGame(gameId, {
+    // update player display names and game status
+    const updatedGame = {
       ...room.game,
       status: GameStatus.WAITING,
-    });
+      players: room.game.players.map((player) => {
+        const matching = updatedGameInDB.players.find(
+          (p) => p.id === player.id
+        );
+
+        if (!matching || player.name === matching.name) {
+          return player;
+        }
+
+        logger.log(`updating name for player '${matching.name}'`);
+
+        return {
+          ...player,
+          name: matching.name,
+        };
+      }),
+    };
+
+    rtcrooms.updateRoomGame(gameId, updatedGame);
 
     emitUpdatedGame(socket, updatedGame, room.players);
   } catch (e) {
@@ -369,9 +399,7 @@ export const updateRTCGame = (socket: SocketWithToken, game: RTCGame): void => {
   }
 };
 
-/**
- * 
- * export const endRTCGame = async (socket: SocketWithToken): Promise<void> => {
+export const endRTCGame = async (socket: SocketWithToken): Promise<void> => {
   logger.log(`recieved 'end' from ${socket.decoded_token.username}`);
 
   try {
@@ -383,16 +411,24 @@ export const updateRTCGame = (socket: SocketWithToken, game: RTCGame): void => {
       throw new Error(`no room set when ending game, id ${gameId}`);
     }
 
-    // save to db, remove room
+    logger.log('saving finished game to db');
 
-    console.log('TODO');
+    // save to db
+    await gameService.saveFinishedGame(gameId, room.game);
+
+    logger.log(`deleting room... `);
+
+    const success = rtcrooms.deleteRoom(gameId);
+
+    logger.log(success ? 'delete succesful' : 'delete failed');
+
+    socket.to(gameId).emit('game-ended');
   } catch (e) {
     logger.error(e.message);
 
     socket.emit('rtc_error', e.message);
   }
 };
- */
 
 export const handleTimerChange = (
   socket: SocketWithToken,

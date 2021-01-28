@@ -194,6 +194,10 @@ const updateRoomGame = (gameId: string, newGame: RTCGame): RTCGame => {
   return newGame;
 };
 
+const deleteRoom = (gameId: string): boolean => {
+  return rooms.delete(gameId);
+};
+
 export default {
   createRoom,
   joinRoom,
@@ -202,4 +206,5 @@ export default {
   updateRoomGame,
   filterGameForUser,
   getRooms,
+  deleteRoom,
 };

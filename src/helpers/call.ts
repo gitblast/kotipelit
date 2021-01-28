@@ -4,10 +4,17 @@ import { MediaConnection } from 'peerjs';
 
 const attachCallListeners = (
   call: MediaConnection,
-  onCall: (call: MediaConnection, stream: MediaStream) => void
+  onCall: (call: MediaConnection, stream: MediaStream) => void,
+  incoming?: boolean
 ) => {
   call.on('stream', (stream) => {
-    logger.log(`recieving stream from ${call.peer}`);
+    // this triggers for every track!!! so for a stream containing audio and video triggers twice (bug in peerjs)
+
+    logger.log(
+      `recieving stream from ${incoming ? 'incoming call' : 'call made'} to '${
+        call.peer
+      }'`
+    );
 
     onCall(call, stream);
   });

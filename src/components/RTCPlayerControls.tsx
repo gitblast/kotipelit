@@ -127,6 +127,12 @@ const RTCPlayerControls: React.FC<{
       return;
     }
 
+    if (socket.disconnected) {
+      logger.log('socket is disconnected, reconnecting');
+
+      socket.connect();
+    }
+
     socket.emit('get-room-game');
   };
 

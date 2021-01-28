@@ -104,7 +104,6 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   const classes = useStyles();
   const [onCall, setOnCall] = React.useState<boolean>(false);
   const peers = useGameRoom(token, onCall, MEDIA_CONSTRAINTS);
-
   const game = useSelector((state: State) => state.rtc.game);
   const socket = useSelector((state: State) => state.rtc.self?.socket);
 
@@ -117,6 +116,12 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   }, [peers]);
 
   const handleToggleFullscreen = React.useCallback(() => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+
+      return;
+    }
+
     if (fullscreenRef.current) {
       fullscreenRef.current.requestFullscreen();
     }

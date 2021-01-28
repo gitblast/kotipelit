@@ -78,6 +78,7 @@ const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
       left: 0,
       right: 0,
       color: 'rgba(218, 214, 214)',
+      textAlign: 'center',
     },
     absolute: {
       width: '100%',
@@ -155,7 +156,7 @@ const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({ peer, order }) => {
           {overlayContent}
         </VideoWithOverlay>
       ) : (
-        <div className={classes.noConnection}>
+        <div>
           <ErrorMsg text={'Ei videoyhteyttä'}>{overlayContent}</ErrorMsg>
         </div>
       )}

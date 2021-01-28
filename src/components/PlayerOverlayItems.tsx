@@ -12,10 +12,11 @@ import {
   Typography,
   IconButton,
   Checkbox,
-  Fade,
   Button,
   Grid,
 } from '@material-ui/core';
+
+import { Animated } from 'react-animated-css';
 
 import logger from '../utils/logger';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
@@ -55,18 +56,14 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
     },
-    // tooltipRoot: {
-    //   position: 'absolute',
-    //   height: 1,
-    //   width: 1,
-    //   top: '27.5%',
-    //   left: '30%',
-    // },
-    // tooltipContent: {
-    //   paddingLeft: theme.spacing(1),
-    //   paddingRight: theme.spacing(1),
-    //   backgroundColor: 'rgba(244, 172, 69)',
-    // },
+    pointsAddition: {
+      color: 'white',
+      display: 'flex',
+      justifyContent: 'flex-end',
+      fontSize: theme.spacing(6),
+      position: 'absolute',
+      top: '36%',
+    },
     // Repeating same code from HostOverlayItems
     controlIcon: {
       color: 'white',
@@ -262,12 +259,27 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
             </div>
           )
         }
+        {forHost && showPointAddition && addition !== 0 && (
+          <div>
+            <Animated
+              animationIn="fadeIn"
+              animationInDuration={2000}
+              animationOut="fadeOut"
+              isVisible={true}
+            >
+              <Typography variant="h6" className={classes.pointsAddition}>
+                {addition}
+              </Typography>
+            </Animated>
+          </div>
+        )}
         {forHost && answer && answerBox(answer)}
         {game.status === GameStatus.FINISHED && (
           <div className={classes.positionLabel}>
             <Typography variant="h3">{getPosition()}</Typography>
           </div>
         )}
+
         <div className={classes.flex}>
           <div className={classes.spacer} />
         </div>
@@ -275,22 +287,16 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
         <div className={classes.spacer} />
         <div className={classes.flex}>
           <Grid container className={classes.nameBadge}>
-            <Grid item md={5} sm={5}>
+            <Grid item md={7} sm={6}>
               <Typography variant="h6" className={classes.playerName}>
                 {player.name}
               </Typography>
             </Grid>
-            <Grid item md={3} sm={3}>
+            <Grid item md={2} sm={2}>
               <Typography variant="h6">{player.points}</Typography>
             </Grid>
-            <Grid item md={2} sm={2}>
-              {forHost && showPointAddition && addition !== 0 && (
-                <Fade in>
-                  <Typography>{addition}</Typography>
-                </Fade>
-              )}
-            </Grid>
-            <Grid item md={2} sm={2}>
+
+            <Grid item md={3} sm={4}>
               <IconButton
                 size="small"
                 onClick={toggleMuted}

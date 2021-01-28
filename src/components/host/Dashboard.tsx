@@ -9,7 +9,9 @@ import { Fab, Typography, Paper, Avatar } from '@material-ui/core';
 import QueuedGame from './QueuedGame';
 
 import { State, LoggedUser, GameStatus } from '../../types';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+
+import { initGames } from '../../reducers/games.reducer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -91,6 +93,13 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   const classes = useStyles();
+
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    // todo: handle changes in socket.io callbacks to not fetch all games every time dashboard renders
+    dispatch(initGames());
+  }, [dispatch]);
 
   const games = useSelector((state: State) => state.games.allGames);
 

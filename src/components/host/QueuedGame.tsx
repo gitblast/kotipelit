@@ -201,9 +201,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
                 // </Button>
                 <Typography>...</Typography>
               ) : (
-                <Typography component="div">
-                  {`${player.points} pistettä`}
-                </Typography>
+                <Typography component="div">{player.points}</Typography>
               )}
             </div>
           ))}

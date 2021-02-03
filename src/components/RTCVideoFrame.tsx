@@ -34,6 +34,7 @@ const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
       marginRight: theme.spacing(3),
       marginBottom: theme.spacing(3),
       marginTop: theme.spacing(1),
+      zIndex: theme.zIndex.drawer + 2,
       [theme.breakpoints.down('sm')]: {
         width: '32%',
         margin: 3,

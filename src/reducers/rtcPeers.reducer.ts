@@ -104,6 +104,8 @@ export const setStreamForPeer = (
       return;
     }
 
+    logger.log(`setting stream for peer id '${call.peer}'`);
+
     const newPeers = currentPeers.map((peer) =>
       peer.peerId === call.peer ? { ...peer, call, stream } : peer
     );
@@ -112,7 +114,7 @@ export const setStreamForPeer = (
   };
 };
 
-export const refreshPeerConnection = (peerId: string) => {
+export const callPeer = (peerId: string, displayName?: string) => {
   return (
     dispatch: ThunkDispatch<State, unknown, Action>,
     getState: () => State
@@ -126,7 +128,7 @@ export const refreshPeerConnection = (peerId: string) => {
     }
 
     if (ownPeerClient.id === peerId) {
-      logger.error('cannot connect to self');
+      // not connecting to self
 
       return;
     }
@@ -141,13 +143,23 @@ export const refreshPeerConnection = (peerId: string) => {
 
     dispatch(nullifyConnection(peerId));
 
-    const newCall = ownPeerClient.call(peerId, ownStream);
+    logger.log(`calling peer '${displayName ? displayName : peerId}'`);
 
-    callHelpers.attachCallListeners(
-      newCall,
-      (mediaCall: MediaConnection, stream: MediaStream) =>
-        dispatch(setStreamForPeer(mediaCall, stream))
-    );
+    const call = ownPeerClient.call(peerId, ownStream);
+
+    if (call) {
+      callHelpers.attachCallListeners(
+        call,
+        (mediaCall: MediaConnection, stream: MediaStream) =>
+          dispatch(setStreamForPeer(mediaCall, stream))
+      );
+    } else {
+      logger.error(
+        `could not call peer ${
+          displayName ? displayName : ''
+        } with peer id '${peerId}'`
+      );
+    }
   };
 };
 
@@ -180,7 +192,17 @@ export const callPeers = () => {
       return;
     }
 
+    currentPeers.forEach((peerObj) => {
+      if (peerObj.peerId) {
+        dispatch(callPeer(peerObj.peerId, peerObj.displayName));
+      }
+    });
+
     ownPeerClient.on('call', (call) => {
+      if (!call) {
+        logger.error('unexpected error: no call set in on-call callback');
+      }
+
       logger.log(`incoming call from ${call.peer}`);
 
       const peer = currentPeers.find((peer) => peer.peerId === call.peer);
@@ -191,34 +213,11 @@ export const callPeers = () => {
 
       call.answer(ownStream);
 
-      callHelpers.attachCallListeners(
-        call,
-        (mediaCall: MediaConnection, stream: MediaStream) =>
-          dispatch(setStreamForPeer(mediaCall, stream))
-      );
-    });
+      const callback = (mediaCall: MediaConnection, stream: MediaStream) => {
+        dispatch(setStreamForPeer(mediaCall, stream));
+      };
 
-    currentPeers.forEach((peerObj) => {
-      if (peerObj.peerId) {
-        // not calling self
-        if (ownPeerClient.id === peerObj.peerId) {
-          return;
-        }
-
-        if (peerObj.call && peerObj.call.peer === peerObj.peerId) {
-          console.warn('call with peer already exists, check for duplicates!');
-        }
-
-        logger.log(`calling peer ${peerObj.displayName}`);
-
-        const call = ownPeerClient.call(peerObj.peerId, ownStream);
-
-        callHelpers.attachCallListeners(
-          call,
-          (mediaCall: MediaConnection, stream: MediaStream) =>
-            dispatch(setStreamForPeer(mediaCall, stream))
-        );
-      }
+      callHelpers.attachCallListeners(call, callback, true);
     });
   };
 };

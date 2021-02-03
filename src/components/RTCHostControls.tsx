@@ -342,7 +342,23 @@ const RTCHostControls: React.FC<{
       return;
     }
 
+    if (socket.disconnected) {
+      logger.log('socket is disconnected, reconnecting');
+
+      socket.connect();
+    }
+
     socket.emit('get-room-game');
+  };
+
+  const handleFinish = () => {
+    if (!socket) {
+      logger.error('no socket set when trying to emit finish game');
+
+      return;
+    }
+
+    socket.emit('end');
   };
 
   return (
@@ -354,7 +370,7 @@ const RTCHostControls: React.FC<{
             className={classes.timerButton}
             variant="extended"
             color="secondary"
-            onClick={() => null}
+            onClick={handleFinish}
           >
             Lopeta peli
           </Fab>

@@ -21,7 +21,7 @@ import { Animated } from 'react-animated-css';
 import logger from '../utils/logger';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { setClicked, setMuted } from '../reducers/kotitonni.local.reducer';
-import { refreshPeerConnection } from '../reducers/rtcPeers.reducer';
+import { callPeer } from '../reducers/rtcPeers.reducer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -222,7 +222,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
       return;
     }
 
-    dispatch(refreshPeerConnection(peer.peerId));
+    dispatch(callPeer(peer.peerId));
   };
 
   const answer = getAnswer();

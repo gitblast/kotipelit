@@ -15,7 +15,6 @@ import UserControls from './components/UserControls';
 
 import ChannelPage from './components/ChannelPage';
 import { State, HostChannel } from './types';
-import { initGames } from './reducers/games.reducer';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -56,17 +55,11 @@ const App = () => {
     shallowEqual
   );
 
-  // init channels and games and check local storage for user
+  // init channels and check local storage for user
   React.useEffect(() => {
     dispatch(checkForUser());
     dispatch(initChannels());
   }, [dispatch]);
-
-  React.useEffect(() => {
-    if (user.loggedIn) {
-      dispatch(initGames());
-    }
-  }, [user.loggedIn, dispatch]);
 
   const channelRoutes = (channels: HostChannel[]) => {
     return channels.map((channel) => (

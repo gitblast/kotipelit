@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     backdropBottom: {
       zIndex: theme.zIndex.drawer + 1,
-      backgroundColor: 'rgba(0,0,0,0.8)',
+      backgroundColor: 'rgba(0,0,0,0.9)',
     },
     backdropTop: {
       zIndex: theme.zIndex.drawer + 3,
@@ -70,6 +70,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'flex-start',
       color: 'white',
       justifyContent: 'center',
+      backgroundColor: 'rgba(0,0,0,0.2)',
     },
     backdropContent: {
       marginTop: theme.spacing(2),

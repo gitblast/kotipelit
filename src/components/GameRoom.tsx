@@ -49,6 +49,10 @@ const useStyles = makeStyles((theme: Theme) =>
     startBtnContainer: {
       marginTop: theme.spacing(2),
     },
+    startButton: {
+      padding: theme.spacing(5),
+      border: 'solid white',
+    },
     infoContent: {
       margin: 15,
     },
@@ -56,18 +60,22 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(2),
       margin: 15,
     },
-    backdrop: {
+    backdropBottom: {
       zIndex: theme.zIndex.drawer + 1,
       backgroundColor: 'rgba(0,0,0,0.8)',
+    },
+    backdropTop: {
+      zIndex: theme.zIndex.drawer + 3,
+      display: 'flex',
+      alignItems: 'flex-start',
       color: 'white',
+      justifyContent: 'center',
     },
     backdropContent: {
+      marginTop: theme.spacing(2),
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-    },
-    examples: {
-      marginTop: theme.spacing(2),
     },
   })
 );
@@ -200,22 +208,25 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
 
       <Backdrop
         open={game.status === GameStatus.WAITING}
-        className={classes.backdrop}
+        className={classes.backdropBottom}
+      ></Backdrop>
+      <Backdrop
+        open={game.status === GameStatus.WAITING}
+        className={classes.backdropTop}
       >
         <div className={classes.backdropContent}>
-          <Typography variant="subtitle2" component="div">
-            Kotitonni
-          </Typography>
           {isHost ? (
             <>
-              <Typography>Odota kunnes pelaajat on online. </Typography>
-              <Typography>Hauskaa kotipeli-iltaa! </Typography>
+              <Typography variant="h5">
+                Odota kunnes pelaajat on online.{' '}
+              </Typography>
               <div className={classes.startBtnContainer}>
                 <Fab
                   color="primary"
                   variant="extended"
                   size="large"
                   onClick={handleStart}
+                  className={classes.startButton}
                 >
                   Aloita peli
                 </Fab>
@@ -223,7 +234,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
             </>
           ) : (
             <Typography variant="h6" component="div">
-              Peli alkaa hetken kuluttua...
+              Odotetaan että pelinhoitaja käynnistää pelin...
             </Typography>
           )}
         </div>

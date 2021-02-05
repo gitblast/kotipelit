@@ -39,10 +39,13 @@ const useStyles = makeStyles((theme: Theme) =>
     gameTitle: {
       color: 'rgb(185 231 229)',
       marginTop: theme.spacing(3),
+      fontSize: '60px',
     },
     topStyle: {
-      borderTop: '5px dotted rgb(185 231 229)',
-      width: '33vw',
+      borderTop: '15px dotted rgb(185 231 229)',
+      background: 'rgb(167 203 176)',
+      boxShadow: 'rgb(231 239 191) 1px 8px 44px',
+      width: '30vw',
       alignSelf: 'center',
       marginTop: '15px',
     },

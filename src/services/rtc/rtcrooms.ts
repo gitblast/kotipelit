@@ -151,7 +151,9 @@ const createRoom = (game: RTCGame): void => {
     }),
   };
 
-  logger.log(`${Date.now()} creating room for game ${game.id}`);
+  logger.log(
+    `${new Date().toLocaleString()} creating room for game ${game.id}`
+  );
 
   rooms.set(game.id, newRoom);
 };

@@ -16,6 +16,7 @@ import {
   CardActions,
 } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import ClearIcon from '@material-ui/icons/Clear';
 // Enable when possible to share on social media
 // import ShareIcon from '@material-ui/icons/Share';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
@@ -199,7 +200,9 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
                 // >
                 //   Kutsu
                 // </Button>
-                <Typography>...</Typography>
+                <IconButton className={classes.actionIcon}>
+                  <ClearIcon fontSize="small" />
+                </IconButton>
               ) : (
                 <Typography component="div">{player.points}</Typography>
               )}

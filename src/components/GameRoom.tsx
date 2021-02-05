@@ -66,16 +66,14 @@ const useStyles = makeStyles((theme: Theme) =>
     backdropBottom: {
       zIndex: theme.zIndex.drawer + 1,
       backgroundColor: 'rgba(0,0,0,0.9)',
-    },
-    backdropTop: {
-      zIndex: theme.zIndex.drawer + 3,
       display: 'flex',
       alignItems: 'flex-start',
       color: 'white',
       justifyContent: 'center',
-      backgroundColor: 'rgba(0,0,0,0.2)',
     },
+
     backdropContent: {
+      zIndex: theme.zIndex.drawer + 3,
       marginTop: theme.spacing(2),
       display: 'flex',
       flexDirection: 'column',
@@ -218,10 +216,6 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
       <Backdrop
         open={game.status === GameStatus.WAITING}
         className={classes.backdropBottom}
-      ></Backdrop>
-      <Backdrop
-        open={game.status === GameStatus.WAITING}
-        className={classes.backdropTop}
       >
         <div className={classes.backdropContent}>
           {isHost ? (

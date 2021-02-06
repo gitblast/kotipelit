@@ -50,7 +50,7 @@ const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
     },
     frame: {
       paddingTop: '75%',
-      backgroundColor: 'rgba(126,126,126)',
+      backgroundColor: 'rgba(30,19,37)',
       position: 'relative',
       color: 'white',
     },

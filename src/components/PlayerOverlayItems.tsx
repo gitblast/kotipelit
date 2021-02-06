@@ -26,14 +26,13 @@ import { callPeer } from '../reducers/rtcPeers.reducer';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     nameBadge: {
-      padding: theme.spacing(2),
+      padding: theme.spacing(1),
       alignItems: 'center',
-      backgroundColor: 'black',
+      backgroundColor: 'rgba(0, 0, 0, 0.8)',
       color: 'white',
-      opacity: 0.8,
       width: '100%',
       [theme.breakpoints.down('sm')]: {
-        padding: theme.spacing(1),
+        padding: theme.spacing(0.5),
       },
     },
     flexCol: {
@@ -76,7 +75,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     playerName: {
       [theme.breakpoints.down('sm')]: {
-        fontSize: 15,
+        fontSize: 18,
       },
     },
   })

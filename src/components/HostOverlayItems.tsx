@@ -17,20 +17,21 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     // Repeated code from PlayerOverlay!
     nameBadge: {
-      padding: theme.spacing(2),
-      backgroundColor: 'black',
+      padding: theme.spacing(1),
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.8)',
       color: 'white',
-      opacity: 0.8,
       width: '100%',
       // .. except for this
 
       [theme.breakpoints.down('sm')]: {
-        padding: theme.spacing(1),
+        padding: theme.spacing(0.5),
       },
     },
     hostName: {
+      fontSize: 32,
       [theme.breakpoints.down('sm')]: {
-        fontSize: 15,
+        fontSize: 18,
       },
     },
     // Repeated code from PlayerOverlay!

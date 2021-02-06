@@ -7,6 +7,9 @@ import RTCHostControls from './RTCHostControls';
 import RTCPlayerControls from './RTCPlayerControls';
 import AudioHandler from './AudioHandler';
 
+import HeadsetIcon from '@material-ui/icons/Headset';
+import HelpIcon from '@material-ui/icons/Help';
+
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import logger, { setDebug } from '../utils/logger';
 import { Backdrop, Fab, Typography } from '@material-ui/core';
@@ -57,6 +60,8 @@ const useStyles = makeStyles((theme: Theme) =>
       border: 'solid white',
     },
     infoContent: {
+      display: 'flex',
+
       margin: 15,
     },
     startVideoBtn: {
@@ -170,16 +175,19 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
       <div className={classes.container}>
         <Typography variant="h5">Peli alkaa pian!</Typography>
         <div className={classes.infoContent}>
+          <HeadsetIcon fontSize="large"></HeadsetIcon>
           <Typography>
-            Jos mahdollista, käytä kuulokkeita, niin pelin äänet eivät kuulu
-            muille pelaajille läpi.
-          </Typography>
-
-          <Typography>
-            Puhelimella pelattaessa suosittelemme kääntämään näytön sivuttain.
+            Käytä kuulokkeita, niin pelin äänet eivät kuulu muille pelaajille
+            läpi.
           </Typography>
         </div>
-        <Typography variant="h5">Onnea peliin!</Typography>
+        <div className={classes.infoContent}>
+          <HelpIcon fontSize="large"></HelpIcon>
+          <Typography>
+            Jos yhteydessä on ongelmia, voit kokeilla päivittää selaimen.
+          </Typography>
+        </div>
+
         <Fab
           className={classes.startVideoBtn}
           variant="extended"
@@ -236,9 +244,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
               </div>
             </>
           ) : (
-            <Typography variant="h6" component="div">
-              Odotetaan että pelinhoitaja käynnistää pelin...
-            </Typography>
+            <></>
           )}
         </div>
       </Backdrop>

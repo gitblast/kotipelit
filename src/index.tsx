@@ -28,13 +28,20 @@ const theme = createMuiTheme({
   },
   typography: {
     fontFamily: 'Itim',
+    body1: {
+      fontSize: '1.2rem',
+    },
+    body2: {
+      fontWeight: 'bold',
+    },
     h4: {},
     h5: {
-      fontSize: 22,
+      fontSize: 26,
     },
     h6: {
       fontFamily: 'Bebas Neue',
-      fontSize: 24,
+      fontSize: 32,
+      lineHeight: 1,
     },
     subtitle1: {
       fontFamily: 'Pacifico',
@@ -43,11 +50,8 @@ const theme = createMuiTheme({
     // Used to display the game name in GameRoom
     subtitle2: {
       fontFamily: 'Great Vibes',
-      fontSize: 50,
+      fontSize: 60,
       lineHeight: 1,
-    },
-    body2: {
-      fontWeight: 'bold',
     },
   },
 });

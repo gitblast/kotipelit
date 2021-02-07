@@ -101,7 +101,7 @@ const RTCPlayerControls: React.FC<{
     return !!answer;
   };
 
-  const handleClick = () => {
+  const handleAnswer = () => {
     if (!self || !game) {
       logger.error('self object or game missing when trying to emit');
 
@@ -117,6 +117,18 @@ const RTCPlayerControls: React.FC<{
       self.socket.emit('answer', answerObj);
 
       setAnswer('');
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    handleAnswer();
+  };
+
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLFormElement>) => {
+    if (!isDisabled() && event.keyCode === 13) {
+      handleAnswer();
     }
   };
 
@@ -136,8 +148,6 @@ const RTCPlayerControls: React.FC<{
     socket.emit('get-room-game');
   };
 
-  const disabled = isDisabled();
-
   return (
     <div className={classes.container}>
       <Grid container className={classes.controlsContent}>
@@ -145,29 +155,36 @@ const RTCPlayerControls: React.FC<{
         <Grid item md={3} sm={3}>
           <InfoBar />
         </Grid>
-        <Grid item md={4} sm={8} className={classes.btnContainer}>
-          <Typography className={classes.timer} variant="h6">
-            {timer}
-          </Typography>
 
-          <div className={classes.answerField}>
-            <TextField
-              variant="filled"
-              label="Vastaus.."
-              value={answer}
-              onChange={({ target }) => setAnswer(target.value)}
-              disabled={disabled}
-            />
-          </div>
-
-          <Fab
-            className={classes.sendAnswerBtn}
-            variant="extended"
-            onClick={handleClick}
-            disabled={disabled}
+        <Grid item md={4} sm={8}>
+          <form
+            onSubmit={handleSubmit}
+            onKeyPress={handleKeyPress}
+            className={classes.btnContainer}
           >
-            <Typography variant="h6">Vastaa</Typography>
-          </Fab>
+            <Typography className={classes.timer} variant="h6">
+              {timer}
+            </Typography>
+
+            <div className={classes.answerField}>
+              <TextField
+                variant="filled"
+                label="Vastaus.."
+                value={answer}
+                onChange={({ target }) => setAnswer(target.value)}
+                disabled={isDisabled()}
+              />
+            </div>
+
+            <Fab
+              className={classes.sendAnswerBtn}
+              type="submit"
+              variant="extended"
+              disabled={isDisabled()}
+            >
+              <Typography variant="h6">Vastaa</Typography>
+            </Fab>
+          </form>
         </Grid>
         <Grid item md={2} sm={1}></Grid>
         <Grid item md={2}>

@@ -54,6 +54,10 @@ Kotipelit.com`,
         <br />
         Jos tulee kysyttävää, voit olla yhteydessä vastaamalla tähän viestiin.
         <br /><br />
+        <span>Jos joudut peruuttamaan varauksesi, klikkaa <a href=${
+          inviteInfo.cancelUrl
+        }>tästä</a></span>
+        <br /><br />
         Hyviä pelejä!
         <br /><br />
         Terveisin,

@@ -335,6 +335,7 @@ export interface Answer {
 
 export interface BaseInviteInfo {
   url: string;
+  cancelUrl: string;
   displayName: string;
   gameType: GameType;
   startTime: Date;

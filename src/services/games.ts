@@ -28,6 +28,7 @@ const getInviteMailData = (
 
       return {
         url: `https://www.kotipelit.com/${hostName}/${player.inviteCode}`,
+        cancelUrl: `https://www.kotipelit.com/${hostName}/peruuta/${player.inviteCode}`,
         gameType: GameType.KOTITONNI,
         displayName,
         startTime: game.startTime,

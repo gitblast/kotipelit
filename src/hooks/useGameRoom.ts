@@ -12,12 +12,15 @@ import logger from '../utils/logger';
 import { setTimer } from '../reducers/kotitonni.local.reducer';
 import { callPeers, userJoined, userLeft } from '../reducers/rtcPeers.reducer';
 import { setStream } from '../reducers/rtcSelf.reducer';
+import { useHistory, useParams } from 'react-router-dom';
 
 const useGameRoom = (
   token: string | null,
   onCall: boolean,
   mediaConstraints: MediaStreamConstraints
 ): RTCPeer[] | null => {
+  const history = useHistory();
+  const hostname = useParams<{ username: string }>().username;
   const [peersCalled, setPeersCalled] = React.useState(false);
   const peers = useSelector((state: State) => state.rtc.peers, shallowEqual);
   const streamSet = useSelector((state: State) => !!state.rtc.self?.stream);
@@ -54,6 +57,12 @@ const useGameRoom = (
 
       socket.emit('join-gameroom', peer.id);
 
+      socket.on('game-ended', () => {
+        logger.log(`recieved 'game-ended'`);
+
+        history.push(`/${hostname}/kiitos`);
+      });
+
       socket.on('room-joined', (rtcRoom: RTCGameRoom) => {
         logger.log(`recieved a game room`, rtcRoom);
 
@@ -65,7 +74,7 @@ const useGameRoom = (
       });
 
       socket.on('game updated', (updatedGame: RTCGame) => {
-        logger.log(`recieved 'game updated' with data;`, updatedGame);
+        logger.log(`recieved 'game updated' with data:`, updatedGame);
 
         const mappedPlayers = updatedGame.players.map((player) => ({
           ...player,
@@ -101,7 +110,7 @@ const useGameRoom = (
         dispatch(userJoined(newUser));
       });
     }
-  }, [socket, peer, dispatch]);
+  }, [socket, peer, dispatch, hostname, history]);
 
   React.useEffect(() => {
     if (mediaStream && onCall && !peersCalled) {

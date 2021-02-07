@@ -16,6 +16,7 @@ import logger from '../utils/logger';
 import { reset, setTimer } from '../reducers/kotitonni.local.reducer';
 import { setGame } from '../reducers/rtcGame.reducer';
 import InfoBar from './InfoBar';
+import { useHistory, useParams } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -92,10 +93,10 @@ const RTCHostControls: React.FC<{
   handleToggleFullscreen: () => void;
 }> = ({ handleToggleFullscreen }) => {
   const classes = useStyles();
-
+  const history = useHistory();
   const [timerRunning, setTimerRunning] = React.useState<boolean>(false);
   const timer = useSelector((state: State) => state.rtc.localData.timer);
-
+  const params = useParams<{ username: string }>();
   const dispatch = useDispatch();
   const game = useSelector((state: State) => state.rtc.game);
   const socket = useSelector((state: State) => state.rtc.self?.socket);
@@ -359,6 +360,14 @@ const RTCHostControls: React.FC<{
     }
 
     socket.emit('end');
+
+    if (!params?.username) {
+      logger.error('no username in params when trying to redirect');
+
+      return;
+    }
+
+    history.push(`/${params.username}/kiitos`);
   };
 
   return (

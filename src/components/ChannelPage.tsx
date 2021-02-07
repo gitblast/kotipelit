@@ -10,6 +10,7 @@ import GameLobby from './GameLobby';
 import Dashboard from './host/Dashboard';
 import { useSelector } from 'react-redux';
 import { State /**BaseUser */ } from '../types';
+import TYFPPage from './TYFPPage';
 
 interface ChannelPageProps {
   labelText: string;
@@ -21,6 +22,9 @@ const ChannelPage: React.FC<ChannelPageProps> = () => {
   return (
     <Router>
       <Switch>
+        <Route path="/:username/kiitos">
+          <TYFPPage />
+        </Route>
         <Route path="/:username/newgame">
           {user.loggedIn && <NewGame username={user.username} />}
         </Route>

@@ -47,6 +47,7 @@ describe('xirsys router', () => {
     expect(mockedAxios.put).toHaveBeenLastCalledWith(
       config.XIRSYS_URL,
       {
+        expire: '7200',
         format: 'urls',
       },
       {

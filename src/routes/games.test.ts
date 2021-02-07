@@ -169,19 +169,24 @@ describe('games router', () => {
           player: {
             name: string;
             id: string;
-            expires: number;
-            locked: boolean;
+            reservedFor: {
+              expires: number;
+              locked: boolean;
+            };
           },
           index: number
         ) => {
           if (index === 0) {
             expect(player.name).toBe(game.players[0].name);
             expect(player.id).toBe(game.players[0].id);
-            expect(player.expires).toBe(game.players[0].reservedFor?.expires);
-            expect(player.locked).toBe(game.players[0].reservedFor?.locked);
+            expect(player.reservedFor?.expires).toBe(
+              game.players[0].reservedFor?.expires
+            );
+            expect(player.reservedFor.locked).toBe(
+              game.players[0].reservedFor?.locked
+            );
           } else {
-            expect(player.expires).toBeNull();
-            expect(player.locked).toBe(false);
+            expect(player.reservedFor).toBeNull();
           }
         }
       );
@@ -201,7 +206,7 @@ describe('games router', () => {
         gameId,
         reservationId: 'INVALID_reservation',
         displayName: 'TestDisplayName',
-        email: 'testEmailAddress',
+        email: 'testEmailAddress@validish.io',
       };
     });
 
@@ -406,6 +411,7 @@ describe('games router', () => {
         .expect('Content-Type', /application\/json/);
 
       const expectedPayload = {
+        exp: expect.any(Number),
         username: player.name,
         id: player.id,
         gameId: gameId,

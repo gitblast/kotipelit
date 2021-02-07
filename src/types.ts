@@ -33,12 +33,15 @@ export interface ReservationResponse {
 export interface LobbyGamePlayer {
   name: string;
   id: string;
-  expires: number | null;
-  locked: boolean;
+  reservedFor: {
+    id: string;
+    expires: number;
+    locked?: boolean;
+  } | null;
   email: string | null;
+  data?: GameData;
   reservedForMe?: boolean;
   lockedForMe?: boolean;
-  words?: string[];
   url?: string;
 }
 
@@ -54,10 +57,12 @@ export interface KotitonniPlayer {
   online: boolean;
   hasTurn?: boolean;
   inviteCode?: string;
-  data: {
-    answers: Record<string, Record<string, string>>;
-    words: string[];
-  };
+  data: GameData;
+}
+
+export interface GameData {
+  answers: Record<string, Record<string, string>>;
+  words: string[];
 }
 
 export interface RTCKotitonniPlayer {
@@ -66,10 +71,7 @@ export interface RTCKotitonniPlayer {
   points: number;
   hasTurn?: boolean;
   inviteCode: string;
-  data: {
-    answers: Record<string, Record<string, string>>;
-    words: string[];
-  };
+  data: GameData;
 }
 
 export interface Kotitonni extends Game {

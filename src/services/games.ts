@@ -103,6 +103,16 @@ const getLobbyGame = async (
   return response.data;
 };
 
+const cancelReservation = async (hostName: string, inviteCode: string) => {
+  try {
+    await axios.get(`${baseUrl}/cancel/${hostName}/${inviteCode}`);
+
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
 export default {
   getAll,
   addNew,
@@ -112,4 +122,5 @@ export default {
   reserveSpotForGame,
   getLobbyGame,
   lockSpotForGame,
+  cancelReservation,
 };

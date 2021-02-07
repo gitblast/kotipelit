@@ -34,22 +34,42 @@ const useLobbySystem = () => {
 
           const myLockedPlayerData = JSON.parse(mySavedReservation);
 
+          let reservationIdMatches = false;
+
           setGame({
             ...fetchedGame,
             players: fetchedGame.players.map((player) => {
-              return player && player.id === myLockedPlayerData.id
-                ? {
-                    ...player,
-                    name: myLockedPlayerData.name,
-                    lockedForMe: true,
-                    locked: true,
-                    email: myLockedPlayerData.email,
-                    words: myLockedPlayerData.data.words,
-                    url: `https://www.kotipelit.com/${username}/${myLockedPlayerData.inviteCode}`,
-                  }
-                : player;
+              if (
+                player.id === myLockedPlayerData.id &&
+                player.reservedFor?.id === myLockedPlayerData.reservedFor.id
+              ) {
+                reservationIdMatches = true;
+
+                return {
+                  ...player,
+                  name: myLockedPlayerData.name,
+                  lockedForMe: true,
+                  locked: true,
+                  email: myLockedPlayerData.email,
+                  data: myLockedPlayerData.data,
+                  url: `https://www.kotipelit.com/${username}/${myLockedPlayerData.inviteCode}`,
+                };
+              }
+
+              return player;
             }),
           });
+
+          if (!reservationIdMatches) {
+            // reservation has been cancelled
+            logger.log(
+              'reservation id does not match! removing reservation data from local storage'
+            );
+
+            window.localStorage.removeItem(
+              `kotitonniReservation-gameID-${gameID}`
+            );
+          }
         } else {
           setGame(fetchedGame);
         }
@@ -84,6 +104,7 @@ const useLobbySystem = () => {
           JSON.stringify({
             ...lockedPlayerData,
             email,
+            reservationId,
           })
         );
 
@@ -97,9 +118,13 @@ const useLobbySystem = () => {
                   ...player,
                   name: lockedPlayerData.name,
                   lockedForMe: true,
-                  locked: true,
+                  reservedFor: {
+                    id: reservationId,
+                    expires: 0,
+                    locked: true,
+                  },
                   email,
-                  words: lockedPlayerData.data.words,
+                  data: lockedPlayerData.data,
                   url: `https://www.kotipelit.com/${username}/${lockedPlayerData.inviteCode}`,
                 }
               : player;
@@ -135,7 +160,11 @@ const useLobbySystem = () => {
           return player && player.id === reservationData.playerId
             ? {
                 ...player,
-                expires: reservationData.expiresAt,
+                reservedFor: {
+                  id: reservationId,
+                  expires: reservationData.expiresAt,
+                  locked: false,
+                },
                 reservedForMe: true,
               }
             : player;

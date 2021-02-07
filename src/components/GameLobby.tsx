@@ -83,23 +83,31 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
   }, [game]);
 
   const getLabel = (player: LobbyGamePlayer) => {
-    if (player.locked) {
+    const playerReservation = player.reservedFor;
+
+    if (!playerReservation) {
+      return <span className={classes.availableSeat}>Vapaa</span>;
+    }
+
+    if (playerReservation.locked) {
       return <span>{player.name}</span>;
     }
 
-    if (player.reservedForMe && player.expires) {
+    if (player.reservedForMe) {
       return (
-        <span>{`Varattu sinulle ${format(new Date(player.expires), 'HH:mm', {
-          locale: fiLocale,
-        })} asti`}</span>
+        <span>{`Varattu sinulle ${format(
+          new Date(playerReservation.expires),
+          'HH:mm',
+          {
+            locale: fiLocale,
+          }
+        )} asti`}</span>
       );
     }
 
-    if (player.expires && player.expires > Date.now()) {
+    if (playerReservation.expires > Date.now()) {
       return <span className={classes.bookedText}>Varattu</span>;
     }
-
-    return <span className={classes.availableSeat}>Vapaa</span>;
   };
 
   const getWordList = (words?: string[]) => {
@@ -161,7 +169,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
             Jos et saanut viestiä, kirjoita itsellesi alla olevat tiedot
             muistiin.
           </Typography>
-          {getWordList(spotLockedForMe.words)}
+          {getWordList(spotLockedForMe.data?.words)}
           {getGameUrl(spotLockedForMe.url)}
           {/** peruuta varaus-nappi? */}
         </Paper>

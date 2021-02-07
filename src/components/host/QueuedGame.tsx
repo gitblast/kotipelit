@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { capitalize } from 'lodash';
-
+import gameService from '../../services/games';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
   Button,
@@ -26,6 +26,7 @@ import { deleteGame } from '../../reducers/games.reducer';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import fiLocale from 'date-fns/locale/fi';
+import logger from '../../utils/logger';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -135,6 +136,26 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
     }
   };
 
+  const handleCancel = async (inviteCode?: string) => {
+    if (!inviteCode) {
+      return logger.log('inviteCode missing!');
+    }
+
+    const agree = window.confirm('Perutaanko varaus?');
+
+    if (!agree) return;
+
+    const success = await gameService.cancelReservation(username, inviteCode);
+
+    if (success) {
+      logger.log('cancel succesful');
+
+      console.log('todo: update ui');
+    } else {
+      logger.log('cancel failed');
+    }
+  };
+
   // const getLobbyLink = () => {
   //   const host =
   //     // eslint-disable-next-line no-undef
@@ -200,7 +221,10 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
                 // >
                 //   Kutsu
                 // </Button>
-                <IconButton className={classes.actionIcon}>
+                <IconButton
+                  className={classes.actionIcon}
+                  onClick={() => handleCancel(player.inviteCode)}
+                >
                   <ClearIcon fontSize="small" />
                 </IconButton>
               ) : (

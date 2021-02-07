@@ -147,10 +147,15 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
     }
 
     if (spotLockedForMe) {
+      const emailString = spotLockedForMe.email
+        ? ` (${spotLockedForMe.email})`
+        : '.';
+
       return (
         <Paper className={classes.registeredInfo}>
           <Typography variant="h5">
-            Lähetimme pelin tiedot sähköpostiisi.
+            {`Lähetimme pelin tiedot sähköpostiisi${emailString}`}
+            {/** Lähetä uudestaan -nappi, vaihda sposti-toiminto? */}
           </Typography>
           <Typography className={classes.emailConfText}>
             Jos et saanut viestiä, kirjoita itsellesi alla olevat tiedot
@@ -158,6 +163,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
           </Typography>
           {getWordList(spotLockedForMe.words)}
           {getGameUrl(spotLockedForMe.url)}
+          {/** peruuta varaus-nappi? */}
         </Paper>
       );
     }
@@ -231,7 +237,9 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
             <References />
           </>
         ) : (
-          <Loader msg={'Ladataan...'} spinner />
+          !error?.startsWith('Ilmoittautuminen on päättynyt') && ( // not showing spinner if lobby is no longer open
+            <Loader msg={'Ladataan...'} spinner />
+          )
         )}
       </div>
       <Footer />

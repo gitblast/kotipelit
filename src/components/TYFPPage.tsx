@@ -5,6 +5,7 @@ import { Paper, Typography } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { State } from '../types';
 import { Redirect } from 'react-router-dom';
+import logger from '../utils/logger';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -18,6 +19,13 @@ const TYFPPage: React.FC = () => {
   const classes = useStyles();
 
   const game = useSelector((state: State) => state.rtc.game);
+
+  React.useEffect(() => {
+    if (game) {
+      logger.log('removing reservation data from local storage');
+      window.localStorage.removeItem(`kotitonniReservation-gameID-${game.id}`);
+    }
+  }, [game]);
 
   if (!game) {
     return <Redirect to="/" />;

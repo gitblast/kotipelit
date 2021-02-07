@@ -35,6 +35,7 @@ export interface LobbyGamePlayer {
   id: string;
   expires: number | null;
   locked: boolean;
+  email: string | null;
   reservedForMe?: boolean;
   lockedForMe?: boolean;
   words?: string[];

@@ -25,7 +25,34 @@ const useLobbySystem = () => {
 
         logger.log('setting game', fetchedGame);
 
-        setGame(fetchedGame);
+        const mySavedReservation = window.localStorage.getItem(
+          `kotitonniReservation-gameID-${gameID}`
+        );
+
+        if (mySavedReservation) {
+          logger.log('existing reservation found!');
+
+          const myLockedPlayerData = JSON.parse(mySavedReservation);
+
+          setGame({
+            ...fetchedGame,
+            players: fetchedGame.players.map((player) => {
+              return player && player.id === myLockedPlayerData.id
+                ? {
+                    ...player,
+                    name: myLockedPlayerData.name,
+                    lockedForMe: true,
+                    locked: true,
+                    email: myLockedPlayerData.email,
+                    words: myLockedPlayerData.data.words,
+                    url: `https://www.kotipelit.com/${username}/${myLockedPlayerData.inviteCode}`,
+                  }
+                : player;
+            }),
+          });
+        } else {
+          setGame(fetchedGame);
+        }
       } catch (e) {
         setError(
           'Ilmoittautuminen on päättynyt! Tarkista pelin linkki sähköpostistasi.'
@@ -52,6 +79,14 @@ const useLobbySystem = () => {
           email
         );
 
+        window.localStorage.setItem(
+          `kotitonniReservation-gameID-${gameID}`,
+          JSON.stringify({
+            ...lockedPlayerData,
+            email,
+          })
+        );
+
         logger.log('got locked player', lockedPlayerData);
 
         const newGame = {
@@ -63,6 +98,7 @@ const useLobbySystem = () => {
                   name: lockedPlayerData.name,
                   lockedForMe: true,
                   locked: true,
+                  email,
                   words: lockedPlayerData.data.words,
                   url: `https://www.kotipelit.com/${username}/${lockedPlayerData.inviteCode}`,
                 }

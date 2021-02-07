@@ -1,10 +1,11 @@
 import React from 'react';
 
 import References from './References';
+import LockReservationForm from './LockReservationForm';
 
 import useLobbySystem from '../hooks/useLobbySystem';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Fab, Typography, Grid, TextField, Paper } from '@material-ui/core';
+import { Fab, Typography, Grid, Paper } from '@material-ui/core';
 import { LobbyGamePlayer } from '../types';
 import Loader from './Loader';
 import { capitalize } from 'lodash';
@@ -28,21 +29,12 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
     },
-    seatLock: {
-      padding: theme.spacing(2),
-      [theme.breakpoints.down('xs')]: {
-        flexWrap: 'wrap',
-      },
-    },
     availableSeat: {
       color: 'rgb(104 122 106)',
     },
     reserveBtn: {
       padding: theme.spacing(4),
       margin: theme.spacing(2),
-    },
-    lockBtn: {
-      margin: theme.spacing(4),
     },
     bookedText: {
       color: 'red',
@@ -72,52 +64,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
-
-interface LockReservationFormProps {
-  handleClick: (displayName: string, email: string) => void;
-}
-
-const LockReservationForm: React.FC<LockReservationFormProps> = ({
-  handleClick,
-}) => {
-  const classes = useStyles();
-  const [name, setName] = React.useState('');
-  const [email, setEmail] = React.useState('');
-
-  return (
-    <div className={classes.seatLock}>
-      <div>
-        <div>
-          <TextField
-            value={name}
-            onChange={({ target }) => setName(target.value)}
-            label="Nimi"
-          />
-        </div>
-        <div>
-          <TextField
-            value={email}
-            onChange={({ target }) => setEmail(target.value)}
-            label="Sähköpostiosoite"
-          />
-          <Typography variant="body1">
-            *Saat pelin tiedot sähköpostiisi. Tietosi poistuu järjestelmästä
-            kolmen päivän kuluessa.
-          </Typography>
-        </div>
-      </div>
-      <Fab
-        className={classes.lockBtn}
-        color="primary"
-        variant="extended"
-        onClick={() => handleClick(name, email)}
-        disabled={!name}
-      >
-        <Typography>Lukitse </Typography>
-      </Fab>
-    </div>
-  );
-};
 
 interface GameLobbyProps {
   something?: boolean;
@@ -216,7 +162,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
       );
     }
 
-    return <LockReservationForm handleClick={lockSpot} />;
+    return <LockReservationForm handleReserve={lockSpot} />;
   };
 
   return (

@@ -112,6 +112,22 @@ const parseNumber = (number: any): number => {
   return Number(number);
 };
 
+export const parseEmail = (email: any): string => {
+  if (!email || !isString(email)) {
+    throw new Error('Invalid or missing email');
+  }
+
+  if (
+    !/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.exec(
+      email
+    )
+  ) {
+    throw new Error('Invalid email');
+  }
+
+  return email;
+};
+
 const parsePlayers = (players: any): GamePlayer[] => {
   if (!players) throw new Error('Missing players');
   if (!isArray(players)) throw new Error('Invalid players');

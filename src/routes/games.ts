@@ -12,6 +12,7 @@ import {
   validateGamePlayer,
   toPositiveInteger,
   parseString,
+  parseEmail,
 } from '../utils/mappers';
 
 import expressJwt from 'express-jwt';
@@ -27,7 +28,7 @@ import User from '../models/user';
 import gameService from '../services/games';
 import mailService from '../services/mail';
 
-import { Role, WordModel } from '../types';
+import { GameStatus, Role, WordModel } from '../types';
 import { onlyForRole } from '../utils/middleware';
 import logger from '../utils/logger';
 
@@ -40,7 +41,7 @@ router.put('/lock', async (req, res, next) => {
     const gameId = parseString(req.body.gameId);
     const reservationId = parseString(req.body.reservationId);
     const displayName = parseString(req.body.displayName);
-    const email = parseString(req.body.email);
+    const email = parseEmail(req.body.email);
 
     const game = await Game.findById(gameId);
 
@@ -102,6 +103,8 @@ router.put('/lock', async (req, res, next) => {
 
     const savedGame = await game.save();
 
+    res.json(playerWithReservationLocked);
+
     const inviteMailData = gameService.getInviteMailData(
       savedGame,
       playerWithReservationLocked.id,
@@ -110,9 +113,9 @@ router.put('/lock', async (req, res, next) => {
     );
 
     await mailService.sendInvite(email, inviteMailData);
-
-    res.json(playerWithReservationLocked);
   } catch (e) {
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    logger.error(`error locking spot: ${e.message}`);
     next(e);
   }
 });
@@ -191,6 +194,73 @@ router.put('/reserve', async (req, res, next) => {
   }
 });
 
+router.get('/cancel/:hostName/:inviteCode', async (req, res, next) => {
+  try {
+    const hostName = toID(req.params.hostName);
+    const inviteCode = toID(req.params.inviteCode);
+
+    const urlData = await Url.findOne({ hostName, inviteCode });
+
+    if (!urlData) {
+      throw new Error(
+        `Invalid url: no game found with host name '${hostName}' and invite code '${inviteCode}'`
+      );
+    }
+
+    const { gameId } = urlData;
+
+    const game = await Game.findOne({ _id: gameId });
+
+    if (!game) {
+      throw new Error(`Invalid game id: no game found with id '${gameId}'`);
+    }
+
+    if (
+      game.status === GameStatus.RUNNING ||
+      game.status === GameStatus.FINISHED
+    ) {
+      throw new Error(`Invalid request: game already started`);
+    }
+
+    const newInviteCode = shortid.generate();
+
+    let inviteCodeWasUpdated = false;
+
+    game.players = game.players.map((player) => {
+      if (player.inviteCode === inviteCode) {
+        inviteCodeWasUpdated = true;
+
+        return {
+          ...player,
+          inviteCode: newInviteCode,
+          reservedFor: null,
+          name: 'Avoinna',
+        };
+      }
+
+      return player;
+    });
+
+    if (!inviteCodeWasUpdated) {
+      throw new Error(`no player found matching inviteCode ${inviteCode}`);
+    }
+
+    await game.save();
+
+    urlData.inviteCode = newInviteCode;
+
+    await urlData.save();
+
+    logger.log(`updated inviteCode ${inviteCode} to ${newInviteCode}`);
+
+    res.status(204).end();
+  } catch (e) {
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    logger.error(`error canceling reservation: ${e.message}`);
+    next(e);
+  }
+});
+
 router.get('/join/:hostName/:inviteCode', async (req, res, next) => {
   try {
     const rtc = req.query.rtc;
@@ -253,8 +323,7 @@ router.get('/lobby/:hostName/:gameId', async (req, res, next) => {
         return {
           id: player.id,
           name: player.name,
-          expires: player.reservedFor ? player.reservedFor.expires : null,
-          locked: !!player.reservedFor?.locked,
+          reservedFor: player.reservedFor,
         };
       }),
     };

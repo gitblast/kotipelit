@@ -17,10 +17,18 @@ const useAuthSocket = (
   const [error, setError] = React.useState<null | string>(null);
 
   React.useEffect(() => {
-    const initSocket = () => {
+    const initSocket = (authToken: string) => {
       logger.log('initializing socket');
 
-      const socket = socketIOClient('/');
+      const socket = socketIOClient('/', {
+        extraHeaders: { Authorization: `Bearer ${authToken}` },
+      } as SocketIOClient.ConnectOpts);
+
+      socket.on('connect_error', (error: Error) => {
+        logger.error('socket.io connect error:', error.message);
+
+        setError(error.message);
+      });
 
       socket.on('error', (error: Error) => {
         logger.error('socket.io error:', error.message);
@@ -39,29 +47,14 @@ const useAuthSocket = (
       });
 
       socket.on(CommonEvent.CONNECT, () => {
-        socket.emit(CommonEvent.AUTH_REQUEST, { token });
+        logger.log('socketio connected');
 
-        socket.on(CommonEvent.AUTHENTICATED, () => {
-          logger.log('socketio authorized');
-
-          window.onbeforeunload = () => {
-            socket.emit('leave-room');
-
-            return null;
-          };
-
-          setSocketClient(socket);
-        });
-
-        socket.on(CommonEvent.UNAUTHORIZED, (error: { message: string }) => {
-          logger.error('socket error:', error.message);
-          setError(error.message);
-        });
+        setSocketClient(socket);
       });
     };
 
     if (token && !socketClient) {
-      initSocket();
+      initSocket(token);
     }
 
     return () => {

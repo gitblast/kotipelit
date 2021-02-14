@@ -20,7 +20,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 // Enable when possible to share on social media
 // import ShareIcon from '@material-ui/icons/Share';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
-import { SelectableGame, GameStatus } from '../../types';
+import { GameStatus, RTCGame } from '../../types';
 import { useDispatch } from 'react-redux';
 import { deleteGame } from '../../reducers/games.reducer';
 import { Link } from 'react-router-dom';
@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface QueuedGameProps {
-  game: SelectableGame;
+  game: RTCGame;
   username: string;
 }
 
@@ -113,7 +113,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
           variant="contained"
           color="primary"
           component={Link}
-          to={`/${username}/pelit/rtc/${game.id}`}
+          to={`/${username}/pelit/${game.id}`}
         >
           {label}
         </Button>
@@ -209,7 +209,9 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
                 <Typography>{player.name}</Typography>
               </div>
               <Typography variant="body2">
-                {player ? player.data.words.join(', ') : '<Pelaajan sanat>'}
+                {player
+                  ? player.privateData.words.join(', ')
+                  : '<Pelaajan sanat>'}
               </Typography>
               {/* Displaying points only after gamestatus finished. Atm games dont get finished */}
               {game.status !== GameStatus.FINISHED ? (
@@ -223,7 +225,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
                 // </Button>
                 <IconButton
                   className={classes.actionIcon}
-                  onClick={() => handleCancel(player.inviteCode)}
+                  onClick={() => handleCancel(player.privateData.inviteCode)}
                 >
                   <ClearIcon fontSize="small" />
                 </IconButton>

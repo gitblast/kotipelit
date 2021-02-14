@@ -1,7 +1,5 @@
 // JITSI
 
-import Peer, { MediaConnection } from 'peerjs';
-
 export interface JitsiApi {
   on: (event: string, listener: () => void) => void;
   dispose: () => void;
@@ -15,7 +13,6 @@ export enum GameType {
 
 export interface Game extends BaseGame {
   id: string;
-  hostOnline: boolean;
   status: GameStatus;
 }
 
@@ -33,16 +30,18 @@ export interface ReservationResponse {
 export interface LobbyGamePlayer {
   name: string;
   id: string;
-  reservedFor: {
-    id: string;
-    expires: number;
-    locked?: boolean;
-  } | null;
+  reservedFor: ReservationData | null;
   email: string | null;
-  data?: GameData;
+  privateData?: PrivateData;
   reservedForMe?: boolean;
   lockedForMe?: boolean;
   url?: string;
+}
+
+export interface ReservationData {
+  id: string;
+  expires: number;
+  locked?: boolean;
 }
 
 export interface LobbyGame extends BaseGame {
@@ -50,45 +49,26 @@ export interface LobbyGame extends BaseGame {
   hostName: string;
 }
 
-export interface KotitonniPlayer {
-  id: string;
-  name: string;
-  points: number;
-  online: boolean;
-  hasTurn?: boolean;
-  inviteCode?: string;
-  data: GameData;
+export interface BasePrivateData {
+  inviteCode: string;
+  twilioToken: string | null;
+  socketId: string | null;
 }
 
-export interface GameData {
+export interface KotitonniPrivateData extends BasePrivateData {
   answers: Record<string, Record<string, string>>;
   words: string[];
 }
+
+export type PrivateData = KotitonniPrivateData;
 
 export interface RTCKotitonniPlayer {
   id: string;
   name: string;
   points: number;
   hasTurn?: boolean;
-  inviteCode: string;
-  data: GameData;
+  privateData: KotitonniPrivateData;
 }
-
-export interface Kotitonni extends Game {
-  players: KotitonniPlayer[];
-  rounds: number;
-}
-
-export interface KotitonniActive extends Kotitonni {
-  info: {
-    turn: string; // player id
-    round: number;
-  };
-}
-
-export type SelectableGame = Kotitonni; // additional games here
-
-export type ActiveGame = KotitonniActive; // additional games here
 
 export enum GameStatus {
   RUNNING = 'Running',
@@ -140,14 +120,12 @@ export interface RTCState {
   game: RTCGame | null;
   localData: LocalData;
   self: RTCSelf | null;
-  peers: RTCPeer[] | null;
 }
 
 export type AlertState = string | null;
 
 export interface GamesState {
-  allGames: SelectableGame[];
-  activeGame: ActiveGame | null;
+  allGames: RTCGame[];
   loading: boolean;
 }
 
@@ -192,12 +170,6 @@ export enum ActionType {
   LOGIN_FAILURE = 'LOGIN_FAILURE',
   LOGOUT = 'LOGOUT',
 
-  // user handling
-  SET_JITSI_TOKEN = 'SET_JITSI_TOKEN',
-  SET_JITSI_ROOM = 'SET_JITSI_ROOM',
-  SET_SOCKET = 'SET_SOCKET',
-  SET_DISPLAYNAME = 'SET_DISPLAYNAME',
-
   // init channels
   INIT_CHANNELS_REQUEST = 'INIT_CHANNELS_REQUEST',
   INIT_CHANNELS_SUCCESS = 'INIT_CHANNELS_SUCCESS',
@@ -212,11 +184,7 @@ export enum ActionType {
 export type Action =
   | {
       type: ActionType.SET_GAMES;
-      payload: SelectableGame[];
-    }
-  | {
-      type: ActionType.SET_ACTIVE_GAME;
-      payload: ActiveGame | null;
+      payload: RTCGame[];
     }
   // INIT GAMES
   | {
@@ -224,7 +192,7 @@ export type Action =
     }
   | {
       type: ActionType.INIT_GAMES_SUCCESS;
-      payload: SelectableGame[];
+      payload: RTCGame[];
     }
   | {
       type: ActionType.INIT_GAMES_FAILURE;
@@ -236,14 +204,14 @@ export type Action =
     }
   | {
       type: ActionType.ADD_GAME_SUCCESS;
-      payload: SelectableGame;
+      payload: RTCGame;
     }
   | {
       type: ActionType.ADD_GAME_FAILURE;
     }
   | {
       type: ActionType.ADD_LOCAL_GAME;
-      payload: SelectableGame;
+      payload: RTCGame;
     }
 
   // DELETE GAME
@@ -265,7 +233,7 @@ export type Action =
     }
   | {
       type: ActionType.UPDATE_ACTIVE_GAME;
-      payload: ActiveGame; // game id
+      payload: RTCGame; // game id
     }
 
   // INIT CHANNELS
@@ -294,22 +262,7 @@ export type Action =
   | {
       type: ActionType.LOGOUT;
     }
-  | {
-      type: ActionType.SET_JITSI_TOKEN;
-      payload: string; // jitsi token
-    }
-  | {
-      type: ActionType.SET_JITSI_ROOM;
-      payload: string; // jitsi room
-    }
-  | {
-      type: ActionType.SET_SOCKET;
-      payload: SocketIOClient.Socket | null;
-    }
-  | {
-      type: ActionType.SET_DISPLAYNAME;
-      payload: string;
-    }
+
   // ERRORS
   | {
       type: ActionType.SET_ERROR;
@@ -352,25 +305,10 @@ export type KotitonniLocalAction =
       type: 'RESET';
     };
 
-export type RTCGameAction =
-  | {
-      type: 'SET_GAME';
-      payload: RTCGame;
-    }
-  | {
-      type: 'INIT_GAME';
-      payload: {
-        initialPeers: RTCPeer[];
-        initialGame: RTCGame;
-        initialSelf: RTCSelf;
-      };
-    };
-
-export interface RTCInitGamePayload {
-  initialPeers: RTCPeer[];
-  initialGame: RTCGame;
-  initialSelf: RTCSelf;
-}
+export type RTCGameAction = {
+  type: 'SET_GAME';
+  payload: RTCGame;
+};
 
 export type RTCSelfAction =
   | {
@@ -378,75 +316,24 @@ export type RTCSelfAction =
       payload: RTCSelf;
     }
   | {
-      type: 'INIT_GAME';
-      payload: RTCInitGamePayload;
-    }
-  | {
       type: 'SET_STREAM';
       payload: MediaStream;
     };
 
-export type RTCPeersAction =
-  | {
-      type: 'SET_PEERS';
-      payload: RTCPeer[];
-    }
-  | {
-      type: 'INIT_GAME';
-      payload: {
-        initialPeers: RTCPeer[];
-        initialGame: RTCGame;
-        initialSelf: RTCSelf;
-      };
-    }
-  | {
-      type: 'NULLIFY_CONNECTION';
-      payload: string; // peer id
-    };
-
 // SOCKET IO EVENTS
-
-export interface CreateSuccessResponse {
-  game: ActiveGame;
-  jitsiToken: string;
-  jitsiRoom: string;
-}
-
-export interface JoinSuccessResponse {
-  game: ActiveGame;
-  jitsiRoom: string;
-}
 
 export enum PlayerEvent {
   JOIN_GAME = 'join game',
 
-  JOIN_SUCCESS = 'join success',
-  JOIN_FAILURE = 'join failure',
-
-  GAME_READY = 'game ready',
-  GAME_STARTING = 'game starting',
   GAME_UPDATED = 'game updated',
   GAME_ENDED = 'game ended',
 }
 
 export enum HostEvent {
-  JITSI_READY = 'jitsi ready',
   CREATE_ROOM = 'create room',
   START_GAME = 'start game',
   UPDATE_GAME = 'update game',
   END_GAME = 'end game',
-
-  CREATE_SUCCESS = 'create success',
-  CREATE_FAILURE = 'create failure',
-
-  START_SUCCESS = 'start success',
-  START_FAILURE = 'start failure',
-
-  UPDATE_SUCCESS = 'update success',
-  UPDATE_FAILURE = 'update failure',
-
-  END_SUCCESS = 'end success',
-  END_FAILURE = 'end failure',
 }
 
 export enum CommonEvent {
@@ -468,19 +355,8 @@ export type EmittedEvent =
       data: string; // game id
     }
   | {
-      event: HostEvent.JITSI_READY;
-      data: {
-        gameId: string;
-        jitsiRoom: string;
-      };
-    }
-  | {
       event: HostEvent.START_GAME;
       data: string; // game id
-    }
-  | {
-      event: HostEvent.UPDATE_GAME;
-      data: ActiveGame;
     }
   | {
       event: HostEvent.END_GAME;
@@ -500,29 +376,11 @@ export interface MockSocket {
   emit: Function;
 }
 
-export interface RTCPeer {
-  id: string;
-  displayName: string;
-  socketId: null | string;
-  peerId: null | string;
-  isHost: boolean;
-  stream: MediaStream | null;
-  call: MediaConnection | null;
-  isMe?: boolean;
-}
-
 export interface RTCSelf {
   id: string;
   isHost: boolean;
   socket: SocketIOClient.Socket;
-  peer: Peer;
   stream: MediaStream | null;
-}
-
-export interface RTCGameRoom {
-  game: RTCGame;
-  host: RTCPeer;
-  players: RTCPeer[];
 }
 
 export type GamePlayer = RTCKotitonniPlayer; // handle other game types here
@@ -533,6 +391,16 @@ export interface KotitonniInfo {
   answeringOpen: boolean;
 }
 
+export interface RTCPeer {
+  id: string;
+  peerId: string;
+  socketId: string;
+  displayName: string;
+  stream: null | MediaStream;
+  isHost: boolean;
+  isMe: boolean;
+}
+
 export type GameInfo = KotitonniInfo;
 
 export interface RTCGame {
@@ -540,10 +408,14 @@ export interface RTCGame {
   status: GameStatus;
   type: GameType;
   price: number;
+  rounds: number;
   startTime: Date;
   players: GamePlayer[];
   info: GameInfo;
-  host: string;
+  host: {
+    id: string;
+    socketId: string | null;
+  };
 }
 
 export enum Role {

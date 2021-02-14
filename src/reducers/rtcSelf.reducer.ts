@@ -8,9 +8,11 @@ const reducer: Reducer<RTCSelf | null, RTCSelfAction> = (
   state: RTCSelf | null = initialData,
   action: RTCSelfAction
 ) => {
-  switch (action.type) {
+  switch (
+    action.type /* 
     case 'INIT_GAME':
-      return action.payload.initialSelf;
+      return action.payload.initialSelf; */
+  ) {
     case 'SET_SELF':
       return action.payload;
     case 'SET_STREAM':

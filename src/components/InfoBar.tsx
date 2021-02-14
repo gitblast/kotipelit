@@ -71,7 +71,7 @@ const InfoBar: React.FC = () => {
           <Typography
             variant="h5"
             className={classes.wordsText}
-          >{` ${playerWithTurn.data.words.join(', ')}`}</Typography>
+          >{` ${playerWithTurn.privateData.words.join(', ')}`}</Typography>
         )}
       </div>
     );

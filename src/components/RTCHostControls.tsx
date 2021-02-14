@@ -14,7 +14,7 @@ import { GameStatus, RTCGame, State } from '../types';
 import { useDispatch, useSelector } from 'react-redux';
 import logger from '../utils/logger';
 import { reset, setTimer } from '../reducers/kotitonni.local.reducer';
-import { setGame } from '../reducers/rtcGame.reducer';
+// import { setGame } from '../reducers/rtcGame.reducer';
 import InfoBar from './InfoBar';
 import { useHistory, useParams } from 'react-router-dom';
 
@@ -125,7 +125,7 @@ const RTCHostControls: React.FC<{
           return true;
         }
 
-        const answers = player.data.answers[playerWithTurnId];
+        const answers = player.privateData.answers[playerWithTurnId];
 
         return (
           answers && answers[game.info.round] && answers[game.info.round].length
@@ -333,7 +333,8 @@ const RTCHostControls: React.FC<{
 
     historyRef.current = null;
 
-    dispatch(setGame(gameWithPreviousPointsAndInfo));
+    console.warn('not dispätsing');
+    // dispatch(setGame(gameWithPreviousPointsAndInfo));
   };
 
   const fetchLatestGameStatus = () => {

@@ -22,12 +22,7 @@ import { addLocalGame } from '../../reducers/games.reducer';
 import gameService from '../../services/games';
 import { useHistory } from 'react-router-dom';
 
-import {
-  GameType,
-  GameStatus,
-  KotitonniPlayer,
-  SelectableGame,
-} from '../../types';
+import { GameType, GameStatus, RTCKotitonniPlayer, RTCGame } from '../../types';
 import logger from '../../utils/logger';
 import { useDispatch } from 'react-redux';
 
@@ -60,10 +55,9 @@ const useStyles = makeStyles((theme: Theme) =>
 interface GameToAdd {
   startTime: Date;
   type: GameType;
-  players: KotitonniPlayer[];
+  players: RTCKotitonniPlayer[];
   status: GameStatus;
   rounds: number;
-  hostOnline: boolean;
   price: number;
 }
 
@@ -71,12 +65,14 @@ const NewGame: React.FC<{ username: string }> = ({ username }) => {
   const classes = useStyles();
   const [gameType, setGameType] = React.useState<GameType | null>(null);
   const [price, setPrice] = React.useState<number>(0);
-  const [players, setPlayers] = React.useState<null | KotitonniPlayer[]>(null);
+  const [players, setPlayers] = React.useState<null | RTCKotitonniPlayer[]>(
+    null
+  );
   const [startTime, setStartTime] = React.useState<null | Date>(new Date());
   const [activeStep, setActiveStep] = React.useState(0);
   const [error, setError] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
-  const [addedGame, setAddedGame] = React.useState<SelectableGame | null>(null);
+  const [addedGame, setAddedGame] = React.useState<RTCGame | null>(null);
   const steps = React.useMemo(() => ['Ajankohta', 'Pelimuoto', 'Hinta'], []);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -152,7 +148,6 @@ const NewGame: React.FC<{ username: string }> = ({ username }) => {
           type: gameType,
           status: GameStatus.UPCOMING,
           rounds: 3,
-          hostOnline: false,
         };
 
         saveGame(gameToAdd);

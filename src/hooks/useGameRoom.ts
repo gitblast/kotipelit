@@ -1,16 +1,13 @@
 import React from 'react';
 
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { initRTCGame, setGame } from '../reducers/rtcGame.reducer';
+import { useDispatch, useSelector } from 'react-redux';
 
 import useAuthSocket from './useAuthSocket';
-import usePeer from './usePeer';
 import useMediaStream from './useMediaStream';
 
-import { RTCGame, RTCGameRoom, RTCPeer, State } from '../types';
+import { RTCGame, State } from '../types';
 import logger from '../utils/logger';
 import { setTimer } from '../reducers/kotitonni.local.reducer';
-import { callPeers, userJoined, userLeft } from '../reducers/rtcPeers.reducer';
 import { setStream } from '../reducers/rtcSelf.reducer';
 import { useHistory, useParams } from 'react-router-dom';
 
@@ -18,18 +15,12 @@ const useGameRoom = (
   token: string | null,
   onCall: boolean,
   mediaConstraints: MediaStreamConstraints
-): RTCPeer[] | null => {
+): [] | null => {
   const history = useHistory();
   const hostname = useParams<{ username: string }>().username;
   const [peersCalled, setPeersCalled] = React.useState(false);
-  const peers = useSelector((state: State) => state.rtc.peers, shallowEqual);
   const streamSet = useSelector((state: State) => !!state.rtc.self?.stream);
-  const [peer, peerError] = usePeer(
-    token,
-    null,
-    // eslint-disable-next-line no-undef
-    process?.env.NODE_ENV === 'development'
-  );
+
   const dispatch = useDispatch();
   const socketLeaveCallback = React.useCallback(
     (socket: SocketIOClient.Socket) => socket.emit('leave-room'),
@@ -41,8 +32,8 @@ const useGameRoom = (
     mediaConstraints
   );
 
-  if (peerError || socketError || mediaStreamError) {
-    console.error('handle errors!', peerError, socketError, mediaStreamError);
+  if (socketError || mediaStreamError) {
+    console.error('handle errors!', socketError, mediaStreamError);
   }
 
   React.useEffect(() => {
@@ -52,21 +43,17 @@ const useGameRoom = (
   }, [mediaStream, streamSet, dispatch]);
 
   React.useEffect(() => {
-    if (socket && peer) {
-      logger.log(`emitting join-gameroom with peer id ${peer.id}`);
-
-      socket.emit('join-gameroom', peer.id);
-
+    if (socket) {
       socket.on('game-ended', () => {
         logger.log(`recieved 'game-ended'`);
 
         history.push(`/${hostname}/kiitos`);
       });
 
-      socket.on('room-joined', (rtcRoom: RTCGameRoom) => {
-        logger.log(`recieved a game room`, rtcRoom);
+      socket.on('room-joined', (rtcGame: RTCGame) => {
+        logger.log(`recieved a game room`, rtcGame);
 
-        dispatch(initRTCGame(rtcRoom, socket, peer));
+        //dispatch(initRTCGame(rtcRoom, socket));
       });
 
       socket.on('rtc_error', (msg: string) => {
@@ -81,7 +68,7 @@ const useGameRoom = (
           hasTurn: player.id === updatedGame.info.turn,
         }));
 
-        dispatch(setGame({ ...updatedGame, players: mappedPlayers }));
+        // dispatch(setGame({ ...updatedGame, players: mappedPlayers }));
       });
 
       socket.on('timer-changed', (value: number) => {
@@ -95,22 +82,23 @@ const useGameRoom = (
       socket.on('user-left', (id: string) => {
         logger.log(`recieved user left from ${id}`);
 
-        dispatch(userLeft(id));
+        console.log('not dispätching user left');
+        //dispatch(userLeft(id));
       });
 
-      socket.on('user-joined', (newUser: RTCPeer) => {
+      socket.on('user-joined', (newUser: unknown) => {
         logger.log(`recieved new user:`, newUser);
 
-        logger.log(
+        /* logger.log(
           `setting new ${newUser.isHost ? `host` : `player`}: ${
             newUser.displayName
           }`
-        );
+        ); */
 
-        dispatch(userJoined(newUser));
+        // dispatch(userJoined(newUser));
       });
     }
-  }, [socket, peer, dispatch, hostname, history]);
+  }, [socket, dispatch, hostname, history]);
 
   React.useEffect(() => {
     if (mediaStream && onCall && !peersCalled) {
@@ -118,21 +106,27 @@ const useGameRoom = (
 
       setPeersCalled(true);
 
-      dispatch(callPeers());
+      console.log('not calling all peers');
+
+      // dispatch(callPeers());
     }
   }, [mediaStream, onCall, peersCalled, dispatch]);
 
-  const peersWithOwnStreamSet = React.useMemo(() => {
+  /* const peersWithOwnStreamSet = React.useMemo(() => {
     if (!peers) {
       return null;
     }
 
-    return peers.map((peerObj) =>
-      peerObj.isMe ? { ...peerObj, stream: mediaStream } : peerObj
-    );
-  }, [mediaStream, peers]);
+    return [];
 
-  return peersWithOwnStreamSet;
+    /* return peers.map((peerObj) =>
+      peerObj.isMe ? { ...peerObj, stream: mediaStream } : peerObj
+    ); 
+  }, [mediaStream, peers]);
+ */
+  // return peersWithOwnStreamSet;
+
+  return [];
 };
 
 export default useGameRoom;

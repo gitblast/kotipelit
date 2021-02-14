@@ -1,15 +1,7 @@
-import reducer, { initGame, initRTCGame, setGame } from './rtcGame.reducer';
+/* import reducer, { initGame, initRTCGame, setGame } from './rtcGame.reducer';
 import kotitonniLocalReducer from './kotitonni.local.reducer';
 
-import {
-  GameType,
-  RTCGame,
-  RTCGameAction,
-  RTCGameRoom,
-  RTCInitGamePayload,
-  RTCPeer,
-  RTCSelf,
-} from '../types';
+import { GameType, RTCGame, RTCGameAction, RTCSelf } from '../types';
 import { injectLocalDataReducer } from '../store';
 import Peer from 'peerjs';
 
@@ -224,3 +216,4 @@ describe('rtc game reducer', () => {
     });
   });
 });
+ */

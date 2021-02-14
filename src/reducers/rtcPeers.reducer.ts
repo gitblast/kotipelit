@@ -1,4 +1,4 @@
-import { MediaConnection } from 'peerjs';
+/* import { MediaConnection } from 'peerjs';
 import { Action, Dispatch, Reducer } from 'redux';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import callHelpers from '../helpers/call';
@@ -223,3 +223,6 @@ export const callPeers = () => {
 };
 
 export default reducer;
+ */
+
+export default {};

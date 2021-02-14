@@ -21,7 +21,6 @@ import { Animated } from 'react-animated-css';
 import logger from '../utils/logger';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { setClicked, setMuted } from '../reducers/kotitonni.local.reducer';
-import { callPeer } from '../reducers/rtcPeers.reducer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -87,7 +86,6 @@ const DevBtns: React.FC = () => {
   return (
     <div>
       <Button onClick={() => self?.socket.disconnect()}>dc socket</Button>
-      <Button onClick={() => self?.peer.destroy()}>dc peer</Button>
     </div>
   );
 };
@@ -128,13 +126,13 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
   };
 
   const getAnswer = () => {
-    if (!game || !player || !player.data.answers) {
+    if (!game || !player || !player.privateData.answers) {
       return null;
     }
 
     const { turn, round } = game.info;
 
-    const answers = player.data.answers[turn];
+    const answers = player.privateData.answers[turn];
 
     if (!answers || !answers[round] || !answers[round].length) {
       return null;
@@ -221,7 +219,9 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
       return;
     }
 
-    dispatch(callPeer(peer.peerId));
+    console.log('not calling atm');
+
+    // dispatch(callPeer(peer.peerId));
   };
 
   const answer = getAnswer();
@@ -237,7 +237,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
           process && process.env.NODE_ENV === 'development' && (
             <div style={{ position: 'absolute' }}>
               {forHost && (
-                <Typography component="div">{`http://localhost:3000/username/${player.inviteCode}`}</Typography>
+                <Typography component="div">{`http://localhost:3000/username/${player.privateData.inviteCode}`}</Typography>
               )}
               {!peer.isMe && (
                 <div style={{ display: 'flex', alignItems: 'center' }}>

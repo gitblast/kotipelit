@@ -1,16 +1,11 @@
 import axios from 'axios';
 
 import userService from './users';
-import {
-  GamePlayer,
-  LobbyGame,
-  ReservationResponse,
-  SelectableGame,
-} from '../types';
+import { GamePlayer, LobbyGame, ReservationResponse, RTCGame } from '../types';
 
 const baseUrl = '/api/games';
 
-const getAll = async (): Promise<SelectableGame[]> => {
+const getAll = async (): Promise<RTCGame[]> => {
   const config = {
     headers: { Authorization: userService.getAuthHeader() },
   };
@@ -21,8 +16,8 @@ const getAll = async (): Promise<SelectableGame[]> => {
 };
 
 const addNew = async (
-  gameToAdd: Omit<SelectableGame, 'id'>
-): Promise<SelectableGame> => {
+  gameToAdd: Omit<RTCGame, 'id' | 'host' | 'info'>
+): Promise<RTCGame> => {
   const config = {
     headers: { Authorization: userService.getAuthHeader() },
   };

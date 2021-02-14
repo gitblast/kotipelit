@@ -59,30 +59,6 @@ const reducer: Reducer<User, Action> = (
         loggingIn: false,
       };
     }
-    case ActionType.SET_JITSI_TOKEN: {
-      return {
-        ...state,
-        jitsiToken: action.payload,
-      };
-    }
-    case ActionType.SET_JITSI_ROOM: {
-      return {
-        ...state,
-        jitsiRoom: action.payload,
-      };
-    }
-    case ActionType.SET_SOCKET: {
-      return {
-        ...state,
-        socket: action.payload,
-      };
-    }
-    case ActionType.SET_DISPLAYNAME: {
-      return {
-        ...state,
-        displayName: action.payload,
-      };
-    }
     default:
       return state;
   }
@@ -161,25 +137,5 @@ export const loginUser = (username: string, password: string) => {
     }
   };
 };
-
-export const setJitsiToken = (token: string): Action => ({
-  type: ActionType.SET_JITSI_TOKEN,
-  payload: token,
-});
-
-export const setJitsiRoom = (roomName: string): Action => ({
-  type: ActionType.SET_JITSI_ROOM,
-  payload: roomName,
-});
-
-export const setSocket = (socket: SocketIOClient.Socket | null): Action => ({
-  type: ActionType.SET_SOCKET,
-  payload: socket,
-});
-
-export const setDisplayName = (name: string): Action => ({
-  type: ActionType.SET_DISPLAYNAME,
-  payload: name,
-});
 
 export default reducer;

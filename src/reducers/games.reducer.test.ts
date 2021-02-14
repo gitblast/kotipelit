@@ -7,30 +7,31 @@ import gameService from '../services/games';
 import {
   GameType,
   GameStatus,
-  SelectableGame,
   Action,
   ActionType,
   GamesState,
+  KotitonniPrivateData,
+  RTCGame,
 } from '../types';
 
-const newGame: SelectableGame = {
+const newGame = {
   startTime: new Date(),
   type: GameType.KOTITONNI,
   status: GameStatus.UPCOMING,
   rounds: 3,
   price: 0,
-  hostOnline: true,
   id: '123',
   players: [
     {
       id: '1',
       name: 'Risto',
-      words: ['jojo', 'kasvi', 'hattu'],
+      privateData: {
+        words: ['jojo', 'kasvi', 'hattu'],
+      } as KotitonniPrivateData,
       points: 0,
-      online: false,
     },
   ],
-};
+} as RTCGame;
 
 const initializedState = {
   allGames: [newGame],
@@ -66,7 +67,6 @@ describe('games reducer', () => {
 
     const expectedState: GamesState = {
       allGames: [],
-      activeGame: null,
       loading: true,
     };
 
@@ -81,7 +81,6 @@ describe('games reducer', () => {
 
     const expectedState: GamesState = {
       allGames: hardcodedGames,
-      activeGame: null,
       loading: false,
     };
 
@@ -95,7 +94,6 @@ describe('games reducer', () => {
 
     const expectedState: GamesState = {
       allGames: [],
-      activeGame: null,
       loading: false,
     };
 
@@ -204,7 +202,6 @@ describe('games reducer', () => {
 
     const invalidState = {
       allGames: [{ ...newGame, type: 'INVALID_TYPE' }],
-      activeGame: null,
     };
 
     expect(() => reducer(invalidState as GamesState, action)).toThrow(
@@ -233,7 +230,7 @@ describe('games reducer', () => {
 
     const action: Action = {
       type: ActionType.UPDATE_ACTIVE_GAME,
-      payload: updatedGame,
+      payload: updatedGame as RTCGame,
     };
 
     const expectedState = {
@@ -262,6 +259,7 @@ describe('action creators', () => {
       info: {
         turn: 'turn',
         round: 1,
+        answeringOpen: false,
       },
     };
     const expectedAction = {

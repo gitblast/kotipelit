@@ -23,7 +23,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import { Form, FastField, FieldArray, FormikProps } from 'formik';
 import { TextField } from 'formik-material-ui';
 
-import { KotitonniPlayer, GameType, GameStatus } from '../../types';
+import { RTCKotitonniPlayer, GameType, GameStatus } from '../../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -49,8 +49,8 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface PlayerTableProps {
-  players: KotitonniPlayer[];
-  handleRefresh: (player: KotitonniPlayer, index: number) => void;
+  players: RTCKotitonniPlayer[];
+  handleRefresh: (player: RTCKotitonniPlayer, index: number) => void;
 }
 
 /**
@@ -76,7 +76,7 @@ const PlayerTable: React.FC<PlayerTableProps> = ({
             <TableCell>
               <FastField component={TextField} name={`players.${index}.name`} />
             </TableCell>
-            {player.data.words.map((word, index) => (
+            {player.privateData.words.map((word, index) => (
               <TableCell key={`${word}${index}`} style={{ minWidth: 190 }}>
                 <span>{word} </span>
                 <IconButton
@@ -97,10 +97,9 @@ const PlayerTable: React.FC<PlayerTableProps> = ({
 interface FormValues {
   startTime: Date;
   type: GameType;
-  players: KotitonniPlayer[];
+  players: RTCKotitonniPlayer[];
   status: GameStatus;
   rounds: number;
-  hostOnline: boolean;
   price: number;
 }
 
@@ -121,14 +120,14 @@ const RenderForm: React.FC<RenderFormProps> = ({
    * @param {number} wordIndex - the index of the word to refresh
    */
   const handleRefresh = async (
-    playerToUpdate: KotitonniPlayer,
+    playerToUpdate: RTCKotitonniPlayer,
     wordIndex: number
   ): Promise<void> => {
     const randomWord = await wordService.getOne();
 
     const newPlayers = formikProps.values.players.map((player) => {
       if (player.id === playerToUpdate.id) {
-        const newWords = player.data.words;
+        const newWords = player.privateData.words;
         newWords[wordIndex] = randomWord;
         return { ...player, words: newWords };
       }

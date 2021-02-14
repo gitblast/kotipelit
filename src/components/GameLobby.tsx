@@ -169,7 +169,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
             Jos et saanut viestiä, kirjoita itsellesi alla olevat tiedot
             muistiin.
           </Typography>
-          {getWordList(spotLockedForMe.data?.words)}
+          {getWordList(spotLockedForMe.privateData?.words)}
           {getGameUrl(spotLockedForMe.url)}
           {/** peruuta varaus-nappi? */}
         </Paper>

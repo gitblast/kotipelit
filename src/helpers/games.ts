@@ -1,6 +1,6 @@
 import shortid from 'shortid';
 import wordService from '../services/words';
-import { KotitonniPlayer } from '../types';
+import { RTCKotitonniPlayer } from '../types';
 
 /**
  * Generates initial player objects to be used in state
@@ -11,7 +11,7 @@ import { KotitonniPlayer } from '../types';
 export const initializePlayers = async (
   playerCount: number,
   wordsPerPlayer: number
-): Promise<KotitonniPlayer[]> => {
+): Promise<RTCKotitonniPlayer[]> => {
   const players = [];
 
   const randomWords = await wordService.getMany(playerCount * wordsPerPlayer);
@@ -28,10 +28,12 @@ export const initializePlayers = async (
       id: shortid.generate(),
       name: 'Avoinna', // `Pelaaja ${i}`,
       points: 0,
-      online: false,
-      data: {
+      privateData: {
         words,
         answers: {},
+        inviteCode: '',
+        twilioToken: null,
+        socketId: null,
       },
     });
   }

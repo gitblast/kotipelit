@@ -1,16 +1,9 @@
-import { Reducer, Dispatch } from 'redux';
+/* import { Reducer, Dispatch } from 'redux';
 
 import kotitonniLocalDataReducer from './kotitonni.local.reducer';
 import { injectLocalDataReducer } from '../store';
 
-import {
-  GameType,
-  RTCGame,
-  RTCGameAction,
-  RTCGameRoom,
-  RTCPeer,
-  RTCSelf,
-} from '../types';
+import { GameType, RTCGame, RTCGameAction, RTCSelf } from '../types';
 import logger from '../utils/logger';
 import Peer from 'peerjs';
 
@@ -92,3 +85,6 @@ export const initRTCGame = (
 };
 
 export default reducer;
+
+ */
+export default {};

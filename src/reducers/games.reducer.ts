@@ -1,12 +1,4 @@
-import {
-  GamesState,
-  Action,
-  SelectableGame,
-  GameType,
-  GameStatus,
-  ActiveGame,
-  ActionType,
-} from '../types';
+import { GamesState, Action, RTCGame, GameStatus, ActionType } from '../types';
 
 import { Dispatch, Reducer } from 'redux';
 
@@ -14,27 +6,7 @@ import gameService from '../services/games';
 
 const initialState: GamesState = {
   allGames: [],
-  activeGame: null,
   loading: false,
-};
-
-const activate = (game: SelectableGame): ActiveGame => {
-  switch (game.type) {
-    case GameType.KOTITONNI:
-      return {
-        ...game,
-        status: GameStatus.WAITING,
-        info: {
-          turn: 'TODO',
-          round: 1,
-        },
-      };
-    default: {
-      throw new Error(
-        `Something went wrong, expected a selectable game, got ${game.type}`
-      );
-    }
-  }
 };
 
 const reducer: Reducer<GamesState, Action> = (
@@ -111,30 +83,8 @@ const reducer: Reducer<GamesState, Action> = (
         loading: false,
       };
     }
-    case ActionType.SET_ACTIVE_GAME: {
-      return {
-        ...state,
-        activeGame: action.payload,
-      };
-    }
     case 'LAUNCH_GAME': {
-      const gameToActivate = state.allGames.find(
-        (game) => game.id === action.payload
-      );
-
-      if (!gameToActivate) throw new Error(`Game not found`);
-
-      const activatedGame = activate(gameToActivate);
-
-      return {
-        ...state,
-        activeGame: activatedGame,
-        allGames: state.allGames.map((game) =>
-          game.id === action.payload
-            ? { ...game, status: GameStatus.WAITING }
-            : game
-        ),
-      };
+      return state;
     }
     case 'UPDATE_ACTIVE_GAME': {
       return {
@@ -151,7 +101,7 @@ export const initRequest = (): Action => ({
   type: ActionType.INIT_GAMES_REQUEST,
 });
 
-export const initSuccess = (games: SelectableGame[]): Action => ({
+export const initSuccess = (games: RTCGame[]): Action => ({
   type: ActionType.INIT_GAMES_SUCCESS,
   payload: games,
 });
@@ -179,7 +129,7 @@ export const addRequest = (): Action => {
   return { type: ActionType.ADD_GAME_REQUEST };
 };
 
-export const addSuccess = (gameToAdd: SelectableGame): Action => {
+export const addSuccess = (gameToAdd: RTCGame): Action => {
   return { type: ActionType.ADD_GAME_SUCCESS, payload: gameToAdd };
 };
 
@@ -187,7 +137,7 @@ export const addFailure = (): Action => {
   return { type: ActionType.ADD_GAME_FAILURE };
 };
 
-export const addGame = (game: Omit<SelectableGame, 'id'>) => {
+export const addGame = (game: Omit<RTCGame, 'id'>) => {
   return async (dispatch: Dispatch) => {
     dispatch(addRequest());
 
@@ -202,7 +152,7 @@ export const addGame = (game: Omit<SelectableGame, 'id'>) => {
   };
 };
 
-export const addLocalGame = (game: SelectableGame) => {
+export const addLocalGame = (game: RTCGame) => {
   return {
     type: ActionType.ADD_LOCAL_GAME,
     payload: game,
@@ -237,14 +187,9 @@ export const deleteGame = (idToRemove: string) => {
   };
 };
 
-export const setGames = (games: SelectableGame[]): Action => ({
+export const setGames = (games: RTCGame[]): Action => ({
   type: ActionType.SET_GAMES,
   payload: games,
-});
-
-export const setActiveGame = (game: ActiveGame | null): Action => ({
-  type: ActionType.SET_ACTIVE_GAME,
-  payload: game,
 });
 
 export const launchGame = (id: string): Action => {
@@ -254,7 +199,7 @@ export const launchGame = (id: string): Action => {
   };
 };
 
-export const updateGame = (updatedGame: ActiveGame): Action => {
+export const updateGame = (updatedGame: RTCGame): Action => {
   return {
     type: ActionType.UPDATE_ACTIVE_GAME,
     payload: updatedGame,

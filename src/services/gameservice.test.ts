@@ -2,9 +2,9 @@ import userService from './users';
 import gameService from './games';
 
 import axios, { AxiosResponse } from 'axios';
-import { GameType, SelectableGame, GameStatus } from '../types';
+import { GameType, GameStatus, KotitonniPrivateData, RTCGame } from '../types';
 
-const newGame: SelectableGame = {
+const newGame: Omit<RTCGame, 'host' | 'info'> = {
   startTime: new Date(),
   type: GameType.KOTITONNI,
   status: GameStatus.UPCOMING,
@@ -14,13 +14,13 @@ const newGame: SelectableGame = {
     {
       id: '1',
       name: 'Risto',
-      words: ['jojo', 'kasvi', 'hattu'],
+      privateData: {
+        words: ['jojo', 'kasvi', 'hattu'],
+      } as KotitonniPrivateData,
       points: 0,
-      online: false,
     },
   ],
   price: 0,
-  hostOnline: true,
 };
 
 jest.mock('axios');

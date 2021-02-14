@@ -11,7 +11,6 @@ import { setMuted } from '../reducers/kotitonni.local.reducer';
 import { GameType, RTCPeer, State } from '../types';
 import logger from '../utils/logger';
 import { useSelector, useDispatch } from 'react-redux';
-import { callPeer } from '../reducers/rtcPeers.reducer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -84,7 +83,8 @@ const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({ host }) => {
       return;
     }
 
-    dispatch(callPeer(host.peerId));
+    console.log('not calling atm');
+    // dispatch(callPeer(host.peerId));
   };
 
   // handle different game types here, "if gameType === kotitonni return kotitonni-items" etc

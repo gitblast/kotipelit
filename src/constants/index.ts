@@ -1,67 +1,75 @@
-import {
-  GameStatus,
-  GameType,
-  HostChannel,
-  SelectableGame,
-  KotitonniActive,
-} from '../types';
+import { GameInfo, GameStatus, GameType, HostChannel, RTCGame } from '../types';
 
-export const hardcodedGames: SelectableGame[] = [
+export const hardcodedGames: RTCGame[] = [
   {
-    hostOnline: true,
     price: 2,
     id: '1',
+    host: {
+      id: 'hostid',
+      socketId: null,
+    },
+    info: {} as GameInfo,
     type: GameType.KOTITONNI,
     players: [
       {
         id: '1',
         name: 'Risto',
-        data: {
+        privateData: {
           words: ['jojo', 'kasvi', 'hattu'],
           answers: {},
+          socketId: null,
+          inviteCode: 'code1',
+          twilioToken: null,
         },
         points: 0,
-        online: false,
       },
       {
         id: '2',
         name: 'Jorma',
-        data: {
+        privateData: {
           words: ['sana', 'kirja', 'väline'],
           answers: {},
+          socketId: null,
+          inviteCode: 'code1',
+          twilioToken: null,
         },
         points: 0,
-        online: false,
       },
       {
         id: '3',
         name: 'Kalevi',
-        data: {
+        privateData: {
           words: ['kaiutin', 'kuuloke', 'lasi'],
           answers: {},
+          socketId: null,
+          inviteCode: 'code1',
+          twilioToken: null,
         },
         points: 0,
-        online: false,
       },
       {
         id: '4',
         name: 'Jenni',
-        data: {
+        privateData: {
           words: ['johto', 'hiiri', 'puhelin'],
           answers: {},
+          socketId: null,
+          inviteCode: 'code1',
+          twilioToken: null,
         },
         points: 0,
-        online: false,
       },
       {
         id: '5',
         name: 'Petra',
-        data: {
+        privateData: {
           words: ['rasia', 'kuppi', 'vihko'],
           answers: {},
+          socketId: null,
+          inviteCode: 'code1',
+          twilioToken: null,
         },
         points: 0,
-        online: false,
       },
     ],
     startTime: new Date(),
@@ -69,60 +77,74 @@ export const hardcodedGames: SelectableGame[] = [
     rounds: 3,
   },
   {
-    hostOnline: true,
     price: 2,
     id: '2',
     type: GameType.KOTITONNI,
+    host: {
+      id: 'hostid',
+      socketId: null,
+    },
+    info: {} as GameInfo,
     players: [
       {
         id: '6',
         name: 'Matti',
-        data: {
+        privateData: {
           words: ['lamppu', 'pöytä', 'sohva'],
           answers: {},
+          socketId: null,
+          inviteCode: 'code1',
+          twilioToken: null,
         },
         points: 0,
-        online: false,
       },
       {
         id: '7',
         name: 'Pertti',
-        data: {
+        privateData: {
           words: ['laulu', 'tuoli', 'peitto'],
           answers: {},
+          socketId: null,
+          inviteCode: 'code1',
+          twilioToken: null,
         },
         points: 0,
-        online: false,
       },
       {
         id: '8',
         name: 'Lauri',
-        data: {
+        privateData: {
           words: ['naru', 'ikkuna', 'ovi'],
           answers: {},
+          socketId: null,
+          inviteCode: 'code1',
+          twilioToken: null,
         },
         points: 0,
-        online: false,
       },
       {
         id: '9',
         name: 'Abraham',
-        data: {
+        privateData: {
           words: ['presidentti', 'päällikkö', 'lattia'],
           answers: {},
+          socketId: null,
+          inviteCode: 'code1',
+          twilioToken: null,
         },
         points: 0,
-        online: false,
       },
       {
         id: '10',
         name: 'Sauli',
-        data: {
+        privateData: {
           words: ['sammakko', 'tikku', 'lanka'],
           answers: {},
+          socketId: null,
+          inviteCode: 'code1',
+          twilioToken: null,
         },
         points: 0,
-        online: false,
       },
     ],
     startTime: new Date(),
@@ -146,61 +168,70 @@ export const hardcodedChannels: HostChannel[] = [
   },
 ];
 
-export const hardcodedActiveSanakierto: KotitonniActive = {
+export const hardcodedActiveSanakierto: RTCGame = {
   id: '1',
   type: GameType.KOTITONNI,
-  hostOnline: true,
   price: 2,
   players: [
     {
       id: '1',
       name: 'Risto',
-      data: {
+      privateData: {
         words: ['jojo', 'kasvi', 'hattu'],
         answers: {},
+        socketId: null,
+        inviteCode: 'code1',
+        twilioToken: null,
       },
       points: 0,
-      online: false,
     },
     {
       id: '2',
       name: 'Jorma',
-      data: {
+      privateData: {
         words: ['sana', 'kirja', 'väline'],
         answers: {},
+        socketId: null,
+        inviteCode: 'code1',
+        twilioToken: null,
       },
       points: 0,
-      online: false,
     },
     {
       id: '3',
       name: 'Kalevi',
-      data: {
+      privateData: {
         words: ['kaiutin', 'kuuloke', 'lasi'],
         answers: {},
+        socketId: null,
+        inviteCode: 'code1',
+        twilioToken: null,
       },
       points: 0,
-      online: false,
     },
     {
       id: '4',
       name: 'Jenni',
-      data: {
+      privateData: {
         words: ['johto', 'hiiri', 'puhelin'],
         answers: {},
+        socketId: null,
+        inviteCode: 'code1',
+        twilioToken: null,
       },
       points: 0,
-      online: false,
     },
     {
       id: '5',
       name: 'Petra',
-      data: {
+      privateData: {
         words: ['rasia', 'kuppi', 'vihko'],
         answers: {},
+        socketId: null,
+        inviteCode: 'code1',
+        twilioToken: null,
       },
       points: 0,
-      online: false,
     },
   ],
   startTime: new Date(),
@@ -209,5 +240,10 @@ export const hardcodedActiveSanakierto: KotitonniActive = {
   info: {
     turn: '1',
     round: 1,
+    answeringOpen: false,
+  },
+  host: {
+    id: 'id',
+    socketId: 'string',
   },
 };

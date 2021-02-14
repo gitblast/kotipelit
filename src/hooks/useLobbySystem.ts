@@ -51,8 +51,8 @@ const useLobbySystem = () => {
                   lockedForMe: true,
                   locked: true,
                   email: myLockedPlayerData.email,
-                  data: myLockedPlayerData.data,
-                  url: `https://www.kotipelit.com/${username}/${myLockedPlayerData.inviteCode}`,
+                  privateData: myLockedPlayerData.privateData,
+                  url: `https://www.kotipelit.com/${username}/${myLockedPlayerData.privateData.inviteCode}`,
                 };
               }
 
@@ -113,7 +113,7 @@ const useLobbySystem = () => {
         const newGame = {
           ...game,
           players: game.players.map((player) => {
-            return player && player.id === lockedPlayerData.id
+            return player?.id === lockedPlayerData.id
               ? {
                   ...player,
                   name: lockedPlayerData.name,
@@ -124,8 +124,8 @@ const useLobbySystem = () => {
                     locked: true,
                   },
                   email,
-                  data: lockedPlayerData.data,
-                  url: `https://www.kotipelit.com/${username}/${lockedPlayerData.inviteCode}`,
+                  privateData: lockedPlayerData.privateData,
+                  url: `https://www.kotipelit.com/${username}/${lockedPlayerData.privateData.inviteCode}`,
                 }
               : player;
           }),

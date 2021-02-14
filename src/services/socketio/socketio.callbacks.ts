@@ -8,8 +8,9 @@ import {
   Answer,
 } from '../../types';
 import logger from '../../utils/logger';
-import gameService from '../../services/games';
+import gameService from '../games';
 import rtcrooms from '../rtc/rtcrooms';
+import twilioService from '../twilio';
 
 // RTC
 
@@ -105,7 +106,7 @@ export const launchRTCGame = async (socket: SocketWithToken): Promise<void> => {
   logger.log(`recieved 'launch' from ${socket.decodedToken.username}`);
 
   try {
-    const { gameId } = socket.decodedToken;
+    const { gameId, id } = socket.decodedToken;
 
     const game = rtcrooms.getRoomGame(gameId);
 
@@ -122,7 +123,9 @@ export const launchRTCGame = async (socket: SocketWithToken): Promise<void> => {
       GameStatus.WAITING
     );
 
-    // update player display names and game status
+    logger.log('generating access tokens');
+
+    // update player display names and game status, generate access tokens
     const updatedGame = {
       ...game,
       status: GameStatus.WAITING,
@@ -131,14 +134,27 @@ export const launchRTCGame = async (socket: SocketWithToken): Promise<void> => {
           (p) => p.id === player.id
         );
 
+        const token = twilioService.getVideoAccessToken(
+          player.id,
+          `kotipelit-${game.id}`
+        );
+
+        const playerWithAccessToken = {
+          ...player,
+          privateData: {
+            ...player.privateData,
+            twilioToken: token,
+          },
+        };
+
         if (!matching || player.name === matching.name) {
-          return player;
+          return playerWithAccessToken;
         }
 
         logger.log(`updating name for player '${matching.name}'`);
 
         return {
-          ...player,
+          ...playerWithAccessToken,
           name: matching.name,
         };
       }),
@@ -147,6 +163,16 @@ export const launchRTCGame = async (socket: SocketWithToken): Promise<void> => {
     rtcrooms.updateRoom(gameId, updatedGame);
 
     emitUpdatedGame(socket, updatedGame);
+
+    // send access token to host
+    const hostToken = twilioService.getVideoAccessToken(
+      id,
+      `kotipelit-${gameId}`
+    );
+
+    logger.log('sending token to host');
+
+    socket.emit('twilio-token', hostToken);
   } catch (e) {
     logger.error(e.message);
 

@@ -83,11 +83,6 @@ export type GameData = KotitonniData; // additional games here
 
 export type GamePlayer = KotitonniPlayer;
 
-export interface ActiveGamePlayer extends BaseGamePlayer {
-  socket: null | string;
-  online: boolean;
-}
-
 export interface KotitonniInfo {
   round: number;
   turn: string; // player id
@@ -95,193 +90,6 @@ export interface KotitonniInfo {
 }
 
 export type GameInfo = KotitonniInfo;
-
-export type ActiveGame = WaitingGame | RunningGame;
-
-export interface BaseActiveGame extends BaseGame {
-  id: string;
-  players: ActiveGamePlayer[];
-  hostOnline: boolean;
-}
-
-export interface WaitingGame extends BaseActiveGame {
-  status: GameStatus.WAITING;
-  info: null;
-}
-
-export interface RunningGame extends BaseActiveGame {
-  status: GameStatus.RUNNING;
-  info: GameInfo;
-}
-
-export interface CreateRoomResponse {
-  jitsiToken: string;
-  jitsiRoom: string;
-  game: ActiveGame;
-}
-
-export interface GameRoom {
-  id: string;
-  hostSocket: string;
-  game: ActiveGame;
-  jitsiRoom: string;
-}
-
-export interface CreateRoomData {
-  gameId: string;
-}
-
-export interface JitsiReadyData {
-  gameId: string;
-  jitsiRoom: string;
-}
-
-export enum TestEventType {
-  GET_ROOMS = 'get socket rooms',
-  JOIN_ROOM = 'join room',
-  BROADCAST_TO = 'broadcast to',
-
-  ROOM_JOINED = 'room joined',
-  ROOMS_RECEIVED = 'socket rooms',
-}
-
-export enum EventType {
-  // EMITTED
-  AUTH = 'authenticate',
-
-  CREATE_SUCCESS = 'create success',
-  CREATE_FAILURE = 'create failure',
-
-  UPDATE_SUCCESS = 'update success',
-  UPDATE_FAILURE = 'update failure',
-
-  JOIN_SUCCESS = 'join success',
-  JOIN_FAILURE = 'join failure',
-
-  START_SUCCESS = 'start success',
-  START_FAILURE = 'start failure',
-
-  END_SUCCESS = 'end success',
-  END_FAILURE = 'end failure',
-
-  // BROADCASTED
-
-  PLAYER_JOINED = 'player joined',
-  GAME_READY = 'game ready',
-  GAME_STARTING = 'game starting',
-  GAME_UPDATED = 'game updated',
-  GAME_ENDED = 'game ended',
-
-  // RECIEVED
-
-  CONNECTION = 'connection',
-  DISCONNECT = 'disconnect',
-  AUTHENTICATED = 'authenticated',
-  UNAUTHORIZED = 'unauthorized',
-
-  // host
-  CREATE_ROOM = 'create room',
-  JITSI_READY = 'jitsi ready',
-  START_GAME = 'start game',
-  UPDATE_GAME = 'update game',
-  END_GAME = 'end game',
-
-  // player
-  JOIN_GAME = 'join game',
-}
-
-export type BroadcastedEvent =
-  | {
-      event: EventType.GAME_READY;
-      data: string; // jitsi room name
-    }
-  | {
-      event: EventType.PLAYER_JOINED;
-      data: string; // player id
-    }
-  | {
-      event: EventType.GAME_STARTING;
-      data: ActiveGame;
-    }
-  | {
-      event: EventType.GAME_UPDATED;
-      data: ActiveGame;
-    }
-  | {
-      event: EventType.GAME_ENDED;
-      data: null;
-    };
-
-export type EmittedEvent =
-  | {
-      event: EventType.CREATE_SUCCESS;
-      data: CreateRoomResponse;
-    }
-  | {
-      event: EventType.CREATE_FAILURE;
-      data: {
-        error: string;
-      };
-    }
-  | {
-      event: EventType.UPDATE_SUCCESS;
-      data: ActiveGame;
-    }
-  | {
-      event: EventType.UPDATE_FAILURE;
-      data: {
-        error: string;
-      };
-    }
-  | {
-      event: EventType.JOIN_SUCCESS;
-      data: {
-        game: ActiveGame;
-        jitsiRoom: string;
-      };
-    }
-  | {
-      event: EventType.JOIN_FAILURE;
-      data: {
-        error: string;
-      };
-    }
-  | {
-      event: EventType.START_SUCCESS;
-      data: ActiveGame;
-    }
-  | {
-      event: EventType.START_FAILURE;
-      data: {
-        error: string;
-      };
-    }
-  | {
-      event: EventType.END_SUCCESS;
-      data: string; // game id
-    }
-  | {
-      event: EventType.END_FAILURE;
-      data: {
-        error: string;
-      };
-    };
-
-export type RecievedEvent =
-  | {
-      event: EventType.CREATE_ROOM;
-      data: CreateRoomData;
-    }
-  | {
-      event: EventType.JITSI_READY;
-      data: string; // jitsi room
-    }
-  | {
-      event: EventType.JOIN_GAME;
-    }
-  | {
-      event: EventType.GAME_ENDED;
-    };
 
 export enum Role {
   HOST = 'HOST',
@@ -297,7 +105,7 @@ export interface SocketIOAuthToken {
 }
 
 export interface SocketWithToken extends SocketIO.Socket {
-  decoded_token: SocketIOAuthToken;
+  decodedToken: SocketIOAuthToken;
 }
 
 export interface RTCPlayer {

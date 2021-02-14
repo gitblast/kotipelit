@@ -3,7 +3,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import Game from '../models/game';
 import {
-  ActiveGame,
   GameStatus,
   GameModel,
   GameType,
@@ -68,7 +67,7 @@ const refreshGameReservations = async (gameId: string): Promise<GameModel> => {
   return await game.save();
 };
 
-const getInitialInfo = (game: ActiveGame | GameModel): GameInfo => {
+const getInitialInfo = (game: GameModel): GameInfo => {
   /** handle different game types here */
   switch (game.type) {
     case GameType.KOTITONNI: {
@@ -102,7 +101,7 @@ const getGameById = async (gameId: string): Promise<GameModel> => {
 
 const saveFinishedGame = async (
   gameId: string,
-  game: RTCGame | ActiveGame // active game only for jitsi version
+  game: RTCGame
 ): Promise<GameModel> => {
   const gameInDB = await Game.findById(gameId);
 

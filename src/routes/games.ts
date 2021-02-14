@@ -263,8 +263,6 @@ router.get('/cancel/:hostName/:inviteCode', async (req, res, next) => {
 
 router.get('/join/:hostName/:inviteCode', async (req, res, next) => {
   try {
-    const rtc = req.query.rtc;
-
     const hostName = toID(req.params.hostName);
     const inviteCode = toID(req.params.inviteCode);
 
@@ -286,12 +284,12 @@ router.get('/join/:hostName/:inviteCode', async (req, res, next) => {
       id: player.id,
       role: Role.PLAYER,
       gameId,
-      type: rtc ? 'rtc' : 'jitsi',
+      type: 'rtc',
     };
 
     const token = jwt.sign(payload, config.SECRET, { expiresIn: '10h' });
 
-    const response = rtc ? token : { token, displayName: player.name };
+    const response = token;
 
     res.json(response);
   } catch (error) {

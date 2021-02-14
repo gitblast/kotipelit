@@ -396,7 +396,7 @@ describe('games router', () => {
   });
 
   describe('GET /join/:hostName/:inviteCode', () => {
-    it('should return object with token and display name with valid parameters', async () => {
+    it('should return token with valid parameters', async () => {
       const player = game.players[0];
 
       const hostName = user.username;
@@ -415,20 +415,19 @@ describe('games router', () => {
         username: player.name,
         id: player.id,
         gameId: gameId,
-        type: 'jitsi',
+        type: 'rtc',
         role: Role.PLAYER,
       };
 
-      const decodedToken = jwt.verify(
-        response.body.token,
-        config.SECRET
-      ) as Record<string, string>;
+      const decodedToken = jwt.verify(response.body, config.SECRET) as Record<
+        string,
+        string
+      >;
 
       // remove iat field
       delete decodedToken.iat;
 
       expect(decodedToken).toEqual(expectedPayload);
-      expect(response.body.displayName).toBe(player.name);
     });
 
     it('should return 400 with invalid host name or player id', async () => {

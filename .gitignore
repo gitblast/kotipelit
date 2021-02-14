@@ -12,3 +12,5 @@ coverage/
 scripts/*.txt
 
 test.js
+
+yarn-error.log

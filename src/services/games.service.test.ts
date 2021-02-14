@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/unbound-method */
 import {
-  ActiveGame,
   GameModel,
   GameStatus,
   GameType,
   KotitonniPlayer,
+  RTCGame,
 } from '../types';
 import gameService from './games';
 import Game from '../models/game';
@@ -22,7 +22,7 @@ describe('games service', () => {
     it('should throw error if game type invalid', () => {
       const mockGame = ({
         type: 'invalid',
-      } as unknown) as ActiveGame;
+      } as unknown) as GameModel;
 
       expect(() => gameService.getInitialInfo(mockGame)).toThrowError(
         `Invalid game type: ${mockGame.type}`
@@ -33,16 +33,16 @@ describe('games service', () => {
       it('should throw error if no players are set', () => {
         const mockGame = ({
           type: GameType.KOTITONNI,
-        } as unknown) as ActiveGame;
+        } as unknown) as GameModel;
 
         expect(() => gameService.getInitialInfo(mockGame)).toThrowError(
           'Game has no players set'
         );
         expect(() =>
-          gameService.getInitialInfo({
+          gameService.getInitialInfo(({
             ...mockGame,
             players: [],
-          })
+          } as unknown) as GameModel)
         ).toThrowError('Game has no players set');
       });
 
@@ -54,7 +54,7 @@ describe('games service', () => {
         const mockGame = ({
           type: GameType.KOTITONNI,
           players: [mockPlayer],
-        } as unknown) as ActiveGame;
+        } as unknown) as GameModel;
 
         const expectedInfo = {
           round: 1,
@@ -123,7 +123,7 @@ describe('games service', () => {
 
       const origGame = {
         players: {},
-      } as ActiveGame;
+      } as RTCGame;
 
       findById.mockImplementationOnce(() => mockReturn);
 

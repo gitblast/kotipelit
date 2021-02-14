@@ -17,19 +17,19 @@ const joinHostToRoom = (
   const newRoom = {
     ...room,
     host: {
-      id: socket.decoded_token.id,
+      id: socket.decodedToken.id,
       socketId: socket.id,
       peerId,
-      displayName: socket.decoded_token.username,
+      displayName: socket.decodedToken.username,
       isHost: true,
     },
   };
 
   logger.log(
-    `joining host '${socket.decoded_token.username}' to room ${room.game.id}`
+    `joining host '${socket.decodedToken.username}' to room ${room.game.id}`
   );
 
-  rooms.set(socket.decoded_token.gameId, newRoom);
+  rooms.set(socket.decodedToken.gameId, newRoom);
 
   return newRoom;
 };
@@ -42,7 +42,7 @@ const joinPlayerToRoom = (
   const newRoom = {
     ...room,
     players: room.players.map((player) => {
-      return player.id === socket.decoded_token.id
+      return player.id === socket.decodedToken.id
         ? {
             ...player,
             socketId: socket.id,
@@ -53,15 +53,15 @@ const joinPlayerToRoom = (
   };
 
   logger.log(
-    `joining player '${socket.decoded_token.username}' to room ${room.game.id}`
+    `joining player '${socket.decodedToken.username}' to room ${room.game.id}`
   );
 
-  rooms.set(socket.decoded_token.gameId, newRoom);
+  rooms.set(socket.decodedToken.gameId, newRoom);
 
   // dont return other players' words
   return {
     ...newRoom,
-    game: filterGameForUser(newRoom.game, socket.decoded_token.id),
+    game: filterGameForUser(newRoom.game, socket.decodedToken.id),
   };
 };
 
@@ -97,7 +97,7 @@ const filterGameForUser = (game: RTCGame, userId: string): RTCGame => {
 };
 
 const joinRoom = (socket: SocketWithToken, peerId: string): RTCGameRoom => {
-  const { role, gameId } = socket.decoded_token;
+  const { role, gameId } = socket.decodedToken;
 
   const room = rooms.get(gameId);
 

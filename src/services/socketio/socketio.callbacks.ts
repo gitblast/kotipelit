@@ -1,10 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
-  JitsiReadyData,
-  EventType,
   SocketWithToken,
   GameStatus,
-  ActiveGame,
   Role,
   RTCGame,
   GameType,
@@ -12,200 +9,8 @@ import {
   Answer,
 } from '../../types';
 import logger from '../../utils/logger';
-import * as events from './socketio.events';
-import { initRoom, emit, broadcast } from '.';
-import roomService from '../rooms';
-import Url from '../../models/url';
 import gameService from '../../services/games';
-import { Server, Socket } from 'socket.io';
 import rtcrooms from '../rtc/rtcrooms';
-
-export const handleHostDisconnect = (io: Server, socket: Socket): void => {
-  logger.log(`Recieved ${EventType.DISCONNECT}`);
-
-  try {
-    const rooms = roomService.getRooms();
-
-    const room = Object.values(rooms).find(
-      (room) => room.hostSocket === socket.id
-    );
-
-    if (!room) {
-      throw new Error(
-        `No room found with host socket id '${socket.id}. If game has already ended, this is expected'`
-      );
-    }
-
-    logger.log(
-      `host disconnected, emitting update game to room ${room.game.id}`
-    );
-    room.game.hostOnline = false;
-
-    const { event, data } = events.gameUpdated(room.game);
-
-    io.to(room.game.id).emit(event, data);
-  } catch (error) {
-    if (process.env.NODE_ENV !== 'test') {
-      logger.error(error.message);
-    }
-  }
-};
-
-export const handlePlayerDisconnect = (
-  io: Server,
-  socket: SocketWithToken
-): void => {
-  logger.log(`Recieved ${EventType.DISCONNECT}`);
-
-  try {
-    const gameId = socket.decoded_token.gameId;
-
-    const room = roomService.getRooms()[gameId];
-
-    if (!room) throw new Error(`No room found with id '${gameId}'`);
-
-    const player = roomService.leaveRoom(gameId, socket.id);
-
-    logger.log(
-      `player '${player.id}' disconnected, emitting update game to room ${gameId}`
-    );
-
-    const { event, data } = events.gameUpdated(room.game);
-
-    io.to(gameId).emit(event, data);
-  } catch (error) {
-    if (process.env.NODE_ENV !== 'test') {
-      logger.error(error.message);
-    }
-  }
-};
-
-export const jitsiReady = (
-  socket: SocketWithToken,
-  data: JitsiReadyData
-): void => {
-  logger.log(`Recieved ${EventType.JITSI_READY}`);
-
-  try {
-    broadcast(socket, data.gameId, events.gameReady(data.jitsiRoom));
-  } catch (error) {
-    logger.error(error.message);
-  }
-};
-
-export const createRoom = async (
-  socket: SocketWithToken,
-  roomId: string
-): Promise<void> => {
-  logger.log(`Recieved ${EventType.CREATE_ROOM}`);
-
-  try {
-    // check if room already exists
-    let data = roomService.getRoomData(socket.decoded_token.username, roomId);
-
-    if (!data) {
-      logger.log('creating a new room');
-      data = await initRoom(socket, roomId);
-    } else {
-      logger.log('existing room found. joining');
-
-      // update host socket and status
-      roomService.setHostOnline(roomId, true);
-      roomService.setHostSocket(roomId, socket.id);
-    }
-
-    roomService.addSocketToRoom(roomId, socket);
-    emit(
-      socket,
-      events.createSuccess(data.game, data.jitsiToken, data.jitsiRoom)
-    );
-
-    broadcast(socket, roomId, events.gameUpdated(data.game));
-  } catch (error) {
-    emit(socket, events.createFailure(error.message));
-  }
-};
-
-export const startGame = async (
-  socket: SocketWithToken,
-  gameId: string
-): Promise<void> => {
-  logger.log(`Recieved ${EventType.START_GAME}`);
-
-  try {
-    await gameService.setGameStatus(gameId, GameStatus.RUNNING);
-
-    const game = roomService.getRoomGame(gameId);
-
-    if (game.status === GameStatus.RUNNING)
-      logger.error(`Game with id '${gameId}' already running!`);
-
-    const startedGame = roomService.updateRoomGame(gameId, {
-      ...game,
-      status: GameStatus.RUNNING,
-      info: gameService.getInitialInfo(game),
-    });
-
-    broadcast(socket, gameId, events.gameStarting(startedGame));
-    emit(socket, events.startSuccess(startedGame));
-  } catch (error) {
-    emit(socket, events.startFailure(error.message));
-  }
-};
-
-export const updateGame = (socket: SocketWithToken, game: ActiveGame): void => {
-  logger.log(`Recieved ${EventType.UPDATE_GAME}`);
-
-  try {
-    const updated = roomService.updateRoomGame(game.id, game);
-    broadcast(socket, game.id, events.gameUpdated(game));
-    emit(socket, events.updateSuccess(updated));
-  } catch (error) {
-    emit(socket, events.updateFailure(error.message));
-  }
-};
-
-export const joinGame = (
-  socket: SocketWithToken,
-  gameId: string,
-  playerId: string
-): void => {
-  logger.log(`Recieved ${EventType.JOIN_GAME}`);
-
-  try {
-    roomService.addSocketToRoom(gameId, socket);
-    const game = roomService.joinRoom(gameId, playerId, socket.id);
-    const jitsiRoom = roomService.getJitsiRoomByRoomId(gameId);
-    emit(socket, events.joinSuccess(game, jitsiRoom));
-    broadcast(socket, gameId, events.gameUpdated(game));
-  } catch (error) {
-    emit(socket, events.joinFailure(error.message));
-  }
-};
-
-export const endGame = async (
-  socket: SocketWithToken,
-  gameId: string
-): Promise<void> => {
-  logger.log(`Recieved ${EventType.END_GAME}`);
-
-  try {
-    const game = roomService.getRoomGame(gameId);
-
-    for (const player of game.players) {
-      await Url.deleteOne({ playerId: player.id, gameId: gameId });
-    }
-
-    // save results to db
-    await gameService.saveFinishedGame(gameId, game);
-
-    roomService.deleteRoom(gameId);
-    emit(socket, events.endSuccess(gameId));
-    broadcast(socket, gameId, events.gameEnded());
-  } catch (error) {
-    emit(socket, events.endFailure(error.message));
-  }
-};
 
 // RTC
 
@@ -213,10 +18,10 @@ export const joinRTCRoom = async (
   socket: SocketWithToken,
   peerId: string
 ): Promise<void> => {
-  logger.log(`recieved 'join-gameroom' from ${socket.decoded_token.username}`);
+  logger.log(`recieved 'join-gameroom' from ${socket.decodedToken.username}`);
 
   try {
-    const { gameId, id, role } = socket.decoded_token;
+    const { gameId, id, role } = socket.decodedToken;
 
     const existingRoom = rtcrooms.getRoom(gameId);
 
@@ -271,10 +76,10 @@ export const socketDisconnected = (
   reason: string
 ): void => {
   logger.log(
-    `recieved disconnect from ${socket.decoded_token.username}. reason: ${reason}`
+    `recieved disconnect from ${socket.decodedToken.username}. reason: ${reason}`
   );
 
-  const { id, gameId } = socket.decoded_token;
+  const { id, gameId } = socket.decodedToken;
 
   if (reason !== 'Ping timeout') {
     // emit user-left?
@@ -284,9 +89,9 @@ export const socketDisconnected = (
 };
 
 export const leaveRTCRoom = (socket: SocketWithToken): void => {
-  logger.log(`recieved leave-room from ${socket.decoded_token.username}`);
+  logger.log(`recieved leave-room from ${socket.decodedToken.username}`);
 
-  const { id, gameId } = socket.decoded_token;
+  const { id, gameId } = socket.decodedToken;
 
   rtcrooms.leaveRoom(gameId, id);
 
@@ -294,10 +99,10 @@ export const leaveRTCRoom = (socket: SocketWithToken): void => {
 };
 
 export const startRTCGame = async (socket: SocketWithToken): Promise<void> => {
-  logger.log(`recieved 'start' from ${socket.decoded_token.username}`);
+  logger.log(`recieved 'start' from ${socket.decodedToken.username}`);
 
   try {
-    const { gameId } = socket.decoded_token;
+    const { gameId } = socket.decodedToken;
 
     const room = rtcrooms.getRoom(gameId);
 
@@ -325,10 +130,10 @@ export const startRTCGame = async (socket: SocketWithToken): Promise<void> => {
 };
 
 export const launchRTCGame = async (socket: SocketWithToken): Promise<void> => {
-  logger.log(`recieved 'launch' from ${socket.decoded_token.username}`);
+  logger.log(`recieved 'launch' from ${socket.decodedToken.username}`);
 
   try {
-    const { gameId } = socket.decoded_token;
+    const { gameId } = socket.decodedToken;
 
     const room = rtcrooms.getRoom(gameId);
 
@@ -378,10 +183,10 @@ export const launchRTCGame = async (socket: SocketWithToken): Promise<void> => {
 };
 
 export const updateRTCGame = (socket: SocketWithToken, game: RTCGame): void => {
-  logger.log(`recieved 'update-game' from ${socket.decoded_token.username}`);
+  logger.log(`recieved 'update-game' from ${socket.decodedToken.username}`);
 
   try {
-    const { gameId } = socket.decoded_token;
+    const { gameId } = socket.decodedToken;
 
     const room = rtcrooms.getRoom(gameId);
 
@@ -400,10 +205,10 @@ export const updateRTCGame = (socket: SocketWithToken, game: RTCGame): void => {
 };
 
 export const endRTCGame = async (socket: SocketWithToken): Promise<void> => {
-  logger.log(`recieved 'end' from ${socket.decoded_token.username}`);
+  logger.log(`recieved 'end' from ${socket.decodedToken.username}`);
 
   try {
-    const { gameId } = socket.decoded_token;
+    const { gameId } = socket.decodedToken;
 
     const room = rtcrooms.getRoom(gameId);
 
@@ -434,10 +239,10 @@ export const handleTimerChange = (
   socket: SocketWithToken,
   value: number
 ): void => {
-  // log(`recieved 'timer' from ${socket.decoded_token.username}`);
+  // log(`recieved 'timer' from ${socket.decodedToken.username}`);
 
   try {
-    const { gameId } = socket.decoded_token;
+    const { gameId } = socket.decodedToken;
 
     socket.to(gameId).emit('timer-changed', value);
   } catch (e) {
@@ -448,14 +253,14 @@ export const handleTimerChange = (
 };
 
 const logRecievedMsg = (event: string, socket: SocketWithToken): void => {
-  logger.log(`recieved '${event}' from ${socket.decoded_token.username}`);
+  logger.log(`recieved '${event}' from ${socket.decodedToken.username}`);
 };
 
 export const getRoomGame = (socket: SocketWithToken): void => {
   logRecievedMsg('get-room-game', socket);
 
   try {
-    const { gameId, id } = socket.decoded_token;
+    const { gameId, id } = socket.decodedToken;
 
     const room = rtcrooms.getRoom(gameId);
 
@@ -467,7 +272,7 @@ export const getRoomGame = (socket: SocketWithToken): void => {
 
     const filteredGame = rtcrooms.filterGameForUser(room.game, id);
 
-    socket.emit(EventType.GAME_UPDATED, filteredGame);
+    socket.emit('game updated', filteredGame);
   } catch (e) {
     logger.error(e.message);
     socket.emit('rtc_error', e.message);
@@ -475,10 +280,10 @@ export const getRoomGame = (socket: SocketWithToken): void => {
 };
 
 export const handleAnswer = (socket: SocketWithToken, answer: Answer): void => {
-  logger.log(`recieved 'answer' from ${socket.decoded_token.username}`);
+  logger.log(`recieved 'answer' from ${socket.decodedToken.username}`);
 
   try {
-    const { id, gameId } = socket.decoded_token;
+    const { id, gameId } = socket.decodedToken;
 
     const room = rtcrooms.getRoom(gameId);
 
@@ -512,13 +317,10 @@ export const handleAnswer = (socket: SocketWithToken, answer: Answer): void => {
     const hostSocketId = room.host.socketId;
 
     if (hostSocketId) {
-      socket.to(hostSocketId).emit(EventType.GAME_UPDATED, updatedGame);
+      socket.to(hostSocketId).emit('game updated', updatedGame);
     }
 
-    socket.emit(
-      EventType.GAME_UPDATED,
-      rtcrooms.filterGameForUser(updatedGame, id)
-    );
+    socket.emit('game updated', rtcrooms.filterGameForUser(updatedGame, id));
   } catch (e) {
     logger.error(e.message);
 
@@ -531,23 +333,20 @@ const emitUpdatedGame = (
   newGame: RTCGame,
   peers: RTCPlayer[]
 ): void => {
-  const { id, role } = socket.decoded_token;
+  const { id, role } = socket.decodedToken;
   logger.log(`emitting game updated`);
 
   // handle game types here
   if (newGame.type === GameType.KOTITONNI) {
     if (role === Role.HOST) {
-      socket.emit(EventType.GAME_UPDATED, newGame);
+      socket.emit('game updated', newGame);
 
       // doesn't send other players' words, also dont send them to self
       peers.forEach((peer) => {
         if (peer.id !== id && peer.socketId) {
           socket
             .to(peer.socketId)
-            .emit(
-              EventType.GAME_UPDATED,
-              rtcrooms.filterGameForUser(newGame, peer.id)
-            );
+            .emit('game updated', rtcrooms.filterGameForUser(newGame, peer.id));
         }
       });
     }

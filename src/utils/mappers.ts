@@ -154,7 +154,10 @@ export const toNewGame = (object: any, hostId: Types.ObjectId): NewGame => {
     startTime: parseDate(object.startTime),
     players: parsePlayers(object.players),
     status: parseStatus(object.status),
-    host: hostId,
+    host: {
+      id: hostId,
+      socketId: null,
+    },
     rounds: parseRounds(object.rounds),
     price: parseNumber(object.price),
   };
@@ -207,12 +210,12 @@ export const validateGameHost = (
   hostId: string
 ): GameModel => {
   if (!game) throw new Error('Missing game');
-  if (!game.host || !game.host.toString) {
+  if (!game.host || !game.host.id.toString) {
     throw new Error('Missing or invalid game host');
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  if (game.host.toString() !== hostId) {
+  if (game.host.id.toString() !== hostId) {
     throw new Error('Invalid request, cannot remove games added by others');
   }
 

@@ -19,10 +19,6 @@ const attachRTCListeners = (socket: SocketWithToken) => {
     void callbacks.getRoomGame(socket);
   });
 
-  socket.on('join-gameroom', (peerId: string) => {
-    void callbacks.joinRTCRoom(socket, peerId);
-  });
-
   socket.on('answer', (answerObj: Answer) => {
     void callbacks.handleAnswer(socket, answerObj);
   });
@@ -76,12 +72,17 @@ const handler = (io: Server): void => {
     })
   );
 
-  // subscribe to game state updates
   io.of('/').on('connection', (socket: SocketWithToken) => {
     logger.log(`user connected ${socket.decodedToken.username}`);
 
-    if (socket.decodedToken.type === 'rtc') {
-      console.log('todo', handleRTCConnection.toString());
+    const { type } = socket.decodedToken;
+
+    if (type === 'rtc') {
+      handleRTCConnection(socket);
+
+      // join room
+
+      void callbacks.joinRTCRoom(socket);
     } else {
       logger.error('socket type not recognized');
     }

@@ -54,6 +54,7 @@ const addDummyGame = async (user: UserModel): Promise<GameModel> => {
           words: [],
           twilioToken: null,
           inviteCode: 'player1code',
+          socketId: null,
         },
         reservedFor: null,
       },
@@ -66,17 +67,21 @@ const addDummyGame = async (user: UserModel): Promise<GameModel> => {
           words: [],
           inviteCode: 'player2code',
           twilioToken: null,
+          socketId: null,
         },
         reservedFor: null,
       },
     ],
     startTime: new Date(),
-    host: user._id,
+    host: {
+      id: user._id,
+      socketId: null,
+    },
     status: GameStatus.UPCOMING,
     rounds: 3,
   };
 
-  const game = new Game({ ...dummyGame, createDate: new Date() });
+  const game = new Game({ ...dummyGame, info: {}, createDate: new Date() });
 
   const savedGame = await game.save();
 

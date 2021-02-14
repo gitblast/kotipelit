@@ -49,7 +49,7 @@ router.put('/lock', async (req, res, next) => {
       throw new Error('Invalid request: no game found');
     }
 
-    const host = await User.findById(game.host);
+    const host = await User.findById(game.host.id);
 
     if (!host) {
       throw new Error('Invalid request: no host found for game');
@@ -306,7 +306,7 @@ router.get('/lobby/:hostName/:gameId', async (req, res, next) => {
 
     const host = await User.findOne({ username: hostName });
 
-    if (!host || game.host.toString() !== host._id.toString()) {
+    if (!host || game.host.id.toString() !== host._id.toString()) {
       throw new Error(
         `Invalid request: host missing or not matching fetched game`
       );
@@ -340,9 +340,13 @@ router.get('/', async (req, res, next) => {
 
   try {
     const user = toAuthenticatedUser(req);
-    const allGames = await Game.find({ host: user.id });
+    const allGames = await Game.find({});
 
-    res.json(allGames);
+    const filteredGames = allGames.filter(
+      (game) => game.host.id.toString() === user.id
+    );
+
+    res.json(filteredGames);
   } catch (error) {
     next(error);
   }
@@ -356,6 +360,7 @@ router.post('/', async (req, res, next) => {
     const game = new Game({
       ...newGame,
       createDate: new Date(),
+      info: gameService.getInitialInfo(newGame),
       players: newGame.players.map((player) => {
         return {
           ...player,
@@ -365,6 +370,7 @@ router.post('/', async (req, res, next) => {
             ...player.privateData,
             inviteCode: shortid.generate(),
             twilioToken: null,
+            socketId: null,
           },
         };
       }),
@@ -403,7 +409,7 @@ router.get('/token/:id', async (req, res, next) => {
 
     const user = toAuthenticatedUser(req);
 
-    if (!user.id === game.host) {
+    if (!user.id === game.host.id) {
       console.error('invalid host', game.host, user.id);
 
       throw new Error(

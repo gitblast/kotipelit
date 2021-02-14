@@ -47,6 +47,7 @@ const dummyGame: Omit<NewGame, 'host'> = {
         words: [],
         twilioToken: null,
         inviteCode: 'player1invite',
+        socketId: null,
       },
     },
     {
@@ -56,7 +57,7 @@ const dummyGame: Omit<NewGame, 'host'> = {
       privateData: {
         answers: {},
         words: [],
-
+        socketId: null,
         inviteCode: 'player2invite',
         twilioToken: null,
       },
@@ -470,8 +471,7 @@ describe('games router', () => {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       response.body.forEach((game: any) => {
-        expect(game.host).toBeDefined();
-        expect(game.host).toBe(user._id.toString());
+        expect(game.host.id).toBe(user._id.toString());
       });
     });
   });
@@ -511,7 +511,7 @@ describe('games router', () => {
 
       expect(response.body).toBeDefined();
       expect(response.body).toHaveProperty('host');
-      expect(response.body.host).toBe(id.toString());
+      expect(response.body.host.id).toBe(id.toString());
     });
 
     it('should return 400 with invalid game object using valid token', async () => {

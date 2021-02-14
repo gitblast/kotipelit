@@ -10,7 +10,39 @@ import {
   RTCGame,
   InviteInfo,
   SocketWithToken,
+  FilteredRTCGame,
+  NewGame,
 } from '../types';
+
+const filterGameForUser = (
+  game: RTCGame | GameModel,
+  userId: string
+): FilteredRTCGame => {
+  if (userId === game.host.id.toString()) {
+    // return all data to host
+
+    return game;
+  }
+
+  if (game.type === GameType.KOTITONNI) {
+    // hide words and answers not self
+    return {
+      ...game,
+      players: game.players.map((player) => {
+        return player.id === userId
+          ? player
+          : {
+              ...player,
+              reservedFor: null,
+              privateData: null,
+            };
+      }),
+    };
+  }
+
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+  throw new Error(`invalid game type: ${game.type}`);
+};
 
 const getInviteMailData = (
   game: GameModel,
@@ -68,7 +100,7 @@ const refreshGameReservations = async (gameId: string): Promise<GameModel> => {
   return await game.save();
 };
 
-const getInitialInfo = (game: GameModel): GameInfo => {
+const getInitialInfo = (game: NewGame): GameInfo => {
   /** handle different game types here */
   switch (game.type) {
     case GameType.KOTITONNI: {
@@ -137,7 +169,10 @@ const convertToRTCGame = (game: GameModel): RTCGame => {
     startTime: game.startTime,
     players: game.players,
     info: getInitialInfo(game),
-    host: game.host.toString(),
+    host: {
+      id: game.host.toString(),
+      socketId: null,
+    },
     rounds: game.rounds,
   };
 };
@@ -155,4 +190,5 @@ export default {
   refreshGameReservations,
   getInviteMailData,
   subscribeToUpdates,
+  filterGameForUser,
 };

@@ -47,22 +47,7 @@ export const joinRTCRoom = async (
       self = joinedRoom.players.find((player) => player.id === id);
     }
 
-    // hide invite codes if not host
-    const returnedRoom =
-      role === Role.HOST
-        ? joinedRoom
-        : {
-            ...joinedRoom,
-            game: {
-              ...joinedRoom.game,
-              players: joinedRoom.game.players.map((player) => ({
-                ...player,
-                inviteCode: undefined,
-              })),
-            },
-          };
-
-    socket.emit('room-joined', returnedRoom);
+    socket.emit('room-joined', joinedRoom);
     socket.to(gameId).emit('user-joined', self);
   } catch (e) {
     logger.error(e.message);
@@ -297,12 +282,12 @@ export const handleAnswer = (socket: SocketWithToken, answer: Answer): void => {
         return player.id === id
           ? {
               ...player,
-              data: {
-                ...player.data,
+              privateData: {
+                ...player.privateData,
                 answers: {
-                  ...player.data.answers,
+                  ...player.privateData.answers,
                   [answer.info.turn]: {
-                    ...player.data.answers[answer.info.turn],
+                    ...player.privateData.answers[answer.info.turn],
                     [answer.info.round]: answer.answer,
                   },
                 },

@@ -4,6 +4,8 @@ import {
   SocketWithToken,
   Role,
   GameType,
+  FilteredRTCGame,
+  FilteredRTCGameRoom,
 } from '../../types';
 import logger from '../../utils/logger';
 
@@ -38,7 +40,7 @@ const joinPlayerToRoom = (
   room: RTCGameRoom,
   socket: SocketWithToken,
   peerId: string
-): RTCGameRoom => {
+): FilteredRTCGameRoom => {
   const newRoom = {
     ...room,
     players: room.players.map((player) => {
@@ -65,7 +67,7 @@ const joinPlayerToRoom = (
   };
 };
 
-const filterGameForUser = (game: RTCGame, userId: string): RTCGame => {
+const filterGameForUser = (game: RTCGame, userId: string): FilteredRTCGame => {
   if (userId === game.host) {
     // return all data to host
 
@@ -82,11 +84,7 @@ const filterGameForUser = (game: RTCGame, userId: string): RTCGame => {
           : {
               ...player,
               reservedFor: null,
-              inviteCode: '',
-              data: {
-                answers: {},
-                words: [],
-              },
+              privateData: null,
             };
       }),
     };
@@ -96,7 +94,10 @@ const filterGameForUser = (game: RTCGame, userId: string): RTCGame => {
   throw new Error(`invalid game type: ${game.type}`);
 };
 
-const joinRoom = (socket: SocketWithToken, peerId: string): RTCGameRoom => {
+const joinRoom = (
+  socket: SocketWithToken,
+  peerId: string
+): RTCGameRoom | FilteredRTCGameRoom => {
   const { role, gameId } = socket.decodedToken;
 
   const room = rooms.get(gameId);

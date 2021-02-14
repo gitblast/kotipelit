@@ -4,7 +4,7 @@ export interface GameModel extends NewGame, Document {
   createDate: Date;
 }
 
-export interface BaseGame {
+export interface BaseRTCGame {
   type: GameType;
   status: GameStatus;
   startTime: Date;
@@ -12,7 +12,7 @@ export interface BaseGame {
   price: number;
 }
 
-export interface NewGame extends BaseGame {
+export interface NewGame extends BaseRTCGame {
   players: GamePlayer[];
   host: UserModel['_id'];
 }
@@ -61,27 +61,36 @@ export interface BaseGamePlayer {
   name: string;
   id: string;
   points: number;
-  reservedFor: {
-    id: string;
-    expires: number;
-    locked?: boolean;
-  } | null;
-  inviteCode: string;
-  data: GameData;
+  reservedFor: ReservationData | null;
+}
+
+export interface ReservationData {
+  id: string;
+  expires: number;
+  locked?: boolean;
 }
 
 export interface KotitonniPlayer extends BaseGamePlayer {
-  data: KotitonniData;
+  privateData: KotitonniData;
 }
 
-export interface KotitonniData {
+export interface BasePrivateData {
+  inviteCode: string;
+  twilioToken: string | null;
+}
+
+export interface KotitonniData extends BasePrivateData {
   answers: Record<string, Record<string, string>>;
   words: string[];
 }
 
-export type GameData = KotitonniData; // additional games here
+export type PrivateData = KotitonniData; // additional games here
 
 export type GamePlayer = KotitonniPlayer;
+
+export interface FilteredGamePlayer extends BaseGamePlayer {
+  privateData: PrivateData | null;
+}
 
 export interface KotitonniInfo {
   round: number;
@@ -101,7 +110,7 @@ export interface SocketIOAuthToken {
   username: string;
   role: Role;
   gameId: string;
-  type?: 'rtc' | 'jitsi';
+  type: 'rtc';
 }
 
 export interface SocketWithToken extends SocketIO.Socket {
@@ -122,6 +131,12 @@ export interface RTCGameRoom {
   players: RTCPlayer[];
 }
 
+export interface FilteredRTCGameRoom {
+  game: FilteredRTCGame;
+  host: RTCPlayer;
+  players: RTCPlayer[];
+}
+
 export interface RTCGame {
   id: string;
   status: GameStatus;
@@ -132,6 +147,10 @@ export interface RTCGame {
   info: GameInfo;
   host: string;
   rounds: number;
+}
+
+export interface FilteredRTCGame extends BaseRTCGame {
+  players: FilteredGamePlayer[];
 }
 
 export interface Answer {

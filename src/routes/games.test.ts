@@ -41,22 +41,25 @@ const dummyGame: Omit<NewGame, 'host'> = {
       id: 'id1',
       name: 'player1',
       points: 0,
-      inviteCode: 'player1invite',
       reservedFor: null,
-      data: {
+      privateData: {
         answers: {},
         words: [],
+        twilioToken: null,
+        inviteCode: 'player1invite',
       },
     },
     {
       id: 'id2',
       name: 'player2',
       points: 0,
-      data: {
+      privateData: {
         answers: {},
         words: [],
+
+        inviteCode: 'player2invite',
+        twilioToken: null,
       },
-      inviteCode: 'player2invite',
       reservedFor: null,
     },
   ],
@@ -401,12 +404,12 @@ describe('games router', () => {
 
       const hostName = user.username;
 
-      if (!player.inviteCode) {
+      if (!player.privateData.inviteCode) {
         throw new Error('Player inviteCode was not set, check helper');
       }
 
       const response = await api
-        .get(`${baseUrl}/join/${hostName}/${player.inviteCode}`)
+        .get(`${baseUrl}/join/${hostName}/${player.privateData.inviteCode}`)
         .expect(200)
         .expect('Content-Type', /application\/json/);
 

@@ -233,7 +233,7 @@ export const validateGamePlayer = (
   if (!game) throw new Error('Missing game');
 
   const matchingPlayer = game.players.find(
-    (player) => player.inviteCode === inviteCode
+    (player) => player.privateData.inviteCode === inviteCode
   );
 
   if (!matchingPlayer)

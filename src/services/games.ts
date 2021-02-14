@@ -9,6 +9,7 @@ import {
   GameInfo,
   RTCGame,
   InviteInfo,
+  SocketWithToken,
 } from '../types';
 
 const getInviteMailData = (
@@ -21,18 +22,18 @@ const getInviteMailData = (
     case GameType.KOTITONNI: {
       const player = game.players.find((player) => player.id === playerId);
 
-      if (!player || !player.data.words) {
+      if (!player || !player.privateData.words) {
         throw new Error('Missing or invalid player when getting mail data');
       }
 
       return {
-        url: `https://www.kotipelit.com/${hostName}/${player.inviteCode}`,
-        cancelUrl: `https://www.kotipelit.com/${hostName}/peruuta/${player.inviteCode}`,
+        url: `https://www.kotipelit.com/${hostName}/${player.privateData.inviteCode}`,
+        cancelUrl: `https://www.kotipelit.com/${hostName}/peruuta/${player.privateData.inviteCode}`,
         gameType: GameType.KOTITONNI,
         displayName,
         startTime: game.startTime,
         data: {
-          words: player.data.words,
+          words: player.privateData.words,
         },
       };
     }
@@ -141,6 +142,10 @@ const convertToRTCGame = (game: GameModel): RTCGame => {
   };
 };
 
+const subscribeToUpdates = (socket: SocketWithToken): void => {
+  console.log('todo', socket);
+};
+
 export default {
   saveFinishedGame,
   setGameStatus,
@@ -149,4 +154,5 @@ export default {
   convertToRTCGame,
   refreshGameReservations,
   getInviteMailData,
+  subscribeToUpdates,
 };

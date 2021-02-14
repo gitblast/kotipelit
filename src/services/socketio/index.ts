@@ -68,38 +68,24 @@ const handleRTCConnection = (socket: SocketWithToken) => {
   attachRTCListeners(socket);
 };
 
-const authenticateSocket = (io: Server): void => {
-  io.of('/lobby').on('connection', (socket: SocketIOClient.Socket) => {
-    console.log("socket connected to namespace '/'");
-
-    socket.on('authenticate', () => {
-      console.log('auth on public namespace!');
-    });
-
-    // use for lobby socket!
-
-    socket.on('disconnect', () => {
-      console.log('disconnected, nsp:', io._nsps);
-    });
-  });
-
+const handler = (io: Server): void => {
+  // authenticate
   io.of('/').use(
     authorize({
       secret: config.SECRET,
     })
   );
 
+  // subscribe to game state updates
   io.of('/').on('connection', (socket: SocketWithToken) => {
     logger.log(`user connected ${socket.decodedToken.username}`);
 
     if (socket.decodedToken.type === 'rtc') {
-      logger.log('using rtc');
-
-      handleRTCConnection(socket);
+      console.log('todo', handleRTCConnection.toString());
     } else {
       logger.error('socket type not recognized');
     }
   });
 };
 
-export default authenticateSocket;
+export default handler;

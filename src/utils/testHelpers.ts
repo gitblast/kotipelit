@@ -49,22 +49,24 @@ const addDummyGame = async (user: UserModel): Promise<GameModel> => {
         id: 'id1',
         name: 'player1',
         points: 0,
-        data: {
+        privateData: {
           answers: {},
           words: [],
+          twilioToken: null,
+          inviteCode: 'player1code',
         },
-        inviteCode: 'player1code',
         reservedFor: null,
       },
       {
         id: 'id2',
         name: 'player2',
         points: 0,
-        data: {
+        privateData: {
           answers: {},
           words: [],
+          inviteCode: 'player2code',
+          twilioToken: null,
         },
-        inviteCode: 'player2code',
         reservedFor: null,
       },
     ],
@@ -83,7 +85,7 @@ const addDummyGame = async (user: UserModel): Promise<GameModel> => {
       hostName: user.username,
       playerId: player.id,
       gameId: savedGame._id.toString(),
-      inviteCode: player.inviteCode,
+      inviteCode: player.privateData.inviteCode,
     };
 
     await new Url(newUrl).save();

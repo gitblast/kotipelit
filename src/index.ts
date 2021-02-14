@@ -16,10 +16,7 @@ setDebug(true);
 
 const server = http.createServer(app);
 
-const io = new socketIoServer(server, {
-  transports: ['websocket'],
-  allowUpgrades: false,
-});
+const io = new socketIoServer(server);
 
 socketIOhandler(io);
 

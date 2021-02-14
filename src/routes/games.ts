@@ -227,7 +227,7 @@ router.get('/cancel/:hostName/:inviteCode', async (req, res, next) => {
     let inviteCodeWasUpdated = false;
 
     game.players = game.players.map((player) => {
-      if (player.inviteCode === inviteCode) {
+      if (player.privateData.inviteCode === inviteCode) {
         inviteCodeWasUpdated = true;
 
         return {
@@ -360,8 +360,12 @@ router.post('/', async (req, res, next) => {
         return {
           ...player,
           id: shortid.generate(),
-          inviteCode: shortid.generate(),
           reservedFor: null,
+          privateData: {
+            ...player.privateData,
+            inviteCode: shortid.generate(),
+            twilioToken: null,
+          },
         };
       }),
     });
@@ -370,15 +374,11 @@ router.post('/', async (req, res, next) => {
 
     /** save short urls to database */
     for (const player of savedGame.players) {
-      if (!player.inviteCode) {
-        throw new Error(`Player ${player.name} has no invite code set`);
-      }
-
       const urlObject = {
         playerId: player.id,
         gameId: savedGame._id.toString(),
         hostName: user.username,
-        inviteCode: player.inviteCode,
+        inviteCode: player.privateData.inviteCode,
       };
 
       const newUrl = new Url(urlObject);

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import useGameRoom from '../hooks/useGameRoom';
+import useNewGameRoom from '../hooks/useNewGameRoom';
 
 import RTCVideoConference from './RTCVideoConference';
 import RTCHostControls from './RTCHostControls';
@@ -118,17 +118,9 @@ if (!MEDIA_CONSTRAINTS.video) {
 const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   const classes = useStyles();
   const [onCall, setOnCall] = React.useState<boolean>(false);
-  const peers = useGameRoom(token, onCall, MEDIA_CONSTRAINTS);
-  const game = useSelector((state: State) => state.rtc.game);
-  const socket = useSelector((state: State) => state.rtc.self?.socket);
+  const { game, mySelf, participants } = useNewGameRoom(token, onCall, isHost);
 
   const fullscreenRef = React.useRef<null | HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    if (peers) {
-      logger.log('PEERS CHANGED:', peers);
-    }
-  }, [peers]);
 
   const handleToggleFullscreen = React.useCallback(() => {
     if (document.fullscreenElement) {
@@ -143,17 +135,17 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   }, [fullscreenRef]);
 
   const handleStart = () => {
-    if (socket) {
-      socket.emit('start');
+    if (mySelf) {
+      mySelf.socket.emit('start');
     } else {
-      logger.error('socket was null when trying to emit start');
+      logger.error('self was null when trying to emit start');
     }
   };
 
   const handleJoinCall = () => {
     if (isHost) {
-      if (socket) {
-        socket.emit('launch');
+      if (mySelf) {
+        mySelf.socket.emit('launch');
       } else {
         logger.error('socket was null trying to emit launch');
       }
@@ -161,6 +153,8 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
 
     setOnCall(true);
   };
+
+  console.log('aseta käynnistys disabled jos yli 30min alkuun!');
 
   if (!game) {
     return (
@@ -200,7 +194,6 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
       </div>
     );
   }
-
   return (
     <div className={classes.container} ref={fullscreenRef}>
       <AudioHandler />
@@ -212,14 +205,14 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
         <div className={classes.topStyle}></div>
       </div>
 
-      <RTCVideoConference peers={peers} />
-      {isHost ? (
+      <RTCVideoConference participants={participants} />
+      {/* {isHost ? (
         <RTCHostControls handleToggleFullscreen={handleToggleFullscreen} />
       ) : (
         game.status === GameStatus.RUNNING && (
           <RTCPlayerControls handleToggleFullscreen={handleToggleFullscreen} />
         )
-      )}
+      )} */}
 
       <Backdrop
         open={game.status === GameStatus.WAITING}

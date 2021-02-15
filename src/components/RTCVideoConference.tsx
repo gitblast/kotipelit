@@ -6,6 +6,7 @@ import Loader from './Loader';
 import RTCVideoFrame from './RTCVideoFrame';
 
 import { RTCPeer } from '../types';
+import { Participant } from 'twilio-video';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -20,10 +21,12 @@ const useStyles = makeStyles(() =>
 );
 
 interface RTCVideoConferenceProps {
-  peers: RTCPeer[] | null;
+  participants: Map<string, Participant | null> | null;
 }
 
-const RTCVideoConference: React.FC<RTCVideoConferenceProps> = ({ peers }) => {
+const RTCVideoConference: React.FC<RTCVideoConferenceProps> = ({
+  participants,
+}) => {
   const classes = useStyles();
 
   /**
@@ -41,7 +44,7 @@ const RTCVideoConference: React.FC<RTCVideoConferenceProps> = ({ peers }) => {
     return order;
   };
 
-  if (!peers) {
+  if (!participants) {
     return (
       <div className={classes.videoConf}>
         <Loader msg="Ladataan..." spinner />
@@ -49,15 +52,17 @@ const RTCVideoConference: React.FC<RTCVideoConferenceProps> = ({ peers }) => {
     );
   }
 
+  console.log('partis', participants);
+
   return (
     <div className={classes.videoConf}>
-      {peers.map((peer, index) => (
+      {/* {peers.map((peer, index) => (
         <RTCVideoFrame
           key={peer.id}
           peer={peer}
           order={getOrder(index, peers.length)}
         />
-      ))}
+      ))} */}
     </div>
   );
 };

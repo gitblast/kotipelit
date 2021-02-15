@@ -68,6 +68,7 @@ export interface RTCKotitonniPlayer {
   points: number;
   hasTurn?: boolean;
   privateData: KotitonniPrivateData;
+  isMe?: boolean;
 }
 
 export enum GameStatus {
@@ -322,20 +323,6 @@ export type RTCSelfAction =
 
 // SOCKET IO EVENTS
 
-export enum PlayerEvent {
-  JOIN_GAME = 'join game',
-
-  GAME_UPDATED = 'game updated',
-  GAME_ENDED = 'game ended',
-}
-
-export enum HostEvent {
-  CREATE_ROOM = 'create room',
-  START_GAME = 'start game',
-  UPDATE_GAME = 'update game',
-  END_GAME = 'end game',
-}
-
 export enum CommonEvent {
   AUTH_REQUEST = 'authenticate',
   AUTHENTICATED = 'authenticated',
@@ -344,24 +331,6 @@ export enum CommonEvent {
   CONNECT = 'connect',
   PLAYER_JOINED = 'player joined',
 }
-
-export type EmittedEvent =
-  | {
-      event: PlayerEvent.JOIN_GAME;
-      data: null;
-    }
-  | {
-      event: HostEvent.CREATE_ROOM;
-      data: string; // game id
-    }
-  | {
-      event: HostEvent.START_GAME;
-      data: string; // game id
-    }
-  | {
-      event: HostEvent.END_GAME;
-      data: string; // game id
-    };
 
 export interface RecievedError {
   error: string;
@@ -414,7 +383,10 @@ export interface RTCGame {
   info: GameInfo;
   host: {
     id: string;
-    socketId: string | null;
+    privateData: {
+      socketId: string | null;
+      twilioToken: string | null;
+    };
   };
 }
 

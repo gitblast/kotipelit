@@ -72,12 +72,7 @@ const useAuthSocket = (
     };
   }, [token, socketClient, onLeave]);
 
-  const returnedTuple: [
-    SocketIOClient.Socket | null,
-    string | null
-  ] = React.useMemo(() => [socketClient, error], [socketClient, error]);
-
-  return returnedTuple;
+  return [socketClient, error];
 };
 
 export default useAuthSocket;

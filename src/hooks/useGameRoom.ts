@@ -56,12 +56,12 @@ const useGameRoom = (
         //dispatch(initRTCGame(rtcRoom, socket));
       });
 
-      socket.on('rtc_error', (msg: string) => {
+      socket.on('rtc-error', (msg: string) => {
         logger.error('rtc error:', msg);
       });
 
-      socket.on('game updated', (updatedGame: RTCGame) => {
-        logger.log(`recieved 'game updated' with data:`, updatedGame);
+      socket.on('game-updated', (updatedGame: RTCGame) => {
+        logger.log(`recieved 'game-updated' with data:`, updatedGame);
 
         const mappedPlayers = updatedGame.players.map((player) => ({
           ...player,

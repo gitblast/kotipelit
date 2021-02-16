@@ -16,7 +16,7 @@ export interface NewGame extends BaseRTCGame {
   players: GamePlayer[];
   host: {
     id: UserModel['_id'];
-    socketId: string | null;
+    privateData: BasePrivateData;
   };
 }
 
@@ -78,12 +78,15 @@ export interface KotitonniPlayer extends BaseGamePlayer {
 }
 
 export interface BasePrivateData {
-  inviteCode: string;
   twilioToken: string | null;
   socketId: string | null;
 }
 
-export interface KotitonniData extends BasePrivateData {
+export interface PlayerPrivateData extends BasePrivateData {
+  inviteCode: string;
+}
+
+export interface KotitonniData extends PlayerPrivateData {
   answers: Record<string, Record<string, string>>;
   words: string[];
 }
@@ -129,12 +132,6 @@ export interface RTCPlayer {
   isHost: boolean;
 }
 
-export interface FilteredRTCGameRoom {
-  game: FilteredRTCGame;
-  host: RTCPlayer;
-  players: RTCPlayer[];
-}
-
 export interface RTCGame {
   id: string;
   status: GameStatus;
@@ -145,12 +142,16 @@ export interface RTCGame {
   info: GameInfo;
   host: {
     id: string;
-    socketId: string | null;
+    privateData: BasePrivateData;
   };
   rounds: number;
 }
 
 export interface FilteredRTCGame extends BaseRTCGame {
+  host: {
+    id: string;
+    privateData: null;
+  };
   players: FilteredGamePlayer[];
 }
 

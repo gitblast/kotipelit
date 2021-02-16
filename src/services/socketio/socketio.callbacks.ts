@@ -34,13 +34,13 @@ export const joinRTCRoom = async (socket: SocketWithToken): Promise<void> => {
       rtcrooms.createRoom(rtcGame);
     }
 
-    const joinedRoom = rtcrooms.joinRoom(socket);
+    const joinedRoomGame = rtcrooms.joinRoom(socket);
 
-    socket.emit('room-joined', joinedRoom);
+    socket.emit('game-updated', joinedRoomGame);
   } catch (e) {
     logger.error(e.message);
 
-    socket.emit('rtc_error', e.message);
+    socket.emit('rtc-error', e.message);
   }
 };
 
@@ -98,7 +98,7 @@ export const startRTCGame = async (socket: SocketWithToken): Promise<void> => {
   } catch (e) {
     logger.error(e.message);
 
-    socket.emit('rtc_error', e.message);
+    socket.emit('rtc-error', e.message);
   }
 };
 
@@ -115,7 +115,28 @@ export const launchRTCGame = async (socket: SocketWithToken): Promise<void> => {
     }
 
     if (game.status !== GameStatus.UPCOMING) {
-      throw new Error(`game with id ${gameId} already launched`);
+      const errorMsg = `game with id ${gameId} already launched`;
+
+      if (process.env.NODE_ENV !== 'developement') {
+        logger.error(errorMsg);
+      } else {
+        throw new Error(errorMsg);
+      }
+    }
+
+    const timeDifference = new Date(game.startTime).getTime() - Date.now();
+
+    // check if difference is greater than 30 minutes
+    if (timeDifference > 30 * 60 * 1000) {
+      const errorMsg = `game start time is over 30 minutes away! time until start: ${Math.round(
+        timeDifference / 1000 / 60
+      )} minutes`;
+
+      if (process.env.NODE_ENV !== 'developement') {
+        logger.error(errorMsg);
+      } else {
+        throw new Error(errorMsg);
+      }
     }
 
     const updatedGameInDB = await gameService.setGameStatus(
@@ -125,10 +146,23 @@ export const launchRTCGame = async (socket: SocketWithToken): Promise<void> => {
 
     logger.log('generating access tokens');
 
+    // access token for host
+    const hostToken = twilioService.getVideoAccessToken(
+      id,
+      `kotipelit-${gameId}`
+    );
+
     // update player display names and game status, generate access tokens
     const updatedGame = {
       ...game,
       status: GameStatus.WAITING,
+      host: {
+        ...game.host,
+        privateData: {
+          ...game.host.privateData,
+          twilioToken: hostToken,
+        },
+      },
       players: game.players.map((player) => {
         const matching = updatedGameInDB.players.find(
           (p) => p.id === player.id
@@ -163,20 +197,10 @@ export const launchRTCGame = async (socket: SocketWithToken): Promise<void> => {
     rtcrooms.updateRoom(gameId, updatedGame);
 
     emitUpdatedGame(socket, updatedGame);
-
-    // send access token to host
-    const hostToken = twilioService.getVideoAccessToken(
-      id,
-      `kotipelit-${gameId}`
-    );
-
-    logger.log('sending token to host');
-
-    socket.emit('twilio-token', hostToken);
   } catch (e) {
     logger.error(e.message);
 
-    socket.emit('rtc_error', e.message);
+    socket.emit('rtc-error', e.message);
   }
 };
 
@@ -201,7 +225,7 @@ export const updateRTCGame = (
   } catch (e) {
     logger.error(e.message);
 
-    socket.emit('rtc_error', e.message);
+    socket.emit('rtc-error', e.message);
   }
 };
 
@@ -232,7 +256,7 @@ export const endRTCGame = async (socket: SocketWithToken): Promise<void> => {
   } catch (e) {
     logger.error(e.message);
 
-    socket.emit('rtc_error', e.message);
+    socket.emit('rtc-error', e.message);
   }
 };
 
@@ -249,7 +273,7 @@ export const handleTimerChange = (
   } catch (e) {
     logger.error(e.message);
 
-    socket.emit('rtc_error', e.message);
+    socket.emit('rtc-error', e.message);
   }
 };
 
@@ -271,10 +295,10 @@ export const getRoomGame = (socket: SocketWithToken): void => {
 
     const filteredGame = gameService.filterGameForUser(game, id);
 
-    socket.emit('game updated', filteredGame);
+    socket.emit('game-updated', filteredGame);
   } catch (e) {
     logger.error(e.message);
-    socket.emit('rtc_error', e.message);
+    socket.emit('rtc-error', e.message);
   }
 };
 
@@ -313,36 +337,36 @@ export const handleAnswer = (socket: SocketWithToken, answer: Answer): void => {
 
     const updatedGame = rtcrooms.updateRoom(gameId, newGame);
 
-    const hostSocketId = game.host.socketId;
+    const hostSocketId = game.host.privateData.socketId;
 
     if (hostSocketId) {
-      socket.to(hostSocketId).emit('game updated', updatedGame);
+      socket.to(hostSocketId).emit('game-updated', updatedGame);
     }
 
-    socket.emit('game updated', gameService.filterGameForUser(updatedGame, id));
+    socket.emit('game-updated', gameService.filterGameForUser(updatedGame, id));
   } catch (e) {
     logger.error(e.message);
 
-    socket.emit('rtc_error', e.message);
+    socket.emit('rtc-error', e.message);
   }
 };
 
 const emitUpdatedGame = (socket: SocketWithToken, newGame: RTCGame): void => {
-  const { id, role } = socket.decodedToken;
-  logger.log(`emitting game updated`);
+  const { role } = socket.decodedToken;
+  logger.log(`emitting game-updated`);
 
   // handle game types here
   if (newGame.type === GameType.KOTITONNI) {
     if (role === Role.HOST) {
-      socket.emit('game updated', newGame);
+      socket.emit('game-updated', newGame);
 
-      // doesn't send other players' words, also dont send them to self
+      // doesn't send other players' words
       newGame.players.forEach((player) => {
-        if (player.id !== id && player.privateData.socketId) {
+        if (player.privateData.socketId) {
           socket
             .to(player.privateData.socketId)
             .emit(
-              'game updated',
+              'game-updated',
               gameService.filterGameForUser(newGame, player.id)
             );
         }

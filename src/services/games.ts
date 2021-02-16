@@ -17,17 +17,21 @@ import {
 const filterGameForUser = (
   game: RTCGame | GameModel,
   userId: string
-): FilteredRTCGame => {
+): FilteredRTCGame | RTCGame => {
   if (userId === game.host.id.toString()) {
     // return all data to host
 
-    return game;
+    return game as RTCGame;
   }
 
   if (game.type === GameType.KOTITONNI) {
-    // hide words and answers not self
+    // hide private data
     return {
       ...game,
+      host: {
+        ...game.host,
+        privateData: null,
+      },
       players: game.players.map((player) => {
         return player.id === userId
           ? player
@@ -171,7 +175,10 @@ const convertToRTCGame = (game: GameModel): RTCGame => {
     info: getInitialInfo(game),
     host: {
       id: game.host.toString(),
-      socketId: null,
+      privateData: {
+        socketId: null,
+        twilioToken: null,
+      },
     },
     rounds: game.rounds,
   };

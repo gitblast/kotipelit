@@ -75,7 +75,10 @@ const addDummyGame = async (user: UserModel): Promise<GameModel> => {
     startTime: new Date(),
     host: {
       id: user._id,
-      socketId: null,
+      privateData: {
+        socketId: null,
+        twilioToken: null,
+      },
     },
     status: GameStatus.UPCOMING,
     rounds: 3,

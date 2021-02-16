@@ -21,7 +21,10 @@ const joinRoom = (socket: SocketWithToken): RTCGame | FilteredRTCGame => {
         ...game,
         host: {
           id,
-          socketId: socket.id,
+          privateData: {
+            ...game.host.privateData,
+            socketId: socket.id,
+          },
         },
       };
 
@@ -81,7 +84,10 @@ const leaveRoom = (gameId: string, userId: string): void => {
         ...game,
         host: {
           id: userId,
-          socketId: null,
+          privateData: {
+            ...game.host.privateData,
+            socketId: null,
+          },
         },
       };
 

@@ -15,6 +15,10 @@ const attachRTCListeners = (socket: SocketWithToken) => {
 
   // can handle game types here
 
+  socket.on('join-room', () => {
+    void callbacks.joinRTCRoom(socket);
+  });
+
   socket.on('get-room-game', () => {
     void callbacks.getRoomGame(socket);
   });
@@ -54,16 +58,6 @@ const attachRTCListeners = (socket: SocketWithToken) => {
   }
 };
 
-const handleRTCConnection = (socket: SocketWithToken) => {
-  const { gameId } = socket.decodedToken;
-
-  logger.log(`joining channel ${gameId}`);
-
-  socket.join(gameId);
-
-  attachRTCListeners(socket);
-};
-
 const handler = (io: Server): void => {
   // authenticate
   io.of('/').use(
@@ -75,14 +69,14 @@ const handler = (io: Server): void => {
   io.of('/').on('connection', (socket: SocketWithToken) => {
     logger.log(`user connected ${socket.decodedToken.username}`);
 
-    const { type } = socket.decodedToken;
+    const { type, gameId } = socket.decodedToken;
 
     if (type === 'rtc') {
-      handleRTCConnection(socket);
+      logger.log(`joining channel ${gameId}`);
 
-      // join room
+      socket.join(gameId);
 
-      void callbacks.joinRTCRoom(socket);
+      attachRTCListeners(socket);
     } else {
       logger.error('socket type not recognized');
     }

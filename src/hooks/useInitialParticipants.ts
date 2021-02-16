@@ -1,26 +1,35 @@
 import React from 'react';
 
-import { RTCGame } from '../types';
-import { Participant } from 'twilio-video';
+import { RTCGame, RTCParticipant } from '../types';
 
-/** Returns game players and host as a map with id:s as keys, Twilio.Participants as values */
-const useInitialParticipants = (game: RTCGame | null) => {
-  const [
-    initialParticipants,
-    setInitialParticipants,
-  ] = React.useState<null | Map<string, Participant | null>>(null);
+const useInitialParticipants = (game: RTCGame | null, ownId: string | null) => {
+  const [initialParticipants, setInitialParticipants] = React.useState<
+    null | RTCParticipant[]
+  >(null);
 
   React.useEffect(() => {
-    if (!initialParticipants && game) {
-      const initials = new Map();
+    if (!initialParticipants && game && ownId) {
+      const hostParticipant = {
+        id: game.host.id,
+        isHost: true,
+        connection: null,
+        isMe: ownId === game.host.id,
+      };
 
-      game.players.forEach((player) => initials.set(player.id, null));
-
-      initials.set(game.host.id, null);
+      const initials = game.players
+        .map((player) => {
+          return {
+            id: player.id,
+            isHost: false,
+            connection: null,
+            isMe: ownId === player.id,
+          };
+        })
+        .concat(hostParticipant);
 
       setInitialParticipants(initials);
     }
-  }, [game, initialParticipants]);
+  }, [game, initialParticipants, ownId]);
 
   return initialParticipants;
 };

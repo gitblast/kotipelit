@@ -1,14 +1,10 @@
-import React from 'react';
-
-import { useSelector } from 'react-redux';
-
-import VideoWithOverlay from './VideoWithOverlay';
-import PlayerOverlayItems from './PlayerOverlayItems';
-import HostOverlayItems from './HostOverlayItems';
-
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { GameStatus, RTCPeer, State } from '../types';
 import { Card, Typography } from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import useTracks from '../hooks/useTracks';
+import { GameStatus, RTCParticipant, State } from '../types';
+import VideoWithOverlay from './VideoWithOverlay';
 
 type PropStyles = {
   order: number;
@@ -96,7 +92,7 @@ const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
 );
 
 interface RTCVideoFrameProps {
-  peer: RTCPeer;
+  participant: RTCParticipant;
   order: number; // defines the order of video windows
 }
 
@@ -113,14 +109,18 @@ const ErrorMsg: React.FC<{ text: string }> = ({ text, children }) => {
   );
 };
 
-const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({ peer, order }) => {
+const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({
+  participant,
+  order,
+}) => {
+  const [videoTrack] = useTracks(participant);
   const classes = useStyles({ order });
   const gameStatus = useSelector((state: State) => state.rtc.game?.status);
   const playerWithTurnId = useSelector(
     (state: State) => state.rtc.game?.info.turn
   );
   const style = React.useMemo(() => ({ order }), [order]);
-  const overlayContent = React.useMemo(
+  /* const overlayContent = React.useMemo(
     () =>
       peer.isHost ? (
         <HostOverlayItems host={peer} />
@@ -128,15 +128,16 @@ const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({ peer, order }) => {
         <PlayerOverlayItems peer={peer} />
       ),
     [peer]
-  );
+  ); */
 
   const isMuted = useSelector(
-    (state: State) => !!state.rtc.localData.mutedMap[peer.id] || !!peer.isMe
+    (state: State) =>
+      !!state.rtc.localData.mutedMap[participant.id] || !!participant.isMe
   );
 
   const highlighted =
     playerWithTurnId &&
-    playerWithTurnId === peer.id &&
+    playerWithTurnId === participant.id &&
     gameStatus &&
     gameStatus === GameStatus.RUNNING;
 
@@ -146,19 +147,23 @@ const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({ peer, order }) => {
       className={`${classes.videoWindow} ${
         highlighted
           ? classes.hasTurn
-          : peer.isHost
+          : participant.isHost
           ? classes.hostStyle
           : classes.notActive
       }`}
       style={style}
     >
-      {peer.stream ? (
-        <VideoWithOverlay stream={peer.stream} isMuted={isMuted}>
-          {overlayContent}
+      {videoTrack /* && audioTrack */ ? (
+        <VideoWithOverlay
+          videoTrack={videoTrack}
+          //audioTrack={audioTrack}
+          isMuted={isMuted}
+        >
+          {/* overlayContent */}
         </VideoWithOverlay>
       ) : (
         <div>
-          <ErrorMsg text={'Ei videoyhteyttä'}>{overlayContent}</ErrorMsg>
+          <ErrorMsg text={'Ei videoyhteyttä'}>{/* overlayContent */}</ErrorMsg>
         </div>
       )}
     </Card>

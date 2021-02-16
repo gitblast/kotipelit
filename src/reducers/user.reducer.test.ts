@@ -85,37 +85,6 @@ describe('user reducer', () => {
     });
   });
 
-  it('should handle SET_JITSI_TOKEN', () => {
-    const action: Action = {
-      type: ActionType.SET_JITSI_TOKEN,
-      payload: 'JITSI_TOKEN!',
-    };
-
-    expect(reducer(undefined, action)).toEqual({
-      loggedIn: false,
-      jitsiToken: 'JITSI_TOKEN!',
-      jitsiRoom: null,
-      socket: null,
-      displayName: null,
-      loggingIn: false,
-    });
-  });
-
-  it('should handle SET_DISPLAYNAME', () => {
-    const action: Action = {
-      type: ActionType.SET_DISPLAYNAME,
-      payload: 'DISPLAYNAME',
-    };
-
-    expect(reducer(undefined, action)).toEqual({
-      loggedIn: false,
-      jitsiRoom: null,
-      socket: null,
-      displayName: 'DISPLAYNAME',
-      loggingIn: false,
-    });
-  });
-
   describe('checkForUser -function', () => {
     it('should set token and dispatch login success if saved user found in localStorage', () => {
       const user = {

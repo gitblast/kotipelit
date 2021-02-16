@@ -5,7 +5,7 @@ import { makeStyles, createStyles } from '@material-ui/core/styles';
 import Loader from './Loader';
 import RTCVideoFrame from './RTCVideoFrame';
 
-import { RTCPeer } from '../types';
+import { RTCParticipant, RTCPeer } from '../types';
 import { Participant } from 'twilio-video';
 
 const useStyles = makeStyles(() =>
@@ -21,7 +21,7 @@ const useStyles = makeStyles(() =>
 );
 
 interface RTCVideoConferenceProps {
-  participants: Map<string, Participant | null> | null;
+  participants: RTCParticipant[] | null;
 }
 
 const RTCVideoConference: React.FC<RTCVideoConferenceProps> = ({
@@ -52,17 +52,15 @@ const RTCVideoConference: React.FC<RTCVideoConferenceProps> = ({
     );
   }
 
-  console.log('partis', participants);
-
   return (
     <div className={classes.videoConf}>
-      {/* {peers.map((peer, index) => (
+      {participants.map((participant, index) => (
         <RTCVideoFrame
-          key={peer.id}
-          peer={peer}
-          order={getOrder(index, peers.length)}
+          key={participant.id}
+          participant={participant}
+          order={getOrder(index, participants.length)}
         />
-      ))} */}
+      ))}
     </div>
   );
 };

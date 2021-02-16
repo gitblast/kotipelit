@@ -2,6 +2,7 @@ import React from 'react';
 
 import Video from './Video';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
+import { VideoTrack, AudioTrack } from 'twilio-video';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -23,13 +24,15 @@ const useStyles = makeStyles(() =>
 );
 
 interface VideoWithOverlayProps {
-  stream: MediaStream;
+  videoTrack: VideoTrack;
+  //audioTrack: AudioTrack;
   isMuted: boolean;
   children: React.ReactNode;
 }
 
 const VideoWithOverlay: React.FC<VideoWithOverlayProps> = ({
-  stream,
+  videoTrack,
+
   isMuted,
   children,
 }) => {
@@ -37,7 +40,11 @@ const VideoWithOverlay: React.FC<VideoWithOverlayProps> = ({
 
   return (
     <div className={classes.frame}>
-      <Video stream={stream} isMuted={isMuted} />
+      <Video
+        videoTrack={videoTrack}
+        //audioTrack={audioTrack}
+        isMuted={isMuted}
+      />
       <div className={classes.absolute} id="overlayContainer">
         {children}
       </div>

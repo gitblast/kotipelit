@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const activeGameSlice = createSlice({
-  name: 'activeGame',
+const rtcGameSlice = createSlice({
+  name: 'game',
   initialState: null,
   reducers: {
     setGame: (state, action) => {
@@ -10,6 +10,6 @@ const activeGameSlice = createSlice({
   },
 });
 
-export const { setGame } = activeGameSlice.actions;
+export const { setGame } = rtcGameSlice.actions;
 
-export default activeGameSlice.reducer;
+export default rtcGameSlice.reducer;

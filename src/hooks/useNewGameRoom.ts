@@ -1,33 +1,14 @@
 import React from 'react';
-
-import useAuthSocket from './useAuthSocket';
-import useTwilioRoom from './useTwilioRoom';
-import useInitialParticipants from './useInitialParticipants';
-
 import { RTCGame } from '../types';
 import logger from '../utils/logger';
+import useAuthSocket from './useAuthSocket';
+import useInitialParticipants from './useInitialParticipants';
+import useSelf from './useSelf';
+import useTwilioRoom from './useTwilioRoom';
 
 const socketOnLeaveCallback = (socket: SocketIOClient.Socket) => {
   socket.emit('leave-room');
 };
-
-const getMyId = (game: RTCGame, isHost?: boolean) => {
-  if (isHost) {
-    return game.host.id;
-  }
-
-  const playerWithPrivateDataExposed = game.players.find(
-    (p) => !!p.privateData
-  );
-
-  return playerWithPrivateDataExposed?.id ?? null;
-};
-
-interface MySelf {
-  id: string;
-  isHost: boolean;
-  socket: SocketIOClient.Socket;
-}
 
 const useNewGameRoom = (
   token: string | null,
@@ -35,11 +16,11 @@ const useNewGameRoom = (
   isHost?: boolean
 ) => {
   const [game, setGame] = React.useState<null | RTCGame>(null);
-  const [mySelf, setMySelf] = React.useState<null | MySelf>(null);
   const [twilioToken, setTwilioToken] = React.useState<null | string>(null);
   const [socket, socketError] = useAuthSocket(token, socketOnLeaveCallback);
-  const initialParticipants = useInitialParticipants(game);
-  const [participants, twilioError] = useTwilioRoom(
+  const mySelf = useSelf(game, isHost);
+  const initialParticipants = useInitialParticipants(game, mySelf?.id ?? null);
+  const { participants, error: twilioError } = useTwilioRoom(
     twilioToken,
     onCall,
     initialParticipants
@@ -65,23 +46,6 @@ const useNewGameRoom = (
     }
   }, [socket]);
 
-  // set self
-  React.useEffect(() => {
-    if (!mySelf && game && socket) {
-      const myId = getMyId(game, isHost);
-
-      if (!myId) {
-        logger.error('self object not found!');
-      } else {
-        setMySelf({
-          id: myId,
-          isHost: !!isHost,
-          socket,
-        });
-      }
-    }
-  }, [game, mySelf, isHost, socket]);
-
   // set twilio token
   React.useEffect(() => {
     if (game && !twilioToken) {
@@ -101,6 +65,7 @@ const useNewGameRoom = (
 
   return {
     game,
+    socket,
     mySelf,
     participants,
   };

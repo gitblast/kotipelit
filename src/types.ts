@@ -1,11 +1,6 @@
-// JITSI
-
-export interface JitsiApi {
-  on: (event: string, listener: () => void) => void;
-  dispose: () => void;
-}
-
 // GAMES
+
+import { Participant } from 'twilio-video';
 
 export enum GameType {
   KOTITONNI = 'kotitonni',
@@ -415,3 +410,26 @@ export interface IceServers {
   urls: string[];
   credential: string;
 }
+
+export interface RTCParticipant {
+  id: string;
+  isHost?: boolean;
+  connection: Participant | null;
+  isMe: boolean;
+}
+
+/* export type RTCParticipant = RTCLocalParticipant | RTCRemoteParticipant;
+
+export interface RTCLocalParticipant {
+  id: string;
+  isHost?: boolean;
+  connection: LocalParticipant | null;
+  isMe: true;
+}
+
+export interface RTCRemoteParticipant {
+  id: string;
+  isHost?: boolean;
+  connection: RemoteParticipant | null;
+  isMe: false;
+} */

@@ -17,6 +17,8 @@ import Loader from './Loader';
 import { GameStatus, State } from '../types';
 import { useSelector } from 'react-redux';
 
+import { InGameSocket } from '../context';
+
 // import { Animated } from 'react-animated-css';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -118,7 +120,11 @@ if (!MEDIA_CONSTRAINTS.video) {
 const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   const classes = useStyles();
   const [onCall, setOnCall] = React.useState<boolean>(false);
-  const { game, mySelf, participants } = useNewGameRoom(token, onCall, isHost);
+  const { game, socket, participants } = useNewGameRoom(token, onCall, isHost);
+
+  React.useEffect(() => {
+    logger.log('participants changed:', participants);
+  }, [participants]);
 
   const fullscreenRef = React.useRef<null | HTMLDivElement>(null);
 
@@ -135,17 +141,19 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   }, [fullscreenRef]);
 
   const handleStart = () => {
-    if (mySelf) {
-      mySelf.socket.emit('start');
+    if (socket) {
+      socket.emit('start');
     } else {
-      logger.error('self was null when trying to emit start');
+      logger.error('socket was null when trying to emit start');
     }
+
+    console.log('aseta käynnistys disabled jos yli 30min alkuun!');
   };
 
   const handleJoinCall = () => {
     if (isHost) {
-      if (mySelf) {
-        mySelf.socket.emit('launch');
+      if (socket) {
+        socket.emit('launch');
       } else {
         logger.error('socket was null trying to emit launch');
       }
@@ -153,8 +161,6 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
 
     setOnCall(true);
   };
-
-  console.log('aseta käynnistys disabled jos yli 30min alkuun!');
 
   if (!game) {
     return (
@@ -195,53 +201,53 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
     );
   }
   return (
-    <div className={classes.container} ref={fullscreenRef}>
-      <AudioHandler />
-      <div className={classes.gameTitleBar}>
-        <div className={classes.topStyle}></div>
-        <Typography className={classes.gameTitle} variant="subtitle2">
-          Kotitonni
-        </Typography>
-        <div className={classes.topStyle}></div>
-      </div>
-
-      <RTCVideoConference participants={participants} />
-      {/* {isHost ? (
-        <RTCHostControls handleToggleFullscreen={handleToggleFullscreen} />
-      ) : (
-        game.status === GameStatus.RUNNING && (
-          <RTCPlayerControls handleToggleFullscreen={handleToggleFullscreen} />
-        )
-      )} */}
-
-      <Backdrop
-        open={game.status === GameStatus.WAITING}
-        className={classes.backdropBottom}
-      >
-        <div className={classes.backdropContent}>
-          {isHost ? (
-            <>
-              <Typography variant="h5">
-                Odota kunnes pelaajat on online.{' '}
-              </Typography>
-              <div className={classes.startBtnContainer}>
-                <Fab
-                  color="primary"
-                  variant="extended"
-                  size="large"
-                  onClick={handleStart}
-                  className={classes.startButton}
-                >
-                  Aloita peli
-                </Fab>
-              </div>
-            </>
-          ) : (
-            <></>
-          )}
+    <InGameSocket.Provider value={socket}>
+      <div className={classes.container} ref={fullscreenRef}>
+        <AudioHandler />
+        <div className={classes.gameTitleBar}>
+          <div className={classes.topStyle}></div>
+          <Typography className={classes.gameTitle} variant="subtitle2">
+            Kotitonni
+          </Typography>
+          <div className={classes.topStyle}></div>
         </div>
-      </Backdrop>
-    </div>
+
+        <RTCVideoConference participants={participants} />
+        {/* {isHost ? (
+     <RTCHostControls handleToggleFullscreen={handleToggleFullscreen} />
+   ) : (
+     game.status === GameStatus.RUNNING && (
+       <RTCPlayerControls handleToggleFullscreen={handleToggleFullscreen} />
+     )
+   )} */}
+
+        <Backdrop
+          open={game.status === GameStatus.WAITING}
+          className={classes.backdropBottom}
+        >
+          <div className={classes.backdropContent}>
+            {isHost && (
+              <>
+                <Typography variant="h5">
+                  Odota kunnes pelaajat on online.{' '}
+                </Typography>
+                <div className={classes.startBtnContainer}>
+                  <Fab
+                    color="primary"
+                    variant="extended"
+                    size="large"
+                    onClick={handleStart}
+                    className={classes.startButton}
+                  >
+                    Aloita peli
+                  </Fab>
+                </div>
+              </>
+            )}
+          </div>
+        </Backdrop>
+      </div>
+    </InGameSocket.Provider>
   );
 };
 

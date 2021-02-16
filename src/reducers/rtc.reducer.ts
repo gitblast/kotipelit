@@ -1,13 +1,16 @@
 import { combineReducers } from 'redux';
 
-import activeGame from './activeGameSlice';
-import self from './rtcSelf.reducer';
+import game from './rtcGameSlice';
+import self from './rtcSelfSlice';
+import kotitonniLocalData from './kotitonni.local.reducer';
+
 import { Reducer } from 'react';
 import { LocalData, LocalDataAction } from '../types';
 
 const combinedReducer = {
   self,
-  activeGame,
+  game,
+  localData: kotitonniLocalData, // use kotitonni as default
 };
 
 // can be used to have a different reducer for different games

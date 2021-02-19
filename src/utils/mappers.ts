@@ -10,7 +10,7 @@ import {
   GameStatus,
   GameModel,
 } from '../types';
-import mongoose, { Error, Types } from 'mongoose';
+import mongoose, { Error } from 'mongoose';
 
 const isString = (text: any): text is string => {
   return typeof text === 'string' || text instanceof String;
@@ -148,14 +148,15 @@ export const toNewUser = (object: any): NewUser => {
   };
 };
 
-export const toNewGame = (object: any, hostId: Types.ObjectId): NewGame => {
+export const toNewGame = (object: any, user: DecodedToken): NewGame => {
   return {
     type: parseGameType(object.type),
     startTime: parseDate(object.startTime),
     players: parsePlayers(object.players),
     status: parseStatus(object.status),
     host: {
-      id: hostId,
+      id: user.id,
+      displayName: user.username,
       privateData: {
         socketId: null,
         twilioToken: null,

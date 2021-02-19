@@ -355,7 +355,7 @@ router.get('/', async (req, res, next) => {
 router.post('/', async (req, res, next) => {
   try {
     const user = toAuthenticatedUser(req);
-    const newGame = toNewGame(req.body, user.id);
+    const newGame = toNewGame(req.body, user);
 
     const game = new Game({
       ...newGame,

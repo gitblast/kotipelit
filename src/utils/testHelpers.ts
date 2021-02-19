@@ -75,6 +75,7 @@ const addDummyGame = async (user: UserModel): Promise<GameModel> => {
     startTime: new Date(),
     host: {
       id: user._id,
+      displayName: 'hostname',
       privateData: {
         socketId: null,
         twilioToken: null,

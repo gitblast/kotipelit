@@ -31,6 +31,8 @@ export const joinRTCRoom = async (socket: SocketWithToken): Promise<void> => {
 
       const rtcGame = gameService.convertToRTCGame(game);
 
+      console.log('eee', game, rtcGame);
+
       rtcrooms.createRoom(rtcGame);
     }
 

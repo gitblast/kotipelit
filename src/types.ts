@@ -16,6 +16,7 @@ export interface NewGame extends BaseRTCGame {
   players: GamePlayer[];
   host: {
     id: UserModel['_id'];
+    displayName: string;
     privateData: BasePrivateData;
   };
 }
@@ -142,6 +143,7 @@ export interface RTCGame {
   info: GameInfo;
   host: {
     id: string;
+    displayName: string;
     privateData: BasePrivateData;
   };
   rounds: number;
@@ -150,6 +152,7 @@ export interface RTCGame {
 export interface FilteredRTCGame extends BaseRTCGame {
   host: {
     id: string;
+    displayName: string;
     privateData: null;
   };
   players: FilteredGamePlayer[];

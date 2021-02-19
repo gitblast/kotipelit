@@ -174,7 +174,8 @@ const convertToRTCGame = (game: GameModel): RTCGame => {
     players: game.players,
     info: getInitialInfo(game),
     host: {
-      id: game.host.toString(),
+      id: game.host.id.toString(),
+      displayName: game.host.displayName,
       privateData: {
         socketId: null,
         twilioToken: null,

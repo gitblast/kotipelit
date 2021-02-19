@@ -13,6 +13,7 @@ const gameSchema: Schema = new Schema(
     status: { type: GameStatus, required: true },
     host: {
       id: { type: mongoose.Types.ObjectId, required: true },
+      displayName: { type: String, required: true },
       privateData: {
         socketId: { type: String },
         twilioToken: { type: String },

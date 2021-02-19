@@ -18,11 +18,11 @@ const useStyles = makeStyles(() =>
 
 interface VideoProps {
   videoTrack: VideoTrack;
-  // audioTrack: AudioTrack;
+  audioTrack: AudioTrack;
   isMuted: boolean;
 }
 
-const Video: React.FC<VideoProps> = ({ videoTrack, isMuted }) => {
+const Video: React.FC<VideoProps> = ({ videoTrack, audioTrack, isMuted }) => {
   const classes = useStyles();
 
   const videoRef = React.useRef<HTMLVideoElement | null>(null);
@@ -34,16 +34,16 @@ const Video: React.FC<VideoProps> = ({ videoTrack, isMuted }) => {
     }
   }, [videoRef, videoTrack]);
 
-  /* React.useEffect(() => {
+  React.useEffect(() => {
     if (audioRef.current) {
       audioTrack.attach(audioRef.current);
     }
-  }, [audioRef, audioTrack]); */
+  }, [audioRef, audioTrack]);
 
   return (
     <>
       <video className={classes.absolute} ref={videoRef} autoPlay playsInline />
-      {/* <audio ref={audioRef} autoPlay muted={isMuted} /> */}
+      <audio ref={audioRef} autoPlay muted={isMuted} />
     </>
   );
 };

@@ -2,8 +2,10 @@ import { Card, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import useTracks from '../hooks/useTracks';
+import useParticipantTracks from '../hooks/useParticipantTracks';
 import { GameStatus, RTCParticipant, State } from '../types';
+import HostOverlayItems from './HostOverlayItems';
+import PlayerOverlayItems from './PlayerOverlayItems';
 import VideoWithOverlay from './VideoWithOverlay';
 
 type PropStyles = {
@@ -113,27 +115,26 @@ const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({
   participant,
   order,
 }) => {
-  const [videoTrack] = useTracks(participant);
+  const [videoTrack, audioTrack] = useParticipantTracks(participant);
   const classes = useStyles({ order });
   const gameStatus = useSelector((state: State) => state.rtc.game?.status);
   const playerWithTurnId = useSelector(
     (state: State) => state.rtc.game?.info.turn
   );
   const style = React.useMemo(() => ({ order }), [order]);
-  /* const overlayContent = React.useMemo(
-    () =>
-      peer.isHost ? (
-        <HostOverlayItems host={peer} />
-      ) : (
-        <PlayerOverlayItems peer={peer} />
-      ),
-    [peer]
-  ); */
 
   const isMuted = useSelector(
     (state: State) =>
       !!state.rtc.localData.mutedMap[participant.id] || !!participant.isMe
   );
+
+  const overlayContent = () => {
+    return participant.isHost ? (
+      <HostOverlayItems host={participant} />
+    ) : (
+      <PlayerOverlayItems participant={participant} />
+    );
+  };
 
   const highlighted =
     playerWithTurnId &&
@@ -153,17 +154,17 @@ const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({
       }`}
       style={style}
     >
-      {videoTrack /* && audioTrack */ ? (
+      {videoTrack && audioTrack ? (
         <VideoWithOverlay
           videoTrack={videoTrack}
-          //audioTrack={audioTrack}
+          audioTrack={audioTrack}
           isMuted={isMuted}
         >
-          {/* overlayContent */}
+          {overlayContent()}
         </VideoWithOverlay>
       ) : (
         <div>
-          <ErrorMsg text={'Ei videoyhteyttä'}>{/* overlayContent */}</ErrorMsg>
+          <ErrorMsg text={'Ei videoyhteyttä'}>{overlayContent()}</ErrorMsg>
         </div>
       )}
     </Card>

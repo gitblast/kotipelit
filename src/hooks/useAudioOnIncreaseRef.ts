@@ -10,6 +10,10 @@ export const answerCountSelector = (state: State) => {
   let answerCount = 0;
 
   state.rtc.game.players.forEach((player) => {
+    if (!player.privateData) {
+      return;
+    }
+
     Object.values(player.privateData.answers).forEach((answerMap) => {
       answerCount += Object.values(answerMap).length;
     });

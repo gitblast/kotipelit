@@ -8,7 +8,7 @@ import MicOffIcon from '@material-ui/icons/MicOff';
 import SyncIcon from '@material-ui/icons/Sync';
 
 import { setMuted } from '../reducers/kotitonni.local.reducer';
-import { GameType, RTCPeer, State } from '../types';
+import { GameType, RTCParticipant, RTCPeer, State } from '../types';
 import logger from '../utils/logger';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface HostOverlayItemsProps {
-  host: RTCPeer;
+  host: RTCParticipant;
 }
 
 const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({ host }) => {
@@ -67,24 +67,17 @@ const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({ host }) => {
 
   const toggleMuted = () => {
     if (host.isMe) {
-      // toggle enable/disable audio track if self
+      /* // toggle enable/disable audio track if self
       const audioTracks = host.stream?.getAudioTracks();
 
       if (audioTracks && audioTracks.length) {
         audioTracks[0].enabled = !audioTracks[0].enabled;
-      }
+      } */
     }
 
-    dispatch(setMuted(host.id, !mutedMap[host.id]));
-  };
+    console.log('TODO MUTE SELF!!');
 
-  const handleRefreshConnection = () => {
-    if (!host.peerId) {
-      return;
-    }
-
-    console.log('not calling atm');
-    // dispatch(callPeer(host.peerId));
+    // dispatch(setMuted(host.id, !mutedMap[host.id]));
   };
 
   // handle different game types here, "if gameType === kotitonni return kotitonni-items" etc
@@ -110,15 +103,6 @@ const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({ host }) => {
               >
                 {mutedMap[host.id] ? <MicOffIcon color="error" /> : <MicIcon />}
               </IconButton>
-              {!host.isMe && host.peerId && (
-                <IconButton
-                  className={classes.controlIcon}
-                  size="small"
-                  onClick={handleRefreshConnection}
-                >
-                  <SyncIcon></SyncIcon>
-                </IconButton>
-              )}
             </Grid>
             <div className={classes.spacer} />
           </Grid>

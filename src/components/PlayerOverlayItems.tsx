@@ -4,15 +4,13 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import MicOffIcon from '@material-ui/icons/MicOff';
 import MicIcon from '@material-ui/icons/Mic';
-import SyncIcon from '@material-ui/icons/Sync';
 
-import { GameStatus, GameType, RTCPeer, State } from '../types';
+import { GameStatus, GameType, RTCParticipant, State } from '../types';
 import {
   Paper,
   Typography,
   IconButton,
   Checkbox,
-  Button,
   Grid,
 } from '@material-ui/core';
 
@@ -80,22 +78,14 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const DevBtns: React.FC = () => {
-  const self = useSelector((state: State) => state.rtc.self, shallowEqual);
-
-  return (
-    <div>
-      <Button onClick={() => self?.socket.disconnect()}>dc socket</Button>
-    </div>
-  );
-};
-
 interface PlayerOverlayItemsProps {
-  peer: RTCPeer;
+  participant: RTCParticipant;
 }
 
-const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
-  const playerId = peer.id;
+const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
+  participant,
+}) => {
+  const playerId = participant.id;
   const classes = useStyles();
   const clickMap = useSelector(
     (state: State) => state.rtc.localData.clickedMap
@@ -109,6 +99,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
     (state: State) => state.rtc.game?.players.find((p) => p.id === playerId),
     shallowEqual
   );
+
   const showPointAddition = React.useMemo(() => {
     if (timer === 0) {
       return true;
@@ -126,7 +117,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
   };
 
   const getAnswer = () => {
-    if (!game || !player || !player.privateData.answers) {
+    if (!game || !player || !player.privateData?.answers) {
       return null;
     }
 
@@ -202,7 +193,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
   };
 
   const toggleMuted = () => {
-    if (peer.isMe) {
+    /* if (participant.isMe) {
       // toggle enable/disable audio track if self
       const audioTracks = peer.stream?.getAudioTracks();
 
@@ -211,17 +202,9 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
       }
     }
 
-    dispatch(setMuted(player.id, !mutedMap[playerId]));
-  };
+    dispatch(setMuted(player.id, !mutedMap[playerId])); */
 
-  const handleRefreshConnection = () => {
-    if (!peer.peerId) {
-      return;
-    }
-
-    console.log('not calling atm');
-
-    // dispatch(callPeer(peer.peerId));
+    console.log('TODO: HANDLE MUTE');
   };
 
   const answer = getAnswer();
@@ -239,20 +222,12 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
               {forHost && (
                 <Typography component="div">{`http://localhost:3000/username/${player.privateData.inviteCode}`}</Typography>
               )}
-              {!peer.isMe && (
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Typography component="div">{`stream: ${!!peer.stream}`}</Typography>
-                  <div style={{ width: 10 }} />
-                  <Typography component="div">{`socket: ${!!peer.socketId}`}</Typography>
-                </div>
-              )}
 
-              {peer.isMe && (
+              {participant.isMe && (
                 <div>
                   <Typography color="error" variant="h4">
                     ME
                   </Typography>
-                  <DevBtns />
                 </div>
               )}
             </div>
@@ -307,15 +282,6 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({ peer }) => {
                   <MicIcon />
                 )}
               </IconButton>
-              {!peer.isMe && peer.peerId && (
-                <IconButton
-                  className={classes.controlIcon}
-                  size="small"
-                  onClick={handleRefreshConnection}
-                >
-                  <SyncIcon></SyncIcon>
-                </IconButton>
-              )}
             </Grid>
           </Grid>
           <div className={classes.spacer} />

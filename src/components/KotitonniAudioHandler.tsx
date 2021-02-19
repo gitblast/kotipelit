@@ -1,7 +1,7 @@
 import React from 'react';
 
 import useStatusChangeAudioRef from '../hooks/useStatusChangeAudioRef';
-import usePointChangeAudioRef from '../hooks/usePointChangeAudioRef';
+import useAnyPointChangeAudioRef from '../hooks/useAnyPointChangeAudioRef';
 import useWinnerAudioRef from '../hooks/useWinnerAudioRef';
 import useAudioOnIncreaseRef, {
   clickCountSelector,
@@ -38,10 +38,13 @@ const KotitonniAudioHandler: React.FC = () => {
     GameStatus.FINISHED
   );
 
-  const hundredPointsRef = usePointChangeAudioRef(React.useRef(null), 100);
-  const thirtyPointsRef = usePointChangeAudioRef(React.useRef(null), 30);
-  const tenPointsRef = usePointChangeAudioRef(React.useRef(null), 10);
-  const minusFiftyPointsRef = usePointChangeAudioRef(React.useRef(null), -50);
+  const hundredPointsRef = useAnyPointChangeAudioRef(React.useRef(null), 100);
+  const thirtyPointsRef = useAnyPointChangeAudioRef(React.useRef(null), 30);
+  const tenPointsRef = useAnyPointChangeAudioRef(React.useRef(null), 10);
+  const minusFiftyPointsRef = useAnyPointChangeAudioRef(
+    React.useRef(null),
+    -50
+  );
 
   const answerRecievedRef = useAudioOnIncreaseRef(
     React.useRef(null),

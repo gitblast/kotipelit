@@ -5,6 +5,10 @@ import useAuthSocket from './useAuthSocket';
 import useInitialParticipants from './useInitialParticipants';
 import useSelf from './useSelf';
 import useTwilioRoom from './useTwilioRoom';
+import { useHistory, useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setTimer } from '../reducers/kotitonni.local.reducer';
+import { setGame as setGameInRedux } from '../reducers/rtcGameSlice';
 
 const socketOnLeaveCallback = (socket: SocketIOClient.Socket) => {
   socket.emit('leave-room');
@@ -15,6 +19,9 @@ const useNewGameRoom = (
   onCall: boolean,
   isHost?: boolean
 ) => {
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const { username: hostName } = useParams<{ username: string }>();
   const [game, setGame] = React.useState<null | RTCGame>(null);
   const [twilioToken, setTwilioToken] = React.useState<null | string>(null);
   const [socket, socketError] = useAuthSocket(token, socketOnLeaveCallback);
@@ -37,14 +44,30 @@ const useNewGameRoom = (
       socket.on('game-updated', (updatedGame: RTCGame) => {
         logger.log('game-updated', updatedGame);
 
-        setGame(updatedGame);
+        const mappedPlayers = updatedGame.players.map((player) => ({
+          ...player,
+          hasTurn: player.id === updatedGame.info.turn,
+        }));
+
+        dispatch(setGameInRedux({ ...updatedGame, players: mappedPlayers }));
+        setGame({ ...updatedGame, players: mappedPlayers });
       });
 
       socket.on('rtc-error', (msg: string) => {
         logger.error('rtc error:', msg);
       });
+
+      socket.on('game-ended', () => {
+        logger.log(`recieved 'game-ended'`);
+
+        history.push(`/${hostName}/kiitos`);
+      });
+
+      socket.on('timer-changed', (value: number) => {
+        dispatch(setTimer(value));
+      });
     }
-  }, [socket]);
+  }, [socket, dispatch, history, hostName]);
 
   // set twilio token
   React.useEffect(() => {

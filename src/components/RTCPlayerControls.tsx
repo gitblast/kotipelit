@@ -17,6 +17,8 @@ import logger from '../utils/logger';
 
 import InfoBar from './InfoBar';
 
+import { InGameSocket } from '../context';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
@@ -72,7 +74,7 @@ const RTCPlayerControls: React.FC<{
   const timer = useSelector((state: State) => state.rtc.localData.timer);
   const game = useSelector((state: State) => state.rtc.game);
   const self = useSelector((state: State) => state.rtc.self);
-  const socket = useSelector((state: State) => state.rtc.self?.socket);
+  const socket = React.useContext(InGameSocket);
   const playerSelf = useSelector((state: State) => {
     if (!self) {
       return null;
@@ -103,8 +105,8 @@ const RTCPlayerControls: React.FC<{
   };
 
   const handleAnswer = () => {
-    if (!self || !game) {
-      logger.error('self object or game missing when trying to emit');
+    if (!socket || !game) {
+      logger.error('socket object or game missing when trying to emit');
 
       return;
     }
@@ -115,7 +117,7 @@ const RTCPlayerControls: React.FC<{
         info: game.info,
       };
 
-      self.socket.emit('answer', answerObj);
+      socket.emit('answer', answerObj);
 
       setAnswer('');
     }

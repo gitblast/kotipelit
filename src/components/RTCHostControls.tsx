@@ -17,6 +17,7 @@ import { reset, setTimer } from '../reducers/kotitonni.local.reducer';
 // import { setGame } from '../reducers/rtcGame.reducer';
 import InfoBar from './InfoBar';
 import { useHistory, useParams } from 'react-router-dom';
+import { InGameSocket } from '../context';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -99,7 +100,7 @@ const RTCHostControls: React.FC<{
   const params = useParams<{ username: string }>();
   const dispatch = useDispatch();
   const game = useSelector((state: State) => state.rtc.game);
-  const socket = useSelector((state: State) => state.rtc.self?.socket);
+  const socket = React.useContext(InGameSocket);
   const clickMap = useSelector(
     (state: State) => state.rtc.localData.clickedMap
   );

@@ -343,8 +343,6 @@ export interface MockSocket {
 export interface RTCSelf {
   id: string;
   isHost: boolean;
-  socket: SocketIOClient.Socket;
-  stream: MediaStream | null;
 }
 
 export type GamePlayer = RTCKotitonniPlayer; // handle other game types here
@@ -378,6 +376,7 @@ export interface RTCGame {
   info: GameInfo;
   host: {
     id: string;
+    displayName: string;
     privateData: {
       socketId: string | null;
       twilioToken: string | null;
@@ -416,20 +415,5 @@ export interface RTCParticipant {
   isHost?: boolean;
   connection: Participant | null;
   isMe: boolean;
+  displayName: string;
 }
-
-/* export type RTCParticipant = RTCLocalParticipant | RTCRemoteParticipant;
-
-export interface RTCLocalParticipant {
-  id: string;
-  isHost?: boolean;
-  connection: LocalParticipant | null;
-  isMe: true;
-}
-
-export interface RTCRemoteParticipant {
-  id: string;
-  isHost?: boolean;
-  connection: RemoteParticipant | null;
-  isMe: false;
-} */

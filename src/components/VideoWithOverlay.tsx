@@ -25,14 +25,14 @@ const useStyles = makeStyles(() =>
 
 interface VideoWithOverlayProps {
   videoTrack: VideoTrack;
-  //audioTrack: AudioTrack;
+  audioTrack: AudioTrack;
   isMuted: boolean;
   children: React.ReactNode;
 }
 
 const VideoWithOverlay: React.FC<VideoWithOverlayProps> = ({
   videoTrack,
-
+  audioTrack,
   isMuted,
   children,
 }) => {
@@ -42,7 +42,7 @@ const VideoWithOverlay: React.FC<VideoWithOverlayProps> = ({
     <div className={classes.frame}>
       <Video
         videoTrack={videoTrack}
-        //audioTrack={audioTrack}
+        audioTrack={audioTrack}
         isMuted={isMuted}
       />
       <div className={classes.absolute} id="overlayContainer">

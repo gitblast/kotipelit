@@ -6,6 +6,8 @@ export const hardcodedGames: RTCGame[] = [
     id: '1',
     host: {
       id: 'hostid',
+
+      displayName: 'hostname',
       privateData: {
         socketId: null,
         twilioToken: null,
@@ -85,6 +87,8 @@ export const hardcodedGames: RTCGame[] = [
     type: GameType.KOTITONNI,
     host: {
       id: 'hostid',
+
+      displayName: 'hostname',
       privateData: {
         socketId: null,
         twilioToken: null,
@@ -250,6 +254,7 @@ export const hardcodedActiveSanakierto: RTCGame = {
   },
   host: {
     id: 'id',
+    displayName: 'hostname',
     privateData: {
       socketId: null,
       twilioToken: null,

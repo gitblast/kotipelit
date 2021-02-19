@@ -23,4 +23,10 @@ export const createReducer = (
   });
 };
 
-export default combineReducers({ games, user, channels, alert, rtc });
+export default combineReducers({
+  games,
+  user,
+  channels,
+  alert,
+  rtc,
+});

@@ -73,6 +73,16 @@ const useTwilioRoom = (
         setError(`error getting tracks: ${error.message}`);
       }
     }
+
+    return () => {
+      if (localTracks) {
+        localTracks.forEach((track) => {
+          if (track.kind === 'video' || track.kind === 'audio') {
+            track.stop();
+          }
+        });
+      }
+    };
   }, [onCall, localTracks, participants]);
 
   React.useEffect(() => {

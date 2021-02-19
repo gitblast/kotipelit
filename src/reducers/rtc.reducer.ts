@@ -20,4 +20,4 @@ export const createCustomReducer = (
   return combineReducers({ ...combinedReducer, localData: localDataReducer });
 };
 
-export default combineReducers({ ...combinedReducer });
+export default combineReducers(combinedReducer);

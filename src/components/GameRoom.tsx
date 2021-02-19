@@ -213,13 +213,15 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
         </div>
 
         <RTCVideoConference participants={participants} />
-        {/* {isHost ? (
-     <RTCHostControls handleToggleFullscreen={handleToggleFullscreen} />
-   ) : (
-     game.status === GameStatus.RUNNING && (
-       <RTCPlayerControls handleToggleFullscreen={handleToggleFullscreen} />
-     )
-   )} */}
+        {isHost ? (
+          <RTCHostControls handleToggleFullscreen={handleToggleFullscreen} />
+        ) : (
+          game.status === GameStatus.RUNNING && (
+            <RTCPlayerControls
+              handleToggleFullscreen={handleToggleFullscreen}
+            />
+          )
+        )}
 
         <Backdrop
           open={game.status === GameStatus.WAITING}

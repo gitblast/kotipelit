@@ -14,6 +14,7 @@ const useInitialParticipants = (game: RTCGame | null, ownId: string | null) => {
         isHost: true,
         connection: null,
         isMe: ownId === game.host.id,
+        displayName: game.host.displayName,
       };
 
       const initials = game.players
@@ -23,6 +24,7 @@ const useInitialParticipants = (game: RTCGame | null, ownId: string | null) => {
             isHost: false,
             connection: null,
             isMe: ownId === player.id,
+            displayName: player.name,
           };
         })
         .concat(hostParticipant);

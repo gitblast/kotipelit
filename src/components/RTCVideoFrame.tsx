@@ -37,10 +37,6 @@ const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
         width: '32%',
         margin: 3,
       },
-      [theme.breakpoints.down('xs')]: {
-        width: '46%',
-        margin: 3,
-      },
     },
     videoContainer: {
       backgroundColor: 'black',

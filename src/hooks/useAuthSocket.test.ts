@@ -71,12 +71,9 @@ describe('useSocket hook', () => {
     expect(result.current[0]).toBeNull();
     expect(SocketMock).toHaveBeenCalledTimes(1);
 
-    // sets auth listener
-    asMock.listeners[CommonEvent.CONNECT]();
-
-    // sets socket
     act(() => {
-      asMock.listeners[CommonEvent.AUTHENTICATED]();
+      // sets auth listener
+      asMock.listeners[CommonEvent.CONNECT]();
     });
 
     expect(result.current[0]).not.toBeNull();
@@ -96,53 +93,14 @@ describe('useSocket hook', () => {
     );
   });
 
-  it('should emit auth request and attach auth listeners on connect', () => {
-    renderHook(({ token }) => useAuthSocket(token), {
-      initialProps: { token },
-    });
-
-    expect(SocketMock).toHaveBeenCalled();
-
-    const asMock = (mock as unknown) as MockSocket;
-
-    expect(asMock.emit).not.toHaveBeenCalled();
-    expect(asMock.on).not.toHaveBeenCalledWith(
-      CommonEvent.AUTHENTICATED,
-      expect.any(Function)
-    );
-    expect(asMock.on).not.toHaveBeenCalledWith(
-      CommonEvent.UNAUTHORIZED,
-      expect.any(Function)
-    );
-
-    asMock.listeners[CommonEvent.CONNECT]();
-
-    expect(asMock.emit).toHaveBeenCalledWith(CommonEvent.AUTH_REQUEST, {
-      token,
-    });
-    expect(asMock.on).toHaveBeenCalledWith(
-      CommonEvent.AUTHENTICATED,
-      expect.any(Function)
-    );
-    expect(asMock.on).toHaveBeenCalledWith(
-      CommonEvent.UNAUTHORIZED,
-      expect.any(Function)
-    );
-  });
-
-  it('should set socket on authenticated', () => {
+  it('should set socket on connect', () => {
     const { result } = renderHook(({ token }) => useAuthSocket(token), {
       initialProps: { token },
     });
 
     const asMock = (mock as unknown) as MockSocket;
-
-    asMock.listeners[CommonEvent.CONNECT]();
-
-    expect(result.current[0]).toBeNull();
-
     act(() => {
-      asMock.listeners[CommonEvent.AUTHENTICATED]();
+      asMock.listeners[CommonEvent.CONNECT]();
     });
 
     expect(result.current[0]).toBe(mock);
@@ -155,12 +113,13 @@ describe('useSocket hook', () => {
 
     const asMock = (mock as unknown) as MockSocket;
 
-    asMock.listeners[CommonEvent.CONNECT]();
-
+    act(() => {
+      asMock.listeners[CommonEvent.CONNECT]();
+    });
     expect(result.current[1]).toBeNull();
 
     act(() => {
-      asMock.listeners[CommonEvent.UNAUTHORIZED]({ message: 'error msg' });
+      asMock.listeners['connect_error']({ message: 'error msg' });
     });
 
     expect(result.current[1]).toBe('error msg');
@@ -176,10 +135,8 @@ describe('useSocket hook', () => {
 
     const asMock = (mock as unknown) as MockSocket;
 
-    asMock.listeners[CommonEvent.CONNECT]();
-
     act(() => {
-      asMock.listeners[CommonEvent.AUTHENTICATED]();
+      asMock.listeners[CommonEvent.CONNECT]();
     });
 
     if (!result.current[0]) {

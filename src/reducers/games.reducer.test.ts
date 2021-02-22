@@ -35,7 +35,6 @@ const newGame = {
 
 const initializedState = {
   allGames: [newGame],
-  activeGame: null,
   loading: false,
 };
 
@@ -53,7 +52,6 @@ describe('games reducer', () => {
   it('should return initial state', () => {
     const initialState = {
       allGames: [],
-      activeGame: null,
       loading: false,
     };
 
@@ -107,7 +105,6 @@ describe('games reducer', () => {
 
     const expectedState = {
       allGames: [],
-      activeGame: null,
       loading: true,
     };
 
@@ -124,7 +121,6 @@ describe('games reducer', () => {
 
     const expectedState = {
       allGames: [newGame],
-      activeGame: null,
       loading: false,
     };
 
@@ -140,7 +136,6 @@ describe('games reducer', () => {
 
     const expectedState = {
       allGames: [],
-      activeGame: null,
       loading: false,
     };
 
@@ -156,7 +151,6 @@ describe('games reducer', () => {
 
     const expectedState = {
       allGames: [newGame],
-      activeGame: null,
       loading: true,
     };
 
@@ -171,7 +165,6 @@ describe('games reducer', () => {
 
     const expectedState = {
       allGames: [],
-      activeGame: null,
       loading: false,
     };
 
@@ -185,57 +178,7 @@ describe('games reducer', () => {
 
     const expectedState = {
       allGames: [newGame],
-      activeGame: null,
       loading: false,
-    };
-
-    expect(reducer(initializedState, action)).toEqual(expectedState);
-  });
-
-  it.skip('should handle LAUNCH_GAME', () => {
-    const action: Action = {
-      type: ActionType.LAUNCH_GAME,
-      payload: newGame.id,
-    };
-
-    expect(() => reducer(undefined, action)).toThrow('Game not found');
-
-    const invalidState = {
-      allGames: [{ ...newGame, type: 'INVALID_TYPE' }],
-    };
-
-    expect(() => reducer(invalidState as GamesState, action)).toThrow(
-      `Something went wrong, expected a selectable game, got INVALID_TYPE`
-    );
-
-    const newState = reducer(initializedState, action);
-
-    const expectedState = {
-      allGames: [{ ...newGame, status: GameStatus.WAITING }],
-      activeGame: { ...newGame, status: GameStatus.WAITING, round: 1, turn: 0 },
-    };
-
-    expect(newState).toEqual(expectedState);
-  });
-
-  it.skip('should handle UPDATE_ACTIVE_GAME', () => {
-    const updatedGame = {
-      ...newGame,
-      status: GameStatus.RUNNING,
-      info: {
-        turn: 'turn',
-        round: 1,
-      },
-    };
-
-    const action: Action = {
-      type: ActionType.UPDATE_ACTIVE_GAME,
-      payload: updatedGame as RTCGame,
-    };
-
-    const expectedState = {
-      ...initializedState,
-      activeGame: updatedGame,
     };
 
     expect(reducer(initializedState, action)).toEqual(expectedState);

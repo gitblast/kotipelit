@@ -59,7 +59,7 @@ const useTwilioRoom = (
     const getLocalTracks = async () => {
       const tracks = await Video.createLocalTracks();
 
-      logger.log('setting local tracks');
+      logger.log('getting local media tracks');
 
       setLocalTracks(tracks);
     };
@@ -73,16 +73,6 @@ const useTwilioRoom = (
         setError(`error getting tracks: ${error.message}`);
       }
     }
-
-    return () => {
-      if (localTracks) {
-        localTracks.forEach((track) => {
-          if (track.kind === 'video' || track.kind === 'audio') {
-            track.stop();
-          }
-        });
-      }
-    };
   }, [onCall, localTracks, participants]);
 
   React.useEffect(() => {

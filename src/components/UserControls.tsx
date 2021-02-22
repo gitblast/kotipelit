@@ -30,7 +30,7 @@ const UserControls: React.FC<UserControlsProps> = ({ user }) => {
   if (!user.loggedIn)
     return history.location.pathname !== '/kirjaudu' ? (
       <Button color="inherit" onClick={handleClick}>
-        <Typography>
+        <Typography variant="body2">
           Kirjaudu<AccountCircleIcon></AccountCircleIcon>
         </Typography>
       </Button>

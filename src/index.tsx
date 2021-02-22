@@ -32,7 +32,7 @@ const theme = createMuiTheme({
       fontSize: '1.2rem',
     },
     body2: {
-      fontWeight: 'bold',
+      color: 'rgb(34 38 39)',
     },
     h4: {},
     h5: {
@@ -47,7 +47,7 @@ const theme = createMuiTheme({
       fontFamily: 'Pacifico',
       fontSize: 26,
     },
-    // Used to display the game name in GameRoom
+    // Used to display the game name and host name in GameRoom
     subtitle2: {
       fontFamily: 'Great Vibes',
       fontSize: 60,

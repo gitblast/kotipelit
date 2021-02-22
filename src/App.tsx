@@ -2,8 +2,8 @@ import React from 'react';
 
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
-import { AppBar, Toolbar, Typography, Button } from '@material-ui/core';
-import { makeStyles, createStyles } from '@material-ui/core/styles';
+import { AppBar, Toolbar, Button } from '@material-ui/core';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { checkForUser } from './reducers/user.reducer';
@@ -16,7 +16,9 @@ import UserControls from './components/UserControls';
 import ChannelPage from './components/ChannelPage';
 import { State, HostChannel } from './types';
 
-const useStyles = makeStyles(() =>
+import logoImg from './assets/images/logo.png';
+
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     navbar: {
       // marginBottom: theme.spacing(3),
@@ -27,7 +29,9 @@ const useStyles = makeStyles(() =>
       color: 'black',
     },
     logo: {
-      textTransform: 'lowercase',
+      maxHeight: 50,
+      width: 'auto',
+      marginTop: theme.spacing(1),
     },
     toolbar: {
       display: 'flex',
@@ -37,7 +41,7 @@ const useStyles = makeStyles(() =>
       width: '100%',
       minHeight: '92vh',
       overflow: 'hidden',
-      background: 'linear-gradient(to top, #c2e59c, #94ccc6)',
+      background: 'linear-gradient(to top, #84b0b7, #94ccc6)',
     },
   })
 );
@@ -74,7 +78,7 @@ const App = () => {
       <AppBar position="static" className={classes.navbar}>
         <Toolbar className={classes.toolbar}>
           <Button component={Link} to="/" className={classes.logo}>
-            <Typography variant="subtitle1">Kotipelit.com</Typography>
+            <img className={classes.logo} src={logoImg} alt="Kotipelit" />
           </Button>
 
           <UserControls user={user} />

@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
     centerAlign: {
       display: 'flex',
       justifyContent: 'center',
+      alignItems: 'center',
     },
     availableSeat: {
       color: 'rgb(104 122 106)',
@@ -44,19 +45,33 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(6),
       marginLeft: theme.spacing(6),
       marginRight: theme.spacing(6),
-      backgroundColor: 'rgb(197 226 210)',
+      backgroundColor: 'rgb(175, 227, 222)',
       [theme.breakpoints.down('xs')]: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
       },
     },
+    pointsExplained: {
+      display: 'flex',
+      justifyContent: 'space-around',
+      textAlign: 'center',
+      marginTop: theme.spacing(2),
+    },
     registeredInfo: {
       padding: theme.spacing(2),
       marginTop: theme.spacing(2),
-      backgroundColor: 'rgb(197 226 210)',
+      backgroundColor: 'transparent',
+      [theme.breakpoints.down('xs')]: {
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
+        width: '90%',
+      },
     },
     emailConfText: {
       marginBottom: theme.spacing(1),
+    },
+    gameUrl: {
+      wordBreak: 'break-word',
     },
     errorMsg: {
       padding: theme.spacing(2),

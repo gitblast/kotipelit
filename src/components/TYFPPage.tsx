@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Paper, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { State } from '../types';
 import { Redirect } from 'react-router-dom';
@@ -11,6 +11,20 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       padding: theme.spacing(3),
+      textAlign: 'center',
+    },
+    results: {
+      padding: theme.spacing(5),
+      textAlign: 'center',
+      [theme.breakpoints.down('sm')]: {
+        padding: theme.spacing(2),
+      },
+    },
+    proposal: {
+      padding: theme.spacing(5),
+      [theme.breakpoints.down('sm')]: {
+        padding: theme.spacing(2),
+      },
     },
   })
 );
@@ -44,10 +58,15 @@ const TYFPPage: React.FC = () => {
   };
 
   return (
-    <Paper className={classes.container}>
-      <Typography>Peli on päättynyt. Kiitos osallistumisesta!</Typography>
-      {showPoints()}
-    </Paper>
+    <div className={classes.container}>
+      <Typography>Kiitos osallistumisesta!</Typography>
+      <div className={classes.results}>{showPoints()}</div>
+      <Typography className={classes.proposal}>
+        Jos haluat alkaa järjestämään peli-iltoja tai vain haastaa kaverisi,
+        perheesi tai kollegasi Kotitonnissa ota yhteyttä info [at]
+        kotipelit.com.
+      </Typography>
+    </div>
   );
 };
 

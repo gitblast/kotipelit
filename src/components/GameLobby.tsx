@@ -191,13 +191,13 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
           <>
             <Grid container spacing={4}>
               <Grid item xs={12} className={classes.centerAlign}>
-                <Typography variant="h4">{`Tervetuloa pelaamaan ${capitalize(
+                <Typography variant="h5">{`Tervetuloa pelaamaan ${capitalize(
                   game.type
                 )}a!`}</Typography>
               </Grid>
               <Grid item md={6} xs={12} className={classes.centerAlign}>
                 <div>
-                  <Typography variant="h5">{`Peli alkaa ${format(
+                  <Typography>{`Peli alkaa ${format(
                     new Date(game.startTime),
                     'd. MMMM HH:mm',
                     {
@@ -205,18 +205,15 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
                     }
                   )}`}</Typography>
                   {game.price !== 0 && (
-                    <Typography variant="h5">{`Pelin hinta on ${game.price} €`}</Typography>
+                    <Typography>{`Pelin hinta on ${game.price} €`}</Typography>
                   )}
-                  <Typography variant="h5">{`Peli-illan järjestää ${game.hostName}`}</Typography>
-                  {getContent()}
+                  <Typography>{`Peli-illan järjestää ${game.hostName}`}</Typography>
                 </div>
               </Grid>
 
               <Grid item md={6} xs={12} className={classes.centerAlign}>
                 <div>
-                  <Typography variant="h5">
-                    Ilmoittautuneet pelaajat:
-                  </Typography>
+                  <Typography>Ilmoittautuneet pelaajat:</Typography>
                   {game.players.map((player, index) => {
                     return (
                       <Typography key={index}>
@@ -228,18 +225,39 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
                   })}
                 </div>
               </Grid>
+              <Grid item xs={12} className={classes.centerAlign}>
+                {getContent()}
+              </Grid>
             </Grid>
             <Paper className={classes.gameRules}>
               <Typography>
                 <HelpOutlineIcon></HelpOutlineIcon>
-                Kotitonnissa saat kolme sanaa, joihin sinun tulee keksiä
-                vihjeet. Muut pelaajat arvuuttelevat oikeaa sanaa. Vain yhden
-                pelaajan arvatessa oikein, saatte molemmat 100 pistettä. Kahden
-                arvatessa oikein saa kukin 30 pistettä ja kolmen arvatessa saa
-                pelaajat 10 pistettä. Mikäli kaikki tai ei kukaan arvaa, seuraa
-                -50 pistettä. Vältä antamasta sisäpiirivihjeitä, jotta kaikkien
-                on mahdollista tietää oikea vastaus.
+                Kotitonnissa saat kolme sanaa, joihin kaikkiin sinun tulee
+                keksiä vihjeet. Mitä harvempi pelaaja arvaa sanan vihjeen
+                perusteella, sitä enemmän pisteitä saat.Vältä antamasta
+                sisäpiirivihjeitä, jotta kaikkien on mahdollista tietää oikea
+                vastaus.
               </Typography>
+              <div className={classes.pointsExplained}>
+                <div>
+                  <Typography variant="body2">Kolme oikein</Typography>
+                  <Typography variant="body2">+10</Typography>
+                </div>
+                <div>
+                  <Typography variant="body2">Kaksi oikein</Typography>
+                  <Typography variant="body2">+30</Typography>
+                </div>
+                <div>
+                  <Typography variant="body2">Yksi oikein</Typography>
+                  <Typography variant="body2">+100</Typography>
+                </div>
+                <div>
+                  <Typography variant="body2">
+                    Nolla tai kaikki oikein
+                  </Typography>
+                  <Typography variant="body2">-50</Typography>
+                </div>
+              </div>
             </Paper>
 
             <References />

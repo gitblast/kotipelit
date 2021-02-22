@@ -5,7 +5,6 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Typography, IconButton, Grid } from '@material-ui/core';
 import MicIcon from '@material-ui/icons/Mic';
 import MicOffIcon from '@material-ui/icons/MicOff';
-import SyncIcon from '@material-ui/icons/Sync';
 
 import { setMuted } from '../reducers/kotitonni.local.reducer';
 import { GameType, RTCParticipant, RTCPeer, State } from '../types';
@@ -18,7 +17,8 @@ const useStyles = makeStyles((theme: Theme) =>
     nameBadge: {
       padding: theme.spacing(1),
       alignItems: 'center',
-      backgroundColor: 'rgba(0, 0, 0, 0.8)',
+      // .. except for this
+      backgroundColor: 'rgba(27, 55, 76, 0.85)',
       color: 'white',
       width: '100%',
       // .. except for this
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     hostName: {
-      fontSize: 32,
+      fontSize: 28,
       [theme.breakpoints.down('sm')]: {
         fontSize: 18,
       },
@@ -90,12 +90,12 @@ const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({ host }) => {
         <div className={classes.spacer} />
         <div className={classes.flex}>
           <Grid container className={classes.nameBadge}>
-            <Grid item md={8} sm={8}>
-              <Typography variant="h6" className={classes.hostName}>
-                {host.displayName}
+            <Grid item md={9} sm={9}>
+              <Typography variant="subtitle2" className={classes.hostName}>
+                {`Hosted by ${host.displayName}`}
               </Typography>
             </Grid>
-            <Grid item md={4} sm={4}>
+            <Grid item md={3} sm={3}>
               <IconButton
                 className={classes.controlIcon}
                 size="small"

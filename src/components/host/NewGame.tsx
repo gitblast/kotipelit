@@ -235,7 +235,7 @@ const NewGame: React.FC<{ username: string }> = ({ username }) => {
             <StepLabel>
               <Typography variant="h5">{label}</Typography>
             </StepLabel>
-            <StepContent>
+            <StepContent className={classes.stepperContent}>
               {getStepContent(index)}
               <div className={classes.actionsContainer}>
                 <div>

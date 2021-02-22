@@ -55,7 +55,10 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: '15px',
     },
     startBtnContainer: {
-      marginTop: theme.spacing(2),
+      position: 'absolute',
+    },
+    waitingMsg: {
+      color: 'white',
     },
     startButton: {
       padding: theme.spacing(5),
@@ -204,7 +207,34 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
     <InGameSocket.Provider value={socket}>
       <div className={classes.container} ref={fullscreenRef}>
         <AudioHandler />
+        <div className={classes.backdropContent}>
+          {isHost && game.status === GameStatus.WAITING ? (
+            <>
+              <div className={classes.startBtnContainer}>
+                <Fab
+                  color="primary"
+                  variant="extended"
+                  size="large"
+                  onClick={handleStart}
+                  className={classes.startButton}
+                >
+                  Aloita peli
+                </Fab>
+              </div>
+            </>
+          ) : (
+            // Is this unnecessary repetition?
+            game.status === GameStatus.WAITING && (
+              <>
+                <Typography variant="h5" className={classes.waitingMsg}>
+                  Odotetaan, että pelinhoitaja käynnistää pelin.
+                </Typography>{' '}
+              </>
+            )
+          )}
+        </div>
         <div className={classes.gameTitleBar}>
+          {/* For animation, should more topStyle divs be added? */}
           <div className={classes.topStyle}></div>
           <Typography className={classes.gameTitle} variant="subtitle2">
             Kotitonni
@@ -226,28 +256,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
         <Backdrop
           open={game.status === GameStatus.WAITING}
           className={classes.backdropBottom}
-        >
-          <div className={classes.backdropContent}>
-            {isHost && (
-              <>
-                <Typography variant="h5">
-                  Odota kunnes pelaajat on online.{' '}
-                </Typography>
-                <div className={classes.startBtnContainer}>
-                  <Fab
-                    color="primary"
-                    variant="extended"
-                    size="large"
-                    onClick={handleStart}
-                    className={classes.startButton}
-                  >
-                    Aloita peli
-                  </Fab>
-                </div>
-              </>
-            )}
-          </div>
-        </Backdrop>
+        ></Backdrop>
       </div>
     </InGameSocket.Provider>
   );

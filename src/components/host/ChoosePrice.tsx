@@ -56,11 +56,7 @@ const ChoosePrice: React.FC<ChoosePriceProps> = () => {
         value={price}
         onChange={(e) => setPrice(Number(e.target.value))}
       >
-        <FormControlLabel
-          value={0}
-          control={<Radio />}
-          label="Vapaaehtoinen tippi"
-        />
+        <FormControlLabel value={0} control={<Radio />} label="Ilmainen" />
 
         <FormControlLabel value={2} disabled control={<Radio />} label="2€" />
         <FormControlLabel value={5} disabled control={<Radio />} label="5€" />

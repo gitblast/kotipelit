@@ -30,6 +30,9 @@ const useStyles = makeStyles((theme: Theme) =>
         textAlign: 'center',
       },
     },
+    footerHeader: {
+      color: 'black',
+    },
   })
 );
 
@@ -40,18 +43,22 @@ const Footer: React.FC = () => {
       <Paper className={classes.footerContainer}>
         <Grid container spacing={6} className={classes.footerContent}>
           <Grid item className={classes.footerBlock}>
-            <Typography variant="body2">Tuki</Typography>
+            <Typography className={classes.footerHeader}>Tuki</Typography>
             <Typography>Ota yhteyttä</Typography>
             <Typography>Usein kysyttyä</Typography>
           </Grid>
           <Grid item className={classes.footerBlock}>
-            <Typography variant="body2">Spektaakkeli Events</Typography>
+            <Typography className={classes.footerHeader}>
+              Spektaakkeli Events
+            </Typography>
             <Typography>Yleistä</Typography>
             <Typography>Spektaakkeli.com</Typography>
             <Typography>Kotiluennot.com</Typography>
           </Grid>
           <Grid item className={classes.footerBlock}>
-            <Typography variant="body2">Yhteistyössä</Typography>
+            <Typography className={classes.footerHeader}>
+              Yhteistyössä
+            </Typography>
             <Typography></Typography>
             <Typography>Pallopelit.com</Typography>
           </Grid>

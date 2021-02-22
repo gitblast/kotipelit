@@ -1,10 +1,10 @@
 import React from 'react';
 
 import { Link } from 'react-router-dom';
-import Rating from '@material-ui/lab/Rating';
+// import Rating from '@material-ui/lab/Rating';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Fab, Typography, Paper, Avatar } from '@material-ui/core';
+import { Fab, Typography } from '@material-ui/core';
 
 import QueuedGame from './QueuedGame';
 
@@ -18,6 +18,9 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       margin: 'auto',
       padding: theme.spacing(3),
+      [theme.breakpoints.down('sm')]: {
+        padding: theme.spacing(0.5),
+      },
     },
     hostInfo: {
       marginTop: theme.spacing(2),
@@ -46,6 +49,9 @@ const useStyles = makeStyles((theme: Theme) =>
       '& > * + *': {
         margin: theme.spacing(3),
       },
+      [theme.breakpoints.down('xs')]: {
+        justifyContent: 'center',
+      },
     },
     userStats: {
       display: 'flex',
@@ -59,6 +65,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     newGame: {
       padding: theme.spacing(4),
+      border: 'solid',
+      boxShadow: '#608478 6px 12px 18px 1px',
+      marginBottom: theme.spacing(2),
     },
     games: {
       display: 'flex',
@@ -72,20 +81,20 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const RatingStars = () => {
-  const classes = useStyles();
-  return (
-    <div className={classes.stars}>
-      <Rating
-        name="rating-read"
-        size="large"
-        defaultValue={4.5}
-        precision={0.5}
-        readOnly
-      />
-    </div>
-  );
-};
+// const RatingStars = () => {
+//   const classes = useStyles();
+//   return (
+//     <div className={classes.stars}>
+//       <Rating
+//         name="rating-read"
+//         size="large"
+//         defaultValue={4.5}
+//         precision={0.5}
+//         readOnly
+//       />
+//     </div>
+//   );
+// };
 
 interface DashboardProps {
   user: LoggedUser;
@@ -123,7 +132,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   return (
     <div className={classes.container}>
       <div className={classes.userSection}>
-        <Paper className={classes.hostInfo}>
+        {/* <Paper className={classes.hostInfo}>
           <div className={classes.userBadge}>
             <Avatar aria-label="User" className={classes.avatar}>
               K
@@ -136,7 +145,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
 
             <Typography>Pelituotot: 0€</Typography>
           </div>
-        </Paper>
+        </Paper> */}
         <div>
           <Fab
             className={classes.newGame}

@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     footerContainer: {
       // Position absolute would be better if able to keep under the content && at the bottom of the page
-      backgroundColor: 'rgb(152 169 153)',
+      backgroundColor: 'rgb(59 98 104)',
       left: 0,
       bottom: 0,
       marginTop: theme.spacing(8),

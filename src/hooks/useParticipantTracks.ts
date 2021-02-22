@@ -11,6 +11,7 @@ import {
   VideoTrack,
 } from 'twilio-video';
 import { RTCParticipant } from '../types';
+import logger from '../utils/logger';
 
 type TrackType = 'audio' | 'video';
 
@@ -23,25 +24,31 @@ interface LocalTrackSetter {
 }
 
 const useParticipantLocalTracks = (
+  videoSet: boolean,
+  audioSet: boolean,
   localParticipant: LocalParticipant | null,
   setVideoTrack: LocalVideoSetter,
   setAudioTrack: LocalAudioSetter
 ) => {
   React.useEffect(() => {
-    if (localParticipant) {
+    if (localParticipant && !videoSet) {
       const { videoTracks } = localParticipant;
 
       const videoTrack = Array.from(videoTracks.values())[0].track;
+
+      logger.log('setting local video', videoTrack);
 
       setVideoTrack(videoTrack);
     }
   }, [localParticipant, setVideoTrack]);
 
   React.useEffect(() => {
-    if (localParticipant) {
+    if (localParticipant && !audioSet) {
       const { audioTracks } = localParticipant;
 
       const audioTrack = Array.from(audioTracks.values())[0].track;
+
+      logger.log('setting local audio', audioTrack);
 
       setAudioTrack(audioTrack);
     }
@@ -49,14 +56,18 @@ const useParticipantLocalTracks = (
 };
 
 const useParticipantRemoteTracks = (
+  videoSet: boolean,
+  audioSet: boolean,
   remoteParticipant: RemoteParticipant | null,
   setVideoTrack: (track: RemoteVideoTrack) => void,
   setAudioTrack: (track: RemoteAudioTrack) => void
 ) => {
   React.useEffect(() => {
-    if (remoteParticipant) {
+    if (remoteParticipant && !videoSet) {
       remoteParticipant.on('trackSubscribed', (track: RemoteTrack) => {
         if (track.kind === 'video') {
+          logger.log('setting remote video', track);
+
           setVideoTrack(track);
         }
       });
@@ -64,9 +75,11 @@ const useParticipantRemoteTracks = (
   }, [remoteParticipant, setVideoTrack]);
 
   React.useEffect(() => {
-    if (remoteParticipant) {
+    if (remoteParticipant && !audioSet) {
       remoteParticipant.on('trackSubscribed', (track: RemoteTrack) => {
         if (track.kind === 'audio') {
+          logger.log('setting remote audio', track);
+
           setAudioTrack(track);
         }
       });
@@ -81,12 +94,16 @@ const useParticipantTracks = (
   const [audioTrack, setAudioTrack] = React.useState<AudioTrack | null>(null);
 
   useParticipantLocalTracks(
+    !!videoTrack,
+    !!audioTrack,
     participant.isMe ? (participant.connection as LocalParticipant) : null,
     setVideoTrack,
     setAudioTrack
   );
 
   useParticipantRemoteTracks(
+    !!videoTrack,
+    !!audioTrack,
     participant.isMe ? null : (participant.connection as RemoteParticipant),
     setVideoTrack,
     setAudioTrack

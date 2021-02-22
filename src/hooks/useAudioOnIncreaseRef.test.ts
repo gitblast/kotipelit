@@ -132,7 +132,7 @@ describe('useAnswerAudioRef hook', () => {
           game: {
             players: [
               {
-                data: {
+                privateData: {
                   answers: {
                     player1: {
                       '1': 'answer1', // 1. answer,
@@ -146,7 +146,7 @@ describe('useAnswerAudioRef hook', () => {
                 },
               },
               {
-                data: {
+                privateData: {
                   answers: {
                     player3: {
                       '1': 'answer1',

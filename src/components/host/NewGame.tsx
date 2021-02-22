@@ -2,7 +2,6 @@ import React from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import {
   Typography,
-  Paper,
   Button,
   Stepper,
   Step,
@@ -40,14 +39,26 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: theme.spacing(2),
     },
     resetContainer: {
-      padding: theme.spacing(4),
       marginTop: theme.spacing(6),
       marginLeft: theme.spacing(6),
       marginRight: theme.spacing(6),
-      backgroundColor: 'rgb(197 226 210)',
+      [theme.breakpoints.down('sm')]: {
+        margin: 0,
+        width: '90%',
+      },
+    },
+    lobbyLink: {
+      wordBreak: 'break-word',
     },
     stepperStyle: {
       backgroundColor: 'transparent',
+      [theme.breakpoints.down('sm')]: {
+        padding: 0,
+        paddingTop: theme.spacing(2),
+      },
+    },
+    stepperContent: {
+      borderLeft: '4px dotted #3d0833',
     },
   })
 );
@@ -178,16 +189,33 @@ const NewGame: React.FC<{ username: string }> = ({ username }) => {
           : 'https://www.kotipelit.com';
 
       return (
-        <Paper className={classes.resetContainer}>
-          <Typography variant="h5">Peliaula:</Typography>
-          <Typography>{`${baseUrl}/${username}/kutsut/${addedGame.id}`}</Typography>
-          <Typography color="error">
-            Jaa ylläoleva linkki pelaajille, jotka haluat kutsua pelaamaan.
+        <div className={classes.resetContainer}>
+          <Typography
+            variant="body2"
+            className={classes.lobbyLink}
+          >{`${baseUrl}/${username}/kutsut/${addedGame.id}`}</Typography>
+          <Typography>
+            Jaa ylläoleva peliaulan linkki henkilöille, jotka haluat kutsua
+            pelaamaan.
           </Typography>
-          <Button onClick={handleReturn} className={classes.button}>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleReturn}
+            className={classes.button}
+          >
             Oma profiili
           </Button>
-        </Paper>
+          {/* How to include game id?  */}
+          {/* <Button
+            variant="contained"
+            color="secondary"
+            component={Link}
+            to={`/${username}/kutsut/${game.id}`}
+          >
+            Peliaula
+          </Button> */}
+        </div>
       );
     }
 

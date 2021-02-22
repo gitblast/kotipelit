@@ -90,9 +90,11 @@ const LockReservationForm: React.FC<LockReservationFormProps> = ({
             error={emailError !== ''}
             helperText={emailError}
           />
-          <Typography variant="body1">
-            *Saat pelin tiedot sähköpostiisi. Tietosi poistuu järjestelmästä
-            kolmen päivän kuluessa.
+          <Typography variant="body2">
+            *Saat pelin tiedot sähköpostiisi.
+          </Typography>
+          <Typography variant="body2">
+            Tietosi poistuu järjestelmästä kolmen päivän kuluessa.
           </Typography>
         </div>
       </div>

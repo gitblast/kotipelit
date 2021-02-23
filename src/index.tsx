@@ -53,6 +53,11 @@ const theme = createMuiTheme({
       fontSize: 60,
       lineHeight: 1,
     },
+    caption: {
+      wordBreak: 'break-word',
+      fontStyle: 'italic',
+      fontSize: 18,
+    },
   },
 });
 

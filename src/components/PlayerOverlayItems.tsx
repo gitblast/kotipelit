@@ -4,6 +4,8 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import MicOffIcon from '@material-ui/icons/MicOff';
 import MicIcon from '@material-ui/icons/Mic';
+import VideocamIcon from '@material-ui/icons/Videocam';
+import VideocamOffIcon from '@material-ui/icons/VideocamOff';
 
 import { GameStatus, GameType, RTCParticipant, State } from '../types';
 import {
@@ -45,9 +47,13 @@ const useStyles = makeStyles((theme: Theme) =>
       flex: '1 1 auto',
     },
     answerBubble: {
+      // Shapes made with https://bennettfeely.com/clippy/
+      clipPath:
+        'polygon(0% 0%, 100% 0%, 100% 75%, 79% 75%, 80% 99%, 55% 76%, 0% 75%)',
       position: 'absolute',
       width: 'fit-content',
       padding: theme.spacing(1),
+      paddingBottom: theme.spacing(3),
       margin: theme.spacing(1),
       display: 'flex',
       alignItems: 'center',
@@ -140,20 +146,6 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
           <Checkbox checked={checked} onChange={handleChange} />
         )}
       </Paper>
-      // <Tooltip
-      //   title={
-      //     <div className={classes.tooltipContent}>
-      //       <Typography variant="h4" component="div">
-      //         {answer}
-      //       </Typography>
-      //     </div>
-      //   }
-      //   open={true}
-      //   arrow={true}
-      //   placement="top"
-      // >
-      //   <div className={classes.tooltipRoot} />
-      // </Tooltip>
     );
   };
 
@@ -250,6 +242,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
         {forHost && answer && answerBox(answer)}
         {game.status === GameStatus.FINISHED && (
           <div className={classes.positionLabel}>
+            {/* Final position expressed later with animations */}
             {/* <Typography variant="h3">{getPosition()}</Typography> */}
           </div>
         )}
@@ -281,6 +274,10 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
                 ) : (
                   <MicIcon />
                 )}
+              </IconButton>
+              <IconButton size="small" className={classes.controlIcon}>
+                {/* <VideocamOffIcon></VideocamOffIcon> */}
+                <VideocamIcon></VideocamIcon>
               </IconButton>
             </Grid>
           </Grid>

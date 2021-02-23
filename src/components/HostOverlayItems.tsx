@@ -5,6 +5,8 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Typography, IconButton, Grid } from '@material-ui/core';
 import MicIcon from '@material-ui/icons/Mic';
 import MicOffIcon from '@material-ui/icons/MicOff';
+import VideocamIcon from '@material-ui/icons/Videocam';
+import VideocamOffIcon from '@material-ui/icons/VideocamOff';
 
 import { setMuted } from '../reducers/kotitonni.local.reducer';
 import { GameType, RTCParticipant, RTCPeer, State } from '../types';
@@ -90,18 +92,22 @@ const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({ host }) => {
         <div className={classes.spacer} />
         <div className={classes.flex}>
           <Grid container className={classes.nameBadge}>
-            <Grid item md={9} sm={9}>
+            <Grid item md={9} sm={8}>
               <Typography variant="subtitle2" className={classes.hostName}>
                 {`Hosted by ${host.displayName}`}
               </Typography>
             </Grid>
-            <Grid item md={3} sm={3}>
+            <Grid item md={3} sm={4}>
               <IconButton
                 className={classes.controlIcon}
                 size="small"
                 onClick={toggleMuted}
               >
                 {mutedMap[host.id] ? <MicOffIcon color="error" /> : <MicIcon />}
+              </IconButton>
+              <IconButton size="small" className={classes.controlIcon}>
+                {/* <VideocamOffIcon></VideocamOffIcon> */}
+                <VideocamIcon></VideocamIcon>
               </IconButton>
             </Grid>
             <div className={classes.spacer} />

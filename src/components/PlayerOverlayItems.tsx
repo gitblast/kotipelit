@@ -183,14 +183,14 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
     return correctAnswers;
   };
 
-  const getPosition = () => {
-    const pos = game.players
-      .map((player) => player.points)
-      .sort((a, b) => b - a)
-      .indexOf(player.points);
+  // const getPosition = () => {
+  //   const pos = game.players
+  //     .map((player) => player.points)
+  //     .sort((a, b) => b - a)
+  //     .indexOf(player.points);
 
-    return pos + 1;
-  };
+  //   return pos + 1;
+  // };
 
   const toggleMuted = () => {
     /* if (participant.isMe) {
@@ -250,7 +250,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
         {forHost && answer && answerBox(answer)}
         {game.status === GameStatus.FINISHED && (
           <div className={classes.positionLabel}>
-            <Typography variant="h3">{getPosition()}</Typography>
+            {/* <Typography variant="h3">{getPosition()}</Typography> */}
           </div>
         )}
 

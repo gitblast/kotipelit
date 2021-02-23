@@ -31,8 +31,6 @@ export const joinRTCRoom = async (socket: SocketWithToken): Promise<void> => {
 
       const rtcGame = gameService.convertToRTCGame(game);
 
-      console.log('eee', game, rtcGame);
-
       rtcrooms.createRoom(rtcGame);
     }
 
@@ -116,35 +114,29 @@ export const launchRTCGame = async (socket: SocketWithToken): Promise<void> => {
       throw new Error(`no game set when launching, id ${gameId}`);
     }
 
-    if (game.status !== GameStatus.UPCOMING) {
-      const errorMsg = `game with id ${gameId} already launched`;
+    let alreadyLaunched = false; // for dev purposes
 
-      if (process.env.NODE_ENV !== 'developement') {
-        logger.error(errorMsg);
-      } else {
-        throw new Error(errorMsg);
-      }
+    if (game.status !== GameStatus.UPCOMING) {
+      logger.error(`game with id ${gameId} already launched`);
+
+      alreadyLaunched = true;
     }
 
     const timeDifference = new Date(game.startTime).getTime() - Date.now();
 
     // check if difference is greater than 30 minutes
     if (timeDifference > 30 * 60 * 1000) {
-      const errorMsg = `game start time is over 30 minutes away! time until start: ${Math.round(
-        timeDifference / 1000 / 60
-      )} minutes`;
-
-      if (process.env.NODE_ENV !== 'developement') {
-        logger.error(errorMsg);
-      } else {
-        throw new Error(errorMsg);
-      }
+      throw new Error(
+        `game start time is over 30 minutes away! time until start: ${Math.round(
+          timeDifference / 1000 / 60
+        )} minutes`
+      );
     }
 
-    const updatedGameInDB = await gameService.setGameStatus(
-      gameId,
-      GameStatus.WAITING
-    );
+    // do not update state if game has already been launched
+    const updatedGameInDB = alreadyLaunched
+      ? game
+      : await gameService.setGameStatus(gameId, GameStatus.WAITING);
 
     logger.log('generating access tokens');
 
@@ -157,7 +149,7 @@ export const launchRTCGame = async (socket: SocketWithToken): Promise<void> => {
     // update player display names and game status, generate access tokens
     const updatedGame = {
       ...game,
-      status: GameStatus.WAITING,
+      status: updatedGameInDB.status,
       host: {
         ...game.host,
         privateData: {

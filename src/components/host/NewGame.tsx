@@ -190,10 +190,7 @@ const NewGame: React.FC<{ username: string }> = ({ username }) => {
 
       return (
         <div className={classes.resetContainer}>
-          <Typography
-            variant="body2"
-            className={classes.lobbyLink}
-          >{`${baseUrl}/${username}/kutsut/${addedGame.id}`}</Typography>
+          <Typography variant="caption">{`${baseUrl}/${username}/kutsut/${addedGame.id}`}</Typography>
           <Typography>
             Jaa ylläoleva peliaulan linkki henkilöille, jotka haluat kutsua
             pelaamaan.

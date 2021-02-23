@@ -38,7 +38,7 @@ const UserControls: React.FC<UserControlsProps> = ({ user }) => {
 
   return (
     <Button onClick={handleLogout}>
-      <Typography>{`Kirjaa ulos ${user.username}`}</Typography>
+      <Typography variant="body2">{`Kirjaa ulos ${user.username}`}</Typography>
     </Button>
   );
 };

@@ -150,7 +150,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
     return (
       <>
         <Typography>Peliin pääset liittymään osoitteessa:</Typography>
-        <Typography>{url}</Typography>
+        <Typography variant="caption">{url}</Typography>
       </>
     );
   };

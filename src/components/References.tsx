@@ -34,14 +34,14 @@ const References = () => {
       <Grid container className={classes.sectionB} spacing={5}>
         {/* Toistaa itseään, tee mahd. objekti jossa koottuja vihjeitä, vaihtele näkymää */}
         <Grid item md={4} xs={12}>
-          <Typography color="primary" variant="h5">
+          <Typography variant="h5">
             {'"Hautajaishuijaus, johon et halua sijoittaa."'}
           </Typography>
           <img className={classes.referenceImg} src={teemuImg} alt="Teemu" />
           <Typography>Teemu</Typography>
         </Grid>
         <Grid item md={4} xs={12}>
-          <Typography color="primary" variant="h5">
+          <Typography variant="h5">
             {'"Jengi, joka aloitti metsästyksen 80-luvulla."'}
           </Typography>
           <img
@@ -52,7 +52,7 @@ const References = () => {
           <Typography>Matleena</Typography>
         </Grid>
         <Grid item md={4} xs={12}>
-          <Typography color="primary" variant="h5">
+          <Typography variant="h5">
             {'"Löytyy tähtimerkeistä ja Espanjasta."'}
           </Typography>
           <img className={classes.referenceImg} src={arviImg} alt="arvi" />

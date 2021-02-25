@@ -2,16 +2,13 @@ import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
-import { Typography, IconButton, Grid } from '@material-ui/core';
-import MicIcon from '@material-ui/icons/Mic';
-import MicOffIcon from '@material-ui/icons/MicOff';
-import VideocamIcon from '@material-ui/icons/Videocam';
-import VideocamOffIcon from '@material-ui/icons/VideocamOff';
+import { Typography, Grid } from '@material-ui/core';
 
-import { setMuted } from '../reducers/kotitonni.local.reducer';
-import { GameType, RTCParticipant, RTCPeer, State } from '../types';
+import MediaControls from './MediaControls';
+
+import { GameType, RTCParticipant, State } from '../types';
 import logger from '../utils/logger';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,10 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
         fontSize: 18,
       },
     },
-    // Repeated code from PlayerOverlay!
-    controlIcon: {
-      color: 'white',
-    },
+
     flexCol: {
       height: '100%',
       display: 'flex',
@@ -59,28 +53,12 @@ interface HostOverlayItemsProps {
 
 const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({ host }) => {
   const classes = useStyles();
-  const mutedMap = useSelector((state: State) => state.rtc.localData.mutedMap);
+
   const gameType = useSelector((state: State) => state.rtc.game?.type);
-  const dispatch = useDispatch();
 
   if (!gameType) {
     return null;
   }
-
-  const toggleMuted = () => {
-    if (host.isMe) {
-      /* // toggle enable/disable audio track if self
-      const audioTracks = host.stream?.getAudioTracks();
-
-      if (audioTracks && audioTracks.length) {
-        audioTracks[0].enabled = !audioTracks[0].enabled;
-      } */
-    }
-
-    console.log('TODO MUTE SELF!!');
-
-    // dispatch(setMuted(host.id, !mutedMap[host.id]));
-  };
 
   // handle different game types here, "if gameType === kotitonni return kotitonni-items" etc
   if (gameType === GameType.KOTITONNI) {
@@ -98,17 +76,7 @@ const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({ host }) => {
               </Typography>
             </Grid>
             <Grid item md={3} sm={4}>
-              <IconButton
-                className={classes.controlIcon}
-                size="small"
-                onClick={toggleMuted}
-              >
-                {mutedMap[host.id] ? <MicOffIcon color="error" /> : <MicIcon />}
-              </IconButton>
-              <IconButton size="small" className={classes.controlIcon}>
-                {/* <VideocamOffIcon></VideocamOffIcon> */}
-                <VideocamIcon></VideocamIcon>
-              </IconButton>
+              <MediaControls participant={host} />
             </Grid>
             <div className={classes.spacer} />
           </Grid>

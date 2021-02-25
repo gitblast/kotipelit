@@ -6,6 +6,7 @@ const initialData = {
   clickedMap: {},
   timer: 60,
   mutedMap: {},
+  videoDisabledMap: {},
 };
 
 const reducer: Reducer<KotitonniLocalData, KotitonniLocalAction> = (
@@ -34,6 +35,15 @@ const reducer: Reducer<KotitonniLocalData, KotitonniLocalAction> = (
           [action.payload.playerId]: action.payload.muted,
         },
       };
+    case 'SET_VIDEO_DISABLED': {
+      return {
+        ...state,
+        videoDisabledMap: {
+          ...state.videoDisabledMap,
+          [action.payload.playerId]: action.payload.disabled,
+        },
+      };
+    }
     case 'RESET': // persist muted map
       return {
         ...state,
@@ -78,6 +88,19 @@ export const setMuted = (
     payload: {
       playerId,
       muted,
+    },
+  };
+};
+
+export const setVideoDisabled = (
+  playerId: string,
+  disabled: boolean
+): KotitonniLocalAction => {
+  return {
+    type: 'SET_VIDEO_DISABLED',
+    payload: {
+      playerId,
+      disabled,
     },
   };
 };

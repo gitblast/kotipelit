@@ -14,8 +14,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import logger, { setDebug } from '../utils/logger';
 import { Backdrop, Fab, Typography } from '@material-ui/core';
 import Loader from './Loader';
-import { GameStatus, State } from '../types';
-import { useSelector } from 'react-redux';
+import { GameStatus } from '../types';
 
 import { InGameSocket } from '../context';
 
@@ -101,25 +100,6 @@ console.log('setting logger debug to true in gameroom component');
 
 setDebug(true);
 
-const MEDIA_CONSTRAINTS = {
-  audio: true,
-  // Standard Definition video quality (x = 720, y = 480)
-  video: {
-    width: {
-      min: 320,
-      max: 720,
-    },
-    height: {
-      min: 240,
-      max: 480,
-    },
-  },
-};
-
-if (!MEDIA_CONSTRAINTS.video) {
-  console.warn('not requesting video in GameRoom -component');
-}
-
 const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   const classes = useStyles();
   const [onCall, setOnCall] = React.useState<boolean>(false);
@@ -149,8 +129,6 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
     } else {
       logger.error('socket was null when trying to emit start');
     }
-
-    console.log('aseta käynnistys disabled jos yli 30min alkuun!');
   };
 
   const handleJoinCall = () => {
@@ -207,32 +185,31 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
     <InGameSocket.Provider value={socket}>
       <div className={classes.container} ref={fullscreenRef}>
         <AudioHandler />
-        <div className={classes.backdropContent}>
-          {isHost && game.status === GameStatus.WAITING ? (
-            <>
-              <div className={classes.startBtnContainer}>
-                <Fab
-                  color="primary"
-                  variant="extended"
-                  size="large"
-                  onClick={handleStart}
-                  className={classes.startButton}
-                >
-                  Aloita peli
-                </Fab>
-              </div>
-            </>
-          ) : (
-            // Is this unnecessary repetition?
-            game.status === GameStatus.WAITING && (
+        {game.status === GameStatus.WAITING && (
+          <div className={classes.backdropContent}>
+            {isHost ? (
+              <>
+                <div className={classes.startBtnContainer}>
+                  <Fab
+                    color="primary"
+                    variant="extended"
+                    size="large"
+                    onClick={handleStart}
+                    className={classes.startButton}
+                  >
+                    Aloita peli
+                  </Fab>
+                </div>
+              </>
+            ) : (
               <>
                 <Typography variant="h5" className={classes.waitingMsg}>
                   Odotetaan, että pelinhoitaja käynnistää pelin.
                 </Typography>{' '}
               </>
-            )
-          )}
-        </div>
+            )}
+          </div>
+        )}
         <div className={classes.gameTitleBar}>
           {/* For animation, should more topStyle divs be added? */}
           <div className={classes.topStyle}></div>

@@ -108,8 +108,13 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
     if (game.status !== GameStatus.FINISHED) {
       const label = game.status === GameStatus.UPCOMING ? 'Käynnistä' : 'Liity';
 
+      const isOver30MinAway =
+        new Date(game.startTime).getTime() - new Date().getTime() >
+        30 * 60 * 1000;
+
       return (
         <Button
+          disabled={isOver30MinAway}
           variant="contained"
           color="primary"
           component={Link}

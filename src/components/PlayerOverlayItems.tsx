@@ -1,26 +1,12 @@
+import { Checkbox, Grid, Paper, Typography } from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
-
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-
-import MicOffIcon from '@material-ui/icons/MicOff';
-import MicIcon from '@material-ui/icons/Mic';
-import VideocamIcon from '@material-ui/icons/Videocam';
-import VideocamOffIcon from '@material-ui/icons/VideocamOff';
-
-import { GameStatus, GameType, RTCParticipant, State } from '../types';
-import {
-  Paper,
-  Typography,
-  IconButton,
-  Checkbox,
-  Grid,
-} from '@material-ui/core';
-
 import { Animated } from 'react-animated-css';
-
-import logger from '../utils/logger';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { setClicked, setMuted } from '../reducers/kotitonni.local.reducer';
+import { setClicked } from '../reducers/kotitonni.local.reducer';
+import { GameStatus, GameType, RTCParticipant, State } from '../types';
+import logger from '../utils/logger';
+import MediaControls from './MediaControls';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -96,7 +82,6 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
   const clickMap = useSelector(
     (state: State) => state.rtc.localData.clickedMap
   );
-  const mutedMap = useSelector((state: State) => state.rtc.localData.mutedMap);
   const timer = useSelector((state: State) => state.rtc.localData.timer);
   const dispatch = useDispatch();
   const forHost = useSelector((state: State) => state.rtc.self?.isHost);
@@ -184,21 +169,6 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
   //   return pos + 1;
   // };
 
-  const toggleMuted = () => {
-    /* if (participant.isMe) {
-      // toggle enable/disable audio track if self
-      const audioTracks = peer.stream?.getAudioTracks();
-
-      if (audioTracks && audioTracks.length) {
-        audioTracks[0].enabled = !audioTracks[0].enabled;
-      }
-    }
-
-    dispatch(setMuted(player.id, !mutedMap[playerId])); */
-
-    console.log('TODO: HANDLE MUTE');
-  };
-
   const answer = getAnswer();
 
   const addition = getPointAddition(player.id, !!player.hasTurn);
@@ -264,21 +234,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
             </Grid>
 
             <Grid item md={3} sm={4}>
-              <IconButton
-                size="small"
-                onClick={toggleMuted}
-                className={classes.controlIcon}
-              >
-                {mutedMap[player.id] ? (
-                  <MicOffIcon color="error" />
-                ) : (
-                  <MicIcon />
-                )}
-              </IconButton>
-              <IconButton size="small" className={classes.controlIcon}>
-                {/* <VideocamOffIcon></VideocamOffIcon> */}
-                <VideocamIcon></VideocamIcon>
-              </IconButton>
+              <MediaControls participant={participant} />
             </Grid>
           </Grid>
           <div className={classes.spacer} />

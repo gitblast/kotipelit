@@ -276,6 +276,7 @@ export interface KotitonniLocalData {
   clickedMap: Record<string, boolean>;
   timer: number;
   mutedMap: Record<string, boolean>;
+  videoDisabledMap: Record<string, boolean>;
 }
 
 export type KotitonniLocalAction =
@@ -295,6 +296,13 @@ export type KotitonniLocalAction =
       payload: {
         playerId: string;
         muted: boolean;
+      };
+    }
+  | {
+      type: 'SET_VIDEO_DISABLED';
+      payload: {
+        playerId: string;
+        disabled: boolean;
       };
     }
   | {

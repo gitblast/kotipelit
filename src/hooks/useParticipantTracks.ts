@@ -40,7 +40,7 @@ const useParticipantLocalTracks = (
 
       setVideoTrack(videoTrack);
     }
-  }, [localParticipant, setVideoTrack]);
+  }, [localParticipant, setVideoTrack, videoSet]);
 
   React.useEffect(() => {
     if (localParticipant && !audioSet) {
@@ -52,7 +52,7 @@ const useParticipantLocalTracks = (
 
       setAudioTrack(audioTrack);
     }
-  }, [localParticipant, setAudioTrack]);
+  }, [localParticipant, setAudioTrack, audioSet]);
 };
 
 const useParticipantRemoteTracks = (
@@ -72,7 +72,7 @@ const useParticipantRemoteTracks = (
         }
       });
     }
-  }, [remoteParticipant, setVideoTrack]);
+  }, [remoteParticipant, setVideoTrack, videoSet]);
 
   React.useEffect(() => {
     if (remoteParticipant && !audioSet) {
@@ -84,7 +84,7 @@ const useParticipantRemoteTracks = (
         }
       });
     }
-  }, [remoteParticipant, setAudioTrack]);
+  }, [remoteParticipant, setAudioTrack, audioSet]);
 };
 
 const useParticipantTracks = (

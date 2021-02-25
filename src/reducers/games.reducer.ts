@@ -1,4 +1,4 @@
-import { GamesState, Action, RTCGame, GameStatus, ActionType } from '../types';
+import { GamesState, Action, RTCGame, ActionType } from '../types';
 
 import { Dispatch, Reducer } from 'redux';
 

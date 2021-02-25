@@ -5,8 +5,7 @@ import { makeStyles, createStyles } from '@material-ui/core/styles';
 import Loader from './Loader';
 import RTCVideoFrame from './RTCVideoFrame';
 
-import { RTCParticipant, RTCPeer } from '../types';
-import { Participant } from 'twilio-video';
+import { RTCParticipant } from '../types';
 
 const useStyles = makeStyles(() =>
   createStyles({

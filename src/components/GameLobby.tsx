@@ -17,8 +17,6 @@ import logoImg from '../assets/images/logo.png';
 
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
-import Footer from './Footer';
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
@@ -32,6 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
+      color: theme.palette.primary.light,
     },
     availableSeat: {
       color: 'rgb(104 122 106)',
@@ -212,7 +211,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
     <>
       <div className={classes.container}>
         {error && (
-          <Typography variant="h5" color="error" className={classes.errorMsg}>
+          <Typography variant="h4" color="error" className={classes.errorMsg}>
             {error}
           </Typography>
         )}
@@ -231,7 +230,10 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
               </Grid>
               <Grid item md={5} sm={12} xs={12} className={classes.centerAlign}>
                 <div className={classes.centerAlign}>
-                  <Typography variant="h5">{`Tervetuloa pelaamaan ${capitalize(
+                  <Typography
+                    variant="h3"
+                    color="primary"
+                  >{`Tervetuloa pelaamaan ${capitalize(
                     game.type
                   )}a!`}</Typography>
                 </div>
@@ -312,7 +314,6 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
           )
         )}
       </div>
-      <Footer />
     </>
   );
 };

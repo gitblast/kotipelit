@@ -9,7 +9,6 @@ import logoImg from '../assets/images/logo.png';
 import gamehostImg from '../assets/images/gamehost.png';
 import gameviewImg from '../assets/images/gameview.png';
 
-import Footer from './Footer';
 import References from './References';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -27,6 +26,12 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
+    },
+    showcaseImage: {
+      height: 347,
+      [theme.breakpoints.down('xs')]: {
+        maxHeight: 240,
+      },
     },
     sectionStyle: {
       margin: theme.spacing(8),
@@ -71,9 +76,15 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     gamehostImage: {
       height: 235,
+      [theme.breakpoints.down('xs')]: {
+        maxHeight: 210,
+      },
     },
     gameviewImage: {
       height: 225,
+      [theme.breakpoints.down('xs')]: {
+        maxHeight: 200,
+      },
     },
     sectionBStyle: {
       padding: theme.spacing(8),
@@ -124,12 +135,6 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       height: 'auto',
       textAlign: 'center',
-    },
-    showcaseImage: {
-      height: 347,
-      [theme.breakpoints.down('xs')]: {
-        maxHeight: 200,
-      },
     },
   })
 );
@@ -220,7 +225,7 @@ const FrontPage: React.FC = () => {
                 Ilahduta järjestämällä peli-iltoja
               </Typography>
               <Typography variant="body1" color="initial">
-                ..tienaa samalla hauskalla tavalla
+                ..voit myös tienata samalla!
               </Typography>
             </div>
             <img
@@ -256,7 +261,6 @@ const FrontPage: React.FC = () => {
         <Steps />
         <References />
       </div>
-      <Footer />
     </div>
   );
 };

@@ -6,18 +6,24 @@ import {
   Card,
   CardActionArea,
   CardContent,
+  CardMedia,
   Typography,
 } from '@material-ui/core';
+
+import kotitonniImg from '../../assets/images/kotitonni.png';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     gameCard: {
       maxWidth: 280,
-      background: 'linear-gradient(to bottom, #94ccc6, #1c0825)',
+      background: 'rgb(29 18 55)',
       border: '2px dotted white',
-      color: 'white',
+      color: 'rgb(185 231 229)',
       textAlign: 'center',
       padding: theme.spacing(2),
+    },
+    kotitonniImage: {
+      height: 200,
     },
     cardBottom: {
       display: 'flex',
@@ -26,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'white',
     },
     gameInfo: {
-      color: 'white',
+      color: 'rgb(185 231 229)',
     },
   })
 );
@@ -49,6 +55,13 @@ const ChooseGame: React.FC<ChooseGameProps> = ({ handleSelect }) => {
         <CardActionArea>
           <CardContent>
             <Typography variant="subtitle2">Kotitonni</Typography>
+            <CardMedia>
+              <img
+                src={kotitonniImg}
+                alt="kotitonni"
+                className={classes.kotitonniImage}
+              />
+            </CardMedia>
             <Typography component="p">
               Tv-visailun huumaa yksinkertaisessa, mutta hauskassa sanapelissä.
             </Typography>

@@ -8,18 +8,33 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
 import App from './App';
 
+// import Axaxax from './assets/fonts/axaxax-bd.ttf';
+
+// const axaxax = {
+//   fontFamily: 'Axaxax',
+//   // fontStyle: 'semi-bold',
+//   // fontDisplay: 'swap',
+//   // fontWeight: '600',
+//   src: `
+//    local('Axaxax'),
+//    url(${Axaxax}) format('ttf')
+//  `,
+//   unicodeRange:
+//     'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF',
+// };
+
 const theme = createMuiTheme({
   palette: {
     primary: {
-      light: '#f1dac2',
-      main: '#3d0833',
-      dark: '#424242',
+      light: 'rgb(168 164 136)',
+      main: 'rgb(170 161 85)',
+      dark: 'rgb(103 93 13)',
       contrastText: 'rgba(214, 214, 214)',
     },
     secondary: {
       light: 'rgba(179,69,49)',
-      main: 'rgb(52 75 115)',
-      dark: 'rgba(98 2 2)',
+      main: 'rgb(156 31 163)',
+      dark: 'rgba(81 38 99)',
       contrastText: 'rgba(214, 214, 214)',
     },
     error: {
@@ -27,14 +42,25 @@ const theme = createMuiTheme({
     },
   },
   typography: {
-    fontFamily: 'Itim',
+    fontFamily: 'Axaxax',
     body1: {
-      fontSize: '1.2rem',
+      fontSize: '1rem',
     },
     body2: {
-      color: 'rgb(34 38 39)',
+      fontSize: '0.8rem',
     },
-    h4: {},
+    h1: {
+      fontSize: '2.2rem',
+    },
+    h2: {
+      fontSize: '1.8rem',
+    },
+    h3: {
+      fontSize: '1.6rem',
+    },
+    h4: {
+      fontSize: '1.3rem',
+    },
     h5: {
       fontSize: 26,
     },
@@ -56,7 +82,14 @@ const theme = createMuiTheme({
     caption: {
       wordBreak: 'break-word',
       fontStyle: 'italic',
-      fontSize: 18,
+      fontSize: '0.7rem',
+    },
+  },
+  overrides: {
+    MuiStepLabel: {
+      root: {
+        color: 'pink',
+      },
     },
   },
 });

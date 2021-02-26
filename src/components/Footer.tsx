@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     footerContainer: {
       // Position absolute would be better if able to keep under the content && at the bottom of the page
-      backgroundColor: 'rgb(59 98 104)',
+      backgroundColor: 'rgb(31 23 9)',
       left: 0,
       bottom: 0,
       marginTop: theme.spacing(8),
@@ -44,28 +44,27 @@ const Footer: React.FC = () => {
         <Grid container spacing={6} className={classes.footerContent}>
           <Grid item className={classes.footerBlock}>
             <Typography className={classes.footerHeader}>Tuki</Typography>
-            <Typography>Ota yhteyttä</Typography>
-            <Typography>Usein kysyttyä</Typography>
+            <Typography variant="body2">Ota yhteyttä</Typography>
+            <Typography variant="body2">Usein kysyttyä</Typography>
           </Grid>
           <Grid item className={classes.footerBlock}>
-            <Typography className={classes.footerHeader}>
+            <Typography variant="body2" className={classes.footerHeader}>
               Spektaakkeli Events
             </Typography>
-            <Typography>Yleistä</Typography>
-            <Typography>Spektaakkeli.com</Typography>
-            <Typography>Kotiluennot.com</Typography>
+            <Typography variant="body2">Yleistä</Typography>
+            <Typography variant="body2">Spektaakkeli.com</Typography>
+            <Typography variant="body2">Kotiluennot.com</Typography>
           </Grid>
           <Grid item className={classes.footerBlock}>
             <Typography className={classes.footerHeader}>
               Yhteistyössä
             </Typography>
-            <Typography></Typography>
-            <Typography>Pallopelit.com</Typography>
+            <Typography variant="body2">Pallopelit.com</Typography>
           </Grid>
         </Grid>
         <Grid item className={classes.copyRights}>
           <Typography>&copy;</Typography>
-          <Typography>
+          <Typography variant="body2">
             {`${new Date().getFullYear()} Spektaakkeli Events`}
           </Typography>
         </Grid>

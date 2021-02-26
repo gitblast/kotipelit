@@ -62,14 +62,14 @@ const InfoBar: React.FC = () => {
 
     return (
       <div className={classes.infoBarText}>
-        <Typography variant="h5" className={classes.nextUpText}>
+        <Typography variant="body1" className={classes.nextUpText}>
           {playerWithTurn.id === self?.id
             ? `Sinun vuorosi!`
             : `Vuorossa: ${playerWithTurn.name}`}
         </Typography>
         {(self?.isHost || playerWithTurn.id === self?.id) && (
           <Typography
-            variant="h5"
+            variant="body1"
             className={classes.wordsText}
           >{` ${playerWithTurn.privateData.words.join(', ')}`}</Typography>
         )}

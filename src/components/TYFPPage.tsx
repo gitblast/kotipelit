@@ -12,6 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       padding: theme.spacing(3),
       textAlign: 'center',
+      color: 'rgb(0 225 217)',
     },
     results: {
       padding: theme.spacing(5),

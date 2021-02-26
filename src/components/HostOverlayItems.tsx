@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(1),
       alignItems: 'center',
       // .. except for this
-      backgroundColor: 'rgba(27, 55, 76, 0.85)',
+      backgroundColor: theme.palette.primary.dark,
       color: 'white',
       width: '100%',
       // .. except for this

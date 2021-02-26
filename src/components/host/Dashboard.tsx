@@ -149,7 +149,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
         <div>
           <Fab
             className={classes.newGame}
-            color="primary"
+            color="secondary"
             variant="extended"
             component={Link}
             to={`/${user.username}/newgame`}

@@ -24,12 +24,12 @@ const useStyles = makeStyles((theme: Theme) =>
       // marginBottom: theme.spacing(3),
       // maxWidth: 1230,
       margin: 'auto',
-      backgroundColor: '#94ccc6',
-      minHeight: '8vh',
+      backgroundColor: 'rgba(11, 43, 56, 1)',
+      minHeight: '9vh',
       color: 'black',
     },
     logo: {
-      maxHeight: 50,
+      maxHeight: 60,
       width: 'auto',
       marginTop: theme.spacing(1),
     },
@@ -39,9 +39,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     container: {
       width: '100%',
-      minHeight: '92vh',
+      minHeight: '91vh',
       overflow: 'hidden',
-      background: 'linear-gradient(to top, #84b0b7, #94ccc6)',
+      background: 'rgba(11, 43, 56, 1)',
     },
   })
 );

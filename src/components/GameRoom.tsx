@@ -24,31 +24,36 @@ import { InGameSocket } from '../context';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
-      minHeight: '92vh',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      background: 'linear-gradient(to bottom, #94ccc6, #1c0825)',
+      minHeight: '91vh',
+
+      background: 'linear-gradient(to top, rgb(49 25 57), rgb(51 90 103))',
+    },
+    containerGame: {
+      minHeight: '91vh',
+      background: 'linear-gradient(to bottom, rgb(32 82 100), rgb(49 25 57))',
     },
     centered: {
       minHeight: 400,
     },
+    topGradient: {
+      background: 'linear-gradient(to bottom, rgb(11 42 56), rgb(32 82 100))',
+      height: 30,
+      width: '100%',
+    },
     gameTitleBar: {
       display: 'flex',
       justifyContent: 'space-around',
-      width: '90%',
       [theme.breakpoints.down('sm')]: {
         display: 'none',
       },
     },
     gameTitle: {
       color: 'rgb(185 231 229)',
-      marginTop: theme.spacing(3),
       fontSize: '60px',
     },
     topStyle: {
       borderTop: '15px dotted rgb(185 231 229)',
-      background: 'rgb(167 203 176)',
+      background: 'rgb(97 125 122)',
       boxShadow: 'rgb(231 239 191) 1px 8px 44px',
       width: '30vw',
       alignSelf: 'center',
@@ -61,7 +66,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'white',
     },
     startButton: {
-      padding: theme.spacing(5),
+      padding: theme.spacing(3),
       border: 'solid white',
     },
     infoContent: {
@@ -205,14 +210,14 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   }
   return (
     <InGameSocket.Provider value={socket}>
-      <div className={classes.container} ref={fullscreenRef}>
+      <div className={classes.containerGame} ref={fullscreenRef}>
         <AudioHandler />
         <div className={classes.backdropContent}>
           {isHost && game.status === GameStatus.WAITING ? (
             <>
               <div className={classes.startBtnContainer}>
                 <Fab
-                  color="primary"
+                  color="secondary"
                   variant="extended"
                   size="large"
                   onClick={handleStart}
@@ -233,6 +238,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
             )
           )}
         </div>
+        <div className={classes.topGradient}></div>
         <div className={classes.gameTitleBar}>
           {/* For animation, should more topStyle divs be added? */}
           <div className={classes.topStyle}></div>
@@ -252,11 +258,6 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
             />
           )
         )}
-
-        <Backdrop
-          open={game.status === GameStatus.WAITING}
-          className={classes.backdropBottom}
-        ></Backdrop>
       </div>
     </InGameSocket.Provider>
   );

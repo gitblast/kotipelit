@@ -30,6 +30,10 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       width: '100%',
       marginLeft: theme.spacing(4),
+      color: 'rgb(0 225 217)',
+    },
+    primaryDark: {
+      color: theme.palette.primary.dark,
     },
     button: {
       marginTop: theme.spacing(1),
@@ -58,7 +62,8 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     stepperContent: {
-      borderLeft: '4px dotted #3d0833',
+      borderLeft: '4px solid',
+      borderColor: theme.palette.primary.main,
     },
   })
 );
@@ -197,7 +202,7 @@ const NewGame: React.FC<{ username: string }> = ({ username }) => {
           </Typography>
           <Button
             variant="contained"
-            color="secondary"
+            color="primary"
             onClick={handleReturn}
             className={classes.button}
           >

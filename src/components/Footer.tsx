@@ -11,8 +11,9 @@ const useStyles = makeStyles((theme: Theme) =>
       borderTop: 'solid 1px white',
       left: 0,
       bottom: 0,
-      marginTop: theme.spacing(8),
       width: '100%',
+      margin: 'auto',
+      overflow: 'hidden',
     },
     footerContent: {
       display: 'flex',

@@ -38,7 +38,7 @@ const theme = createMuiTheme({
       contrastText: 'rgba(214, 214, 214)',
     },
     error: {
-      main: 'rgba(227, 23, 10)',
+      main: 'rgba(174, 56, 43)',
     },
   },
   typography: {

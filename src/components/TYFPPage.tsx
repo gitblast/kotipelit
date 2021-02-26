@@ -12,6 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       padding: theme.spacing(3),
       textAlign: 'center',
+      color: theme.palette.primary.light,
     },
     results: {
       padding: theme.spacing(5),
@@ -59,7 +60,7 @@ const TYFPPage: React.FC = () => {
 
   return (
     <div className={classes.container}>
-      <Typography>Kiitos osallistumisesta!</Typography>
+      <Typography variant="h4">Kiitos osallistumisesta!</Typography>
       <div className={classes.results}>{showPoints()}</div>
       <Typography className={classes.proposal}>
         Jos haluat alkaa järjestämään peli-iltoja tai vain haastaa kaverisi,

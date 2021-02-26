@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       padding: theme.spacing(2),
+      color: 'rgb(0 225 217)',
       textAlign: 'center',
     },
     formField: {
@@ -67,6 +68,7 @@ const LoginForm: React.FC = () => {
         className={classes.formField}
         variant="extended"
         onClick={handleLogin}
+        color="primary"
       >
         {user.loggingIn ? <CircularProgress /> : 'Kirjaudu'}
       </Fab>

@@ -182,7 +182,10 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
           process && process.env.NODE_ENV === 'development' && (
             <div style={{ position: 'absolute' }}>
               {forHost && (
-                <Typography component="div">{`http://localhost:3000/username/${player.privateData.inviteCode}`}</Typography>
+                <Typography
+                  component="div"
+                  variant="caption"
+                >{`http://localhost:3000/username/${player.privateData.inviteCode}`}</Typography>
               )}
 
               {participant.isMe && (

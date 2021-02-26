@@ -17,7 +17,7 @@ const colors = [
   'rgba(251, 70, 70, 0.8)',
   'rgba(47, 203, 239, 0.8)',
   'rgba(251, 232, 0, 0.8)',
-  'white',
+  'rgb(0 225 217)',
   'rgba(238, 255, 244, 0.8)',
 ];
 
@@ -44,7 +44,7 @@ const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
     },
     frame: {
       paddingTop: '75%',
-      backgroundColor: 'rgba(30,19,37)',
+      backgroundColor: 'rgba(11,43,56)',
       position: 'relative',
       color: 'white',
     },

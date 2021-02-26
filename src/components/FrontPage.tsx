@@ -5,13 +5,9 @@ import { Link } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Typography, Grid, Button } from '@material-ui/core';
 
-// icon imports, bundling together requires "minimizing bundle size?"
-import EuroSymbolIcon from '@material-ui/icons/EuroSymbol';
-import AppsIcon from '@material-ui/icons/Apps';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-
-import kotitonniImg from '../assets/images/KotitonniB.png';
-import backgroundImg from '../assets/images/backgroundB.png';
+import logoImg from '../assets/images/logo.png';
+import gamehostImg from '../assets/images/gamehost.png';
+import gameviewImg from '../assets/images/gameview.png';
 
 import Footer from './Footer';
 import References from './References';
@@ -29,19 +25,82 @@ const useStyles = makeStyles((theme: Theme) =>
     showcase: {
       marginTop: theme.spacing(4),
       display: 'flex',
+      flexDirection: 'column',
       alignItems: 'center',
+    },
+    sectionStyle: {
+      margin: theme.spacing(8),
+      color: 'rgb(0 225 217)',
       [theme.breakpoints.down('xs')]: {
-        textAlign: 'center',
-        flexDirection: 'column-reverse',
+        margin: theme.spacing(5),
       },
     },
-
-    mainInfo: {
+    sectionFlex: {
+      display: 'flex',
+      justifyContent: 'space-around',
+      padding: theme.spacing(4),
       [theme.breakpoints.down('xs')]: {
-        marginLeft: 0,
-        alignSelf: 'center',
-        justifyContent: 'space-around',
-        marginBottom: 14,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: theme.spacing(2),
+      },
+    },
+    sectionInfo: {
+      margin: theme.spacing(5),
+      alignSelf: 'center',
+      '& > * + *': {
+        margin: theme.spacing(2),
+      },
+      [theme.breakpoints.down('xs')]: {
+        margin: 0,
+      },
+    },
+    headline: {
+      display: 'flex',
+      justifyContent: 'center',
+    },
+    neonLight: {
+      height: 3,
+      background:
+        'linear-gradient(to right, rgb(0 225 217), rgba(11, 43, 56, 1))',
+      boxShadow: 'rgb(231 239 191) -23px 8px 44px',
+      width: '11vw',
+      alignSelf: 'center',
+      marginTop: '6px',
+    },
+    gamehostImage: {
+      height: 235,
+    },
+    gameviewImage: {
+      height: 225,
+    },
+    sectionBStyle: {
+      padding: theme.spacing(8),
+    },
+    stepper: {
+      textAlign: 'center',
+    },
+    step: {
+      textAlign: 'center',
+      width: 28,
+      height: 28,
+      borderRadius: '50%',
+      backgroundColor: 'rgb(226 205 55)',
+    },
+    stepNeon: {
+      borderTop: 'solid 4px rgb(250 227 74)',
+      background: 'rgb(167 203 176)',
+      boxShadow: 'rgb(231 239 191) -1px 8px 44px',
+      alignSelf: 'center',
+      marginTop: '6px',
+    },
+    stepperContent: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      '& > * + *': {
+        marginTop: theme.spacing(2),
       },
     },
     buttonStyle: {
@@ -54,17 +113,7 @@ const useStyles = makeStyles((theme: Theme) =>
         marginLeft: 0,
       },
     },
-    section: {
-      backgroundColor: 'rgba(245, 245, 248)',
-    },
-    gamePreview: {
-      marginTop: theme.spacing(4),
-      display: 'flex',
-      alignItems: 'center',
-      [theme.breakpoints.down('xs')]: {
-        textAlign: 'center',
-      },
-    },
+
     flex: {
       display: 'flex',
       alignItems: 'center',
@@ -76,46 +125,60 @@ const useStyles = makeStyles((theme: Theme) =>
       height: 'auto',
       textAlign: 'center',
     },
-    imageMobile: {
+    showcaseImage: {
+      height: 347,
       [theme.breakpoints.down('xs')]: {
-        width: '100%',
-        height: 'auto',
+        maxHeight: 200,
       },
     },
   })
 );
 
-const GamePreview = () => {
+const Steps = () => {
   const classes = useStyles();
   return (
     <>
-      {/* Kotitonni-info */}
-      <Grid container spacing={2} className={classes.gamePreview}>
-        <Grid item md></Grid>
-        <Grid className={classes.flex} item xs={12} sm={4}>
-          <div>
-            <Typography color="primary" variant="h4">
-              Kotitonni
+      <section className={classes.sectionBStyle}>
+        <Grid container spacing={2} className={classes.stepper}>
+          <Grid item sm={2} className={classes.stepperContent}>
+            <div className={classes.step}>
+              <Typography variant="h4" color="initial">
+                1
+              </Typography>
+            </div>
+            <Typography variant="body1" color="primary">
+              Päätä ajankohta
             </Typography>
-
-            <Typography variant="h5">
-              Kotitonni on viihdyttävä peli, jossa pelaajat arvuuttelevat
-              toistensa sanoja vihjeiden avulla. Eniten pisteitä saa kun vain
-              yksi arvaa sanan. Peli kestää noin tunnin ja pyörii pelaamiseen
-              kustomoidulla videopuhelualustalla.
+          </Grid>
+          <Grid item sm={3}>
+            <div className={classes.stepNeon}></div>
+          </Grid>
+          <Grid item sm={2} className={classes.stepperContent}>
+            <div className={classes.step}>
+              <Typography variant="h4" color="initial">
+                2
+              </Typography>
+            </div>
+            <Typography variant="body1" color="primary">
+              Valitse pelattava peli
             </Typography>
-          </div>
+          </Grid>
+          <Grid item sm={3}>
+            <div className={classes.stepNeon}></div>
+          </Grid>
+          <Grid item sm={2} className={classes.stepperContent}>
+            <div className={classes.step}>
+              <Typography variant="h4" color="initial">
+                3
+              </Typography>
+            </div>
+            <Typography variant="body1" color="primary">
+              Aseta halutessasi pelaajille hinta
+            </Typography>
+          </Grid>
         </Grid>
-        <Grid item md></Grid>
-        <Grid className={classes.image} item xs={12} sm={4}>
-          <img
-            src={kotitonniImg}
-            alt="Kotitonni"
-            className={classes.imageMobile}
-          />
-        </Grid>
-        <Grid item md></Grid>
-      </Grid>
+        <div></div>
+      </section>
     </>
   );
 };
@@ -129,88 +192,69 @@ const FrontPage: React.FC = () => {
     <div>
       <div className={classes.mainContainer}>
         <Grid container className={classes.showcase}>
-          <Grid item md></Grid>
-          <Grid item md={4} sm={4} xs={12} className={classes.mainInfo}>
-            <Typography color="primary" variant="h5">
-              Peli-iltojen yhteinen osoite.
+          <img
+            src={logoImg}
+            alt="background"
+            className={classes.showcaseImage}
+          />
+          <Button
+            variant="contained"
+            color="secondary"
+            className={classes.buttonStyle}
+            component={Link}
+            to="/kirjaudu"
+          >
+            Järjestä kotipelit
+          </Button>
+        </Grid>
+        <section className={classes.sectionStyle}>
+          <div className={classes.headline}>
+            <div className={classes.neonLight}></div>
+            <Typography variant="h3" color="initial">
+              Ryhdy gameshow-juontajaksi
             </Typography>
-
-            <Button
-              variant="contained"
-              color="secondary"
-              className={classes.buttonStyle}
-              component={Link}
-              to="/kirjaudu"
-            >
-              Järjestä peli-ilta
-            </Button>
-          </Grid>
-          <Grid className={classes.image} item md={5} sm={8} xs={12}>
+          </div>
+          <div className={classes.sectionFlex}>
+            <div className={classes.sectionInfo}>
+              <Typography variant="body1" color="initial">
+                Ilahduta järjestämällä peli-iltoja
+              </Typography>
+              <Typography variant="body1" color="initial">
+                ..tienaa samalla hauskalla tavalla
+              </Typography>
+            </div>
             <img
-              src={backgroundImg}
-              alt="Background"
-              className={classes.imageMobile}
+              src={gamehostImg}
+              alt="gamehost"
+              className={classes.gamehostImage}
             />
-          </Grid>
-          <Grid item md></Grid>
-        </Grid>
-
-        {/* Pelinhoitajainfo A */}
-        <Grid container spacing={4} className={classes.container}>
-          <Grid item xs={12}>
-            <Typography color="primary" variant="h4">
-              Järjestä kotipelit
+          </div>
+        </section>
+        <section className={classes.sectionStyle}>
+          <div className={classes.headline}>
+            <div className={classes.neonLight}></div>
+            <Typography variant="h3" color="initial">
+              Pelaamiseen kustomoidulla videopuhelualustalla
             </Typography>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <AppsIcon></AppsIcon>
-            <Typography variant="h5">
-              Ilahduta järjestämällä peli-iltoja etänä.
-            </Typography>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <EuroSymbolIcon></EuroSymbolIcon>
-
-            <Typography variant="h5">
-              Voit halutessasi myös asettaa pelille hinnan ja tienata hauskalla
-              tavalla.
-            </Typography>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <AccountCircleIcon></AccountCircleIcon>
-            <Typography variant="h5">
-              Tarvitset vain käyttäjätilin ja web-kameran niin olet valmis!
-            </Typography>
-          </Grid>
-        </Grid>
-        <GamePreview />
+          </div>
+          <div className={classes.sectionFlex}>
+            <div className={classes.sectionInfo}>
+              <Typography variant="body1" color="initial">
+                Tarvitset vain käyttäjätilin ja webkameran
+              </Typography>
+              <Typography variant="body1" color="initial">
+                ..ja olet valmis!
+              </Typography>
+            </div>
+            <img
+              src={gameviewImg}
+              alt="gameview"
+              className={classes.gameviewImage}
+            />
+          </div>
+        </section>
+        <Steps />
         <References />
-        {/* Pelinhoitajainfo B */}
-        <Grid container spacing={4} className={classes.container}>
-          <Grid item xs={12}>
-            <Typography color="primary" variant="h4">
-              Kiinnostuitko?
-            </Typography>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Typography variant="h5">
-              Ota yhteyttä info@kotipelit.com ja voit aloittaa peli-iltojen
-              järjestämisen.
-            </Typography>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Typography variant="h5">
-              Peli-illan järjestäminen sivustolla on helppoa ja voit kysyä apua
-              milloin vain.
-            </Typography>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Typography variant="h5">
-              Halutessasi voimme järjestää pelaajat ensimmäistä peli-iltaasi
-              varten.
-            </Typography>
-          </Grid>
-        </Grid>
       </div>
       <Footer />
     </div>

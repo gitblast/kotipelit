@@ -12,7 +12,7 @@ import HelpIcon from '@material-ui/icons/Help';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import logger, { setDebug } from '../utils/logger';
-import { Backdrop, Fab, Typography } from '@material-ui/core';
+import { Fab, Typography } from '@material-ui/core';
 import Loader from './Loader';
 import { GameStatus } from '../types';
 
@@ -22,32 +22,38 @@ import { InGameSocket } from '../context';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    container: {
-      minHeight: '92vh',
+    preInfo: {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      background: 'linear-gradient(to bottom, #94ccc6, #1c0825)',
+      color: theme.palette.primary.light,
+    },
+    containerGame: {
+      minHeight: '91vh',
+      background: 'linear-gradient(to bottom, rgb(32 82 100), rgb(29 12 32))',
     },
     centered: {
       minHeight: 400,
     },
+    topGradient: {
+      background: 'linear-gradient(to bottom, rgb(11 42 56), rgb(32 82 100))',
+      height: 30,
+      width: '100%',
+    },
     gameTitleBar: {
       display: 'flex',
       justifyContent: 'space-around',
-      width: '90%',
       [theme.breakpoints.down('sm')]: {
         display: 'none',
       },
     },
     gameTitle: {
       color: 'rgb(185 231 229)',
-      marginTop: theme.spacing(3),
       fontSize: '60px',
     },
     topStyle: {
       borderTop: '15px dotted rgb(185 231 229)',
-      background: 'rgb(167 203 176)',
+      background: 'rgb(97 125 122)',
       boxShadow: 'rgb(231 239 191) 1px 8px 44px',
       width: '30vw',
       alignSelf: 'center',
@@ -60,7 +66,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'white',
     },
     startButton: {
-      padding: theme.spacing(5),
+      padding: theme.spacing(3),
       border: 'solid white',
     },
     infoContent: {
@@ -153,7 +159,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
 
   if (!onCall) {
     return (
-      <div className={classes.container}>
+      <div className={classes.preInfo}>
         <Typography variant="h5">Peli alkaa pian!</Typography>
         <div className={classes.infoContent}>
           <HeadsetIcon fontSize="large"></HeadsetIcon>
@@ -183,33 +189,29 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   }
   return (
     <InGameSocket.Provider value={socket}>
-      <div className={classes.container} ref={fullscreenRef}>
+      <div className={classes.containerGame} ref={fullscreenRef}>
         <AudioHandler />
-        {game.status === GameStatus.WAITING && (
-          <div className={classes.backdropContent}>
-            {isHost ? (
-              <>
-                <div className={classes.startBtnContainer}>
-                  <Fab
-                    color="primary"
-                    variant="extended"
-                    size="large"
-                    onClick={handleStart}
-                    className={classes.startButton}
-                  >
-                    Aloita peli
-                  </Fab>
-                </div>
-              </>
-            ) : (
-              <>
-                <Typography variant="h5" className={classes.waitingMsg}>
-                  Odotetaan, että pelinhoitaja käynnistää pelin.
-                </Typography>{' '}
-              </>
-            )}
-          </div>
-        )}
+        <div className={classes.backdropContent}>
+          {isHost && game.status === GameStatus.WAITING ? (
+            <>
+              <div className={classes.startBtnContainer}>
+                <Fab
+                  color="secondary"
+                  variant="extended"
+                  size="large"
+                  onClick={handleStart}
+                  className={classes.startButton}
+                >
+                  Aloita peli
+                </Fab>
+              </div>
+            </>
+          ) : (
+            // Is this unnecessary repetition?
+            game.status === GameStatus.WAITING && <></>
+          )}
+        </div>
+        <div className={classes.topGradient}></div>
         <div className={classes.gameTitleBar}>
           {/* For animation, should more topStyle divs be added? */}
           <div className={classes.topStyle}></div>
@@ -229,11 +231,6 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
             />
           )
         )}
-
-        <Backdrop
-          open={game.status === GameStatus.WAITING}
-          className={classes.backdropBottom}
-        ></Backdrop>
       </div>
     </InGameSocket.Provider>
   );

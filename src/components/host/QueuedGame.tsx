@@ -37,7 +37,12 @@ const useStyles = makeStyles((theme: Theme) =>
     cardStyle: {
       width: 400,
       margin: theme.spacing(2),
-      background: 'linear-gradient(to top, #cbddb9, #94ccc6)',
+      background: 'rgb(7 34 45)',
+      color: theme.palette.primary.light,
+      border: 'solid rgb(0 225 217)',
+    },
+    avatarStyle: {
+      background: theme.palette.secondary.dark,
     },
     playerRow: {
       display: 'flex',
@@ -52,10 +57,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     actionIcon: {
       padding: theme.spacing(0.5),
+      color: theme.palette.primary.light,
     },
-    avatar: {
-      backgroundColor: '#3d0833',
-    },
+
     inviteText: {
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
@@ -86,24 +90,6 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
     if (agree) dispatch(deleteGame(game.id));
   };
 
-  // const startButton = () => {
-  //   if (game.status !== GameStatus.FINISHED) {
-  //     const label =
-  //       game.status === GameStatus.UPCOMING ? 'Käynnistä Jitsi' : 'Liity Jitsi';
-
-  //     return (
-  //       <Button
-  //         variant="contained"
-  //         color="secondary"
-  //         component={Link}
-  //         to={`/${username}/pelit/${game.id}`}
-  //       >
-  //         {label}
-  //       </Button>
-  //     );
-  //   }
-  // };
-
   const startRTCButton = () => {
     if (game.status !== GameStatus.FINISHED) {
       const label = game.status === GameStatus.UPCOMING ? 'Käynnistä' : 'Liity';
@@ -116,7 +102,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
         <Button
           disabled={isOver30MinAway}
           variant="contained"
-          color="primary"
+          color="secondary"
           component={Link}
           to={`/${username}/pelit/${game.id}`}
         >
@@ -131,7 +117,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
       return (
         <Button
           variant="contained"
-          color="secondary"
+          color="primary"
           component={Link}
           to={`/${username}/kutsut/${game.id}`}
         >
@@ -176,13 +162,17 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
       <Card elevation={2} className={classes.cardStyle}>
         <CardHeader
           avatar={
-            <Avatar aria-label="Game" className={classes.avatar}>
+            <Avatar aria-label="Game" className={classes.avatarStyle}>
               K
             </Avatar>
           }
           action={
             <>
-              <IconButton aria-label="settings" onClick={handleOpen}>
+              <IconButton
+                aria-label="settings"
+                onClick={handleOpen}
+                color="primary"
+              >
                 <MoreVertIcon />
               </IconButton>
               <Menu
@@ -203,15 +193,21 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
             </>
           }
           title={<Typography variant="h5">{capitalize(game.type)}</Typography>}
-          subheader={format(new Date(game.startTime), 'd. MMMM HH:mm', {
-            locale: fiLocale,
-          })}
+          subheader={
+            <Typography variant="body1" color="initial">
+              {format(new Date(game.startTime), 'd. MMMM HH:mm', {
+                locale: fiLocale,
+              })}{' '}
+            </Typography>
+          }
         />
         <CardContent>
           {game.players.map((player) => (
             <div key={player.id} className={classes.playerRow}>
               <div>
-                <Typography>{player.name}</Typography>
+                <Typography variant="body1" color="initial">
+                  {player.name}
+                </Typography>
               </div>
               <Typography variant="body2">
                 {player

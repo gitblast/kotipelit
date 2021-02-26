@@ -14,16 +14,20 @@ const useStyles = makeStyles((theme: Theme) =>
       // This the same as in FrontPage content
       marginTop: theme.spacing(5),
       textAlign: 'center',
+      color: theme.palette.primary.light,
       [theme.breakpoints.down('xs')]: {
         marginTop: 30,
       },
     },
     referenceImg: {
-      marginTop: theme.spacing(2),
+      marginBottom: theme.spacing(2),
       height: 160,
       borderRadius: '50%',
-      border: 'solid white',
+      border: 'solid 4px',
+      borderColor: theme.palette.primary.main,
+      boxShadow: 'rgb(231 239 191) 4px 3px 18px',
     },
+    referenceTitle: {},
   })
 );
 
@@ -34,29 +38,32 @@ const References = () => {
       <Grid container className={classes.sectionB} spacing={5}>
         {/* Toistaa itseään, tee mahd. objekti jossa koottuja vihjeitä, vaihtele näkymää */}
         <Grid item md={4} xs={12}>
-          <Typography variant="h5">
+          <img className={classes.referenceImg} src={teemuImg} alt="Teemu" />
+          <Typography variant="h4">
             {'"Hautajaishuijaus, johon et halua sijoittaa."'}
           </Typography>
-          <img className={classes.referenceImg} src={teemuImg} alt="Teemu" />
-          <Typography>Teemu</Typography>
+
+          <Typography variant="body1">-Teemu</Typography>
         </Grid>
         <Grid item md={4} xs={12}>
-          <Typography variant="h5">
-            {'"Jengi, joka aloitti metsästyksen 80-luvulla."'}
-          </Typography>
           <img
             className={classes.referenceImg}
             src={matleenaImg}
             alt="Matleena"
           />
-          <Typography>Matleena</Typography>
+          <Typography variant="h4">
+            {'"Jengi, joka aloitti metsästyksen 80-luvulla."'}
+          </Typography>
+
+          <Typography variant="body1">-Matleena</Typography>
         </Grid>
         <Grid item md={4} xs={12}>
-          <Typography variant="h5">
+          <img className={classes.referenceImg} src={arviImg} alt="arvi" />
+          <Typography variant="h4">
             {'"Löytyy tähtimerkeistä ja Espanjasta."'}
           </Typography>
-          <img className={classes.referenceImg} src={arviImg} alt="arvi" />
-          <Typography>Arvi</Typography>
+
+          <Typography variant="body1">-Arvi</Typography>
         </Grid>
       </Grid>
     </>

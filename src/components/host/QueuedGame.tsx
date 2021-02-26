@@ -41,6 +41,9 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.primary.light,
       border: 'solid rgb(0 225 217)',
     },
+    avatarStyle: {
+      background: theme.palette.secondary.dark,
+    },
     playerRow: {
       display: 'flex',
       justifyContent: 'space-between',
@@ -154,7 +157,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
       <Card elevation={2} className={classes.cardStyle}>
         <CardHeader
           avatar={
-            <Avatar aria-label="Game" color="primary">
+            <Avatar aria-label="Game" className={classes.avatarStyle}>
               K
             </Avatar>
           }
@@ -185,9 +188,13 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
             </>
           }
           title={<Typography variant="h5">{capitalize(game.type)}</Typography>}
-          subheader={format(new Date(game.startTime), 'd. MMMM HH:mm', {
-            locale: fiLocale,
-          })}
+          subheader={
+            <Typography variant="body1" color="initial">
+              {format(new Date(game.startTime), 'd. MMMM HH:mm', {
+                locale: fiLocale,
+              })}{' '}
+            </Typography>
+          }
         />
         <CardContent>
           {game.players.map((player) => (

@@ -13,6 +13,8 @@ import { format } from 'date-fns';
 import fiLocale from 'date-fns/locale/fi';
 import logger from '../utils/logger';
 
+import logoImg from '../assets/images/logo.png';
+
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
 import Footer from './Footer';
@@ -20,6 +22,7 @@ import Footer from './Footer';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
+      color: 'rgb(0 225 217)',
       [theme.breakpoints.down('xs')]: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
@@ -45,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(6),
       marginLeft: theme.spacing(6),
       marginRight: theme.spacing(6),
-      backgroundColor: 'rgb(175, 227, 222)',
+      backgroundColor: theme.palette.primary.light,
       [theme.breakpoints.down('xs')]: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
@@ -61,6 +64,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(2),
       marginTop: theme.spacing(2),
       backgroundColor: 'transparent',
+      color: theme.palette.primary.light,
       [theme.breakpoints.down('xs')]: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
@@ -76,6 +80,12 @@ const useStyles = makeStyles((theme: Theme) =>
     errorMsg: {
       padding: theme.spacing(2),
       textAlign: 'center',
+    },
+    showcaseImage: {
+      height: 347,
+      [theme.breakpoints.down('xs')]: {
+        maxHeight: 200,
+      },
     },
   })
 );
@@ -162,7 +172,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
           className={classes.reserveBtn}
           variant="extended"
           onClick={reserveSpot}
-          color="primary"
+          color="secondary"
         >
           Varaa paikka
         </Fab>
@@ -176,11 +186,15 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
 
       return (
         <Paper className={classes.registeredInfo}>
-          <Typography variant="h5">
+          <Typography variant="h4" color="primary">
             {`Lähetimme pelin tiedot sähköpostiisi${emailString}`}
             {/** Lähetä uudestaan -nappi, vaihda sposti-toiminto? */}
           </Typography>
-          <Typography className={classes.emailConfText}>
+          <Typography
+            variant="h4"
+            color="primary"
+            className={classes.emailConfText}
+          >
             Jos et saanut viestiä, kirjoita itsellesi alla olevat tiedot
             muistiin.
           </Typography>
@@ -205,14 +219,27 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
         {game ? (
           <>
             <Grid container spacing={4}>
-              <Grid item xs={12} className={classes.centerAlign}>
-                <Typography variant="h5">{`Tervetuloa pelaamaan ${capitalize(
-                  game.type
-                )}a!`}</Typography>
+              <Grid item md></Grid>
+              <Grid item md={5} sm={12} xs={12}>
+                <div className={classes.centerAlign}>
+                  <img
+                    src={logoImg}
+                    alt="background"
+                    className={classes.showcaseImage}
+                  />
+                </div>
               </Grid>
+              <Grid item md={5} sm={12} xs={12} className={classes.centerAlign}>
+                <div className={classes.centerAlign}>
+                  <Typography variant="h5">{`Tervetuloa pelaamaan ${capitalize(
+                    game.type
+                  )}a!`}</Typography>
+                </div>
+              </Grid>
+              <Grid item md></Grid>
               <Grid item md={6} xs={12} className={classes.centerAlign}>
                 <div>
-                  <Typography>{`Peli alkaa ${format(
+                  <Typography variant="h4">{`Peli alkaa ${format(
                     new Date(game.startTime),
                     'd. MMMM HH:mm',
                     {
@@ -220,9 +247,11 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
                     }
                   )}`}</Typography>
                   {game.price !== 0 && (
-                    <Typography>{`Pelin hinta on ${game.price} €`}</Typography>
+                    <Typography variant="h4">{`Pelin hinta on ${game.price} €`}</Typography>
                   )}
-                  <Typography>{`Peli-illan järjestää ${game.hostName}`}</Typography>
+                  <Typography variant="h4">
+                    {`Peli-illan järjestää ${game.hostName}`}
+                  </Typography>
                 </div>
               </Grid>
 
@@ -249,7 +278,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
                 <HelpOutlineIcon></HelpOutlineIcon>
                 Kotitonnissa saat kolme sanaa, joihin kaikkiin sinun tulee
                 keksiä vihjeet. Mitä harvempi pelaaja arvaa sanan vihjeen
-                perusteella, sitä enemmän pisteitä saat.Vältä antamasta
+                perusteella, sitä enemmän pisteitä saat. Vältä antamasta
                 sisäpiirivihjeitä, jotta kaikkien on mahdollista tietää oikea
                 vastaus.
               </Typography>

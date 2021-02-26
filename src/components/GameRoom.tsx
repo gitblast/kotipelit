@@ -12,7 +12,7 @@ import HelpIcon from '@material-ui/icons/Help';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import logger, { setDebug } from '../utils/logger';
-import { Backdrop, Fab, Typography } from '@material-ui/core';
+import { Fab, Typography } from '@material-ui/core';
 import Loader from './Loader';
 import { GameStatus, State } from '../types';
 import { useSelector } from 'react-redux';
@@ -23,14 +23,15 @@ import { InGameSocket } from '../context';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    container: {
-      minHeight: '91vh',
-
-      background: 'linear-gradient(to top, rgb(49 25 57), rgb(51 90 103))',
+    preInfo: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      color: theme.palette.primary.light,
     },
     containerGame: {
       minHeight: '91vh',
-      background: 'linear-gradient(to bottom, rgb(32 82 100), rgb(49 25 57))',
+      background: 'linear-gradient(to bottom, rgb(32 82 100), rgb(29 12 32))',
     },
     centered: {
       minHeight: 400,
@@ -180,7 +181,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
 
   if (!onCall) {
     return (
-      <div className={classes.container}>
+      <div className={classes.preInfo}>
         <Typography variant="h5">Peli alkaa pian!</Typography>
         <div className={classes.infoContent}>
           <HeadsetIcon fontSize="large"></HeadsetIcon>
@@ -229,13 +230,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
             </>
           ) : (
             // Is this unnecessary repetition?
-            game.status === GameStatus.WAITING && (
-              <>
-                <Typography variant="h5" className={classes.waitingMsg}>
-                  Odotetaan, että pelinhoitaja käynnistää pelin.
-                </Typography>{' '}
-              </>
-            )
+            game.status === GameStatus.WAITING && <></>
           )}
         </div>
         <div className={classes.topGradient}></div>

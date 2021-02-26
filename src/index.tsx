@@ -79,10 +79,12 @@ const theme = createMuiTheme({
       fontSize: 60,
       lineHeight: 1,
     },
+    // Used to display links
     caption: {
       wordBreak: 'break-word',
       fontStyle: 'italic',
-      fontSize: '0.7rem',
+      fontSize: '0.8rem',
+      color: 'rgb(133 23 139)',
     },
   },
   overrides: {

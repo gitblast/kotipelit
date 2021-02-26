@@ -158,10 +158,18 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
           </Fab>
         </div>
       </div>
-      {filterGamesByStatus('Käynnissä olevat pelit', GameStatus.RUNNING)}
-      {filterGamesByStatus('Odottaa pelaajia', GameStatus.WAITING)}
-      {filterGamesByStatus('Tulevat pelit', GameStatus.UPCOMING)}
-      {filterGamesByStatus('Menneet pelit', GameStatus.FINISHED)}
+      <Typography variant="h4" color="primary">
+        {filterGamesByStatus('Käynnissä olevat pelit', GameStatus.RUNNING)}
+      </Typography>
+      <Typography variant="h4" color="primary">
+        {filterGamesByStatus('Odottaa pelaajia', GameStatus.WAITING)}
+      </Typography>
+      <Typography variant="h4" color="primary">
+        {filterGamesByStatus('Tulevat pelit', GameStatus.UPCOMING)}
+      </Typography>
+      <Typography variant="h4" color="primary">
+        {filterGamesByStatus('Menneet pelit', GameStatus.FINISHED)}
+      </Typography>
     </div>
   );
 };

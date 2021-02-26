@@ -12,6 +12,7 @@ import { initChannels } from './reducers/channels.reducer';
 import FrontPage from './components/FrontPage';
 import LoginForm from './components/LoginForm';
 import UserControls from './components/UserControls';
+import Footer from './components/Footer';
 
 import ChannelPage from './components/ChannelPage';
 import { State, HostChannel } from './types';
@@ -39,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     container: {
       width: '100%',
-      minHeight: '91vh',
+      minHeight: '80vh',
       overflow: 'hidden',
       background: 'rgba(11, 43, 56, 1)',
     },
@@ -95,6 +96,8 @@ const App = () => {
           </Route>
         </Switch>
       </div>
+
+      <Footer />
     </Router>
   );
 };

@@ -48,6 +48,8 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: theme.spacing(6),
       marginRight: theme.spacing(6),
       backgroundColor: theme.palette.primary.light,
+      // Create a palette variable
+      color: 'black',
       [theme.breakpoints.down('xs')]: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
@@ -230,10 +232,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
               </Grid>
               <Grid item md={5} sm={12} xs={12} className={classes.centerAlign}>
                 <div className={classes.centerAlign}>
-                  <Typography
-                    variant="h3"
-                    color="primary"
-                  >{`Tervetuloa pelaamaan ${capitalize(
+                  <Typography variant="h3">{`Tervetuloa pelaamaan ${capitalize(
                     game.type
                   )}a!`}</Typography>
                 </div>

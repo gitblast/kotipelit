@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(1),
       alignItems: 'center',
       // .. except for this
-      backgroundColor: theme.palette.primary.dark,
+      backgroundColor: 'rgb(34 110 108)',
       color: 'white',
       width: '100%',
       // .. except for this

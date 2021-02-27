@@ -48,8 +48,10 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     pointsButton: {
-      background: 'linear-gradient(to top, #c31432, #240b36)',
+      background: 'linear-gradient(to bottom, rgb(36 170 167), rgb(33 36 36))',
       color: 'white',
+      // Give the box shadow when button is relevant?
+      boxShadow: 'rgb(231 239 191) 4px 3px 18px',
       padding: 36,
       border: 'solid',
       borderColor: 'white',
@@ -58,8 +60,9 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     timerButton: {
-      background: 'linear-gradient(to top, #c31432, #240b36)',
+      background: 'linear-gradient(to bottom, rgb(36 170 167), rgb(33 36 36))',
       color: 'white',
+      boxShadow: 'rgb(231 239 191) 4px 3px 18px',
       padding: 36,
       border: 'solid',
       borderColor: 'white',
@@ -68,7 +71,8 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     returnPoints: {
-      background: 'linear-gradient(to top, #c31432, #240b36)',
+      background: 'linear-gradient(to bottom, rgb(36 170 167), rgb(33 36 36))',
+      boxShadow: 'rgb(231 239 191) 4px 3px 18px',
       padding: 26,
       border: 'solid',
       borderColor: 'white',

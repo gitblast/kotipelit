@@ -12,8 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
     },
     nextUpText: {
-      // Keep the same as videoframe hasTurn
-      color: 'rgba(229, 197, 39)',
+      color: theme.palette.primary.light,
       [theme.breakpoints.down('sm')]: {
         fontSize: '16px',
       },

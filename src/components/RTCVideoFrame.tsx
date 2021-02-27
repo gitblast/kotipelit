@@ -27,7 +27,7 @@ const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
       boxSizing: 'border-box',
       width: `28%`,
       background: (props) => `${colors[props.order]}`,
-      borderBottom: '4px dotted ',
+      borderBottom: '4px dotted white',
       marginLeft: theme.spacing(3),
       marginRight: theme.spacing(3),
       marginBottom: theme.spacing(3),

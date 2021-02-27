@@ -16,11 +16,14 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       padding: theme.spacing(2),
-      color: 'rgb(0 225 217)',
+      color: theme.palette.primary.light,
       textAlign: 'center',
     },
     formField: {
       marginTop: theme.spacing(2),
+    },
+    inputStyle: {
+      color: 'yellow',
     },
     section: {
       paddingTop: 40,
@@ -53,6 +56,7 @@ const LoginForm: React.FC = () => {
           variant="outlined"
           value={username}
           onChange={({ target }) => setUsername(target.value)}
+          className={classes.inputStyle}
         />
       </div>
       <div className={classes.formField}>
@@ -73,7 +77,7 @@ const LoginForm: React.FC = () => {
         {user.loggingIn ? <CircularProgress /> : 'Kirjaudu'}
       </Fab>
 
-      <Typography className={classes.section}>
+      <Typography variant="body1" className={classes.section}>
         Jos haluat alkaa järjestämään pelejä, ota yhteyttä info@kotipelit.com
         niin teemme sinulle käyttäjätilin.
       </Typography>

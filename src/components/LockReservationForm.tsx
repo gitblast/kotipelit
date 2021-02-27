@@ -100,12 +100,12 @@ const LockReservationForm: React.FC<LockReservationFormProps> = ({
       </div>
       <Fab
         className={classes.lockBtn}
-        color="primary"
+        color="secondary"
         variant="extended"
         onClick={handleClick}
         disabled={!name || !email}
       >
-        <Typography>Lukitse </Typography>
+        Lukitse
       </Fab>
     </div>
   );

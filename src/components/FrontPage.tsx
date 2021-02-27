@@ -144,8 +144,8 @@ const Steps = () => {
   return (
     <>
       <section className={classes.sectionBStyle}>
-        <Grid container spacing={2} className={classes.stepper}>
-          <Grid item sm={2} className={classes.stepperContent}>
+        <Grid container spacing={3} className={classes.stepper}>
+          <Grid item md={3} sm={12} className={classes.stepperContent}>
             <div className={classes.step}>
               <Typography variant="h4" color="initial">
                 1
@@ -155,10 +155,8 @@ const Steps = () => {
               Päätä ajankohta
             </Typography>
           </Grid>
-          <Grid item sm={3}>
-            <div className={classes.stepNeon}></div>
-          </Grid>
-          <Grid item sm={2} className={classes.stepperContent}>
+
+          <Grid item md={3} sm={12} className={classes.stepperContent}>
             <div className={classes.step}>
               <Typography variant="h4" color="initial">
                 2
@@ -168,10 +166,8 @@ const Steps = () => {
               Valitse pelattava peli
             </Typography>
           </Grid>
-          <Grid item sm={3}>
-            <div className={classes.stepNeon}></div>
-          </Grid>
-          <Grid item sm={2} className={classes.stepperContent}>
+
+          <Grid item md={3} sm={12} className={classes.stepperContent}>
             <div className={classes.step}>
               <Typography variant="h4" color="initial">
                 3
@@ -179,6 +175,17 @@ const Steps = () => {
             </div>
             <Typography variant="body1" color="primary">
               Aseta halutessasi pelaajille hinta
+            </Typography>
+          </Grid>
+
+          <Grid item md={3} sm={12} className={classes.stepperContent}>
+            <div className={classes.step}>
+              <Typography variant="h4" color="initial">
+                4
+              </Typography>
+            </div>
+            <Typography variant="body1" color="primary">
+              Kutsu pelaajat
             </Typography>
           </Grid>
         </Grid>

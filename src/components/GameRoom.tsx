@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     containerGame: {
       minHeight: '91vh',
-      background: 'linear-gradient(to bottom, rgb(32 82 100), rgb(29 12 32))',
+      background: 'linear-gradient(to bottom, rgb(32 82 100), rgb(63 93 91))',
     },
     centered: {
       minHeight: 400,
@@ -47,13 +47,20 @@ const useStyles = makeStyles((theme: Theme) =>
         display: 'none',
       },
     },
+    kotipelit: {
+      position: 'relative',
+      top: -18,
+      left: 94,
+      fontSize: '0.8rem',
+      color: 'rgb(185 231 229)',
+    },
     gameTitle: {
       color: 'rgb(185 231 229)',
       fontSize: '60px',
     },
     topStyle: {
       borderTop: '15px dotted rgb(185 231 229)',
-      background: 'rgb(97 125 122)',
+      background: 'rgb(86 124 123)',
       boxShadow: 'rgb(231 239 191) 1px 8px 44px',
       width: '30vw',
       alignSelf: 'center',
@@ -89,7 +96,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
     backdropContent: {
       zIndex: theme.zIndex.drawer + 3,
-      marginTop: theme.spacing(2),
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -215,9 +221,13 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
         <div className={classes.gameTitleBar}>
           {/* For animation, should more topStyle divs be added? */}
           <div className={classes.topStyle}></div>
-          <Typography className={classes.gameTitle} variant="subtitle2">
-            Kotitonni
-          </Typography>
+          <div>
+            <Typography className={classes.gameTitle} variant="subtitle2">
+              Kotitonni
+            </Typography>
+            <Typography className={classes.kotipelit}>Kotipelit.com</Typography>
+          </div>
+
           <div className={classes.topStyle}></div>
         </div>
 

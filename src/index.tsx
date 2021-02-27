@@ -40,6 +40,12 @@ const theme = createMuiTheme({
     error: {
       main: 'rgba(174, 56, 43)',
     },
+    text: {
+      primary: 'rgb(170 161 85)',
+      secondary: 'rgb(168 164 136)',
+      disabled: 'rgb(168 164 136)',
+      hint: 'rgba(174, 56, 43)',
+    },
   },
   typography: {
     fontFamily: 'Axaxax',
@@ -66,7 +72,7 @@ const theme = createMuiTheme({
     },
     h6: {
       fontFamily: 'Bebas Neue',
-      fontSize: 32,
+      fontSize: 30,
       lineHeight: 1,
     },
     subtitle1: {

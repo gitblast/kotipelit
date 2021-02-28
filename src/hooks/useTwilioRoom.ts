@@ -1,11 +1,13 @@
 import React from 'react';
 
 import * as Video from 'twilio-video';
-import { RTCParticipant } from '../types';
 
 import logger from '../utils/logger';
 
-const listeners = (videoRoom: Video.Room) => {
+import useParticipants from './useParticipants';
+import useLocalTracks from './useLocalTracks';
+
+const addRoomListeners = (videoRoom: Video.Room) => {
   videoRoom.on('participantReconnected', (participant) => {
     logger.log(`participant '${participant.identity}' reconnected`);
   });
@@ -41,39 +43,15 @@ const listeners = (videoRoom: Video.Room) => {
   window.addEventListener('beforeunload', () => videoRoom.disconnect());
 };
 
-const useTwilioRoom = (
-  accessToken: string | null,
-  onCall: boolean,
-  initialParticipants: RTCParticipant[] | null
-) => {
+const useTwilioRoom = (accessToken: string | null, onCall: boolean) => {
   const [room, setRoom] = React.useState<null | Video.Room>(null);
-  const [localTracks, setLocalTracks] = React.useState<
-    null | Video.LocalTrack[]
-  >(null);
+  const [localTracks, localTrackError] = useLocalTracks(onCall);
   const [error, setError] = React.useState<null | string>(null);
-  const [participants, setParticipants] = React.useState<
-    RTCParticipant[] | null
-  >(null);
+  const [participants, setParticipants] = useParticipants();
 
-  React.useEffect(() => {
-    const getLocalTracks = async () => {
-      const tracks = await Video.createLocalTracks();
-
-      logger.log('getting local media tracks');
-
-      setLocalTracks(tracks);
-    };
-
-    if (participants && onCall && !localTracks) {
-      try {
-        getLocalTracks();
-      } catch (error) {
-        logger.error(`error getting tracks: ${error.message}`);
-
-        setError(`error getting tracks: ${error.message}`);
-      }
-    }
-  }, [onCall, localTracks, participants]);
+  if (localTrackError) {
+    logger.error(`local track error: ${localTrackError}`);
+  }
 
   React.useEffect(() => {
     const participantConnected = (participant: Video.RemoteParticipant) => {
@@ -125,7 +103,7 @@ const useTwilioRoom = (
 
       videoRoom.participants.forEach(participantConnected);
 
-      listeners(videoRoom);
+      addRoomListeners(videoRoom);
     };
 
     if (!room && accessToken && localTracks && participants) {
@@ -137,13 +115,7 @@ const useTwilioRoom = (
         setError(`error connecting to room: ${error.message}`);
       }
     }
-  }, [room, accessToken, localTracks, participants]);
-
-  React.useEffect(() => {
-    if (initialParticipants && !participants) {
-      setParticipants(initialParticipants);
-    }
-  }, [participants, initialParticipants]);
+  }, [room, accessToken, localTracks, participants, setParticipants]);
 
   React.useEffect(() => {
     if (room) {

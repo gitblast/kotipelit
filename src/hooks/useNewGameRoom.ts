@@ -2,7 +2,6 @@ import React from 'react';
 import { RTCGame } from '../types';
 import logger from '../utils/logger';
 import useAuthSocket from './useAuthSocket';
-import useInitialParticipants from './useInitialParticipants';
 import useSelf from './useSelf';
 import useTwilioRoom from './useTwilioRoom';
 import { useHistory, useParams } from 'react-router-dom';
@@ -26,11 +25,9 @@ const useNewGameRoom = (
   const [twilioToken, setTwilioToken] = React.useState<null | string>(null);
   const [socket, socketError] = useAuthSocket(token, socketOnLeaveCallback);
   const mySelf = useSelf(game, isHost);
-  const initialParticipants = useInitialParticipants(game, mySelf?.id ?? null);
   const { participants, error: twilioError } = useTwilioRoom(
     twilioToken,
-    onCall,
-    initialParticipants
+    onCall
   );
 
   if (socketError) console.error('socket error:', socketError);

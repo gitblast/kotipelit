@@ -1,8 +1,11 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
-import { RTCGame, RTCParticipant } from '../types';
+import { RTCParticipant, State } from '../types';
 
-const useInitialParticipants = (game: RTCGame | null, ownId: string | null) => {
+const useInitialParticipants = () => {
+  const game = useSelector((state: State) => state.rtc.game);
+  const ownId = useSelector((state: State) => state.rtc.self?.id ?? null);
   const [initialParticipants, setInitialParticipants] = React.useState<
     null | RTCParticipant[]
   >(null);

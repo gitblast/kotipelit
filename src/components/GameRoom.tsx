@@ -174,12 +174,6 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
             läpi.
           </Typography>
         </div>
-        <div className={classes.infoContent}>
-          <HelpIcon fontSize="large"></HelpIcon>
-          <Typography>
-            Jos yhteydessä on ongelmia, voit kokeilla päivittää selaimen.
-          </Typography>
-        </div>
 
         <Fab
           className={classes.startVideoBtn}

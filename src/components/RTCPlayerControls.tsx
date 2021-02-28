@@ -38,8 +38,9 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
     },
     sendAnswerBtn: {
-      background: 'linear-gradient(to top, #c31432, #240b36)',
+      background: 'linear-gradient(to bottom, rgb(36 170 167), rgb(33 36 36))',
       color: 'white',
+      boxShadow: 'rgb(231 239 191) 4px 3px 18px',
       padding: theme.spacing(4),
       margin: theme.spacing(1),
       border: 'solid',
@@ -54,11 +55,18 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: 'white',
     },
     // Repeat from RTCHostControls
-    controlBarIcons: {
+    fsIcon: {
       color: 'white',
       [theme.breakpoints.down('sm')]: {
         display: 'none',
       },
+      [theme.breakpoints.down('xs')]: {
+        display: 'none',
+      },
+    },
+    socketIcon: {
+      color: 'white',
+
       [theme.breakpoints.down('xs')]: {
         display: 'none',
       },
@@ -189,16 +197,16 @@ const RTCPlayerControls: React.FC<{
             </Fab>
           </form>
         </Grid>
-        <Grid item md={2} sm={1}></Grid>
-        <Grid item md={2}>
+        <Grid item md={2}></Grid>
+        <Grid item md={2} sm={1}>
           <IconButton
-            className={classes.controlBarIcons}
+            className={classes.fsIcon}
             onClick={handleToggleFullscreen}
           >
             <FullscreenIcon fontSize="large"></FullscreenIcon>
           </IconButton>
           <IconButton
-            className={classes.controlBarIcons}
+            className={classes.socketIcon}
             onClick={fetchLatestGameStatus}
           >
             <SyncIcon fontSize="large"></SyncIcon>

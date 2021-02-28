@@ -8,7 +8,6 @@ import RTCPlayerControls from './RTCPlayerControls';
 import AudioHandler from './AudioHandler';
 
 import HeadsetIcon from '@material-ui/icons/Headset';
-import HelpIcon from '@material-ui/icons/Help';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import logger, { setDebug } from '../utils/logger';

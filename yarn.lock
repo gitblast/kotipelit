@@ -501,10 +501,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@thream/socketio-jwt@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@thream/socketio-jwt/-/socketio-jwt-1.1.1.tgz#d12661bc3c88169ddaea817e6d25f26726646226"
-  integrity sha512-3TmVUmRjuF01YhZ9p9fLWYKeIB7kUbeMK5MCmrXcdJ1iKZ+30/HT6e+ZWaH8uZRXEdYxiSI2u301RDE3zJX3Bw==
+"@thream/socketio-jwt@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@thream/socketio-jwt/-/socketio-jwt-2.0.0.tgz#8dbb39194f696b6f4b4beb02d03633ef3aaa1ea8"
+  integrity sha512-0HcgY8vzS9Q1W11uedoCzq9p/Y9H/XB6vBO3QvWq5xP4pLhDkRHk1k/MxaPxYnE1yA96Ky2nzg20C6YIs3nVTA==
   dependencies:
     jsonwebtoken "8.5.1"
 

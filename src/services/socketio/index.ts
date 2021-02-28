@@ -67,7 +67,9 @@ const handler = (io: Server): void => {
   );
 
   io.of('/').on('connection', (socket: SocketWithToken) => {
-    logger.log(`user connected ${socket.decodedToken.username}`);
+    logger.log(
+      `user connected ${socket.decodedToken.username} with socket id '${socket.id}'`
+    );
 
     const { type, gameId } = socket.decodedToken;
 

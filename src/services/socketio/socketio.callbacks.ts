@@ -49,7 +49,7 @@ export const socketDisconnected = (
   reason: string
 ): void => {
   logger.log(
-    `recieved disconnect from ${socket.decodedToken.username}. reason: ${reason}`
+    `recieved disconnect from ${socket.decodedToken.username}. reason: ${reason}. socket id: ${socket.id}`
   );
 
   const { id, gameId } = socket.decodedToken;

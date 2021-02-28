@@ -47,7 +47,7 @@ const Footer: React.FC = () => {
         <Grid container spacing={6} className={classes.footerContent}>
           <Grid item className={classes.footerBlock}>
             <Typography className={classes.footerHeader}>Tuki</Typography>
-            <Typography variant="body2">Ota yhteyttä</Typography>
+            <Typography variant="body2">info[at]kotipelit.com</Typography>
             <Typography variant="body2">Usein kysyttyä</Typography>
           </Grid>
           <Grid item className={classes.footerBlock}>

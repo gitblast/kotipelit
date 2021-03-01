@@ -20,8 +20,18 @@ const useAuthSocket = (
     const initSocket = (authToken: string) => {
       logger.log('initializing socket');
 
-      const socket = socketIOClient('/', {
-        extraHeaders: { Authorization: `Bearer ${authToken}` },
+      const path =
+        // eslint-disable-next-line no-undef
+        process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : '/';
+
+      logger.log('socket.io path:', path);
+
+      const socket = socketIOClient(path, {
+        transports: ['websocket'],
+        upgrade: false,
+        auth: {
+          token: `Bearer ${authToken}`,
+        },
       } as SocketIOClient.ConnectOpts);
 
       socket.on('connect_error', (error: Error) => {

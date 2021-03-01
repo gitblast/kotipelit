@@ -50,7 +50,7 @@ const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
     hasTurn: {
       background: (props) => `${colors[props.order]}`,
       boxShadow: 'rgb(231 239 191) 4px 3px 18px',
-      border: '7px dotted rgb(208 232 231)',
+      border: '7px dotted white',
       [theme.breakpoints.down('xs')]: {
         width: '95%',
       },

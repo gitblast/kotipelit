@@ -16,8 +16,7 @@ import App from './App';
 //   fontDisplay: 'swap',
 //   fontWeight: 400,
 //   src: `
-//     local('Zrnic'),
-//     local('Zrnic-rg'),
+//     local('zrnic-rg'),
 //     url(${Zrnic}) format('ttf')
 //   `,
 //   unicodeRange:
@@ -51,27 +50,27 @@ const theme = createMuiTheme({
   typography: {
     fontFamily: 'Zrnic',
     body1: {
-      fontSize: '1rem',
+      fontSize: '1.2rem',
     },
     body2: {
-      fontSize: '0.8rem',
+      fontSize: '1rem',
     },
     h1: {
       fontSize: '2.2rem',
     },
     h2: {
-      fontSize: '1.8rem',
+      fontSize: '2rem',
+      color: 'rgb(0 225 217)',
     },
     h3: {
+      fontSize: '1.8rem',
+    },
+    h4: {
       fontSize: '1.6rem',
       color: 'rgb(0 225 217)',
     },
-    h4: {
-      fontSize: '1.3rem',
-      color: 'rgb(0 225 217)',
-    },
     h5: {
-      fontSize: '1.1rem',
+      fontSize: '1.4rem',
     },
     h6: {
       fontFamily: 'Bebas Neue',
@@ -93,7 +92,7 @@ const theme = createMuiTheme({
     caption: {
       wordBreak: 'break-word',
       fontStyle: 'italic',
-      fontSize: '0.8rem',
+      fontSize: '1rem',
       color: 'rgb(133 23 139)',
     },
   },
@@ -105,8 +104,9 @@ const theme = createMuiTheme({
     // },
     MuiButton: {
       root: {
-        padding: 12,
+        padding: 10,
         borderRadius: 10,
+        fontSize: '1.1rem',
       },
     },
     MuiLink: {

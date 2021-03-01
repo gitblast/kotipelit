@@ -2,6 +2,8 @@ import { createMuiTheme } from '@material-ui/core/styles';
 
 // import Zrnic from '.assets/fonts/zrnic-rg.ttf';
 
+// Instructions (Self hosted fonts) https://material-ui.com/customization/typography/
+
 // const zrnic = {
 //   fontFamily: 'zrnic',
 //   fontStyle: 'normal',

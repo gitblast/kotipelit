@@ -11,7 +11,7 @@ import HeadsetIcon from '@material-ui/icons/Headset';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import logger, { setDebug } from '../utils/logger';
-import { Fab, Typography, Button } from '@material-ui/core';
+import { Typography, Button } from '@material-ui/core';
 import Loader from './Loader';
 import { GameStatus } from '../types';
 
@@ -67,10 +67,6 @@ const useStyles = makeStyles((theme: Theme) =>
     infoContent: {
       display: 'flex',
 
-      margin: 15,
-    },
-    startVideoBtn: {
-      padding: theme.spacing(2),
       margin: 15,
     },
     backdropBottom: {
@@ -163,15 +159,9 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
           </Typography>
         </div>
 
-        <Fab
-          className={classes.startVideoBtn}
-          variant="extended"
-          color="secondary"
-          onClick={handleJoinCall}
-          id="start"
-        >
+        <Button color="secondary" onClick={handleJoinCall} id="start">
           Käynnistä video
-        </Fab>
+        </Button>
       </div>
     );
   }

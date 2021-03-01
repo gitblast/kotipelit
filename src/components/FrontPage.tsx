@@ -135,7 +135,7 @@ const Steps = () => {
     <>
       <section className={classes.sectionBStyle}>
         <Grid container spacing={3} className={classes.stepper}>
-          <Grid item md={3} sm={12} className={classes.stepperContent}>
+          <Grid item md={3} sm={12} xs={12} className={classes.stepperContent}>
             <div className={classes.step}>
               <Typography variant="h5" color="initial">
                 1
@@ -146,7 +146,7 @@ const Steps = () => {
             </Typography>
           </Grid>
 
-          <Grid item md={3} sm={12} className={classes.stepperContent}>
+          <Grid item md={3} sm={12} xs={12} className={classes.stepperContent}>
             <div className={classes.step}>
               <Typography variant="h5" color="initial">
                 2
@@ -157,7 +157,7 @@ const Steps = () => {
             </Typography>
           </Grid>
 
-          <Grid item md={3} sm={12} className={classes.stepperContent}>
+          <Grid item md={3} sm={12} xs={12} className={classes.stepperContent}>
             <div className={classes.step}>
               <Typography variant="h5" color="initial">
                 3
@@ -168,7 +168,7 @@ const Steps = () => {
             </Typography>
           </Grid>
 
-          <Grid item md={3} sm={12} className={classes.stepperContent}>
+          <Grid item md={3} sm={12} xs={12} className={classes.stepperContent}>
             <div className={classes.step}>
               <Typography variant="h5" color="initial">
                 4
@@ -206,7 +206,7 @@ const FrontPage: React.FC = () => {
         <section className={classes.sectionStyle}>
           <div className={classes.headline}>
             <div className={classes.neonLight}></div>
-            <Typography variant="h3" color="initial">
+            <Typography variant="h2" color="initial">
               Ryhdy gameshow-juontajaksi
             </Typography>
           </div>
@@ -229,7 +229,7 @@ const FrontPage: React.FC = () => {
         <section className={classes.sectionStyle}>
           <div className={classes.headline}>
             <div className={classes.neonLight}></div>
-            <Typography variant="h3" color="initial">
+            <Typography variant="h2" color="initial">
               Pelaamiseen kustomoidulla videopuhelualustalla
             </Typography>
           </div>

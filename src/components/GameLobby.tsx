@@ -187,12 +187,12 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
 
       return (
         <Paper className={classes.registeredInfo}>
-          <Typography variant="h5" color="primary">
+          <Typography variant="h4">
             {`Lähetimme pelin tiedot sähköpostiisi${emailString}`}
             {/** Lähetä uudestaan -nappi, vaihda sposti-toiminto? */}
           </Typography>
           <Typography
-            variant="h5"
+            variant="body1"
             color="primary"
             className={classes.emailConfText}
           >

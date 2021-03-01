@@ -63,12 +63,14 @@ const theme = createMuiTheme({
     },
     h3: {
       fontSize: '1.6rem',
+      color: 'rgb(0 225 217)',
     },
     h4: {
       fontSize: '1.3rem',
+      color: 'rgb(0 225 217)',
     },
     h5: {
-      fontSize: 26,
+      fontSize: '1.1rem',
     },
     h6: {
       fontFamily: 'Bebas Neue',
@@ -84,6 +86,7 @@ const theme = createMuiTheme({
       fontFamily: 'Great Vibes',
       fontSize: 60,
       lineHeight: 1,
+      color: 'rgb(185 231 229)',
     },
     // Used to display links
     caption: {
@@ -94,10 +97,63 @@ const theme = createMuiTheme({
     },
   },
   overrides: {
-    MuiStepLabel: {
+    MuiButton: {
       root: {
-        color: 'pink',
+        padding: 12,
+        borderRadius: 10,
       },
+    },
+    MuiLink: {
+      root: {
+        cursor: 'pointer',
+      },
+    },
+    // How to attach together ?
+    MuiStepContent: {
+      root: {
+        borderColor: 'rgb(0 225 217)',
+        borderLeft: '1px solid',
+      },
+    },
+    MuiStepConnector: {
+      line: {
+        borderColor: 'rgb(0 225 217)',
+        borderLeft: '1px solid',
+      },
+    },
+    MuiSvgIcon: {
+      root: {
+        color: 'rgb(168 164 136)',
+      },
+    },
+    MuiStepIcon: {
+      root: {
+        color: 'rgb(170 161 85)',
+      },
+    },
+    MuiTextField: {
+      root: {
+        '& .MuiOutlinedInput-root': {
+          '& fieldset': {
+            borderColor: 'rgb(0 225 217)',
+          },
+        },
+      },
+    },
+  },
+  props: {
+    MuiButton: {
+      disableRipple: true,
+      variant: 'contained',
+      color: 'primary',
+    },
+    MuiCheckbox: {
+      disableRipple: true,
+    },
+    MuiLink: {
+      variant: 'body2',
+      color: 'primary',
+      underline: 'none',
     },
   },
 });

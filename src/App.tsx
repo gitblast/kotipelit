@@ -2,7 +2,7 @@ import React from 'react';
 
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
-import { AppBar, Toolbar, Button } from '@material-ui/core';
+import { AppBar, Toolbar } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
@@ -78,9 +78,9 @@ const App = () => {
     <Router>
       <AppBar position="static" className={classes.navbar}>
         <Toolbar className={classes.toolbar}>
-          <Button component={Link} to="/" className={classes.logo}>
+          <Link to="/" className={classes.logo}>
             <img className={classes.logo} src={logoImg} alt="Kotipelit" />
-          </Button>
+          </Link>
 
           <UserControls user={user} />
         </Toolbar>

@@ -190,7 +190,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
 
               {participant.isMe && (
                 <div>
-                  <Typography color="error" variant="h4">
+                  <Typography color="error" variant="h5">
                     ME
                   </Typography>
                 </div>

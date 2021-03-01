@@ -1,5 +1,4 @@
 import { IconButton } from '@material-ui/core';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { LocalParticipant } from 'twilio-video';
@@ -14,21 +13,11 @@ import MicOffIcon from '@material-ui/icons/MicOff';
 import VideocamIcon from '@material-ui/icons/Videocam';
 import VideocamOffIcon from '@material-ui/icons/VideocamOff';
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    controlIcon: {
-      color: 'white',
-    },
-  })
-);
-
 interface MediaControlsProps {
   participant: RTCParticipant;
 }
 
 const MediaControls: React.FC<MediaControlsProps> = ({ participant }) => {
-  const classes = useStyles();
-
   const dispatch = useDispatch();
   const mutedMap = useSelector((state: State) => state.rtc.localData.mutedMap);
   const videoDisabledMap = useSelector(
@@ -72,7 +61,6 @@ const MediaControls: React.FC<MediaControlsProps> = ({ participant }) => {
   return (
     <>
       <IconButton
-        className={classes.controlIcon}
         size="small"
         onClick={toggleMuted}
         disabled={!participant.connection}
@@ -82,7 +70,6 @@ const MediaControls: React.FC<MediaControlsProps> = ({ participant }) => {
       {participant.isMe && (
         <IconButton
           size="small"
-          className={classes.controlIcon}
           onClick={toggleVideo}
           disabled={!participant.connection}
         >

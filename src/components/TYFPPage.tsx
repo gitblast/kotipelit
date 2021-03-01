@@ -60,7 +60,7 @@ const TYFPPage: React.FC = () => {
 
   return (
     <div className={classes.container}>
-      <Typography variant="h4">Kiitos osallistumisesta!</Typography>
+      <Typography variant="h5">Kiitos osallistumisesta!</Typography>
       <div className={classes.results}>{showPoints()}</div>
       <Typography className={classes.proposal}>
         Jos haluat alkaa järjestämään peli-iltoja tai vain haastaa kaverisi,

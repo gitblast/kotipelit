@@ -11,7 +11,7 @@ import HeadsetIcon from '@material-ui/icons/Headset';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import logger, { setDebug } from '../utils/logger';
-import { Fab, Typography } from '@material-ui/core';
+import { Fab, Typography, Button } from '@material-ui/core';
 import Loader from './Loader';
 import { GameStatus } from '../types';
 
@@ -53,10 +53,6 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '0.8rem',
       color: 'rgb(185 231 229)',
     },
-    gameTitle: {
-      color: 'rgb(185 231 229)',
-      fontSize: '60px',
-    },
     topStyle: {
       borderTop: '15px dotted rgb(185 231 229)',
       background: 'rgb(86 124 123)',
@@ -67,13 +63,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     startBtnContainer: {
       position: 'absolute',
-    },
-    waitingMsg: {
-      color: 'white',
-    },
-    startButton: {
-      padding: theme.spacing(3),
-      border: 'solid white',
     },
     infoContent: {
       display: 'flex',
@@ -194,15 +183,9 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
           {isHost && game.status === GameStatus.WAITING ? (
             <>
               <div className={classes.startBtnContainer}>
-                <Fab
-                  color="secondary"
-                  variant="extended"
-                  size="large"
-                  onClick={handleStart}
-                  className={classes.startButton}
-                >
+                <Button color="secondary" onClick={handleStart}>
                   Aloita peli
-                </Fab>
+                </Button>
               </div>
             </>
           ) : (
@@ -215,9 +198,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
           {/* For animation, should more topStyle divs be added? */}
           <div className={classes.topStyle}></div>
           <div>
-            <Typography className={classes.gameTitle} variant="subtitle2">
-              Kotitonni
-            </Typography>
+            <Typography variant="subtitle2">Kotitonni</Typography>
             <Typography className={classes.kotipelit}>Kotipelit.com</Typography>
           </div>
 
@@ -225,7 +206,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
         </div>
 
         <RTCVideoConference participants={participants} />
-        {isHost ? (
+        {isHost && game.status === GameStatus.RUNNING ? (
           <RTCHostControls handleToggleFullscreen={handleToggleFullscreen} />
         ) : (
           game.status === GameStatus.RUNNING && (

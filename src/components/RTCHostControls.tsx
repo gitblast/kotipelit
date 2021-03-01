@@ -33,7 +33,8 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
     },
     controlsContent: {
-      padding: theme.spacing(4),
+      paddingTop: theme.spacing(0.5),
+      paddingBottom: theme.spacing(3),
       [theme.breakpoints.down('sm')]: {
         padding: theme.spacing(1),
       },

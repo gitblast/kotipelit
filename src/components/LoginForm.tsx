@@ -3,9 +3,10 @@ import React from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
   TextField,
-  Fab,
   CircularProgress,
   Typography,
+  Button,
+  Paper,
 } from '@material-ui/core';
 import { State } from '../types';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
@@ -15,18 +16,20 @@ import { Redirect } from 'react-router-dom';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
-      padding: theme.spacing(2),
+      margin: theme.spacing(2),
+      display: 'flex',
+      justifyContent: 'center',
+    },
+    loginField: {
+      padding: theme.spacing(3),
+      maxWidth: 350,
       color: theme.palette.primary.light,
       textAlign: 'center',
-    },
-    formField: {
-      marginTop: theme.spacing(2),
-    },
-    inputStyle: {
-      color: 'yellow',
-    },
-    section: {
-      paddingTop: 40,
+      // Ligth version of background
+      backgroundColor: 'rgb(15 47 60)',
+      '& > * + *': {
+        margin: theme.spacing(1),
+      },
     },
   })
 );
@@ -50,37 +53,33 @@ const LoginForm: React.FC = () => {
 
   return (
     <div className={classes.container}>
-      <div className={classes.formField}>
-        <TextField
-          label="Käyttäjätunnus"
-          variant="outlined"
-          value={username}
-          onChange={({ target }) => setUsername(target.value)}
-          className={classes.inputStyle}
-        />
-      </div>
-      <div className={classes.formField}>
-        <TextField
-          label="Salasana"
-          variant="outlined"
-          type="password"
-          value={password}
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <Fab
-        className={classes.formField}
-        variant="extended"
-        onClick={handleLogin}
-        color="primary"
-      >
-        {user.loggingIn ? <CircularProgress /> : 'Kirjaudu'}
-      </Fab>
+      <Paper elevation={3} className={classes.loginField}>
+        <div>
+          <TextField
+            label="Käyttäjätunnus"
+            variant="outlined"
+            value={username}
+            onChange={({ target }) => setUsername(target.value)}
+          />
+        </div>
+        <div>
+          <TextField
+            label="Salasana"
+            variant="outlined"
+            type="password"
+            value={password}
+            onChange={({ target }) => setPassword(target.value)}
+          />
+        </div>
+        <Button onClick={handleLogin}>
+          {user.loggingIn ? <CircularProgress /> : 'Kirjaudu'}
+        </Button>
 
-      <Typography variant="body1" className={classes.section}>
-        Jos haluat alkaa järjestämään pelejä, ota yhteyttä info@kotipelit.com
-        niin teemme sinulle käyttäjätilin.
-      </Typography>
+        <Typography variant="body1">
+          Jos haluat alkaa järjestämään pelejä, ota yhteyttä info@kotipelit.com
+          niin teemme sinulle käyttäjätilin.
+        </Typography>
+      </Paper>
     </div>
   );
 };

@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     sectionStyle: {
       margin: theme.spacing(8),
+      // Undefined color (neon)
       color: 'rgb(0 225 217)',
       [theme.breakpoints.down('xs')]: {
         margin: theme.spacing(5),
@@ -114,17 +115,6 @@ const useStyles = makeStyles((theme: Theme) =>
         marginTop: theme.spacing(2),
       },
     },
-    buttonStyle: {
-      padding: 12,
-      marginTop: 20,
-      marginLeft: 40,
-      // Asettelu melko vammasesti tehty
-      [theme.breakpoints.down('xs')]: {
-        marginTop: 10,
-        marginLeft: 0,
-      },
-    },
-
     flex: {
       display: 'flex',
       alignItems: 'center',
@@ -147,7 +137,7 @@ const Steps = () => {
         <Grid container spacing={3} className={classes.stepper}>
           <Grid item md={3} sm={12} className={classes.stepperContent}>
             <div className={classes.step}>
-              <Typography variant="h4" color="initial">
+              <Typography variant="h5" color="initial">
                 1
               </Typography>
             </div>
@@ -158,7 +148,7 @@ const Steps = () => {
 
           <Grid item md={3} sm={12} className={classes.stepperContent}>
             <div className={classes.step}>
-              <Typography variant="h4" color="initial">
+              <Typography variant="h5" color="initial">
                 2
               </Typography>
             </div>
@@ -169,7 +159,7 @@ const Steps = () => {
 
           <Grid item md={3} sm={12} className={classes.stepperContent}>
             <div className={classes.step}>
-              <Typography variant="h4" color="initial">
+              <Typography variant="h5" color="initial">
                 3
               </Typography>
             </div>
@@ -180,7 +170,7 @@ const Steps = () => {
 
           <Grid item md={3} sm={12} className={classes.stepperContent}>
             <div className={classes.step}>
-              <Typography variant="h4" color="initial">
+              <Typography variant="h5" color="initial">
                 4
               </Typography>
             </div>
@@ -209,13 +199,7 @@ const FrontPage: React.FC = () => {
             alt="background"
             className={classes.showcaseImage}
           />
-          <Button
-            variant="contained"
-            color="secondary"
-            className={classes.buttonStyle}
-            component={Link}
-            to="/kirjaudu"
-          >
+          <Button color="secondary" component={Link} to="/kirjaudu">
             Järjestä kotipelit
           </Button>
         </Grid>

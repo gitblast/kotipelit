@@ -187,12 +187,12 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
 
       return (
         <Paper className={classes.registeredInfo}>
-          <Typography variant="h4" color="primary">
+          <Typography variant="h5" color="primary">
             {`Lähetimme pelin tiedot sähköpostiisi${emailString}`}
             {/** Lähetä uudestaan -nappi, vaihda sposti-toiminto? */}
           </Typography>
           <Typography
-            variant="h4"
+            variant="h5"
             color="primary"
             className={classes.emailConfText}
           >
@@ -213,7 +213,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
     <>
       <div className={classes.container}>
         {error && (
-          <Typography variant="h4" color="error" className={classes.errorMsg}>
+          <Typography variant="h5" color="error" className={classes.errorMsg}>
             {error}
           </Typography>
         )}
@@ -240,7 +240,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
               <Grid item md></Grid>
               <Grid item md={6} xs={12} className={classes.centerAlign}>
                 <div>
-                  <Typography variant="h4">{`Peli alkaa ${format(
+                  <Typography variant="h5">{`Peli alkaa ${format(
                     new Date(game.startTime),
                     'd. MMMM HH:mm',
                     {
@@ -248,9 +248,9 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
                     }
                   )}`}</Typography>
                   {game.price !== 0 && (
-                    <Typography variant="h4">{`Pelin hinta on ${game.price} €`}</Typography>
+                    <Typography variant="h5">{`Pelin hinta on ${game.price} €`}</Typography>
                   )}
-                  <Typography variant="h4">
+                  <Typography variant="h5">
                     {`Peli-illan järjestää ${game.hostName}`}
                   </Typography>
                 </div>

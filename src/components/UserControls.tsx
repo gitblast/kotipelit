@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { logout } from '../reducers/user.reducer';
 
-import { Typography, Button } from '@material-ui/core';
+import { Link } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import { User } from '../types';
@@ -29,21 +29,12 @@ const UserControls: React.FC<UserControlsProps> = ({ user }) => {
 
   if (!user.loggedIn)
     return history.location.pathname !== '/kirjaudu' ? (
-      <Button color="inherit" onClick={handleClick}>
-        <Typography color="primary" variant="body2">
-          Kirjaudu<AccountCircleIcon></AccountCircleIcon>
-        </Typography>
-      </Button>
+      <Link onClick={handleClick}>
+        Kirjaudu<AccountCircleIcon></AccountCircleIcon>
+      </Link>
     ) : null;
 
-  return (
-    <Button onClick={handleLogout}>
-      <Typography
-        color="primary"
-        variant="body2"
-      >{`Kirjaa ulos ${user.username}`}</Typography>
-    </Button>
-  );
+  return <Link onClick={handleLogout}>{`Kirjaa ulos ${user.username}`}</Link>;
 };
 
 export default UserControls;

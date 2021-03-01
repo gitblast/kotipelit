@@ -39,7 +39,7 @@ const References = () => {
         {/* Toistaa itseään, tee mahd. objekti jossa koottuja vihjeitä, vaihtele näkymää */}
         <Grid item md={4} xs={12}>
           <img className={classes.referenceImg} src={teemuImg} alt="Teemu" />
-          <Typography variant="h4">
+          <Typography variant="h5">
             {'"Hautajaishuijaus, johon et halua sijoittaa."'}
           </Typography>
 
@@ -51,7 +51,7 @@ const References = () => {
             src={matleenaImg}
             alt="Matleena"
           />
-          <Typography variant="h4">
+          <Typography variant="h5">
             {'"Jengi, joka aloitti metsästyksen 80-luvulla."'}
           </Typography>
 
@@ -59,7 +59,7 @@ const References = () => {
         </Grid>
         <Grid item md={4} xs={12}>
           <img className={classes.referenceImg} src={arviImg} alt="arvi" />
-          <Typography variant="h4">
+          <Typography variant="h5">
             {'"Löytyy tähtimerkeistä ja Espanjasta."'}
           </Typography>
 

@@ -32,12 +32,24 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: theme.spacing(4),
       color: 'rgb(0 225 217)',
     },
-    primaryDark: {
-      color: theme.palette.primary.dark,
+    headline: {
+      display: 'flex',
+      justifyContent: 'flex-start',
+      marginTop: theme.spacing(4),
+    },
+    neonLight: {
+      height: 3,
+      background:
+        'linear-gradient(to right, rgb(0 225 217), rgba(11, 43, 56, 1))',
+      boxShadow: 'rgb(231 239 191) -23px 8px 44px',
+      width: '11vw',
+      alignSelf: 'center',
+      marginTop: '6px',
     },
     button: {
       marginTop: theme.spacing(1),
       marginRight: theme.spacing(1),
+      padding: theme.spacing(1),
     },
     actionsContainer: {
       marginBottom: theme.spacing(2),
@@ -60,10 +72,6 @@ const useStyles = makeStyles((theme: Theme) =>
         padding: 0,
         paddingTop: theme.spacing(2),
       },
-    },
-    stepperContent: {
-      borderLeft: '4px solid',
-      borderColor: theme.palette.primary.main,
     },
   })
 );
@@ -200,12 +208,7 @@ const NewGame: React.FC<{ username: string }> = ({ username }) => {
             Jaa ylläoleva peliaulan linkki henkilöille, jotka haluat kutsua
             pelaamaan.
           </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleReturn}
-            className={classes.button}
-          >
+          <Button variant="contained" color="primary" onClick={handleReturn}>
             Oma profiili
           </Button>
           {/* How to include game id?  */}
@@ -226,7 +229,12 @@ const NewGame: React.FC<{ username: string }> = ({ username }) => {
 
   return (
     <div className={classes.root}>
-      <Typography variant="h5">Luo uusi peli</Typography>
+      <div className={classes.headline}>
+        <div className={classes.neonLight}></div>
+        <Typography variant="h3" color="initial">
+          Luo uusi peli
+        </Typography>
+      </div>
       <Stepper
         className={classes.stepperStyle}
         activeStep={activeStep}
@@ -237,24 +245,20 @@ const NewGame: React.FC<{ username: string }> = ({ username }) => {
             <StepLabel>
               <Typography variant="h5">{label}</Typography>
             </StepLabel>
-            <StepContent className={classes.stepperContent}>
+            <StepContent>
               {getStepContent(index)}
               <div className={classes.actionsContainer}>
                 <div>
                   <Button
                     disabled={activeStep === 0}
                     onClick={handleBack}
+                    variant="text"
                     className={classes.button}
                   >
                     Palaa
                   </Button>
                   {activeStep !== 1 && ( // not shown when choosing game type
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleNext}
-                      className={classes.button}
-                    >
+                    <Button onClick={handleNext} className={classes.button}>
                       {activeStep === steps.length - 1 ? 'Valmis' : 'Seuraava'}
                     </Button>
                   )}

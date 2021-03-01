@@ -232,7 +232,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
               </Grid>
               <Grid item md={5} sm={12} xs={12} className={classes.centerAlign}>
                 <div className={classes.centerAlign}>
-                  <Typography variant="h3">{`Tervetuloa pelaamaan ${capitalize(
+                  <Typography variant="h4">{`Tervetuloa pelaamaan ${capitalize(
                     game.type
                   )}a!`}</Typography>
                 </div>

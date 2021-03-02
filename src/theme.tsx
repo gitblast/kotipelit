@@ -100,7 +100,7 @@ const theme = createMuiTheme({
       root: {
         padding: 10,
         borderRadius: 10,
-        fontSize: '1.1rem',
+        fontSize: '1.2rem',
       },
     },
     MuiLink: {

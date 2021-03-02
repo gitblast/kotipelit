@@ -4,8 +4,9 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Typography, Grid } from '@material-ui/core';
 
 import matleenaImg from '../assets/images/matleena.png';
-import teemuImg from '../assets/images/teemu.jpg';
+// import teemuImg from '../assets/images/teemu.jpg';
 import arviImg from '../assets/images/arvi.png';
+import riinaImg from '../assets/images/riina.jpg';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,7 +28,29 @@ const useStyles = makeStyles((theme: Theme) =>
       borderColor: theme.palette.primary.main,
       boxShadow: 'rgb(231 239 191) 4px 3px 18px',
     },
-    referenceTitle: {},
+    refPoints: {
+      position: 'relative',
+      top: 107,
+      left: 64,
+      fontSize: 35,
+      color: 'rgba(167 128 17)',
+    },
+    refPointsMid: {
+      position: 'relative',
+      top: 31,
+      left: 86,
+      transform: 'rotate(5deg)',
+      color: 'rgba(168 164 136 / 27%)',
+      fontSize: 28,
+    },
+    refPointsSmall: {
+      position: 'relative',
+      top: -25,
+      left: 117,
+      transform: 'rotate(12deg)',
+      color: 'rgba(168 164 136 / 14%)',
+      fontSize: 20,
+    },
   })
 );
 
@@ -37,20 +60,54 @@ const References = () => {
     <>
       <Grid container className={classes.sectionB} spacing={5}>
         {/* Toistaa itseään, tee mahd. objekti jossa koottuja vihjeitä, vaihtele näkymää */}
-        <Grid item md={4} xs={12}>
+        {/* <Grid item md={4} xs={12}>
           <img className={classes.referenceImg} src={teemuImg} alt="Teemu" />
           <Typography variant="h5">
             {'"Hautajaishuijaus, johon et halua sijoittaa."'}
           </Typography>
 
-          <Typography variant="body1">-Teemu</Typography>
+          <Typography variant="body1">-Teemu</Typography> */}
+        <Grid item xs={12}>
+          <Typography variant="h3">
+            Suosikkipeli Kotitonnin koottuja vihjeitä
+          </Typography>
         </Grid>
         <Grid item md={4} xs={12}>
+          <Typography variant="h6" className={classes.refPoints}>
+            +100
+          </Typography>
+          <Typography variant="h6" className={classes.refPointsMid}>
+            +100
+          </Typography>
+          <Typography variant="h6" className={classes.refPointsSmall}>
+            +100
+          </Typography>
+          <img className={classes.referenceImg} src={riinaImg} alt="Riina" />
+
+          <Typography variant="h5">
+            {
+              '"Tämän sävelessä ei itketä ilosta eikä surusta, vaan muuten vaan."'
+            }
+          </Typography>
+
+          <Typography variant="body1">-Riina</Typography>
+        </Grid>
+        <Grid item md={4} xs={12}>
+          <Typography variant="h6" className={classes.refPoints}>
+            +30
+          </Typography>
+          <Typography variant="h6" className={classes.refPointsMid}>
+            +30
+          </Typography>
+          <Typography variant="h6" className={classes.refPointsSmall}>
+            +30
+          </Typography>
           <img
             className={classes.referenceImg}
             src={matleenaImg}
             alt="Matleena"
           />
+
           <Typography variant="h5">
             {'"Jengi, joka aloitti metsästyksen 80-luvulla."'}
           </Typography>
@@ -58,6 +115,15 @@ const References = () => {
           <Typography variant="body1">-Matleena</Typography>
         </Grid>
         <Grid item md={4} xs={12}>
+          <Typography variant="h6" className={classes.refPoints}>
+            +30
+          </Typography>
+          <Typography variant="h6" className={classes.refPointsMid}>
+            +30
+          </Typography>
+          <Typography variant="h6" className={classes.refPointsSmall}>
+            +30
+          </Typography>
           <img className={classes.referenceImg} src={arviImg} alt="arvi" />
           <Typography variant="h5">
             {'"Löytyy tähtimerkeistä ja Espanjasta."'}

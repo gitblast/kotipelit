@@ -26,6 +26,9 @@ const useStyles = makeStyles((theme: Theme) =>
         marginRight: theme.spacing(1),
       },
     },
+    welcomeMsg: {
+      textAlign: 'center',
+    },
     centerAlign: {
       display: 'flex',
       justifyContent: 'center',
@@ -40,16 +43,17 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(2),
     },
     bookedText: {
-      color: 'red',
+      color: theme.palette.error.main,
     },
     gameRules: {
-      padding: theme.spacing(4),
+      padding: theme.spacing(3),
       marginTop: theme.spacing(6),
       marginLeft: theme.spacing(6),
       marginRight: theme.spacing(6),
-      backgroundColor: theme.palette.primary.light,
+      color: theme.palette.primary.light,
+      // Ligth version of background
+      backgroundColor: 'rgb(15 47 60)',
       // Create a palette variable
-      color: 'black',
       [theme.breakpoints.down('xs')]: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
@@ -64,7 +68,8 @@ const useStyles = makeStyles((theme: Theme) =>
     registeredInfo: {
       padding: theme.spacing(2),
       marginTop: theme.spacing(2),
-      backgroundColor: 'transparent',
+      // Ligth version of background
+      backgroundColor: 'rgb(15 47 60)',
       color: theme.palette.primary.light,
       [theme.breakpoints.down('xs')]: {
         marginLeft: theme.spacing(1),
@@ -231,8 +236,11 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
                 </div>
               </Grid>
               <Grid item md={5} sm={12} xs={12} className={classes.centerAlign}>
-                <div className={classes.centerAlign}>
-                  <Typography variant="h4">{`Tervetuloa pelaamaan ${capitalize(
+                <div className={classes.welcomeMsg}>
+                  <Typography
+                    variant="h3"
+                    color="primary"
+                  >{`Tervetuloa pelaamaan ${capitalize(
                     game.type
                   )}a!`}</Typography>
                 </div>
@@ -275,26 +283,28 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
               </Grid>
             </Grid>
             <Paper className={classes.gameRules}>
-              <Typography>
+              <Typography variant="body1">
                 <HelpOutlineIcon></HelpOutlineIcon>
-                Kotitonnissa saat kolme sanaa, joihin kaikkiin sinun tulee
-                keksiä vihjeet. Mitä harvempi pelaaja arvaa sanan vihjeen
-                perusteella, sitä enemmän pisteitä saat. Vältä antamasta
-                sisäpiirivihjeitä, jotta kaikkien on mahdollista tietää oikea
-                vastaus.
+                Kotitonnissa saat kolme sanaa, joihin sinun tulee keksiä
+                vihjeet. Mitä harvempi pelaaja arvaa sanan, sitä enemmän
+                pisteitä saat.
+              </Typography>
+              <Typography variant="body1" color="initial">
+                Vältä antamasta sisäpiirivihjeitä, jotta kaikkien on mahdollista
+                tietää oikea vastaus.
               </Typography>
               <div className={classes.pointsExplained}>
                 <div>
-                  <Typography variant="body2">Kolme oikein</Typography>
-                  <Typography variant="body2">+10</Typography>
+                  <Typography variant="body2">Yksi oikein</Typography>
+                  <Typography variant="body2">+100</Typography>
                 </div>
                 <div>
                   <Typography variant="body2">Kaksi oikein</Typography>
                   <Typography variant="body2">+30</Typography>
                 </div>
                 <div>
-                  <Typography variant="body2">Yksi oikein</Typography>
-                  <Typography variant="body2">+100</Typography>
+                  <Typography variant="body2">Kolme oikein</Typography>
+                  <Typography variant="body2">+10</Typography>
                 </div>
                 <div>
                   <Typography variant="body2">

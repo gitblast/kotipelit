@@ -5,7 +5,7 @@ import LockReservationForm from './LockReservationForm';
 
 import useLobbySystem from '../hooks/useLobbySystem';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Fab, Typography, Grid, Paper } from '@material-ui/core';
+import { Button, Typography, Grid, Paper } from '@material-ui/core';
 import { LobbyGamePlayer } from '../types';
 import Loader from './Loader';
 import { capitalize } from 'lodash';
@@ -37,10 +37,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     availableSeat: {
       color: 'rgb(104 122 106)',
-    },
-    reserveBtn: {
-      padding: theme.spacing(4),
-      margin: theme.spacing(2),
     },
     bookedText: {
       color: theme.palette.error.main,
@@ -174,14 +170,9 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
   const getContent = () => {
     if (!spotLockedForMe && !spotReservedForMe) {
       return (
-        <Fab
-          className={classes.reserveBtn}
-          variant="extended"
-          onClick={reserveSpot}
-          color="secondary"
-        >
+        <Button onClick={reserveSpot} color="secondary">
           Varaa paikka
-        </Fab>
+        </Button>
       );
     }
 
@@ -192,15 +183,11 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
 
       return (
         <Paper className={classes.registeredInfo}>
-          <Typography variant="h4">
+          <Typography variant="body1" color="primary">
             {`Lähetimme pelin tiedot sähköpostiisi${emailString}`}
             {/** Lähetä uudestaan -nappi, vaihda sposti-toiminto? */}
           </Typography>
-          <Typography
-            variant="body1"
-            color="primary"
-            className={classes.emailConfText}
-          >
+          <Typography variant="body2" className={classes.emailConfText}>
             Jos et saanut viestiä, kirjoita itsellesi alla olevat tiedot
             muistiin.
           </Typography>

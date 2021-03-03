@@ -306,7 +306,7 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
           </>
         ) : (
           !error?.startsWith('Ilmoittautuminen on päättynyt') && ( // not showing spinner if lobby is no longer open
-            <Loader msg={'Ladataan...'} spinner />
+            <Loader msg={'Ladataan..'} spinner />
           )
         )}
       </div>

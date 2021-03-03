@@ -142,7 +142,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   if (!game) {
     return (
       <div className={classes.centered}>
-        <Loader msg={'Ladataan'} spinner />
+        <Loader msg={'Ladataan..'} spinner />
       </div>
     );
   }

@@ -46,7 +46,9 @@ const Footer: React.FC = () => {
       <Paper className={classes.footerContainer}>
         <Grid container spacing={6} className={classes.footerContent}>
           <Grid item className={classes.footerBlock}>
-            <Typography className={classes.footerHeader}>Tuki</Typography>
+            <Typography variant="body2" className={classes.footerHeader}>
+              Tuki
+            </Typography>
             <Typography variant="body2">info[at]kotipelit.com</Typography>
             <Typography variant="body2">Usein kysyttyä</Typography>
           </Grid>
@@ -59,7 +61,7 @@ const Footer: React.FC = () => {
             <Typography variant="body2">Kotiluennot.com</Typography>
           </Grid>
           <Grid item className={classes.footerBlock}>
-            <Typography className={classes.footerHeader}>
+            <Typography variant="body2" className={classes.footerHeader}>
               Yhteistyössä
             </Typography>
             <Typography variant="body2">Pallopelit.com</Typography>

@@ -21,12 +21,12 @@ const theme = createMuiTheme({
   palette: {
     primary: {
       light: 'rgb(168 164 136)',
-      main: 'rgb(170 161 85)',
+      main: 'rgb(142 135 78)',
       dark: 'rgb(103 93 13)',
-      contrastText: 'rgba(214, 214, 214)',
+      contrastText: 'rgba(240, 240, 240)',
     },
     secondary: {
-      light: 'rgba(179,69,49)',
+      light: 'rgba(175, 113, 161)',
       main: 'rgb(133 23 139)',
       dark: 'rgba(81 38 99)',
       contrastText: 'rgba(214, 214, 214)',
@@ -44,7 +44,7 @@ const theme = createMuiTheme({
   typography: {
     fontFamily: 'Zrnic',
     body1: {
-      fontSize: '1.2rem',
+      fontSize: '1.3rem',
     },
     body2: {
       fontSize: '1rem',
@@ -101,7 +101,12 @@ const theme = createMuiTheme({
         padding: 10,
         borderRadius: 10,
         fontSize: '1.2rem',
+        // Why affects only variant"text" ?
+        '&$disabled': {
+          color: 'rgb(92 92 92)',
+        },
       },
+      disabled: {},
     },
     MuiLink: {
       root: {
@@ -133,10 +138,16 @@ const theme = createMuiTheme({
     },
     MuiTextField: {
       root: {
+        '& > * + *': {
+          marginBottom: 8,
+        },
         '& .MuiOutlinedInput-root': {
           '& fieldset': {
             borderColor: 'rgb(0 225 217)',
           },
+        },
+        '& .MuiInput-underline:before': {
+          borderColor: 'rgb(0 225 217)',
         },
       },
     },

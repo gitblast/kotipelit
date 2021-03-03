@@ -27,9 +27,6 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: 'center',
       // Ligth version of background
       backgroundColor: 'rgb(15 47 60)',
-      '& > * + *': {
-        margin: theme.spacing(1),
-      },
     },
   })
 );
@@ -56,22 +53,22 @@ const LoginForm: React.FC = () => {
       <Paper elevation={3} className={classes.loginField}>
         <div>
           <TextField
-            label="Käyttäjätunnus"
             variant="outlined"
+            label="Käyttäjätunnus"
             value={username}
             onChange={({ target }) => setUsername(target.value)}
           />
         </div>
         <div>
           <TextField
-            label="Salasana"
             variant="outlined"
+            label="Salasana"
             type="password"
             value={password}
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
-        <Button onClick={handleLogin}>
+        <Button onClick={handleLogin} color="secondary">
           {user.loggingIn ? <CircularProgress /> : 'Kirjaudu'}
         </Button>
 

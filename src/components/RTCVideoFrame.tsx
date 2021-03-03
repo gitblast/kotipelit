@@ -37,10 +37,6 @@ const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
         margin: 3,
       },
     },
-    videoContainer: {
-      backgroundColor: 'black',
-      width: '100%',
-    },
     frame: {
       paddingTop: '75%',
       backgroundColor: 'rgba(11,43,56)',
@@ -81,9 +77,6 @@ const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
       bottom: 0,
       left: 0,
       right: 0,
-    },
-    noConnection: {
-      textAlign: 'center',
     },
   })
 );
@@ -159,7 +152,7 @@ const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({
         </VideoWithOverlay>
       ) : (
         <div>
-          <ErrorMsg text={'Ei videoyhteyttä'}>{overlayContent()}</ErrorMsg>
+          <ErrorMsg text={'Odotetaan pelaajaa..'}>{overlayContent()}</ErrorMsg>
         </div>
       )}
     </Card>

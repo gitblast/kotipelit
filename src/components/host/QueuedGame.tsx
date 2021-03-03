@@ -37,12 +37,16 @@ const useStyles = makeStyles((theme: Theme) =>
     cardStyle: {
       width: 400,
       margin: theme.spacing(2),
-      background: 'rgb(7 34 45)',
+      // Ligth version of background
+      backgroundColor: 'rgb(15 47 60)',
       color: theme.palette.primary.light,
       border: 'solid rgb(0 225 217)',
     },
     avatarStyle: {
-      background: theme.palette.secondary.dark,
+      background: theme.palette.secondary.main,
+    },
+    cardHeaders: {
+      color: theme.palette.secondary.light,
     },
     playerRow: {
       display: 'flex',
@@ -192,9 +196,13 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
               </Menu>
             </>
           }
-          title={<Typography variant="h5">{capitalize(game.type)}</Typography>}
+          title={
+            <Typography variant="h3" className={classes.cardHeaders}>
+              {capitalize(game.type)}
+            </Typography>
+          }
           subheader={
-            <Typography variant="body1" color="initial">
+            <Typography variant="body1" className={classes.cardHeaders}>
               {format(new Date(game.startTime), 'd. MMMM HH:mm', {
                 locale: fiLocale,
               })}{' '}

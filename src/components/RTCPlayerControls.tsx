@@ -27,7 +27,8 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
     },
     controlsContent: {
-      padding: theme.spacing(4),
+      paddingTop: theme.spacing(0.5),
+      paddingBottom: theme.spacing(3),
       [theme.breakpoints.down('sm')]: {
         padding: theme.spacing(1),
       },
@@ -52,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: 45,
     },
     answerField: {
-      backgroundColor: 'white',
+      // backgroundColor: 'white',
     },
     // Repeat from RTCHostControls
     fsIcon: {

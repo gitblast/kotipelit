@@ -37,12 +37,13 @@ const useStyles = makeStyles((theme: Theme) =>
     cardStyle: {
       width: 400,
       margin: theme.spacing(2),
-      background: 'rgb(7 34 45)',
+      // Ligth version of background
+      backgroundColor: 'rgb(15 47 60)',
       color: theme.palette.primary.light,
       border: 'solid rgb(0 225 217)',
     },
     avatarStyle: {
-      background: theme.palette.secondary.dark,
+      background: theme.palette.secondary.main,
     },
     playerRow: {
       display: 'flex',
@@ -115,14 +116,20 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
   const lobbyButton = () => {
     if (game.status !== GameStatus.FINISHED) {
       return (
-        <Button
-          variant="contained"
-          color="primary"
-          component={Link}
-          to={`/${username}/kutsut/${game.id}`}
-        >
-          Peliaula
-        </Button>
+        <>
+          <Button
+            variant="contained"
+            color="primary"
+            component={Link}
+            to={`/${username}/kutsut/${game.id}`}
+          >
+            Peliaula
+          </Button>
+          <IconButton className={classes.actionIcon} aria-label="copy">
+            {/* This should copy output of getLobbyLink() */}
+            <FileCopyIcon />
+          </IconButton>
+        </>
       );
     }
   };
@@ -192,9 +199,9 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
               </Menu>
             </>
           }
-          title={<Typography variant="h5">{capitalize(game.type)}</Typography>}
+          title={<Typography variant="h3">{capitalize(game.type)}</Typography>}
           subheader={
-            <Typography variant="body1" color="initial">
+            <Typography variant="body1">
               {format(new Date(game.startTime), 'd. MMMM HH:mm', {
                 locale: fiLocale,
               })}{' '}
@@ -249,10 +256,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
         <CardActions disableSpacing className={classes.actions}>
           <div>
             {lobbyButton()}
-            <IconButton className={classes.actionIcon} aria-label="copy">
-              {/* This should copy output of getLobbyLink() */}
-              <FileCopyIcon />
-            </IconButton>
+
             {/* For sharing gameLobby page in social medias */}
             {/* <IconButton className={classes.actionIcon} aria-label="share">
               <ShareIcon />

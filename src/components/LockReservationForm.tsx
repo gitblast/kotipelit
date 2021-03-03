@@ -75,6 +75,7 @@ const LockReservationForm: React.FC<LockReservationFormProps> = ({
       <div>
         <div>
           <TextField
+            variant="standard"
             value={name}
             onChange={handleNameChange}
             label="Nimi"

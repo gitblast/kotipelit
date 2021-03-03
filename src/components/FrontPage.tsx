@@ -120,12 +120,6 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       justifyContent: 'center',
     },
-    // Fix these, wickedish solution
-    image: {
-      width: '100%',
-      height: 'auto',
-      textAlign: 'center',
-    },
   })
 );
 

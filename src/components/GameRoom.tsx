@@ -119,14 +119,6 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
     }
   }, [fullscreenRef]);
 
-  const handleStart = () => {
-    if (socket) {
-      socket.emit('start');
-    } else {
-      logger.error('socket was null when trying to emit start');
-    }
-  };
-
   const handleJoinCall = () => {
     if (isHost) {
       if (socket) {
@@ -169,20 +161,6 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
     <InGameSocket.Provider value={socket}>
       <div className={classes.containerGame} ref={fullscreenRef}>
         <AudioHandler />
-        <div className={classes.backdropContent}>
-          {isHost && game.status === GameStatus.WAITING ? (
-            <>
-              <div className={classes.startBtnContainer}>
-                <Button color="secondary" onClick={handleStart}>
-                  Aloita peli
-                </Button>
-              </div>
-            </>
-          ) : (
-            // Is this unnecessary repetition?
-            game.status === GameStatus.WAITING && <></>
-          )}
-        </div>
         <div className={classes.topGradient}></div>
         <div className={classes.gameTitleBar}>
           {/* For animation, should more topStyle divs be added? */}

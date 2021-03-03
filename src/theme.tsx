@@ -113,6 +113,17 @@ const theme = createMuiTheme({
         cursor: 'pointer',
       },
     },
+    MuiLinearProgress: {
+      /// Undefined color (neon)
+      barColorPrimary: {
+        background: 'linear-gradient(to right, rgb(185 231 229), transparent)',
+        backgroundColor: 'transparent',
+      },
+      bar2Indeterminate: {
+        animation:
+          'MuiLinearProgress-keyframes-indeterminate2 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) 1.15s infinite',
+      },
+    },
     // How to attach together ?
     MuiStepContent: {
       root: {

@@ -351,20 +351,35 @@ const emitUpdatedGame = (socket: SocketWithToken, newGame: RTCGame): void => {
 
   // handle game types here
   if (newGame.type === GameType.KOTITONNI) {
+    const emittedTo: string[] = []; // for debugging
+    const didNotEmit: string[] = [];
+
     if (role === Role.HOST) {
       socket.emit('game-updated', newGame);
 
       // doesn't send other players' words
       newGame.players.forEach((player) => {
         if (player.privateData.socketId) {
+          emittedTo.push(`${player.name} (${player.privateData.socketId})`);
+
           socket
             .to(player.privateData.socketId)
             .emit(
               'game-updated',
               gameService.filterGameForUser(newGame, player.id)
             );
+        } else {
+          didNotEmit.push(player.name);
         }
       });
+    }
+
+    if (emittedTo) {
+      logger.log(`emitted update to: ${emittedTo.join(' / ')}`);
+    }
+
+    if (didNotEmit) {
+      logger.log(`players who had no socket set: ${didNotEmit.join(' / ')}`);
     }
   }
 };

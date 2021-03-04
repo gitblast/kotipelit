@@ -87,7 +87,7 @@ const theme = createMuiTheme({
       wordBreak: 'break-word',
       fontStyle: 'italic',
       fontSize: '1rem',
-      color: 'rgb(133 23 139)',
+      color: 'rgb(93 91 83)',
     },
   },
   overrides: {
@@ -98,7 +98,10 @@ const theme = createMuiTheme({
     // },
     MuiButton: {
       root: {
-        padding: 10,
+        paddingTop: 8,
+        paddingBottom: 8,
+        paddingLeft: 12,
+        paddingRight: 12,
         borderRadius: 10,
         fontSize: '1.2rem',
         // Why affects only variant"text" ?
@@ -160,6 +163,12 @@ const theme = createMuiTheme({
         '& .MuiInput-underline:before': {
           borderColor: 'rgb(0 225 217)',
         },
+      },
+    },
+    MuiPaper: {
+      root: {
+        // Ligth version of background
+        backgroundColor: 'rgb(15 47 60)',
       },
     },
   },

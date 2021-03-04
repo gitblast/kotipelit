@@ -19,8 +19,6 @@ const useStyles = makeStyles((theme: Theme) =>
       maxWidth: 350,
       color: theme.palette.primary.light,
       textAlign: 'center',
-      // Ligth version of background
-      backgroundColor: 'rgb(15 47 60)',
       '& > * + *': {
         margin: theme.spacing(1),
       },

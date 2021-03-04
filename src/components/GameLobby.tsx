@@ -15,8 +15,6 @@ import logger from '../utils/logger';
 
 import logoImg from '../assets/images/logo.png';
 
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
@@ -47,8 +45,6 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: theme.spacing(6),
       marginRight: theme.spacing(6),
       color: theme.palette.primary.light,
-      // Ligth version of background
-      backgroundColor: 'rgb(15 47 60)',
       // Create a palette variable
       [theme.breakpoints.down('xs')]: {
         marginLeft: theme.spacing(1),
@@ -64,8 +60,6 @@ const useStyles = makeStyles((theme: Theme) =>
     registeredInfo: {
       padding: theme.spacing(2),
       marginTop: theme.spacing(2),
-      // Ligth version of background
-      backgroundColor: 'rgb(15 47 60)',
       color: theme.palette.primary.light,
       [theme.breakpoints.down('xs')]: {
         marginLeft: theme.spacing(1),
@@ -271,7 +265,6 @@ const GameLobby: React.FC<GameLobbyProps> = () => {
             </Grid>
             <Paper className={classes.gameRules}>
               <Typography variant="body1">
-                <HelpOutlineIcon></HelpOutlineIcon>
                 Kotitonnissa saat kolme sanaa, joihin sinun tulee keksiä
                 vihjeet. Mitä harvempi pelaaja arvaa sanan, sitä enemmän
                 pisteitä saat.

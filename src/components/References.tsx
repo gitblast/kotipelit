@@ -58,7 +58,7 @@ const References = () => {
   const classes = useStyles();
   return (
     <>
-      <Grid container className={classes.sectionB} spacing={5}>
+      <Grid container className={classes.sectionB} spacing={3}>
         {/* Toistaa itseään, tee mahd. objekti jossa koottuja vihjeitä, vaihtele näkymää */}
         {/* <Grid item md={4} xs={12}>
           <img className={classes.referenceImg} src={teemuImg} alt="Teemu" />

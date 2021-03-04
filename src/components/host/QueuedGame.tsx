@@ -14,9 +14,11 @@ import {
   CardHeader,
   CardContent,
   CardActions,
+  Popover,
 } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ClearIcon from '@material-ui/icons/Clear';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 // Enable when possible to share on social media
 // import ShareIcon from '@material-ui/icons/Share';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
@@ -41,6 +43,9 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: 'rgb(15 47 60)',
       color: theme.palette.primary.light,
       border: 'solid rgb(0 225 217)',
+      [theme.breakpoints.down('sm')]: {
+        margin: theme.spacing(0.7),
+      },
     },
     avatarStyle: {
       background: theme.palette.secondary.main,
@@ -49,7 +54,12 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      padding: theme.spacing(1),
+    },
+    helpIcon: {
+      // caption color
+      color: 'rgb(93 91 83)',
+      marginLeft: theme.spacing(0.5),
+      fontSize: 19,
     },
     actions: {
       display: 'flex',
@@ -65,6 +75,13 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
     },
+    popover: {
+      pointerEvents: 'none',
+    },
+    paper: {
+      padding: theme.spacing(1),
+      maxWidth: 300,
+    },
   })
 );
 
@@ -72,6 +89,63 @@ interface QueuedGameProps {
   game: RTCGame;
   username: string;
 }
+
+const InviteLink = () => {
+  const classes = useStyles();
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+
+  const handlePopoverOpen = (
+    event: React.MouseEvent<HTMLElement, MouseEvent>
+  ) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+
+  return (
+    <span>
+      <IconButton
+        aria-owns={open ? 'mouse-over-popover' : undefined}
+        aria-haspopup="true"
+        onMouseEnter={handlePopoverOpen}
+        onMouseLeave={handlePopoverClose}
+        size="small"
+        edge="end"
+      >
+        <HelpOutlineIcon className={classes.helpIcon}></HelpOutlineIcon>
+      </IconButton>
+
+      <Popover
+        id="mouse-over-popover"
+        className={classes.popover}
+        classes={{
+          paper: classes.paper,
+        }}
+        open={open}
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        onClose={handlePopoverClose}
+        disableRestoreFocus
+      >
+        <Typography variant="body2">
+          Pelaajat saa sähköpostiinsa linkin, jolla pääsevät peliin. Jos
+          ylläoleva pelaaja hukkaa linkkinsä, jaa tämä hänelle.
+        </Typography>
+      </Popover>
+    </span>
+  );
+};
 
 const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
   const classes = useStyles();
@@ -221,12 +295,14 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
                   <Typography component="div">{player.points}</Typography>
                 )}
               </div>
+
               <Typography variant="caption">{`${
                 // eslint-disable-next-line no-undef
                 process?.env.NODE_ENV === 'development'
                   ? 'http://localhost:3000'
                   : 'https://www.kotipelit.com'
               }/${username}/${player.privateData.inviteCode}`}</Typography>
+              <InviteLink />
             </div>
           ))}
         </CardContent>

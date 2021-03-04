@@ -33,7 +33,8 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
     },
     controlsContent: {
-      padding: theme.spacing(4),
+      paddingTop: theme.spacing(0.5),
+      paddingBottom: theme.spacing(3),
       [theme.breakpoints.down('sm')]: {
         padding: theme.spacing(1),
       },
@@ -375,27 +376,62 @@ const RTCHostControls: React.FC<{
     history.push(`/${params.username}/kiitos`);
   };
 
+  const handleStart = () => {
+    if (socket) {
+      socket.emit('start');
+    } else {
+      logger.error('socket was null when trying to emit start');
+    }
+  };
+
+  if (!game) {
+    return null;
+  }
+
+  const getMainButtonClickHandler = (status: GameStatus) => {
+    switch (status) {
+      case GameStatus.RUNNING:
+        return handlePointUpdate;
+      case GameStatus.FINISHED:
+        return handleFinish;
+      default:
+        return handleStart;
+    }
+  };
+
+  const getMainButtonLabel = (status: GameStatus) => {
+    switch (status) {
+      case GameStatus.RUNNING:
+        return 'Päivitä pisteet';
+      case GameStatus.FINISHED:
+        return 'Lopeta peli';
+      default:
+        return 'Aloita peli';
+    }
+  };
+
+  const mainButton = () => {
+    return (
+      <Fab
+        className={classes.pointsButton}
+        onClick={getMainButtonClickHandler(game.status)}
+        disabled={GameStatus.RUNNING ? game.info.answeringOpen : false}
+        variant="extended"
+      >
+        <Typography variant="h6">{getMainButtonLabel(game.status)}</Typography>
+      </Fab>
+    );
+  };
+
   return (
     <div className={classes.container}>
-      {game?.status === GameStatus.FINISHED ? (
-        <div className={classes.btnContainer}>
-          <Fab
-            // Change the name of this class
-            className={classes.timerButton}
-            variant="extended"
-            color="secondary"
-            onClick={handleFinish}
-          >
-            Lopeta peli
-          </Fab>
-        </div>
-      ) : (
-        <Grid container className={classes.controlsContent}>
-          <Grid item md={1}></Grid>
-          <Grid item md={3} sm={3}>
-            <InfoBar />
-          </Grid>
-          <Grid item md={4} sm={6} className={classes.btnContainer}>
+      <Grid container className={classes.controlsContent}>
+        <Grid item md={1}></Grid>
+        <Grid item md={3} sm={3}>
+          {game.status === GameStatus.RUNNING && <InfoBar />}
+        </Grid>
+        <Grid item md={4} sm={6} className={classes.btnContainer}>
+          {game.status === GameStatus.RUNNING && (
             <Fab
               size="large"
               color={timerRunning ? 'primary' : 'secondary'}
@@ -405,15 +441,9 @@ const RTCHostControls: React.FC<{
               {timerRunning ? <PauseIcon /> : <PlayArrowIcon />}
               <Typography variant="h6">{timer}</Typography>
             </Fab>
-
-            <Fab
-              className={classes.pointsButton}
-              onClick={handlePointUpdate}
-              disabled={!game ? true : game.info.answeringOpen}
-              variant="extended"
-            >
-              <Typography variant="h6">Päivitä pisteet</Typography>
-            </Fab>
+          )}
+          {mainButton()}
+          {game.status === GameStatus.RUNNING && (
             <Fab
               size="medium"
               color="secondary"
@@ -423,24 +453,24 @@ const RTCHostControls: React.FC<{
             >
               <UndoIcon className={classes.undoArrow} />
             </Fab>
-          </Grid>
-          <Grid item md={2} sm={3}></Grid>
-          <Grid item md={2}>
-            <IconButton
-              className={classes.controlBarIcons}
-              onClick={handleToggleFullscreen}
-            >
-              <FullscreenIcon fontSize="large"></FullscreenIcon>
-            </IconButton>
-            <IconButton
-              className={classes.controlBarIcons}
-              onClick={fetchLatestGameStatus}
-            >
-              <SyncIcon fontSize="large"></SyncIcon>
-            </IconButton>
-          </Grid>
+          )}
         </Grid>
-      )}
+        <Grid item md={2} sm={3}></Grid>
+        <Grid item md={2}>
+          <IconButton
+            className={classes.controlBarIcons}
+            onClick={handleToggleFullscreen}
+          >
+            <FullscreenIcon fontSize="large"></FullscreenIcon>
+          </IconButton>
+          <IconButton
+            className={classes.controlBarIcons}
+            onClick={fetchLatestGameStatus}
+          >
+            <SyncIcon fontSize="large"></SyncIcon>
+          </IconButton>
+        </Grid>
+      </Grid>
     </div>
   );
 };

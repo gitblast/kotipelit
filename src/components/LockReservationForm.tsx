@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { TextField, Typography, Fab } from '@material-ui/core';
+import { TextField, Typography, Button } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,7 +48,7 @@ const LockReservationForm: React.FC<LockReservationFormProps> = ({
         /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
       )
     ) {
-      return setEmailError('Anna validi sähköpostiosoite!');
+      return setEmailError('Tarkista sähköpostiosoite!');
     }
 
     handleReserve(name, email);
@@ -75,6 +75,7 @@ const LockReservationForm: React.FC<LockReservationFormProps> = ({
       <div>
         <div>
           <TextField
+            variant="standard"
             value={name}
             onChange={handleNameChange}
             label="Nimi"
@@ -98,15 +99,14 @@ const LockReservationForm: React.FC<LockReservationFormProps> = ({
           </Typography>
         </div>
       </div>
-      <Fab
+      <Button
         className={classes.lockBtn}
         color="secondary"
-        variant="extended"
         onClick={handleClick}
         disabled={!name || !email}
       >
         Lukitse
-      </Fab>
+      </Button>
     </div>
   );
 };

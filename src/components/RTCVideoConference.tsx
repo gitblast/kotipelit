@@ -45,8 +45,9 @@ const RTCVideoConference: React.FC<RTCVideoConferenceProps> = ({
 
   if (!participants) {
     return (
+      // Make styles for players waiting for host to start the game
       <div className={classes.videoConf}>
-        <Loader msg="Ladataan..." spinner />
+        <Loader msg="Ladataan.." spinner />
       </div>
     );
   }

@@ -13,10 +13,10 @@ type PropStyles = {
 };
 
 const colors = [
-  'rgba(204, 241, 94, 0.8)',
-  'rgba(165, 27, 82, 0.8)',
-  'rgba(47, 203, 239, 0.8)',
   'rgba(251, 232, 0, 0.8)',
+  'rgba(165, 27, 82, 0.8)',
+  'rgba(20, 115, 151, 0.8)',
+  'rgba(26, 139, 71, 0.8)',
   'rgb(0 225 217)',
   'rgba(238, 255, 244, 0.8)',
 ];
@@ -28,19 +28,14 @@ const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
       width: `28%`,
       background: (props) => `${colors[props.order]}`,
       borderBottom: '4px dotted white',
-      marginLeft: theme.spacing(3),
-      marginRight: theme.spacing(3),
-      marginBottom: theme.spacing(3),
+      marginLeft: theme.spacing(2),
+      marginRight: theme.spacing(2),
+      marginBottom: theme.spacing(2),
       marginTop: theme.spacing(1),
-      zIndex: theme.zIndex.drawer + 2,
       [theme.breakpoints.down('sm')]: {
         width: '32%',
         margin: 3,
       },
-    },
-    videoContainer: {
-      backgroundColor: 'black',
-      width: '100%',
     },
     frame: {
       paddingTop: '75%',
@@ -50,7 +45,7 @@ const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
     },
     hasTurn: {
       background: (props) => `${colors[props.order]}`,
-      boxShadow: (props) => `5px 10px 22px ${colors[props.order]}`,
+      boxShadow: 'rgb(231 239 191) 4px 3px 18px',
       border: '7px dotted white',
       [theme.breakpoints.down('xs')]: {
         width: '95%',
@@ -82,9 +77,6 @@ const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
       bottom: 0,
       left: 0,
       right: 0,
-    },
-    noConnection: {
-      textAlign: 'center',
     },
   })
 );
@@ -160,7 +152,7 @@ const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({
         </VideoWithOverlay>
       ) : (
         <div>
-          <ErrorMsg text={'Ei videoyhteyttä'}>{overlayContent()}</ErrorMsg>
+          <ErrorMsg text={'Odotetaan pelaajaa..'}>{overlayContent()}</ErrorMsg>
         </div>
       )}
     </Card>

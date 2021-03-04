@@ -8,11 +8,10 @@ import RTCPlayerControls from './RTCPlayerControls';
 import AudioHandler from './AudioHandler';
 
 import HeadsetIcon from '@material-ui/icons/Headset';
-import HelpIcon from '@material-ui/icons/Help';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import logger, { setDebug } from '../utils/logger';
-import { Fab, Typography } from '@material-ui/core';
+import { Typography, Button } from '@material-ui/core';
 import Loader from './Loader';
 import { GameStatus } from '../types';
 
@@ -54,10 +53,6 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '0.8rem',
       color: 'rgb(185 231 229)',
     },
-    gameTitle: {
-      color: 'rgb(185 231 229)',
-      fontSize: '60px',
-    },
     topStyle: {
       borderTop: '15px dotted rgb(185 231 229)',
       background: 'rgb(86 124 123)',
@@ -69,20 +64,9 @@ const useStyles = makeStyles((theme: Theme) =>
     startBtnContainer: {
       position: 'absolute',
     },
-    waitingMsg: {
-      color: 'white',
-    },
-    startButton: {
-      padding: theme.spacing(3),
-      border: 'solid white',
-    },
     infoContent: {
       display: 'flex',
 
-      margin: 15,
-    },
-    startVideoBtn: {
-      padding: theme.spacing(2),
       margin: 15,
     },
     backdropBottom: {
@@ -135,14 +119,6 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
     }
   }, [fullscreenRef]);
 
-  const handleStart = () => {
-    if (socket) {
-      socket.emit('start');
-    } else {
-      logger.error('socket was null when trying to emit start');
-    }
-  };
-
   const handleJoinCall = () => {
     if (isHost) {
       if (socket) {
@@ -158,7 +134,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   if (!game) {
     return (
       <div className={classes.centered}>
-        <Loader msg={'Ladataan'} spinner />
+        <Loader msg={'Ladataan..'} spinner />
       </div>
     );
   }
@@ -174,22 +150,10 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
             läpi.
           </Typography>
         </div>
-        <div className={classes.infoContent}>
-          <HelpIcon fontSize="large"></HelpIcon>
-          <Typography>
-            Jos yhteydessä on ongelmia, voit kokeilla päivittää selaimen.
-          </Typography>
-        </div>
 
-        <Fab
-          className={classes.startVideoBtn}
-          variant="extended"
-          color="secondary"
-          onClick={handleJoinCall}
-          id="start"
-        >
+        <Button color="secondary" onClick={handleJoinCall} id="start">
           Käynnistä video
-        </Fab>
+        </Button>
       </div>
     );
   }
@@ -197,34 +161,12 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
     <InGameSocket.Provider value={socket}>
       <div className={classes.containerGame} ref={fullscreenRef}>
         <AudioHandler />
-        <div className={classes.backdropContent}>
-          {isHost && game.status === GameStatus.WAITING ? (
-            <>
-              <div className={classes.startBtnContainer}>
-                <Fab
-                  color="secondary"
-                  variant="extended"
-                  size="large"
-                  onClick={handleStart}
-                  className={classes.startButton}
-                >
-                  Aloita peli
-                </Fab>
-              </div>
-            </>
-          ) : (
-            // Is this unnecessary repetition?
-            game.status === GameStatus.WAITING && <></>
-          )}
-        </div>
         <div className={classes.topGradient}></div>
         <div className={classes.gameTitleBar}>
           {/* For animation, should more topStyle divs be added? */}
           <div className={classes.topStyle}></div>
           <div>
-            <Typography className={classes.gameTitle} variant="subtitle2">
-              Kotitonni
-            </Typography>
+            <Typography variant="subtitle2">Kotitonni</Typography>
             <Typography className={classes.kotipelit}>Kotipelit.com</Typography>
           </div>
 

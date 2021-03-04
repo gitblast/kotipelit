@@ -46,11 +46,15 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     pointsAddition: {
       color: 'white',
+      backgroundColor: 'rgb(34 110 108)',
+      borderRadius: '50%',
+      padding: theme.spacing(2),
       display: 'flex',
       justifyContent: 'flex-end',
-      fontSize: theme.spacing(6),
+      fontSize: theme.spacing(4),
       position: 'absolute',
-      top: '36%',
+      top: '4%',
+      left: '80%',
     },
     // Repeating same code from HostOverlayItems
     controlIcon: {
@@ -190,7 +194,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
 
               {participant.isMe && (
                 <div>
-                  <Typography color="error" variant="h4">
+                  <Typography color="error" variant="h5">
                     ME
                   </Typography>
                 </div>

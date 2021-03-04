@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(2),
     },
     kotitonniImage: {
-      height: 200,
+      height: 100,
     },
     cardBottom: {
       display: 'flex',
@@ -62,7 +62,7 @@ const ChooseGame: React.FC<ChooseGameProps> = ({ handleSelect }) => {
                 className={classes.kotitonniImage}
               />
             </CardMedia>
-            <Typography component="p">
+            <Typography variant="body2" component="p">
               Tv-visailun huumaa yksinkertaisessa, mutta hauskassa sanapelissä.
             </Typography>
             <CardContent>

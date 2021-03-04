@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 // import Rating from '@material-ui/lab/Rating';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Fab, Typography } from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 
 import QueuedGame from './QueuedGame';
 
@@ -22,25 +22,6 @@ const useStyles = makeStyles((theme: Theme) =>
         padding: theme.spacing(0.5),
       },
     },
-    hostInfo: {
-      marginTop: theme.spacing(2),
-      marginBottom: theme.spacing(2),
-      padding: theme.spacing(2),
-      background: 'rgba(52, 75, 115, 0.7)',
-      color: 'white',
-      width: 300,
-      [theme.breakpoints.down('xs')]: {
-        flexDirection: 'column',
-      },
-    },
-    userBadge: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      '& > * + *': {
-        margin: theme.spacing(1),
-      },
-    },
     userSection: {
       display: 'flex',
       justifyContent: 'start',
@@ -53,21 +34,23 @@ const useStyles = makeStyles((theme: Theme) =>
         justifyContent: 'center',
       },
     },
-    userStats: {
+    headline: {
       display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: theme.spacing(3),
+      justifyContent: 'flex-start',
+      marginTop: theme.spacing(4),
     },
-    stars: {
-      textAlign: 'center',
-      padding: theme.spacing(2),
+    neonLight: {
+      height: 3,
+      background:
+        'linear-gradient(to right, rgb(0 225 217), rgba(11, 43, 56, 1))',
+      boxShadow: 'rgb(231 239 191) -23px 8px 44px',
+      width: '11vw',
+      alignSelf: 'center',
+      marginTop: '6px',
     },
-    newGame: {
-      padding: theme.spacing(4),
+    newGameButton: {
       border: 'solid',
-      boxShadow: '#608478 6px 12px 18px 1px',
-      marginBottom: theme.spacing(2),
+      boxShadow: '#608478 1px 3px 12px 2px',
     },
     games: {
       display: 'flex',
@@ -80,21 +63,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
-
-// const RatingStars = () => {
-//   const classes = useStyles();
-//   return (
-//     <div className={classes.stars}>
-//       <Rating
-//         name="rating-read"
-//         size="large"
-//         defaultValue={4.5}
-//         precision={0.5}
-//         readOnly
-//       />
-//     </div>
-//   );
-// };
 
 interface DashboardProps {
   user: LoggedUser;
@@ -118,7 +86,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
     return filtered.length ? (
       <>
         <div>
-          <Typography variant="h5">{label}</Typography>
+          <Typography>{label}</Typography>
         </div>
         <div className={classes.games}>
           {filtered.map((game) => (
@@ -132,44 +100,37 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   return (
     <div className={classes.container}>
       <div className={classes.userSection}>
-        {/* <Paper className={classes.hostInfo}>
-          <div className={classes.userBadge}>
-            <Avatar aria-label="User" className={classes.avatar}>
-              K
-            </Avatar>
-            <Typography>{user.username}</Typography>
-          </div>
-          <RatingStars />
-          <div className={classes.userStats}>
-            <Typography>Peli-iltoja: 0</Typography>
-
-            <Typography>Pelituotot: 0€</Typography>
-          </div>
-        </Paper> */}
         <div>
-          <Fab
-            className={classes.newGame}
+          <Button
+            className={classes.newGameButton}
             color="secondary"
-            variant="extended"
             component={Link}
             to={`/${user.username}/newgame`}
           >
-            <Typography variant="h6">Uusi peli</Typography>
-          </Fab>
+            Uusi peli
+          </Button>
         </div>
       </div>
-      <Typography variant="h4" color="primary">
-        {filterGamesByStatus('Käynnissä olevat pelit', GameStatus.RUNNING)}
-      </Typography>
-      <Typography variant="h4" color="primary">
-        {filterGamesByStatus('Odottaa pelaajia', GameStatus.WAITING)}
-      </Typography>
-      <Typography variant="h4" color="primary">
-        {filterGamesByStatus('Tulevat pelit', GameStatus.UPCOMING)}
-      </Typography>
-      <Typography variant="h4" color="primary">
-        {filterGamesByStatus('Menneet pelit', GameStatus.FINISHED)}
-      </Typography>
+      <div className={classes.headline}>
+        <div className={classes.neonLight}></div>
+        <Typography variant="h4">Käynnissä olevat pelit</Typography>
+      </div>
+      {filterGamesByStatus('', GameStatus.RUNNING)}
+      <div className={classes.headline}>
+        <div className={classes.neonLight}></div>
+        <Typography variant="h4">Odottaa pelaajia</Typography>
+      </div>
+      {filterGamesByStatus('', GameStatus.WAITING)}
+      <div className={classes.headline}>
+        <div className={classes.neonLight}></div>
+        <Typography variant="h4">Tulevat pelit</Typography>
+      </div>
+      {filterGamesByStatus('', GameStatus.UPCOMING)}
+      <div className={classes.headline}>
+        <div className={classes.neonLight}></div>
+        <Typography variant="h4">Menneet pelit</Typography>
+      </div>
+      {filterGamesByStatus('', GameStatus.FINISHED)}
     </div>
   );
 };

@@ -20,7 +20,11 @@ const useAuthSocket = (
     const initSocket = (authToken: string) => {
       logger.log('initializing socket');
 
-      const socket = socketIOClient('/', {
+      const path =
+        // eslint-disable-next-line no-undef
+        process?.env.NODE_ENV === 'development' ? 'http://localhost:3333' : '/';
+
+      const socket = socketIOClient(path, {
         transports: ['websocket'],
         upgrade: false,
         auth: {

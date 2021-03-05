@@ -185,6 +185,10 @@ const useLobbySystem = () => {
       error,
       reserveSpot,
       lockSpot,
+      unlockedReservationData:
+        game?.players.find((player) => player.reservedForMe) ?? null,
+      lockedReservationData:
+        game?.players.find((player) => player.lockedForMe) ?? null,
     };
   }, [game, error, reserveSpot, lockSpot]);
 

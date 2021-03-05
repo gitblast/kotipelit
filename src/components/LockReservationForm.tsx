@@ -18,11 +18,11 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface LockReservationFormProps {
-  handleReserve: (displayName: string, email: string) => void;
+  handleLock: (displayName: string, email: string) => void;
 }
 
 const LockReservationForm: React.FC<LockReservationFormProps> = ({
-  handleReserve,
+  handleLock,
 }) => {
   const classes = useStyles();
   const [name, setName] = React.useState('');
@@ -51,7 +51,7 @@ const LockReservationForm: React.FC<LockReservationFormProps> = ({
       return setEmailError('Tarkista sähköpostiosoite!');
     }
 
-    handleReserve(name, email);
+    handleLock(name, email);
   };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {

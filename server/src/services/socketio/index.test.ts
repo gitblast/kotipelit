@@ -5,7 +5,7 @@ import http from 'http';
 import jwt from 'jsonwebtoken';
 import { AddressInfo } from 'net';
 import { Server } from 'socket.io';
-import ioClient from 'socket.io-client';
+import { io as ioClient, Socket, SocketOptions } from 'socket.io-client';
 import * as ioService from '.';
 import config from '../../utils/config';
 import testHelpers, { SocketIOParams } from '../../utils/testHelpers';
@@ -14,7 +14,7 @@ let ioServer: Server;
 let httpServer: http.Server;
 let httpServerAddr: AddressInfo;
 
-let socket: SocketIOClient.Socket;
+let socket: Socket;
 
 let path: string;
 let options: SocketIOParams['options'];
@@ -50,8 +50,10 @@ describe('socket.io', () => {
     it('should not connect without a valid token', (done) => {
       socket = ioClient(path, {
         ...options,
-        extraHeaders: { Authorization: 'INVALID TOKEN' },
-      } as SocketIOClient.ConnectOpts);
+        auth: {
+          token: 'Bearer INVALID_TOKEN',
+        },
+      } as SocketOptions);
 
       socket.once('connect', () => {
         fail('expect to not connect');
@@ -70,8 +72,10 @@ describe('socket.io', () => {
 
     socket = ioClient(path, {
       ...options,
-      extraHeaders: { Authorization: `Bearer ${token}` },
-    } as SocketIOClient.ConnectOpts);
+      auth: {
+        token: `Bearer ${token}`,
+      },
+    } as SocketOptions);
 
     socket.once('connect_error', (error: Error) => {
       console.log('connection error:', error.message);

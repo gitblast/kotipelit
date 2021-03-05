@@ -30,7 +30,7 @@ export const useMediaStream = (
       return () => {
         if (stream) {
           logger.log(`shutting off local stream`);
-          stream.getTracks().forEach((track) => track.stop());
+          stream.getTracks()?.forEach((track) => track.stop());
         }
       };
     }

@@ -13,6 +13,7 @@ describe('kotitonni local reducer', () => {
       clickedMap: {},
       timer: 60,
       mutedMap: {},
+      videoDisabledMap: {},
     };
 
     expect(reducer(undefined, {} as KotitonniLocalAction)).toEqual(
@@ -35,6 +36,7 @@ describe('kotitonni local reducer', () => {
       },
       timer: 60,
       mutedMap: {},
+      videoDisabledMap: {},
     };
 
     expect(reducer(undefined, action)).toEqual(expectedState);
@@ -53,6 +55,7 @@ describe('kotitonni local reducer', () => {
       },
       timer: 60,
       mutedMap: {},
+      videoDisabledMap: {},
     };
 
     expect(reducer(undefined, falsifyingAction)).toEqual(newState);
@@ -73,6 +76,7 @@ describe('kotitonni local reducer', () => {
       mutedMap: {
         testID: true,
       },
+      videoDisabledMap: {},
     };
 
     expect(reducer(undefined, action)).toEqual(expectedState);
@@ -91,6 +95,7 @@ describe('kotitonni local reducer', () => {
       mutedMap: {
         testID: false,
       },
+      videoDisabledMap: {},
     };
 
     expect(reducer(undefined, falsifyingAction)).toEqual(newState);
@@ -106,6 +111,7 @@ describe('kotitonni local reducer', () => {
       clickedMap: {},
       timer: 555,
       mutedMap: {},
+      videoDisabledMap: {},
     };
 
     expect(reducer(undefined, action)).toEqual(expectedState);
@@ -148,6 +154,7 @@ describe('kotitonni local reducer', () => {
       mutedMap: {
         testID: true,
       },
+      videoDisabledMap: {},
     };
 
     expect(timerState).not.toEqual(expectedStateAfterReset);

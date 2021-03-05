@@ -342,10 +342,10 @@ export interface RecievedError {
 // TESTING
 
 export interface MockSocket {
-  listeners: Record<string, Function>;
-  emitted: Record<string, object>;
-  on: Function;
-  emit: Function;
+  listeners: Record<string, unknown>;
+  emitted: Record<string, unknown>;
+  on: unknown;
+  emit: unknown;
 }
 
 export interface RTCSelf {

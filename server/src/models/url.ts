@@ -13,7 +13,7 @@ interface JSONUrlModel extends Omit<UrlModel, 'inviteCode'> {
 }
 
 urlSchema.set('toJSON', {
-  transform: (_document, returnedObject: JSONUrlModel) => {
+  transform: (_document: unknown, returnedObject: JSONUrlModel) => {
     delete returnedObject.__v;
     delete returnedObject._id;
     delete returnedObject.inviteCode;

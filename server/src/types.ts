@@ -1,4 +1,5 @@
 import { Document } from 'mongoose';
+import { Socket } from 'socket.io'
 
 export interface GameModel extends NewGame, Document {
   createDate: Date;
@@ -121,7 +122,7 @@ export interface SocketIOAuthToken {
   type: 'rtc';
 }
 
-export interface SocketWithToken extends SocketIO.Socket {
+export interface SocketWithToken extends Socket {
   decodedToken: SocketIOAuthToken;
 }
 

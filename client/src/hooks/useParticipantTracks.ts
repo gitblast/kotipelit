@@ -13,15 +13,8 @@ import {
 import { RTCParticipant } from '../types';
 import logger from '../utils/logger';
 
-type TrackType = 'audio' | 'video';
-
 type LocalVideoSetter = (track: LocalVideoTrack) => void;
 type LocalAudioSetter = (track: LocalAudioTrack) => void;
-
-interface LocalTrackSetter {
-  audio: LocalAudioSetter;
-  video: LocalVideoSetter;
-}
 
 const useParticipantLocalTracks = (
   videoSet: boolean,

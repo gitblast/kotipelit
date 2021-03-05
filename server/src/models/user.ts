@@ -15,7 +15,7 @@ interface JSONUserModel extends Omit<UserModel, 'email' | 'passwordHash'> {
 }
 
 userSchema.set('toJSON', {
-  transform: (_document, returnedObject: JSONUserModel) => {
+  transform: (_document: unknown, returnedObject: JSONUserModel) => {
     delete returnedObject.__v;
     delete returnedObject.email;
     delete returnedObject.passwordHash;

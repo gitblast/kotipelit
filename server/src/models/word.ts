@@ -6,7 +6,7 @@ const wordSchema: Schema = new Schema({
 });
 
 wordSchema.set('toJSON', {
-  transform: (_document, returnedObject: WordModel) => {
+  transform: (_document: unknown, returnedObject: WordModel) => {
     delete returnedObject.__v;
     delete returnedObject._id;
   },

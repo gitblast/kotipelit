@@ -1,6 +1,7 @@
 {
-  "name": "kotipelit",
+  "name": "client",
   "version": "0.1.0",
+  "description": "Frontend for www.kotipelit.com",
   "private": true,
   "dependencies": {
     "@date-io/date-fns": "1.x",
@@ -40,7 +41,7 @@
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^3.4.4",
+    "react-scripts": "4.0.0",
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",

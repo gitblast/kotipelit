@@ -27,7 +27,7 @@ const gameSchema: Schema = new Schema(
 ); // minimize omits empty objects (causes errors in kotitonni answers)
 
 gameSchema.set('toJSON', {
-  transform: (_document, returnedObject: GameModel) => {
+  transform: (_document: unknown, returnedObject: GameModel) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;

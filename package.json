@@ -12,6 +12,16 @@
   "license": "MIT",
   "scripts": {
     "client": "yarn workspace client",
-    "server": "yarn workspace server"
+    "server": "yarn workspace server",
+    "dev": "concurrently \"yarn server dev\" \"yarn client start\"",
+    "clean": "yarn server clean",
+    "build": "yarn server build && yarn client build",
+    "copybundle": "node scripts/copy_client_bundle.js",
+    "start:nobuild": "yarn server start",
+    "start": "yarn clean && yarn build && yarn copybundle && yarn server start"
+  },
+  "devDependencies": {
+    "concurrently": "^6.0.0",
+    "recursive-copy": "^2.0.11"
   }
 }

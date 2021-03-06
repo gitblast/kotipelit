@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build-project:
+    name: Build backend and frontend
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Use node v15
+        uses: actions/setup-node@v2
+        with:
+          node_version: "15"
+      - name: Install dependencies
+        run: yarn install
+      - name: Build frontend
+        run: yarn client build
+      - name: Build backend
+        run: yarn server

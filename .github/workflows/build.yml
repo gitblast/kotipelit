@@ -20,4 +20,4 @@ jobs:
       - name: Build frontend
         run: yarn client build
       - name: Build backend
-        run: yarn server
+        run: yarn server build

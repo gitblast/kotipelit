@@ -23,8 +23,10 @@ jobs:
           script: |
             cd ${{ secrets.PROJECT_PATH }}
             git pull origin master
-            rm -rf server/dist
+            yarn install --frozen-lockfile
+            rm -rf server/dist/
             yarn server build
+            chgrp -R www-data server/dist/
   deploy-frontend:
     needs: deploy-backend
     name: Deploy frontend
@@ -50,7 +52,7 @@ jobs:
           source: "client/build"
           target: ${{ secrets.PROJECT_PATH }}
           strip_components: 1
-      - name: Test script
+      - name: Copy client bundle to backend
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -62,6 +64,7 @@ jobs:
             cd ${{ secrets.PROJECT_PATH }}
             rm -rf server/build/
             mv build/ server/
+            chgrp -R www-data server/build/
   restart-pm2:
     name: Restart pm2 process
     needs: deploy-frontend

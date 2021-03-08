@@ -23,7 +23,7 @@ jobs:
           script: |
             cd ${{ secrets.PROJECT_PATH }}
             git pull origin master
-            yarn clean
+            rm -rf server/dist
             yarn server build
   deploy-frontend:
     needs: deploy-backend

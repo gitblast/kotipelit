@@ -21,6 +21,7 @@ jobs:
           port: ${{ secrets.PORT }}
           script_stop: true
           script: |
+            ~/.nvm/nvm.sh
             cd ${{ secrets.PROJECT_PATH }}
             git pull origin master
             yarn install --frozen-lockfile

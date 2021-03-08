@@ -79,4 +79,7 @@ jobs:
           key: ${{ secrets.SSHKEY }}
           port: ${{ secrets.PORT }}
           script_stop: true
-          script: env HOME=/home/${{ secrets.WWW_USER }} pm2 restart kotipelit
+          script: |
+            export NVM_DIR=~/.nvm
+            source ~/.nvm/nvm.sh
+            env HOME=/home/${{ secrets.WWW_USER }} pm2 restart kotipelit

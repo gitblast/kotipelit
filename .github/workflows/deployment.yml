@@ -1,0 +1,77 @@
+name: CD
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    branches: ["master"]
+    types:
+      - completed
+
+jobs:
+  deploy-backend:
+    name: Deploy backend
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Connect via ssh, pull changes and build
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSHKEY }}
+          port: ${{ secrets.PORT }}
+          script_stop: true
+          script: |
+            cd ${{ secrets.PROJECT_PATH }}
+            git pull origin master
+            rm -rf server/dist
+            yarn server build
+  deploy-frontend:
+    needs: deploy-backend
+    name: Deploy frontend
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Use node v15
+        uses: actions/setup-node@v2
+        with:
+          node-version: "15"
+      - name: Install dependencies
+        run: yarn install
+      - name: Build client
+        run: yarn client build
+      - name: Copy to server via scp
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSHKEY }}
+          port: ${{ secrets.PORT }}
+          source: "client/build"
+          target: ${{ secrets.PROJECT_PATH }}
+          strip_components: 1
+      - name: Test script
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSHKEY }}
+          port: ${{ secrets.PORT }}
+          script_stop: true
+          script: |
+            cd ${{ secrets.PROJECT_PATH }}
+            rm -rf server/build/
+            mv build/ server/
+  restart-pm2:
+    name: Restart pm2 process
+    needs: deploy-frontend
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSHKEY }}
+          port: ${{ secrets.PORT }}
+          script_stop: true
+          script: env HOME=/home/${{ secrets.WWW_USER }} pm2 restart kotipelit

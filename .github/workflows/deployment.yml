@@ -64,6 +64,7 @@ jobs:
             mv build/ server/
   restart-pm2:
     name: Restart pm2 process
+    needs: deploy-frontend
     runs-on: ubuntu-18.04
     steps:
       - uses: appleboy/ssh-action@master
@@ -73,4 +74,4 @@ jobs:
           key: ${{ secrets.SSHKEY }}
           port: ${{ secrets.PORT }}
           script_stop: true
-          script: env HOME=/home/${{ secrets.WWW_USER }} pm2 list
+          script: env HOME=/home/${{ secrets.WWW_USER }} pm2 restart kotipelit

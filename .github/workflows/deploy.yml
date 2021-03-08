@@ -12,8 +12,6 @@ jobs:
     name: Deploy backend
     runs-on: ubuntu-18.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
       - name: Connect via ssh, pull changes and build
         uses: appleboy/ssh-action@master
         with:
@@ -50,7 +48,8 @@ jobs:
           key: ${{ secrets.SSHKEY }}
           port: ${{ secrets.PORT }}
           source: "client/build"
-          target: "."
+          target: ${{ secrets.PROJECT_PATH }}
+          strip_components: 1
       - name: Test script
         uses: appleboy/ssh-action@master
         with:
@@ -60,4 +59,18 @@ jobs:
           port: ${{ secrets.PORT }}
           script_stop: true
           script: |
-            ls
+            cd ${{ secrets.PROJECT_PATH }}
+            rm -rf server/build/
+            mv build/ server/
+  restart-pm2:
+    name: Restart pm2 process
+    steps:
+      uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSHKEY }}
+          port: ${{ secrets.PORT }}
+          script_stop: true
+          script: env HOME=/home/${{ secrets.WWW_USER }} pm2 list
+

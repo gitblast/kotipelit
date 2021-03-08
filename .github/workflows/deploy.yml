@@ -21,13 +21,14 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSHKEY }}
           port: ${{ secrets.PORT }}
-          script_stop: true,
+          script_stop: true
           script: |
             cd ${{ secrets.PROJECT_PATH }}
             git pull origin master
             yarn clean
             yarn server build
   deploy-frontend:
+    needs: deploy-backend
     name: Deploy frontend
     runs-on: ubuntu-18.04
     steps:
@@ -36,7 +37,7 @@ jobs:
       - name: Use node v15
         uses: actions/setup-node@v2
         with:
-          node_version: "15"
+          node-version: "15"
       - name: Install dependencies
         run: yarn install
       - name: Build client
@@ -48,8 +49,8 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSHKEY }}
           port: ${{ secrets.PORT }}
-          source: "client/build/"
-          target: ${{ secrets.PROJECT_PATH }}
+          source: "client/build"
+          target: "."
       - name: Test script
         uses: appleboy/ssh-action@master
         with:
@@ -57,7 +58,6 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSHKEY }}
           port: ${{ secrets.PORT }}
-          script_stop: true,
+          script_stop: true
           script: |
-            cd ${{ secrets.PROJECT_PATH }}
             ls

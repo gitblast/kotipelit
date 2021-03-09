@@ -14,7 +14,7 @@ import { createMuiTheme } from '@material-ui/core/styles';
 //     url(${Zrnic}) format('ttf')
 //   `,
 //   unicodeRange:
-//     'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF',
+//     'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2035, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF',
 // };
 
 const theme = createMuiTheme({
@@ -32,13 +32,13 @@ const theme = createMuiTheme({
       contrastText: 'rgba(214, 214, 214)',
     },
     error: {
-      main: 'rgba(174, 56, 43)',
+      main: 'rgba(135, 56, 43)',
     },
     text: {
       primary: 'rgb(170 161 85)',
       secondary: 'rgb(168 164 136)',
       disabled: 'rgb(168 164 136)',
-      hint: 'rgba(174, 56, 43)',
+      hint: 'rgba(135, 56, 43)',
     },
   },
   typography: {
@@ -87,7 +87,7 @@ const theme = createMuiTheme({
       wordBreak: 'break-word',
       fontStyle: 'italic',
       fontSize: '1rem',
-      color: 'rgb(93 91 83)',
+      color: 'rgb(135 135 135)',
     },
   },
   overrides: {

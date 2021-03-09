@@ -8,6 +8,7 @@ import RTCPlayerControls from './RTCPlayerControls';
 import AudioHandler from './AudioHandler';
 
 import HeadsetIcon from '@material-ui/icons/Headset';
+import SyncIcon from '@material-ui/icons/Sync';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import logger, { setDebug } from '../utils/logger';
@@ -150,7 +151,12 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
             läpi.
           </Typography>
         </div>
-
+        <div className={classes.infoContent}>
+          <SyncIcon fontSize="large"></SyncIcon>
+          <Typography>
+            Mikäli vastaamisessa on ongelmia, paina Refresh- ikonia.
+          </Typography>
+        </div>
         <Button color="secondary" onClick={handleJoinCall} id="start">
           Käynnistä video
         </Button>

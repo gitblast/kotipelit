@@ -31,8 +31,8 @@ const ReservationData: React.FC<ReservatioDataProps> = ({ data }) => {
 
     return (
       <>
-        <Typography>Tässä ovat pelin sanasi:</Typography>
-        <Typography>{words.join(' / ')}</Typography>
+        <Typography variant="body2">Tässä ovat pelin sanasi:</Typography>
+        <Typography>{words.join(', ')}</Typography>
       </>
     );
   };
@@ -46,7 +46,9 @@ const ReservationData: React.FC<ReservatioDataProps> = ({ data }) => {
 
     return (
       <>
-        <Typography>Peliin pääset liittymään osoitteessa:</Typography>
+        <Typography variant="body2">
+          Peliin pääset liittymään osoitteessa:
+        </Typography>
         <Typography variant="caption">{url}</Typography>
       </>
     );
@@ -54,7 +56,7 @@ const ReservationData: React.FC<ReservatioDataProps> = ({ data }) => {
 
   return (
     <>
-      <Typography variant="body1" color="primary">
+      <Typography variant="body1">
         {`Lähetimme pelin tiedot sähköpostiisi${emailString}`}
         {/** Lähetä uudestaan -nappi, vaihda sposti-toiminto? */}
       </Typography>

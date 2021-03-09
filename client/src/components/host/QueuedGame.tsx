@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     helpIcon: {
       // caption color
-      color: 'rgb(93 91 83)',
+      color: 'rgb(135 135 135)',
       marginLeft: theme.spacing(0.5),
       fontSize: 19,
     },

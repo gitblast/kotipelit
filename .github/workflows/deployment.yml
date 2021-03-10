@@ -83,4 +83,3 @@ jobs:
             export NVM_DIR=~/.nvm
             source ~/.nvm/nvm.sh
             env HOME=/home/${{ secrets.WWW_USER }} pm2 restart kotipelit
-            chgrp -R www-data ${{ secrets.PROJECT_PATH }}

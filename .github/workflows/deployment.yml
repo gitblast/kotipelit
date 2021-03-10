@@ -25,7 +25,7 @@ jobs:
             source ~/.nvm/nvm.sh
             cd ${{ secrets.PROJECT_PATH }}
             git pull origin master
-            yarn install --frozen-lockfile --prod
+            yarn install --frozen-lockfile
             rm -rf server/dist/
             yarn server build
             chgrp -R www-data server/dist/

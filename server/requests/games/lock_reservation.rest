@@ -2,6 +2,8 @@ PUT http://localhost:3333/api/games/lock
 Content-Type: application/json
 
 {
-  "reservationId": "uusreservation",
-  "gameId": "5fda05d4ace8c702d3657145"
+  "displayName": "testiname",
+  "email": "test@email.com",
+  "reservationId": "406235a1-b7cd-4ded-872e-c1b2bffb7864",
+  "gameId": "6048e84e7987be691c4ccc9e"
 }

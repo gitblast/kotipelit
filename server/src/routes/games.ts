@@ -86,7 +86,7 @@ router.put('/lock', async (req, res, next) => {
 
     const playerWithReservationLocked = {
       ...playerReservationToLock,
-      name: displayName,
+      name: displayName.trim(),
       reservedFor: {
         ...reservationData,
         locked: true,

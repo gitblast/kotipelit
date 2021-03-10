@@ -51,7 +51,7 @@ const LockReservationForm: React.FC<LockReservationFormProps> = ({
       return setEmailError('Tarkista sähköpostiosoite!');
     }
 
-    handleLock(name, email);
+    handleLock(name.trim(), email);
   };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {

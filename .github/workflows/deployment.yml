@@ -25,7 +25,7 @@ jobs:
             source ~/.nvm/nvm.sh
             cd ${{ secrets.PROJECT_PATH }}
             git pull origin master
-            yarn install --frozen-lockfile
+            yarn install --frozen-lockfile --prod
             rm -rf server/dist/
             yarn server build
             chgrp -R www-data server/dist/
@@ -83,3 +83,4 @@ jobs:
             export NVM_DIR=~/.nvm
             source ~/.nvm/nvm.sh
             env HOME=/home/${{ secrets.WWW_USER }} pm2 restart kotipelit
+            chgrp -R www-data ${{ secrets.PROJECT_PATH }}

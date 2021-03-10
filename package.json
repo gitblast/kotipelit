@@ -10,6 +10,7 @@
   "main": "index.js",
   "author": "gitblast <jarkko.mammela@gmail.com>",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "client": "yarn workspace client",
     "server": "yarn workspace server",

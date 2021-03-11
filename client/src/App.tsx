@@ -18,6 +18,8 @@ import ChannelPage from './components/ChannelPage';
 import { State, HostChannel } from './types';
 
 import logoImg from './assets/images/logo.png';
+import QuestionsAnswers from './components/QuestionsAnswers';
+import CompanyInfo from './components/CompanyInfo';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -81,7 +83,6 @@ const App = () => {
           <Link to="/" className={classes.logo}>
             <img className={classes.logo} src={logoImg} alt="Kotipelit" />
           </Link>
-
           <UserControls user={user} />
         </Toolbar>
       </AppBar>
@@ -90,6 +91,12 @@ const App = () => {
           {channelRoutes(channels)}
           <Route path="/kirjaudu">
             <LoginForm />
+          </Route>
+          <Route path="/kysyttya">
+            <QuestionsAnswers />
+          </Route>
+          <Route path="/yritys">
+            <CompanyInfo />
           </Route>
           <Route path="/">
             <FrontPage />

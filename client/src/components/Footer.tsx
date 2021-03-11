@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { Link } from 'react-router-dom';
+
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Paper, Typography, Grid } from '@material-ui/core';
 
@@ -16,10 +18,9 @@ const useStyles = makeStyles((theme: Theme) =>
       overflow: 'hidden',
     },
     footerContent: {
-      display: 'flex',
-      justifyContent: 'space-around',
       color: theme.palette.primary.light,
       marginTop: theme.spacing(1.5),
+      textAlign: 'center',
     },
     copyRights: {
       display: 'flex',
@@ -44,23 +45,27 @@ const Footer: React.FC = () => {
   return (
     <>
       <Paper className={classes.footerContainer}>
-        <Grid container spacing={6} className={classes.footerContent}>
-          <Grid item className={classes.footerBlock}>
+        <Grid container spacing={4} className={classes.footerContent}>
+          <Grid item md={4} xs={12} className={classes.footerBlock}>
             <Typography variant="body2" className={classes.footerHeader}>
               Tuki
             </Typography>
             <Typography variant="body2">info[at]kotipelit.com</Typography>
-            <Typography variant="body2">Usein kysyttyä</Typography>
+            <Typography variant="body2" component={Link} to="/kysyttya">
+              Usein kysyttyä
+            </Typography>
           </Grid>
-          <Grid item className={classes.footerBlock}>
+          <Grid item md={4} xs={12} className={classes.footerBlock}>
             <Typography variant="body2" className={classes.footerHeader}>
               Spektaakkeli Events
             </Typography>
-            <Typography variant="body2">Yleistä</Typography>
+            <Typography variant="body2" component={Link} to="/yritys">
+              Yleistä
+            </Typography>
             <Typography variant="body2">Spektaakkeli.com</Typography>
             <Typography variant="body2">Kotiluennot.com</Typography>
           </Grid>
-          <Grid item className={classes.footerBlock}>
+          <Grid item md={4} xs={12} className={classes.footerBlock}>
             <Typography variant="body2" className={classes.footerHeader}>
               Yhteistyössä
             </Typography>

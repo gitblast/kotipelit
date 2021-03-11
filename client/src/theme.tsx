@@ -48,6 +48,8 @@ const theme = createMuiTheme({
     },
     body2: {
       fontSize: '1rem',
+      // primary light
+      color: 'rgb(168 164 136)',
     },
     h1: {
       fontSize: '2.2rem',
@@ -109,11 +111,11 @@ const theme = createMuiTheme({
           color: 'rgb(92 92 92)',
         },
       },
-      disabled: {},
     },
     MuiLink: {
       root: {
         cursor: 'pointer',
+        underline: 'none',
       },
     },
     MuiLinearProgress: {

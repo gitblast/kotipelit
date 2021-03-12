@@ -158,7 +158,6 @@ export const toNewGame = (object: any, user: DecodedToken): NewGame => {
       id: user.id,
       displayName: user.username,
       privateData: {
-        socketId: null,
         twilioToken: null,
       },
     },

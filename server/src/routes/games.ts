@@ -370,7 +370,6 @@ router.post('/', async (req, res, next) => {
             ...player.privateData,
             inviteCode: shortid.generate(),
             twilioToken: null,
-            socketId: null,
           },
         };
       }),

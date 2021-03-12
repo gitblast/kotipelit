@@ -9,7 +9,6 @@ export const hardcodedGames: RTCGame[] = [
 
       displayName: 'hostname',
       privateData: {
-        socketId: null,
         twilioToken: null,
       },
     },
@@ -22,7 +21,7 @@ export const hardcodedGames: RTCGame[] = [
         privateData: {
           words: ['jojo', 'kasvi', 'hattu'],
           answers: {},
-          socketId: null,
+
           inviteCode: 'code1',
           twilioToken: null,
         },
@@ -34,7 +33,7 @@ export const hardcodedGames: RTCGame[] = [
         privateData: {
           words: ['sana', 'kirja', 'väline'],
           answers: {},
-          socketId: null,
+
           inviteCode: 'code1',
           twilioToken: null,
         },
@@ -46,7 +45,7 @@ export const hardcodedGames: RTCGame[] = [
         privateData: {
           words: ['kaiutin', 'kuuloke', 'lasi'],
           answers: {},
-          socketId: null,
+
           inviteCode: 'code1',
           twilioToken: null,
         },
@@ -58,7 +57,7 @@ export const hardcodedGames: RTCGame[] = [
         privateData: {
           words: ['johto', 'hiiri', 'puhelin'],
           answers: {},
-          socketId: null,
+
           inviteCode: 'code1',
           twilioToken: null,
         },
@@ -70,7 +69,7 @@ export const hardcodedGames: RTCGame[] = [
         privateData: {
           words: ['rasia', 'kuppi', 'vihko'],
           answers: {},
-          socketId: null,
+
           inviteCode: 'code1',
           twilioToken: null,
         },
@@ -90,7 +89,6 @@ export const hardcodedGames: RTCGame[] = [
 
       displayName: 'hostname',
       privateData: {
-        socketId: null,
         twilioToken: null,
       },
     },
@@ -102,7 +100,7 @@ export const hardcodedGames: RTCGame[] = [
         privateData: {
           words: ['lamppu', 'pöytä', 'sohva'],
           answers: {},
-          socketId: null,
+
           inviteCode: 'code1',
           twilioToken: null,
         },
@@ -114,7 +112,7 @@ export const hardcodedGames: RTCGame[] = [
         privateData: {
           words: ['laulu', 'tuoli', 'peitto'],
           answers: {},
-          socketId: null,
+
           inviteCode: 'code1',
           twilioToken: null,
         },
@@ -126,7 +124,7 @@ export const hardcodedGames: RTCGame[] = [
         privateData: {
           words: ['naru', 'ikkuna', 'ovi'],
           answers: {},
-          socketId: null,
+
           inviteCode: 'code1',
           twilioToken: null,
         },
@@ -138,7 +136,7 @@ export const hardcodedGames: RTCGame[] = [
         privateData: {
           words: ['presidentti', 'päällikkö', 'lattia'],
           answers: {},
-          socketId: null,
+
           inviteCode: 'code1',
           twilioToken: null,
         },
@@ -150,7 +148,7 @@ export const hardcodedGames: RTCGame[] = [
         privateData: {
           words: ['sammakko', 'tikku', 'lanka'],
           answers: {},
-          socketId: null,
+
           inviteCode: 'code1',
           twilioToken: null,
         },
@@ -189,7 +187,7 @@ export const hardcodedActiveSanakierto: RTCGame = {
       privateData: {
         words: ['jojo', 'kasvi', 'hattu'],
         answers: {},
-        socketId: null,
+
         inviteCode: 'code1',
         twilioToken: null,
       },
@@ -201,7 +199,7 @@ export const hardcodedActiveSanakierto: RTCGame = {
       privateData: {
         words: ['sana', 'kirja', 'väline'],
         answers: {},
-        socketId: null,
+
         inviteCode: 'code1',
         twilioToken: null,
       },
@@ -213,7 +211,7 @@ export const hardcodedActiveSanakierto: RTCGame = {
       privateData: {
         words: ['kaiutin', 'kuuloke', 'lasi'],
         answers: {},
-        socketId: null,
+
         inviteCode: 'code1',
         twilioToken: null,
       },
@@ -225,7 +223,7 @@ export const hardcodedActiveSanakierto: RTCGame = {
       privateData: {
         words: ['johto', 'hiiri', 'puhelin'],
         answers: {},
-        socketId: null,
+
         inviteCode: 'code1',
         twilioToken: null,
       },
@@ -237,7 +235,7 @@ export const hardcodedActiveSanakierto: RTCGame = {
       privateData: {
         words: ['rasia', 'kuppi', 'vihko'],
         answers: {},
-        socketId: null,
+
         inviteCode: 'code1',
         twilioToken: null,
       },
@@ -256,7 +254,6 @@ export const hardcodedActiveSanakierto: RTCGame = {
     id: 'id',
     displayName: 'hostname',
     privateData: {
-      socketId: null,
       twilioToken: null,
     },
   },

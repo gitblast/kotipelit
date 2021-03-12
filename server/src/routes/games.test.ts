@@ -47,7 +47,6 @@ const dummyGame: Omit<NewGame, 'host'> = {
         words: [],
         twilioToken: null,
         inviteCode: 'player1invite',
-        socketId: null,
       },
     },
     {
@@ -57,7 +56,6 @@ const dummyGame: Omit<NewGame, 'host'> = {
       privateData: {
         answers: {},
         words: [],
-        socketId: null,
         inviteCode: 'player2invite',
         twilioToken: null,
       },

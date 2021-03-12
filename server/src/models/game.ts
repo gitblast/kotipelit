@@ -15,7 +15,6 @@ const gameSchema: Schema = new Schema(
       id: { type: mongoose.Types.ObjectId, required: true },
       displayName: { type: String, required: true },
       privateData: {
-        socketId: { type: String },
         twilioToken: { type: String },
       },
     },

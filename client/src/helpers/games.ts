@@ -33,7 +33,6 @@ export const initializePlayers = async (
         answers: {},
         inviteCode: '',
         twilioToken: null,
-        socketId: null,
       },
     });
   }

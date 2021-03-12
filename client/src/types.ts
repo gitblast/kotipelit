@@ -1,5 +1,6 @@
 // GAMES
 
+import { Socket } from 'socket.io-client';
 import { Participant } from 'twilio-video';
 
 export enum GameType {
@@ -47,7 +48,6 @@ export interface LobbyGame extends BaseGame {
 export interface BasePrivateData {
   inviteCode: string;
   twilioToken: string | null;
-  socketId: string | null;
 }
 
 export interface KotitonniPrivateData extends BasePrivateData {
@@ -77,7 +77,7 @@ export enum GameStatus {
 
 export interface BaseUser {
   loggedIn: false;
-  socket: null | SocketIOClient.Socket;
+  socket: null | Socket;
   jitsiRoom: null | string;
   displayName: null | string;
   loggingIn: boolean;
@@ -88,7 +88,7 @@ export interface LoggedUser {
   loggedIn: true;
   token: string;
   jitsiToken: string | null;
-  socket: null | SocketIOClient.Socket;
+  socket: null | Socket;
   jitsiRoom: null | string;
   loggingIn: boolean;
 }
@@ -361,16 +361,6 @@ export interface KotitonniInfo {
   answeringOpen: boolean;
 }
 
-export interface RTCPeer {
-  id: string;
-  peerId: string;
-  socketId: string;
-  displayName: string;
-  stream: null | MediaStream;
-  isHost: boolean;
-  isMe: boolean;
-}
-
 export type GameInfo = KotitonniInfo;
 
 export interface RTCGame {
@@ -386,7 +376,6 @@ export interface RTCGame {
     id: string;
     displayName: string;
     privateData: {
-      socketId: string | null;
       twilioToken: string | null;
     };
   };

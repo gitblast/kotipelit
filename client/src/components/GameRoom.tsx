@@ -1,33 +1,21 @@
+import { Typography } from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
-
+import { InGameSocket } from '../context';
 import useNewGameRoom from '../hooks/useNewGameRoom';
-
-import RTCVideoConference from './RTCVideoConference';
+import { GameStatus } from '../types';
+import logger, { setDebug } from '../utils/logger';
+import AudioHandler from './AudioHandler';
+import Loader from './Loader';
+import PreGameInfo from './PreGameInfo';
 import RTCHostControls from './RTCHostControls';
 import RTCPlayerControls from './RTCPlayerControls';
-import AudioHandler from './AudioHandler';
-
-import HeadsetIcon from '@material-ui/icons/Headset';
-import SyncIcon from '@material-ui/icons/Sync';
-
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import logger, { setDebug } from '../utils/logger';
-import { Typography, Button } from '@material-ui/core';
-import Loader from './Loader';
-import { GameStatus } from '../types';
-
-import { InGameSocket } from '../context';
+import RTCVideoConference from './RTCVideoConference';
 
 // import { Animated } from 'react-animated-css';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    preInfo: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      color: theme.palette.primary.light,
-    },
     containerGame: {
       minHeight: '91vh',
       background: 'linear-gradient(to bottom, rgb(32 82 100), rgb(63 93 91))',
@@ -64,11 +52,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     startBtnContainer: {
       position: 'absolute',
-    },
-    infoContent: {
-      display: 'flex',
-
-      margin: 15,
     },
     backdropBottom: {
       zIndex: theme.zIndex.drawer + 1,
@@ -120,7 +103,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
     }
   }, [fullscreenRef]);
 
-  const handleJoinCall = () => {
+  const handleJoinCall = React.useCallback(() => {
     if (isHost) {
       if (socket) {
         socket.emit('launch');
@@ -130,7 +113,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
     }
 
     setOnCall(true);
-  };
+  }, [socket]);
 
   if (!game) {
     return (
@@ -141,27 +124,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   }
 
   if (!onCall) {
-    return (
-      <div className={classes.preInfo}>
-        <Typography variant="h5">Peli alkaa pian!</Typography>
-        <div className={classes.infoContent}>
-          <HeadsetIcon fontSize="large"></HeadsetIcon>
-          <Typography>
-            Käytä kuulokkeita, niin pelin äänet eivät kuulu muille pelaajille
-            läpi.
-          </Typography>
-        </div>
-        <div className={classes.infoContent}>
-          <SyncIcon fontSize="large"></SyncIcon>
-          <Typography>
-            Mikäli vastaamisessa on ongelmia, paina Refresh- ikonia.
-          </Typography>
-        </div>
-        <Button color="secondary" onClick={handleJoinCall} id="start">
-          Käynnistä video
-        </Button>
-      </div>
-    );
+    return <PreGameInfo handleJoinCall={handleJoinCall} />;
   }
   return (
     <InGameSocket.Provider value={socket}>

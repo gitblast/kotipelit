@@ -24,11 +24,25 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface PreGameInfoProps {
+  canJoin: boolean;
   handleJoinCall: () => void;
 }
 
-const PreGameInfo: React.FC<PreGameInfoProps> = ({ handleJoinCall }) => {
+const PreGameInfo: React.FC<PreGameInfoProps> = ({
+  handleJoinCall,
+  canJoin,
+}) => {
   const classes = useStyles();
+
+  if (!canJoin) {
+    return (
+      <div className={classes.preInfo}>
+        <Typography variant="h5">
+          Host ei ole vielä käynnistänyt peliä!
+        </Typography>
+      </div>
+    );
+  }
 
   return (
     <div className={classes.preInfo}>

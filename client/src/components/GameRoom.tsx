@@ -83,7 +83,11 @@ setDebug(true);
 const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   const classes = useStyles();
   const [onCall, setOnCall] = React.useState<boolean>(false);
-  const { game, socket, participants } = useNewGameRoom(token, onCall, isHost);
+  const { game, socket, participants, twilioTokenSet } = useNewGameRoom(
+    token,
+    onCall,
+    isHost
+  );
 
   React.useEffect(() => {
     logger.log('participants changed:', participants);
@@ -124,7 +128,12 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   }
 
   if (!onCall) {
-    return <PreGameInfo handleJoinCall={handleJoinCall} />;
+    return (
+      <PreGameInfo
+        canJoin={isHost || twilioTokenSet}
+        handleJoinCall={handleJoinCall}
+      />
+    );
   }
   return (
     <InGameSocket.Provider value={socket}>

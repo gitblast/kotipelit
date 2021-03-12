@@ -1,15 +1,16 @@
 import React from 'react';
-import { RTCGame } from '../types';
+import { RTCGame, State } from '../types';
 import logger from '../utils/logger';
 import useAuthSocket from './useAuthSocket';
 import useSelf from './useSelf';
 import useTwilioRoom from './useTwilioRoom';
 import { useHistory, useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { setTimer } from '../reducers/kotitonni.local.reducer';
 import { setGame as setGameInRedux } from '../reducers/rtcGameSlice';
+import { Socket } from 'socket.io-client';
 
-const socketOnLeaveCallback = (socket: SocketIOClient.Socket) => {
+const socketOnLeaveCallback = (socket: Socket) => {
   socket.emit('leave-room');
 };
 
@@ -21,7 +22,7 @@ const useNewGameRoom = (
   const history = useHistory();
   const dispatch = useDispatch();
   const { username: hostName } = useParams<{ username: string }>();
-  const [game, setGame] = React.useState<null | RTCGame>(null);
+  const game = useSelector((state: State) => state.rtc.game, shallowEqual);
   const [twilioToken, setTwilioToken] = React.useState<null | string>(null);
   const [socket, socketError] = useAuthSocket(token, socketOnLeaveCallback);
   const mySelf = useSelf(game, isHost);
@@ -47,7 +48,6 @@ const useNewGameRoom = (
         }));
 
         dispatch(setGameInRedux({ ...updatedGame, players: mappedPlayers }));
-        setGame({ ...updatedGame, players: mappedPlayers });
       });
 
       socket.on('rtc-error', (msg: string) => {
@@ -88,6 +88,7 @@ const useNewGameRoom = (
     socket,
     mySelf,
     participants,
+    twilioTokenSet: !!twilioToken,
   };
 };
 

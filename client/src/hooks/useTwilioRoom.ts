@@ -63,11 +63,11 @@ const useTwilioRoom = (accessToken: string | null, onCall: boolean) => {
       setParticipants((previous) => {
         if (!previous) return previous;
 
-        return previous.map((oldParticipant) =>
-          oldParticipant.id === participant.identity
+        return previous.map((oldParticipant) => {
+          return participant.identity.startsWith(oldParticipant.id)
             ? { ...oldParticipant, connection: participant }
-            : oldParticipant
-        );
+            : oldParticipant;
+        });
       });
     };
 
@@ -81,7 +81,7 @@ const useTwilioRoom = (accessToken: string | null, onCall: boolean) => {
         if (!previous) return previous;
 
         return previous.map((oldParticipant) => {
-          return oldParticipant.id === participant.identity
+          return participant.identity.startsWith(oldParticipant.id)
             ? { ...oldParticipant, connection: null }
             : oldParticipant;
         });
@@ -137,14 +137,17 @@ const useTwilioRoom = (accessToken: string | null, onCall: boolean) => {
     }
   }, [room]);
 
-  const participantsWithLocalSet =
-    room && participants
-      ? participants.map((participant) => {
-          return participant.isMe
-            ? { ...participant, connection: room.localParticipant }
-            : participant;
-        })
-      : null;
+  const participantsWithLocalSet = React.useMemo(
+    () =>
+      room && participants
+        ? participants.map((participant) => {
+            return participant.isMe
+              ? { ...participant, connection: room.localParticipant }
+              : participant;
+          })
+        : null,
+    [room, participants]
+  );
 
   return {
     participants: participantsWithLocalSet,

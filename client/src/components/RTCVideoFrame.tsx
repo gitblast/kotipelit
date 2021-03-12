@@ -13,12 +13,12 @@ type PropStyles = {
 };
 
 const colors = [
-  'rgba(251, 232, 0, 0.8)',
+  'rgba(219, 154, 0, 0.8)',
   'rgba(165, 27, 82, 0.8)',
   'rgba(20, 115, 151, 0.8)',
-  'rgba(26, 139, 71, 0.8)',
+  'rgba(64, 147, 5, 0.8)',
   'rgb(0 225 217)',
-  'rgba(238, 255, 244, 0.8)',
+  'rgba(104, 95, 97, 0.8)',
 ];
 
 const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>

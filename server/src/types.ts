@@ -81,7 +81,6 @@ export interface KotitonniPlayer extends BaseGamePlayer {
 
 export interface BasePrivateData {
   twilioToken: string | null;
-  socketId: string | null;
 }
 
 export interface PlayerPrivateData extends BasePrivateData {
@@ -124,14 +123,6 @@ export interface SocketIOAuthToken {
 
 export interface SocketWithToken extends Socket {
   decodedToken: SocketIOAuthToken;
-}
-
-export interface RTCPlayer {
-  id: string;
-  displayName: string;
-  socketId: null | string;
-  peerId: null | string;
-  isHost: boolean;
 }
 
 export interface RTCGameRoom {

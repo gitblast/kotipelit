@@ -327,15 +327,15 @@ export const handleAnswer = (socket: SocketWithToken, answer: Answer): void => {
   try {
     const { id, gameId } = socket.decodedToken;
 
-    const game = rtcrooms.getRoomGame(gameId);
+    const room = rtcrooms.getRoom(gameId);
 
-    if (!game) {
-      throw new Error(`no game set when trying to answer, game id ${gameId}`);
+    if (!room) {
+      throw new Error(`no room set when trying to answer, game id ${gameId}`);
     }
 
     const newGame = {
-      ...game,
-      players: game.players.map((player) => {
+      ...room.game,
+      players: room.game.players.map((player) => {
         return player.id === id
           ? {
               ...player,
@@ -356,7 +356,7 @@ export const handleAnswer = (socket: SocketWithToken, answer: Answer): void => {
 
     const updatedGame = rtcrooms.updateRoomGame(gameId, newGame);
 
-    const hostSocketId = game.host.privateData.socketId;
+    const hostSocketId = room.socketMap.get(room.game.host.id);
 
     if (hostSocketId) {
       socket.to(hostSocketId).emit('game-updated', updatedGame);
@@ -371,6 +371,14 @@ export const handleAnswer = (socket: SocketWithToken, answer: Answer): void => {
 };
 
 const emitUpdatedGame = (socket: SocketWithToken, newGame: RTCGame): void => {
+  const room = rtcrooms.getRoom(newGame.id);
+
+  if (!room) {
+    throw new Error(
+      `no room set when trying to emit updated game, game id ${newGame.id}`
+    );
+  }
+
   const { role } = socket.decodedToken;
   logger.log(`emitting game-updated`);
 
@@ -384,11 +392,13 @@ const emitUpdatedGame = (socket: SocketWithToken, newGame: RTCGame): void => {
 
       // doesn't send other players' words
       newGame.players.forEach((player) => {
-        if (player.privateData.socketId) {
-          emittedTo.push(`${player.name} (${player.privateData.socketId})`);
+        const socketId = room.socketMap.get(player.id);
+
+        if (socketId) {
+          emittedTo.push(`${player.name} (${socketId})`);
 
           socket
-            .to(player.privateData.socketId)
+            .to(socketId)
             .emit(
               'game-updated',
               gameService.filterGameForUser(newGame, player.id)

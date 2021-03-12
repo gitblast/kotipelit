@@ -1,6 +1,8 @@
 /** Example use: node sync_words.js path/to/wordlist.txt */
 
-require('dotenv').config();
+const path = require('path');
+
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
 const fs = require('fs');
 
@@ -17,7 +19,7 @@ const syncWords = async () => {
   try {
     let added = 0;
 
-    connection.connect(process.env.MONGODB_URI);
+    await connection.connect(process.env.MONGODB_URI);
 
     const file = fs.readFileSync(filepath).toString();
 

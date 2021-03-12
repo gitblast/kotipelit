@@ -1,7 +1,7 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
 const fs = require('fs');
-const path = require('path');
 
 const Word = require('../dist/models/word').default;
 const connection = require('../dist/utils/connection').default;

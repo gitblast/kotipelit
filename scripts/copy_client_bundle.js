@@ -1,14 +1,13 @@
-const fs = require("fs");
-const path = require("path");
-const copy = require("recursive-copy");
+import fs from "fs";
+import copy from "recursive-copy";
 
-const buildFolderPath = path.join(__dirname, "../client/build");
+const buildFolderPath = new URL("../client/build", import.meta.url).pathname;
 
 if (!fs.existsSync(buildFolderPath)) {
   throw new Error(`No build folder found at path '${buildFolderPath}'`);
 }
 
-const destinationPath = path.join(__dirname, "../server/build");
+const destinationPath = new URL("../server/build", import.meta.url).pathname;
 
 if (fs.existsSync(destinationPath)) {
   console.log("deleting existing backend build folder");

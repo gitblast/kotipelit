@@ -1,15 +1,30 @@
-import { RTCGame, SocketWithToken, Role, FilteredRTCGame } from '../../types';
+import {
+  RTCGame,
+  SocketWithToken,
+  Role,
+  FilteredRTCGame,
+  RTCGameRoom,
+} from '../../types';
 import logger from '../../utils/logger';
 import gameService from '../games';
 
-const rooms = new Map<string, RTCGame>();
+const rooms = new Map<string, RTCGameRoom>();
+
+const setRoom = (id: string, updatedRoom: Omit<RTCGameRoom, 'lastUpdated'>) => {
+  const timeStampedRoom: RTCGameRoom = {
+    ...updatedRoom,
+    lastUpdated: Date.now(),
+  };
+
+  rooms.set(id, timeStampedRoom);
+};
 
 const joinRoom = (socket: SocketWithToken): RTCGame | FilteredRTCGame => {
   const { role, gameId, id, username } = socket.decodedToken;
 
-  const game = rooms.get(gameId);
+  const room = rooms.get(gameId);
 
-  if (!game) {
+  if (!room) {
     throw new Error(`No room found with id ${gameId}`);
   }
 
@@ -17,37 +32,43 @@ const joinRoom = (socket: SocketWithToken): RTCGame | FilteredRTCGame => {
 
   switch (role) {
     case Role.HOST: {
-      const newGame = {
-        ...game,
-        host: {
-          ...game.host,
-          privateData: {
-            ...game.host.privateData,
-            socketId: socket.id,
+      const newRoom = {
+        ...room,
+        game: {
+          ...room.game,
+          host: {
+            ...room.game.host,
+            privateData: {
+              ...room.game.host.privateData,
+              socketId: socket.id,
+            },
           },
         },
       };
 
-      rooms.set(gameId, newGame);
+      setRoom(gameId, newRoom);
 
-      return newGame;
+      return newRoom.game;
     }
     case Role.PLAYER: {
-      const newGame = {
-        ...game,
-        players: game.players.map((player) => {
-          return player.id === id
-            ? {
-                ...player,
-                privateData: { ...player.privateData, socketId: socket.id },
-              }
-            : player;
-        }),
+      const newRoom = {
+        ...room,
+        game: {
+          ...room.game,
+          players: room.game.players.map((player) => {
+            return player.id === id
+              ? {
+                  ...player,
+                  privateData: { ...player.privateData, socketId: socket.id },
+                }
+              : player;
+          }),
+        },
       };
 
-      rooms.set(gameId, newGame);
+      setRoom(gameId, newRoom);
 
-      return gameService.filterGameForUser(newGame, id);
+      return gameService.filterGameForUser(newRoom.game, id);
     }
     default: {
       throw new Error('No role set for token!');
@@ -58,70 +79,92 @@ const joinRoom = (socket: SocketWithToken): RTCGame | FilteredRTCGame => {
 const getRoomGame = (id: string): RTCGame | null => {
   const room = rooms.get(id);
 
-  return room ?? null;
+  return room?.game ?? null;
 };
 
 const createRoom = (game: RTCGame): void => {
   const existing = rooms.get(game.id);
 
   if (existing) {
-    throw new Error(`Room with id ${game.id} already exists.`);
+    throw new Error(`Room with id '${game.id}' already exists.`);
   }
 
-  logger.log(`creating room for game ${game.id}`);
+  logger.log(`creating room for game '${game.id}'`);
 
-  rooms.set(game.id, game);
+  const socketMap = new Map<string, string | null>();
+
+  game.players.forEach((player) => {
+    socketMap.set(player.id, null);
+  });
+
+  const newRoom = {
+    game,
+    socketMap,
+  };
+
+  setRoom(game.id, newRoom);
 };
 
 const leaveRoom = (gameId: string, userId: string): void => {
-  const game = rooms.get(gameId);
+  const room = rooms.get(gameId);
 
-  if (game) {
-    if (userId === game.host.id) {
+  if (room) {
+    if (userId === room.game.host.id) {
       logger.log(`host left`);
 
-      const newGame = {
-        ...game,
-        host: {
-          ...game.host,
-          privateData: {
-            ...game.host.privateData,
-            socketId: null,
+      const newRoom = {
+        ...room,
+        game: {
+          ...room.game,
+          host: {
+            ...room.game.host,
+            privateData: {
+              ...room.game.host.privateData,
+              socketId: null,
+            },
           },
         },
       };
 
-      rooms.set(gameId, newGame);
+      setRoom(gameId, newRoom);
     } else {
       logger.log(`player ${userId} left`);
 
-      const newGame = {
-        ...game,
-        players: game.players.map((player) => {
-          return player.id === userId
-            ? {
-                ...player,
-                privateData: { ...player.privateData, socketId: null },
-              }
-            : player;
-        }),
+      const newRoom = {
+        ...room,
+        game: {
+          ...room.game,
+          players: room.game.players.map((player) => {
+            return player.id === userId
+              ? {
+                  ...player,
+                  privateData: { ...player.privateData, socketId: null },
+                }
+              : player;
+          }),
+        },
       };
 
-      rooms.set(gameId, newGame);
+      setRoom(gameId, newRoom);
     }
   }
 };
 
-const getRooms = (): Map<string, RTCGame> => rooms;
+const getRooms = (): Map<string, RTCGameRoom> => rooms;
 
-const updateRoom = (gameId: string, newGame: RTCGame): RTCGame => {
+const updateRoomGame = (gameId: string, newGame: RTCGame): RTCGame => {
   const room = rooms.get(gameId);
 
   if (!room) {
     throw new Error(`no room set with id ${gameId}`);
   }
 
-  rooms.set(gameId, newGame);
+  const updatedRoom = {
+    ...room,
+    game: newGame,
+  };
+
+  setRoom(gameId, updatedRoom);
 
   return newGame;
 };
@@ -135,7 +178,7 @@ export default {
   joinRoom,
   getRoomGame,
   leaveRoom,
-  updateRoom,
+  updateRoomGame,
   getRooms,
   deleteRoom,
 };

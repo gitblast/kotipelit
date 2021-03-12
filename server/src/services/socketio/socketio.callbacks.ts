@@ -89,7 +89,7 @@ export const startRTCGame = async (socket: SocketWithToken): Promise<void> => {
 
     await gameService.setGameStatus(gameId, GameStatus.RUNNING);
 
-    const updatedGame = rtcrooms.updateRoom(gameId, {
+    const updatedGame = rtcrooms.updateRoomGame(gameId, {
       ...game,
       status: GameStatus.RUNNING,
     });
@@ -188,7 +188,7 @@ export const launchRTCGame = async (socket: SocketWithToken): Promise<void> => {
       }),
     };
 
-    rtcrooms.updateRoom(gameId, updatedGame);
+    rtcrooms.updateRoomGame(gameId, updatedGame);
 
     emitUpdatedGame(socket, updatedGame);
   } catch (e) {
@@ -213,7 +213,32 @@ export const updateRTCGame = (
       throw new Error(`no game set when updating, id ${gameId}`);
     }
 
-    const updatedGame = rtcrooms.updateRoom(gameId, newGame);
+    const updatedPlayers = newGame.players.map((player) => {
+      const matching = game.players.find(
+        (oldPlayer) => oldPlayer.id === player.id
+      );
+
+      if (!matching) {
+        logger.error(
+          `unexpected: no matching player found for id '${player.id}' when updating game`
+        );
+
+        return player;
+      }
+
+      return {
+        ...player,
+        // do not update player privatedata (server has fresher socket id:s)
+        privateData: matching.privateData,
+      };
+    });
+
+    const updatedGame = {
+      ...newGame,
+      players: updatedPlayers,
+    };
+
+    rtcrooms.updateRoomGame(gameId, newGame);
 
     emitUpdatedGame(socket, updatedGame);
   } catch (e) {
@@ -329,7 +354,7 @@ export const handleAnswer = (socket: SocketWithToken, answer: Answer): void => {
       }),
     };
 
-    const updatedGame = rtcrooms.updateRoom(gameId, newGame);
+    const updatedGame = rtcrooms.updateRoomGame(gameId, newGame);
 
     const hostSocketId = game.host.privateData.socketId;
 

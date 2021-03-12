@@ -1,5 +1,5 @@
 import { Document } from 'mongoose';
-import { Socket } from 'socket.io'
+import { Socket } from 'socket.io';
 
 export interface GameModel extends NewGame, Document {
   createDate: Date;
@@ -132,6 +132,12 @@ export interface RTCPlayer {
   socketId: null | string;
   peerId: null | string;
   isHost: boolean;
+}
+
+export interface RTCGameRoom {
+  game: RTCGame;
+  socketMap: Map<string, string | null>; // <player id, player socket id>
+  lastUpdated: number;
 }
 
 export interface RTCGame {

@@ -73,10 +73,6 @@ const theme = createMuiTheme({
       fontSize: 30,
       lineHeight: 1,
     },
-    subtitle1: {
-      fontFamily: 'Pacifico',
-      fontSize: 26,
-    },
     // Used to display the game name and host name in GameRoom
     subtitle2: {
       fontFamily: 'Great Vibes',

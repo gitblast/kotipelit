@@ -3,7 +3,6 @@ import React from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import HeadsetIcon from '@material-ui/icons/Headset';
-import SyncIcon from '@material-ui/icons/Sync';
 import Typography from '@material-ui/core/Typography/Typography';
 import Button from '@material-ui/core/Button/Button';
 
@@ -52,12 +51,6 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
         <Typography>
           Käytä kuulokkeita, niin pelin äänet eivät kuulu muille pelaajille
           läpi.
-        </Typography>
-      </div>
-      <div className={classes.infoContent}>
-        <SyncIcon fontSize="large"></SyncIcon>
-        <Typography>
-          Mikäli vastaamisessa on ongelmia, paina Refresh- ikonia.
         </Typography>
       </div>
       <Button color="secondary" onClick={handleJoinCall} id="start">

@@ -1,5 +1,5 @@
 import React from 'react';
-import { RTCGame, State } from '../types';
+import { Role, RTCGame, State } from '../types';
 import logger from '../utils/logger';
 import useAuthSocket from './useAuthSocket';
 import useSelf from './useSelf';
@@ -14,18 +14,14 @@ const socketOnLeaveCallback = (socket: Socket) => {
   socket.emit('leave-room');
 };
 
-const useNewGameRoom = (
-  token: string | null,
-  onCall: boolean,
-  isHost?: boolean
-) => {
+const useNewGameRoom = (token: string | null, onCall: boolean, role: Role) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { username: hostName } = useParams<{ username: string }>();
   const game = useSelector((state: State) => state.rtc.game, shallowEqual);
   const [twilioToken, setTwilioToken] = React.useState<null | string>(null);
   const [socket, socketError] = useAuthSocket(token, socketOnLeaveCallback);
-  const mySelf = useSelf(game, isHost);
+  const mySelf = useSelf(game, role === Role.HOST);
   const { participants, error: twilioError } = useTwilioRoom(
     twilioToken,
     onCall
@@ -66,13 +62,14 @@ const useNewGameRoom = (
     }
   }, [socket, dispatch, history, hostName]);
 
-  // set twilio token
+  /* // set twilio token
   React.useEffect(() => {
     if (game && !twilioToken) {
       logger.log('checking for video token...');
-      const videoToken = isHost
-        ? game.host.privateData.twilioToken
-        : game.players.find((p) => !!p.privateData)?.privateData.twilioToken;
+      const videoToken =
+        role === Role.HOST
+          ? game.host.privateData.twilioToken
+          : game.players.find((p) => !!p.privateData)?.privateData.twilioToken;
 
       if (videoToken) {
         logger.log('...token found');
@@ -81,14 +78,14 @@ const useNewGameRoom = (
         logger.log('...not found');
       }
     }
-  }, [twilioToken, game, isHost]);
+  }, [twilioToken, game, role]); */
 
   return {
     game,
     socket,
     mySelf,
     participants,
-    twilioTokenSet: !!twilioToken,
+    setTwilioToken,
   };
 };
 

@@ -111,6 +111,7 @@ export type GameInfo = KotitonniInfo;
 export enum Role {
   HOST = 'HOST',
   PLAYER = 'PLAYER',
+  SPECTATOR = 'SPECTATOR',
 }
 
 export interface SocketIOAuthToken {

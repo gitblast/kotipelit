@@ -382,8 +382,9 @@ export interface RTCGame {
 }
 
 export enum Role {
-  HOST = 'host',
-  PLAYER = 'player',
+  HOST = 'HOST',
+  PLAYER = 'PLAYER',
+  SPECTATOR = 'SPECTATOR',
 }
 
 // useGameToken hook

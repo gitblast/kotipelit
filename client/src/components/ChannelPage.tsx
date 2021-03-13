@@ -7,7 +7,7 @@ import RTCGameRoom from './RTCGameRoom';
 import GameLobby from './GameLobby';
 import Dashboard from './host/Dashboard';
 import { useSelector } from 'react-redux';
-import { State /**BaseUser */ } from '../types';
+import { Role, State /**BaseUser */ } from '../types';
 import TYFPPage from './TYFPPage';
 
 interface ChannelPageProps {
@@ -29,11 +29,14 @@ const ChannelPage: React.FC<ChannelPageProps> = () => {
         <Route path="/:username/kutsut/:gameID">
           <GameLobby />
         </Route>
+        <Route path="/:username/live/:gameID">
+          <RTCGameRoom role={Role.SPECTATOR} />
+        </Route>
         <Route path="/:username/pelit/:gameID">
-          {user.loggedIn && <RTCGameRoom isHost />}
+          {user.loggedIn && <RTCGameRoom role={Role.HOST} />}
         </Route>
         <Route path="/:username/:playerId">
-          {!user.loggedIn && <RTCGameRoom />}
+          {!user.loggedIn && <RTCGameRoom role={Role.PLAYER} />}
         </Route>
         <Route path="/">{user.loggedIn && <Dashboard user={user} />}</Route>
       </Switch>

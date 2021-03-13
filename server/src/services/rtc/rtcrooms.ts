@@ -36,8 +36,10 @@ const joinRoom = (socket: SocketWithToken): RTCGame | FilteredRTCGame => {
 
   if (role === Role.HOST) {
     return room.game;
-  } else {
+  } else if (role === Role.PLAYER) {
     return gameService.filterGameForUser(room.game, id);
+  } else {
+    return gameService.filterGameForSpectator(room.game);
   }
 };
 

@@ -35,6 +35,12 @@ const deleteGame = async (id: string): Promise<void> => {
   await axios.delete(`${baseUrl}/${id}`, config);
 };
 
+const getSpectatorTokenForGame = async (gameId: string): Promise<string> => {
+  const response = await axios.get(`${baseUrl}/spectate/${gameId}`);
+
+  return response.data;
+};
+
 const getHostTokenForGame = async (gameId: string): Promise<string> => {
   const config = {
     headers: { Authorization: userService.getAuthHeader() },
@@ -47,11 +53,11 @@ const getHostTokenForGame = async (gameId: string): Promise<string> => {
 
 const getPlayerTokenForGame = async (
   username: string,
-  playerId: string,
+  inviteCode: string,
   rtc?: boolean
 ): Promise<string> => {
   const response = await axios.get(
-    `/api/games/join/${username}/${playerId}${rtc ? '/?rtc=true' : ''}`
+    `${baseUrl}/join/${username}/${inviteCode}${rtc ? '/?rtc=true' : ''}`
   );
 
   return response.data;
@@ -114,6 +120,7 @@ export default {
   deleteGame,
   getHostTokenForGame,
   getPlayerTokenForGame,
+  getSpectatorTokenForGame,
   reserveSpotForGame,
   getLobbyGame,
   lockSpotForGame,

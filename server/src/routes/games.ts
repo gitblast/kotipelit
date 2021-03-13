@@ -261,6 +261,36 @@ router.get('/cancel/:hostName/:inviteCode', async (req, res, next) => {
   }
 });
 
+router.get('/spectate/:gameId', async (req, res, next) => {
+  try {
+    const gameId = toID(req.params.gameId);
+
+    const game = await Game.findById(gameId);
+
+    if (!game) {
+      throw new Error(`Invalid request: no game found with id '${gameId}'`);
+    }
+
+    const spectatorId = `spectator-${Date.now()}`;
+
+    const payload = {
+      username: spectatorId,
+      id: spectatorId,
+      role: Role.SPECTATOR,
+      gameId,
+      type: 'rtc',
+    };
+
+    const token = jwt.sign(payload, config.SECRET, { expiresIn: '10h' });
+
+    res.json(token);
+  } catch (e) {
+    logger.error(e.message);
+
+    next(e);
+  }
+});
+
 router.get('/join/:hostName/:inviteCode', async (req, res, next) => {
   try {
     const hostName = toID(req.params.hostName);

@@ -3,7 +3,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 import { InGameSocket } from '../context';
 import useNewGameRoom from '../hooks/useNewGameRoom';
-import { GameStatus } from '../types';
+import { GameStatus, Role } from '../types';
 import logger, { setDebug } from '../utils/logger';
 import AudioHandler from './AudioHandler';
 import Loader from './Loader';
@@ -73,20 +73,21 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface GameRoomProps {
   token: string | null;
-  isHost?: boolean;
+  role: Role;
 }
 
 console.log('setting logger debug to true in gameroom component');
 
 setDebug(true);
 
-const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
+const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
+  const isHost = role === Role.HOST;
   const classes = useStyles();
   const [onCall, setOnCall] = React.useState<boolean>(false);
-  const { game, socket, participants, twilioTokenSet } = useNewGameRoom(
+  const { game, socket, participants, setTwilioToken } = useNewGameRoom(
     token,
     onCall,
-    isHost
+    role
   );
 
   React.useEffect(() => {
@@ -108,13 +109,20 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   }, [fullscreenRef]);
 
   const handleJoinCall = React.useCallback(() => {
-    if (isHost) {
-      if (socket) {
-        socket.emit('launch');
+    if (socket) {
+      const callback = setTwilioToken;
+
+      if (isHost) {
+        socket.emit('launch', setTwilioToken);
       } else {
-        logger.error('socket was null trying to emit launch');
+        socket.emit('get-twilio-token', setTwilioToken)
       }
+      PDASKLASD KASÄDKASÄ DASk MIETIM ITEN TWILIO TOKEN KANNATTAA HAKEA
+    } else {
+      logger.error('socket was null trying to emit launch');
     }
+
+    
 
     setOnCall(true);
   }, [socket]);
@@ -130,7 +138,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
   if (!onCall) {
     return (
       <PreGameInfo
-        canJoin={isHost || twilioTokenSet}
+        canJoin={isHost || game.status !== GameStatus.UPCOMING}
         handleJoinCall={handleJoinCall}
       />
     );
@@ -152,7 +160,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, isHost }) => {
         </div>
 
         <RTCVideoConference participants={participants} />
-        {isHost ? (
+        {role !== Role.SPECTATOR && isHost ? (
           <RTCHostControls handleToggleFullscreen={handleToggleFullscreen} />
         ) : (
           game.status === GameStatus.RUNNING && (

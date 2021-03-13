@@ -14,6 +14,23 @@ import {
   NewGame,
 } from '../types';
 
+const filterGameForSpectator = (game: RTCGame): FilteredRTCGame => {
+  return {
+    ...game,
+    host: {
+      ...game.host,
+      privateData: null,
+    },
+    players: game.players.map((player) => {
+      return {
+        ...player,
+        reservedFor: null,
+        privateData: null,
+      };
+    }),
+  };
+};
+
 const filterGameForUser = (
   game: RTCGame | GameModel,
   userId: string
@@ -198,4 +215,5 @@ export default {
   getInviteMailData,
   subscribeToUpdates,
   filterGameForUser,
+  filterGameForSpectator,
 };

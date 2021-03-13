@@ -48,6 +48,8 @@ const theme = createMuiTheme({
     },
     body2: {
       fontSize: '1rem',
+      // primary light
+      color: 'rgb(168 164 136)',
     },
     h1: {
       fontSize: '2.2rem',
@@ -70,10 +72,6 @@ const theme = createMuiTheme({
       fontFamily: 'Bebas Neue',
       fontSize: 30,
       lineHeight: 1,
-    },
-    subtitle1: {
-      fontFamily: 'Pacifico',
-      fontSize: 26,
     },
     // Used to display the game name and host name in GameRoom
     subtitle2: {
@@ -109,11 +107,11 @@ const theme = createMuiTheme({
           color: 'rgb(92 92 92)',
         },
       },
-      disabled: {},
     },
     MuiLink: {
       root: {
         cursor: 'pointer',
+        underline: 'none',
       },
     },
     MuiLinearProgress: {

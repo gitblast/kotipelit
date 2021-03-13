@@ -88,15 +88,18 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     sectionBStyle: {
-      padding: theme.spacing(8),
-    },
-    stepper: {
+      padding: theme.spacing(5),
+      display: 'flex',
+      justifyContent: 'space-around',
       textAlign: 'center',
+      [theme.breakpoints.down('xs')]: {
+        flexDirection: 'column',
+      },
     },
     step: {
       textAlign: 'center',
-      width: 28,
-      height: 28,
+      width: 34,
+      height: 34,
       borderRadius: '50%',
       backgroundColor: 'rgb(226 205 55)',
     },
@@ -104,14 +107,22 @@ const useStyles = makeStyles((theme: Theme) =>
       borderTop: 'solid 4px rgb(250 227 74)',
       background: 'rgb(167 203 176)',
       boxShadow: 'rgb(231 239 191) -1px 8px 44px',
-      alignSelf: 'center',
-      marginTop: '6px',
+      alignSelf: 'flex-start',
+      width: '12%',
+      marginTop: '15px',
+      [theme.breakpoints.down('xs')]: {
+        display: 'none',
+      },
     },
     stepperContent: {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
+
       '& > * + *': {
+        marginTop: theme.spacing(2),
+      },
+      [theme.breakpoints.down('xs')]: {
         marginTop: theme.spacing(2),
       },
     },
@@ -128,52 +139,49 @@ const Steps = () => {
   return (
     <>
       <section className={classes.sectionBStyle}>
-        <Grid container spacing={3} className={classes.stepper}>
-          <Grid item md={3} sm={12} xs={12} className={classes.stepperContent}>
-            <div className={classes.step}>
-              <Typography variant="h5" color="initial">
-                1
-              </Typography>
-            </div>
-            <Typography variant="body1" color="primary">
-              Päätä ajankohta
+        <div className={classes.stepperContent}>
+          <div className={classes.step}>
+            <Typography variant="h5" color="initial">
+              1
             </Typography>
-          </Grid>
-
-          <Grid item md={3} sm={12} xs={12} className={classes.stepperContent}>
-            <div className={classes.step}>
-              <Typography variant="h5" color="initial">
-                2
-              </Typography>
-            </div>
-            <Typography variant="body1" color="primary">
-              Valitse pelattava peli
+          </div>
+          <Typography variant="body1" color="primary">
+            Päätä ajankohta
+          </Typography>
+        </div>
+        <div className={classes.stepNeon}></div>
+        <div className={classes.stepperContent}>
+          <div className={classes.step}>
+            <Typography variant="h5" color="initial">
+              2
             </Typography>
-          </Grid>
-
-          <Grid item md={3} sm={12} xs={12} className={classes.stepperContent}>
-            <div className={classes.step}>
-              <Typography variant="h5" color="initial">
-                3
-              </Typography>
-            </div>
-            <Typography variant="body1" color="primary">
-              Aseta halutessasi pelaajille hinta
+          </div>
+          <Typography variant="body1" color="primary">
+            Valitse pelattava peli
+          </Typography>
+        </div>
+        <div className={classes.stepNeon}></div>
+        <div className={classes.stepperContent}>
+          <div className={classes.step}>
+            <Typography variant="h5" color="initial">
+              3
             </Typography>
-          </Grid>
-
-          <Grid item md={3} sm={12} xs={12} className={classes.stepperContent}>
-            <div className={classes.step}>
-              <Typography variant="h5" color="initial">
-                4
-              </Typography>
-            </div>
-            <Typography variant="body1" color="primary">
-              Kutsu pelaajat
+          </div>
+          <Typography variant="body1" color="primary">
+            Aseta halutessasi pelaajille hinta
+          </Typography>
+        </div>
+        <div className={classes.stepNeon}></div>
+        <div className={classes.stepperContent}>
+          <div className={classes.step}>
+            <Typography variant="h5" color="initial">
+              4
             </Typography>
-          </Grid>
-        </Grid>
-        <div></div>
+          </div>
+          <Typography variant="body1" color="primary">
+            Kutsu pelaajat
+          </Typography>
+        </div>
       </section>
     </>
   );
@@ -201,16 +209,16 @@ const FrontPage: React.FC = () => {
           <div className={classes.headline}>
             <div className={classes.neonLight}></div>
             <Typography variant="h2" color="initial">
-              Ryhdy gameshow-juontajaksi
+              Ilahduta järjestämällä peli-iltoja
             </Typography>
           </div>
           <div className={classes.sectionFlex}>
             <div className={classes.sectionInfo}>
-              <Typography variant="body1" color="initial">
-                Ilahduta järjestämällä peli-iltoja
+              <Typography variant="body1">
+                Meillä kuka vain voi ryhtyä gameshow- juontajaksi
               </Typography>
               <Typography variant="body1" color="initial">
-                ..voit myös tienata samalla!
+                ..ja myös tienata samalla!
               </Typography>
             </div>
             <img

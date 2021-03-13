@@ -21,35 +21,13 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     referenceImg: {
+      marginTop: theme.spacing(2),
       marginBottom: theme.spacing(2),
       height: 160,
       borderRadius: '50%',
       border: 'solid 4px',
       borderColor: theme.palette.primary.main,
       boxShadow: 'rgb(231 239 191) 4px 3px 18px',
-    },
-    refPoints: {
-      position: 'relative',
-      top: 107,
-      left: 64,
-      fontSize: 35,
-      color: 'rgba(167 128 17)',
-    },
-    refPointsMid: {
-      position: 'relative',
-      top: 31,
-      left: 86,
-      transform: 'rotate(5deg)',
-      color: 'rgba(168 164 136 / 27%)',
-      fontSize: 28,
-    },
-    refPointsSmall: {
-      position: 'relative',
-      top: -25,
-      left: 117,
-      transform: 'rotate(12deg)',
-      color: 'rgba(168 164 136 / 14%)',
-      fontSize: 20,
     },
   })
 );
@@ -73,15 +51,6 @@ const References = () => {
           </Typography>
         </Grid>
         <Grid item md={4} xs={12}>
-          <Typography variant="h6" className={classes.refPoints}>
-            +100
-          </Typography>
-          <Typography variant="h6" className={classes.refPointsMid}>
-            +100
-          </Typography>
-          <Typography variant="h6" className={classes.refPointsSmall}>
-            +100
-          </Typography>
           <img className={classes.referenceImg} src={riinaImg} alt="Riina" />
 
           <Typography variant="h5">
@@ -93,15 +62,6 @@ const References = () => {
           <Typography variant="body1">-Riina</Typography>
         </Grid>
         <Grid item md={4} xs={12}>
-          <Typography variant="h6" className={classes.refPoints}>
-            +30
-          </Typography>
-          <Typography variant="h6" className={classes.refPointsMid}>
-            +30
-          </Typography>
-          <Typography variant="h6" className={classes.refPointsSmall}>
-            +30
-          </Typography>
           <img
             className={classes.referenceImg}
             src={matleenaImg}
@@ -115,15 +75,6 @@ const References = () => {
           <Typography variant="body1">-Matleena</Typography>
         </Grid>
         <Grid item md={4} xs={12}>
-          <Typography variant="h6" className={classes.refPoints}>
-            +30
-          </Typography>
-          <Typography variant="h6" className={classes.refPointsMid}>
-            +30
-          </Typography>
-          <Typography variant="h6" className={classes.refPointsSmall}>
-            +30
-          </Typography>
           <img className={classes.referenceImg} src={arviImg} alt="arvi" />
           <Typography variant="h5">
             {'"Löytyy tähtimerkeistä ja Espanjasta."'}

@@ -1,7 +1,6 @@
 import React from 'react';
 
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
-import SyncIcon from '@material-ui/icons/Sync';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
@@ -61,13 +60,6 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.down('sm')]: {
         display: 'none',
       },
-      [theme.breakpoints.down('xs')]: {
-        display: 'none',
-      },
-    },
-    socketIcon: {
-      color: 'white',
-
       [theme.breakpoints.down('xs')]: {
         display: 'none',
       },
@@ -185,6 +177,7 @@ const RTCPlayerControls: React.FC<{
                 value={answer}
                 onChange={({ target }) => setAnswer(target.value)}
                 disabled={isDisabled()}
+                onClick={fetchLatestGameStatus}
               />
             </div>
 
@@ -205,12 +198,6 @@ const RTCPlayerControls: React.FC<{
             onClick={handleToggleFullscreen}
           >
             <FullscreenIcon fontSize="large"></FullscreenIcon>
-          </IconButton>
-          <IconButton
-            className={classes.socketIcon}
-            onClick={fetchLatestGameStatus}
-          >
-            <SyncIcon fontSize="large"></SyncIcon>
           </IconButton>
         </Grid>
       </Grid>

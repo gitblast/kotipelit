@@ -66,7 +66,7 @@ export const leaveRTCRoom = (socket: SocketWithToken): void => {
 
   const { id, gameId } = socket.decodedToken;
 
-  rtcrooms.leaveRoom(gameId, id);
+  rtcrooms.leaveRoom(socket);
 
   socket.to(gameId).emit('user-left', id);
 };
@@ -102,7 +102,10 @@ export const startRTCGame = async (socket: SocketWithToken): Promise<void> => {
   }
 };
 
-export const launchRTCGame = async (socket: SocketWithToken): Promise<void> => {
+export const launchRTCGame = async (
+  socket: SocketWithToken,
+  setToken: (token: string) => void
+): Promise<void> => {
   logger.log(`recieved 'launch' from ${socket.decodedToken.username}`);
 
   try {
@@ -138,51 +141,23 @@ export const launchRTCGame = async (socket: SocketWithToken): Promise<void> => {
       ? game
       : await gameService.setGameStatus(gameId, GameStatus.WAITING);
 
-    logger.log('generating access tokens');
-
-    // access token for host
-    const hostToken = twilioService.getVideoAccessToken(
-      id,
-      `kotipelit-${gameId}`
-    );
-
-    // update player display names and game status, generate access tokens
+    // update player display names and game status
     const updatedGame = {
       ...game,
       status: updatedGameInDB.status,
-      host: {
-        ...game.host,
-        privateData: {
-          ...game.host.privateData,
-          twilioToken: hostToken,
-        },
-      },
       players: game.players.map((player) => {
         const matching = updatedGameInDB.players.find(
           (p) => p.id === player.id
         );
 
-        const token = twilioService.getVideoAccessToken(
-          player.id,
-          `kotipelit-${game.id}`
-        );
-
-        const playerWithAccessToken = {
-          ...player,
-          privateData: {
-            ...player.privateData,
-            twilioToken: token,
-          },
-        };
-
         if (!matching || player.name === matching.name) {
-          return playerWithAccessToken;
+          return player;
         }
 
         logger.log(`updating name for player '${matching.name}'`);
 
         return {
-          ...playerWithAccessToken,
+          ...player,
           name: matching.name,
         };
       }),
@@ -191,6 +166,35 @@ export const launchRTCGame = async (socket: SocketWithToken): Promise<void> => {
     rtcrooms.updateRoomGame(gameId, updatedGame);
 
     emitUpdatedGame(socket, updatedGame);
+
+    // access token for host
+    const hostToken = twilioService.getVideoAccessToken(
+      id,
+      `kotipelit-${gameId}`
+    );
+
+    setToken(hostToken);
+  } catch (e) {
+    logger.error(e.message);
+
+    socket.emit('rtc-error', e.message);
+  }
+};
+
+export const getTwilioToken = (
+  socket: SocketWithToken,
+  setToken: (token: string) => void
+): void => {
+  logger.log(
+    `recieved 'get-twilio-token' from ${socket.decodedToken.username}`
+  );
+
+  try {
+    const { gameId, id } = socket.decodedToken;
+
+    const token = twilioService.getVideoAccessToken(id, `kotipelit-${gameId}`);
+
+    setToken(token);
   } catch (e) {
     logger.error(e.message);
 
@@ -407,6 +411,12 @@ const emitUpdatedGame = (socket: SocketWithToken, newGame: RTCGame): void => {
           didNotEmit.push(player.name);
         }
       });
+
+      room.spectatorSockets.forEach((socketId) =>
+        socket
+          .to(socketId)
+          .emit('game-updated', gameService.filterGameForSpectator(newGame))
+      );
     }
 
     if (emittedTo.length) {

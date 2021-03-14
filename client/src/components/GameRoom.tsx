@@ -110,21 +110,22 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
 
   const handleJoinCall = React.useCallback(() => {
     if (socket) {
-      const callback = setTwilioToken;
+      const callback = (token: string) => {
+        logger.log('got twilio token');
+
+        setTwilioToken(token);
+      };
 
       if (isHost) {
-        socket.emit('launch', setTwilioToken);
+        socket.emit('launch', callback);
       } else {
-        socket.emit('get-twilio-token', setTwilioToken)
+        socket.emit('get-twilio-token', callback);
       }
-      PDASKLASD KASÄDKASÄ DASk MIETIM ITEN TWILIO TOKEN KANNATTAA HAKEA
+
+      setOnCall(true);
     } else {
       logger.error('socket was null trying to emit launch');
     }
-
-    
-
-    setOnCall(true);
   }, [socket]);
 
   if (!game) {
@@ -160,7 +161,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
         </div>
 
         <RTCVideoConference participants={participants} />
-        {role !== Role.SPECTATOR && isHost ? (
+        {role === Role.SPECTATOR && isHost ? (
           <RTCHostControls handleToggleFullscreen={handleToggleFullscreen} />
         ) : (
           game.status === GameStatus.RUNNING && (

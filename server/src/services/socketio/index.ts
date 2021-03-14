@@ -15,6 +15,10 @@ const attachRTCListeners = (socket: SocketWithToken) => {
 
   // can handle game types here
 
+  socket.on('get-twilio-token', (setToken: (token: string) => void) => {
+    void callbacks.getTwilioToken(socket, setToken);
+  });
+
   socket.on('join-room', () => {
     void callbacks.joinRTCRoom(socket);
   });
@@ -36,8 +40,8 @@ const attachRTCListeners = (socket: SocketWithToken) => {
   });
 
   if (socket.decodedToken.role === Role.HOST) {
-    socket.on('launch', () => {
-      void callbacks.launchRTCGame(socket);
+    socket.on('launch', (setToken: (token: string) => void) => {
+      void callbacks.launchRTCGame(socket, setToken);
     });
 
     socket.on('start', () => {

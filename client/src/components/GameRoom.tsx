@@ -161,7 +161,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
         </div>
 
         <RTCVideoConference participants={participants} />
-        {role === Role.SPECTATOR && isHost ? (
+        {role === Role.SPECTATOR ? null : isHost ? (
           <RTCHostControls handleToggleFullscreen={handleToggleFullscreen} />
         ) : (
           game.status === GameStatus.RUNNING && (

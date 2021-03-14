@@ -30,7 +30,11 @@ const joinRoom = (socket: SocketWithToken): RTCGame | FilteredRTCGame => {
 
   logger.log(`joining ${role} (${username}) to room ${gameId}`);
 
-  room.socketMap.set(id, socket.id);
+  if (role === Role.SPECTATOR) {
+    room.spectatorSockets.push(socket.id);
+  } else {
+    room.socketMap.set(id, socket.id);
+  }
 
   setRoom(gameId, room);
 
@@ -67,23 +71,32 @@ const createRoom = (game: RTCGame): void => {
   const newRoom = {
     game,
     socketMap,
+    spectatorSockets: [],
   };
 
   setRoom(game.id, newRoom);
 };
 
-const leaveRoom = (gameId: string, userId: string): void => {
+const leaveRoom = (socket: SocketWithToken): void => {
+  const { role, gameId, id, username } = socket.decodedToken;
+
   const room = rooms.get(gameId);
 
   if (room) {
-    room.socketMap.set(userId, null);
+    if (role === Role.SPECTATOR) {
+      room.spectatorSockets = room.spectatorSockets.filter(
+        (socketId) => socketId !== socket.id
+      );
+    } else {
+      room.socketMap.set(id, null);
+    }
 
     setRoom(gameId, room);
 
-    if (userId === room.game.host.id) {
+    if (id === room.game.host.id) {
       logger.log(`host left`);
     } else {
-      logger.log(`player ${userId} left`);
+      logger.log(`player '${username}' left`);
     }
   }
 };

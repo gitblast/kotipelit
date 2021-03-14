@@ -129,6 +129,7 @@ export interface SocketWithToken extends Socket {
 export interface RTCGameRoom {
   game: RTCGame;
   socketMap: Map<string, string | null>; // <player id, player socket id>
+  spectatorSockets: string[];
   lastUpdated: number;
 }
 

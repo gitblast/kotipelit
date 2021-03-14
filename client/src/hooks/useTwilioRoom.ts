@@ -43,11 +43,15 @@ const addRoomListeners = (videoRoom: Video.Room) => {
   window.addEventListener('beforeunload', () => videoRoom.disconnect());
 };
 
-const useTwilioRoom = (accessToken: string | null, onCall: boolean) => {
+const useTwilioRoom = (
+  accessToken: string | null,
+  onCall: boolean,
+  isSpectator: boolean
+) => {
   const [room, setRoom] = React.useState<null | Video.Room>(null);
-  const [localTracks, localTrackError] = useLocalTracks(onCall);
+  const [localTracks, localTrackError] = useLocalTracks(onCall, isSpectator);
   const [error, setError] = React.useState<null | string>(null);
-  const [participants, setParticipants] = useParticipants();
+  const [participants, setParticipants] = useParticipants(isSpectator);
 
   if (localTrackError) {
     logger.error(`local track error: ${localTrackError}`);
@@ -88,10 +92,25 @@ const useTwilioRoom = (accessToken: string | null, onCall: boolean) => {
       });
     };
 
-    const connectToRoom = async (token: string, tracks: Video.LocalTrack[]) => {
-      const videoRoom = await Video.connect(token, {
-        tracks,
-      });
+    /**
+     *
+     * @param token Twilio access token
+     * @param tracks null if spectator, otherwise local tracks
+     */
+    const connectToRoom = async (
+      token: string,
+      tracks: Video.LocalTrack[] | null
+    ) => {
+      const baseConfig = {};
+
+      const config = tracks
+        ? {
+            ...baseConfig,
+            tracks,
+          }
+        : baseConfig;
+
+      const videoRoom = await Video.connect(token, config);
 
       logger.log('setting twilio room:', videoRoom);
 
@@ -101,13 +120,16 @@ const useTwilioRoom = (accessToken: string | null, onCall: boolean) => {
 
       videoRoom.on('participantDisconnected', participantDisconnected);
 
+      // calls setParticipants several times, could be batched
       videoRoom.participants.forEach(participantConnected);
 
       addRoomListeners(videoRoom);
     };
 
-    if (!room && accessToken && localTracks && participants) {
+    if (!room && accessToken && (isSpectator || localTracks) && participants) {
       try {
+        logger.log('connecting room');
+
         connectToRoom(accessToken, localTracks);
       } catch (error) {
         logger.error(`error connecting to room: ${error.message}`);
@@ -115,7 +137,14 @@ const useTwilioRoom = (accessToken: string | null, onCall: boolean) => {
         setError(`error connecting to room: ${error.message}`);
       }
     }
-  }, [room, accessToken, localTracks, participants, setParticipants]);
+  }, [
+    room,
+    accessToken,
+    localTracks,
+    participants,
+    setParticipants,
+    isSpectator,
+  ]);
 
   React.useEffect(() => {
     if (room) {

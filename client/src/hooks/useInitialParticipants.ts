@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { RTCParticipant, State } from '../types';
 
-const useInitialParticipants = () => {
+const useInitialParticipants = (isSpectator: boolean) => {
   const game = useSelector((state: State) => state.rtc.game);
   const ownId = useSelector((state: State) => state.rtc.self?.id ?? null);
   const [initialParticipants, setInitialParticipants] = React.useState<
@@ -11,7 +11,7 @@ const useInitialParticipants = () => {
   >(null);
 
   React.useEffect(() => {
-    if (!initialParticipants && game && ownId) {
+    if (!initialParticipants && game && (ownId || isSpectator)) {
       const hostParticipant = {
         id: game.host.id,
         isHost: true,
@@ -34,7 +34,7 @@ const useInitialParticipants = () => {
 
       setInitialParticipants(initials);
     }
-  }, [game, initialParticipants, ownId]);
+  }, [game, initialParticipants, ownId, ownId]);
 
   return initialParticipants;
 };

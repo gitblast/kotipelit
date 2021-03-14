@@ -3,11 +3,13 @@ import { RTCParticipant } from '../types';
 
 import useInitialParticipants from './useInitialParticipants';
 
-const useParticipants = (): [
+const useParticipants = (
+  isSpectator: boolean
+): [
   RTCParticipant[] | null,
   React.Dispatch<React.SetStateAction<RTCParticipant[] | null>>
 ] => {
-  const initialParticipants = useInitialParticipants();
+  const initialParticipants = useInitialParticipants(isSpectator);
 
   const [participants, setParticipants] = React.useState<
     RTCParticipant[] | null

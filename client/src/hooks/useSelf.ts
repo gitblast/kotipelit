@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
-import { RTCGame } from '../types';
+import { Role, RTCGame } from '../types';
 
 import logger from '../utils/logger';
 
@@ -24,20 +24,20 @@ const getMyId = (game: RTCGame, isHost?: boolean) => {
   return playerWithPrivateDataExposed?.id ?? null;
 };
 
-const useSelf = (game: RTCGame | null, isHost?: boolean) => {
+const useSelf = (game: RTCGame | null, role: Role) => {
   const [mySelf, setMySelf] = React.useState<null | MySelf>(null);
   const dispatch = useDispatch();
 
   React.useEffect(() => {
-    if (!mySelf && game) {
-      const myId = getMyId(game, isHost);
+    if (!mySelf && game && role !== Role.SPECTATOR) {
+      const myId = getMyId(game, role === Role.HOST);
 
       if (!myId) {
         logger.error('self object not found!');
       } else {
         const self = {
           id: myId,
-          isHost: !!isHost,
+          isHost: role === Role.HOST,
         };
 
         dispatch(setSelf(self));
@@ -45,7 +45,7 @@ const useSelf = (game: RTCGame | null, isHost?: boolean) => {
         setMySelf(self);
       }
     }
-  }, [game, mySelf, isHost, dispatch]);
+  }, [game, mySelf, role, dispatch]);
 
   return mySelf;
 };

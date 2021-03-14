@@ -21,10 +21,11 @@ const useNewGameRoom = (token: string | null, onCall: boolean, role: Role) => {
   const game = useSelector((state: State) => state.rtc.game, shallowEqual);
   const [twilioToken, setTwilioToken] = React.useState<null | string>(null);
   const [socket, socketError] = useAuthSocket(token, socketOnLeaveCallback);
-  const mySelf = useSelf(game, role === Role.HOST);
+  const mySelf = useSelf(game, role);
   const { participants, error: twilioError } = useTwilioRoom(
     twilioToken,
-    onCall
+    onCall,
+    role === Role.SPECTATOR
   );
 
   if (socketError) console.error('socket error:', socketError);
@@ -46,6 +47,10 @@ const useNewGameRoom = (token: string | null, onCall: boolean, role: Role) => {
         dispatch(setGameInRedux({ ...updatedGame, players: mappedPlayers }));
       });
 
+      socket.on('twilio-token', (token: string) => {
+        setTwilioToken(token);
+      });
+
       socket.on('rtc-error', (msg: string) => {
         logger.error('rtc error:', msg);
       });
@@ -61,24 +66,6 @@ const useNewGameRoom = (token: string | null, onCall: boolean, role: Role) => {
       });
     }
   }, [socket, dispatch, history, hostName]);
-
-  /* // set twilio token
-  React.useEffect(() => {
-    if (game && !twilioToken) {
-      logger.log('checking for video token...');
-      const videoToken =
-        role === Role.HOST
-          ? game.host.privateData.twilioToken
-          : game.players.find((p) => !!p.privateData)?.privateData.twilioToken;
-
-      if (videoToken) {
-        logger.log('...token found');
-        setTwilioToken(videoToken);
-      } else {
-        logger.log('...not found');
-      }
-    }
-  }, [twilioToken, game, role]); */
 
   return {
     game,

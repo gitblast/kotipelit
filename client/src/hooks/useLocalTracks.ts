@@ -4,7 +4,8 @@ import { createLocalTracks, LocalTrack } from 'twilio-video';
 import logger from '../utils/logger';
 
 const useLocalTracks = (
-  onCall: boolean
+  onCall: boolean,
+  isSpectator: boolean
 ): [null | LocalTrack[], null | string] => {
   const [localTracks, setLocalTracks] = React.useState<null | LocalTrack[]>(
     null
@@ -13,14 +14,14 @@ const useLocalTracks = (
 
   React.useEffect(() => {
     const getLocalTracks = async () => {
-      const tracks = await createLocalTracks();
-
       logger.log('getting local media tracks');
+
+      const tracks = await createLocalTracks();
 
       setLocalTracks(tracks);
     };
 
-    if (onCall && !localTracks) {
+    if (!isSpectator && onCall && !localTracks) {
       try {
         getLocalTracks();
       } catch (error) {
@@ -29,7 +30,11 @@ const useLocalTracks = (
         setError(`error getting tracks: ${error.message}`);
       }
     }
-  }, [onCall, localTracks]);
+
+    if (isSpectator && onCall) {
+      logger.log('not getting local media tracks (spectator)');
+    }
+  }, [onCall, localTracks, isSpectator]);
 
   return [localTracks, error];
 };

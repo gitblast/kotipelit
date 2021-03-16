@@ -1,21 +1,21 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 
-// import Zrnic from '.assets/fonts/zrnic-rg.ttf';
+import Zrnic from './assets/fonts/zrnic-rg.ttf';
 
 // Instructions (Self hosted fonts) https://material-ui.com/customization/typography/
 
-// const zrnic = {
-//   fontFamily: 'zrnic',
-//   fontStyle: 'normal',
-//   fontDisplay: 'swap',
-//   fontWeight: 400,
-//   src: `
-//     local('zrnic-rg'),
-//     url(${Zrnic}) format('ttf')
-//   `,
-//   unicodeRange:
-//     'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2035, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF',
-// };
+const zrnic = {
+  fontFamily: 'Zrnic',
+  fontStyle: 'normal',
+  fontWeight: 400,
+  src: `
+    local('Zrnic'),
+    url(${Zrnic}),
+    url(${Zrnic}) format('ttf')
+  `,
+  unicodeRange:
+    'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2035, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF',
+};
 
 const theme = createMuiTheme({
   palette: {
@@ -89,11 +89,11 @@ const theme = createMuiTheme({
     },
   },
   overrides: {
-    // MuiCssBaseline: {
-    //   '@global': {
-    //     '@font-face': [zrnic],
-    //   },
-    // },
+    MuiCssBaseline: {
+      '@global': {
+        '@font-face': [zrnic],
+      },
+    },
     MuiButton: {
       root: {
         paddingTop: 8,

@@ -103,12 +103,16 @@ const useTwilioRoom = (
     ) => {
       const baseConfig = {};
 
-      const config = tracks
+      const config: Video.ConnectOptions = tracks
         ? {
             ...baseConfig,
             tracks,
           }
-        : baseConfig;
+        : {
+            ...baseConfig,
+            audio: false,
+            video: false,
+          };
 
       const videoRoom = await Video.connect(token, config);
 

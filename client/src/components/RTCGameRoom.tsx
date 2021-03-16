@@ -1,11 +1,14 @@
 import React from 'react';
 
+import { isSupported } from 'twilio-video';
+
 import usePlayerGameToken from '../hooks/usePlayerGameToken';
 import useHostGameToken from '../hooks/useHostGameToken';
 import useSpectatorGameToken from '../hooks/useSpectatorGameToken';
 
 import GameRoom from './GameRoom';
 import { Role } from '../types';
+import BrowserNotSupported from './BrowserNotSupported';
 
 const RTCGameForSpectator: React.FC = () => {
   const [token, error] = useSpectatorGameToken();
@@ -43,6 +46,10 @@ interface RTCGameRoomProps {
 
 // redirects to correct component
 const RTCGameRoom: React.FC<RTCGameRoomProps> = ({ role }) => {
+  if (!isSupported) {
+    return <BrowserNotSupported />;
+  }
+
   switch (role) {
     case Role.HOST:
       return <RTCGameForHost />;

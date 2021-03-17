@@ -38,7 +38,7 @@ const LobbyContent: React.FC<LobbyContentProps> = ({
   if (!lockedReservationData && !unlockedReservationData) {
     return (
       <Button onClick={handleReserve} color="secondary">
-        Varaa paikka
+        Ilmoittaudu peliin
       </Button>
     );
   }

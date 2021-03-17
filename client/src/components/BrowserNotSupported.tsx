@@ -19,7 +19,11 @@ const BrowserNotSupported: React.FC = () => {
     <div className={classes.container}>
       <Typography>
         Käyttämääsi selainta ei tueta. Näet tuetut selaimet{' '}
-        <Link href="https://www.twilio.com/docs/video/javascript#supported-browsers">
+        <Link
+          href="https://www.twilio.com/docs/video/javascript#supported-browsers"
+          target="_blank"
+          rel="noopener"
+        >
           täältä
         </Link>
       </Typography>

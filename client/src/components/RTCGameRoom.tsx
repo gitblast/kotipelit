@@ -46,9 +46,9 @@ interface RTCGameRoomProps {
 
 // redirects to correct component
 const RTCGameRoom: React.FC<RTCGameRoomProps> = ({ role }) => {
-  if (!isSupported) {
-    return <BrowserNotSupported />;
-  }
+  // if (!isSupported) {
+  //   return <BrowserNotSupported />;
+  // }
 
   switch (role) {
     case Role.HOST:

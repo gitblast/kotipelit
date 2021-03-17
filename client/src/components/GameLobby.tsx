@@ -1,4 +1,4 @@
-import { Grid, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { format } from 'date-fns';
 import fiLocale from 'date-fns/locale/fi';
@@ -16,20 +16,40 @@ import ReservationConfirmedDialog from './ReservationConfirmedDialog';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
-      color: 'rgb(0 225 217)',
       [theme.breakpoints.down('xs')]: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
       },
     },
-    welcomeMsg: {
-      textAlign: 'center',
-    },
     centerAlign: {
+      marginTop: theme.spacing(1),
       display: 'flex',
-      justifyContent: 'center',
+      justifyContent: 'space-evenly',
       alignItems: 'center',
       color: theme.palette.primary.light,
+      [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column',
+      },
+    },
+    highlighted: {
+      // handle in theme
+      color: '#d517df',
+    },
+    invitationText: {
+      color: '#f1dc4a',
+      [theme.breakpoints.down('sm')]: {
+        textAlign: 'center',
+      },
+    },
+    gameInfo: {
+      marginTop: theme.spacing(2),
+      '& > * + *': {
+        marginBottom: theme.spacing(2),
+      },
+    },
+    videocallInfo: {
+      margin: theme.spacing(3),
+      textAlign: 'center',
     },
     availableSeat: {
       color: 'rgb(104 122 106)',
@@ -117,69 +137,72 @@ const GameLobby: React.FC = () => {
       )}
       {game ? (
         <>
-          <Grid container spacing={4}>
-            <Grid item md></Grid>
-            <Grid item md={5} sm={12} xs={12}>
-              <div className={classes.centerAlign}>
-                <img
-                  src={logoImg}
-                  alt="background"
-                  className={classes.showcaseImage}
+          <div className={classes.centerAlign}>
+            <div>
+              <img
+                src={logoImg}
+                alt="background"
+                className={classes.showcaseImage}
+              />
+            </div>
+            <div className={classes.invitationText}>
+              <Typography variant="h3" color="initial">
+                <span
+                  className={classes.highlighted}
+                >{`${game.hostName} `}</span>
+                kutsui sinut pelaamaan!
+              </Typography>
+              <div className={classes.gameInfo}>
+                <Typography variant="h5" color="initial">
+                  Pelimuoto: <span> {` ${capitalize(game.type)}`}</span>
+                </Typography>
+                <Typography variant="h5">
+                  Ajankohta:{' '}
+                  <span>
+                    {' '}
+                    {`${format(new Date(game.startTime), 'd. MMMM HH:mm', {
+                      locale: fiLocale,
+                    })}`}
+                  </span>
+                </Typography>
+                {game.price !== 0 && (
+                  <Typography variant="h5">
+                    Pelin hinta on{' '}
+                    <span
+                      className={classes.highlighted}
+                    >{`${game.price} €`}</span>
+                  </Typography>
+                )}
+                <LobbyContent
+                  handleReserve={reserveSpot}
+                  handleLock={lockSpot}
+                  unlockedReservationData={unlockedReservationData}
+                  lockedReservationData={lockedReservationData}
                 />
               </div>
-            </Grid>
-            <Grid item md={5} sm={12} xs={12} className={classes.centerAlign}>
-              <div className={classes.welcomeMsg}>
-                <Typography
-                  variant="h3"
-                  color="primary"
-                >{`Tervetuloa pelaamaan ${capitalize(
-                  game.type
-                )}a!`}</Typography>
-              </div>
-            </Grid>
-            <Grid item md></Grid>
-            <Grid item md={6} xs={12} className={classes.centerAlign}>
-              <div>
-                <Typography variant="h5">{`Peli alkaa ${format(
-                  new Date(game.startTime),
-                  'd. MMMM HH:mm',
-                  {
-                    locale: fiLocale,
-                  }
-                )}`}</Typography>
-                {game.price !== 0 && (
-                  <Typography variant="h5">{`Pelin hinta on ${game.price} €`}</Typography>
-                )}
-                <Typography variant="h5">
-                  {`Peli-illan järjestää ${game.hostName}`}
-                </Typography>
-              </div>
-            </Grid>
+            </div>
+          </div>
+          <div className={classes.centerAlign}>
+            <div>
+              <Typography>Ilmoittautuneet pelaajat:</Typography>
+              {game.players.map((player, index) => {
+                return (
+                  <Typography key={index}>
+                    <span>{`${index + 1}. `}</span>
 
-            <Grid item md={6} xs={12} className={classes.centerAlign}>
-              <div>
-                <Typography>Ilmoittautuneet pelaajat:</Typography>
-                {game.players.map((player, index) => {
-                  return (
-                    <Typography key={index}>
-                      <span>{`${index + 1}. `}</span>
+                    {getLabel(player)}
+                  </Typography>
+                );
+              })}
+            </div>
 
-                      {getLabel(player)}
-                    </Typography>
-                  );
-                })}
-              </div>
-            </Grid>
-            <Grid item xs={12} className={classes.centerAlign}>
-              <LobbyContent
-                handleReserve={reserveSpot}
-                handleLock={lockSpot}
-                unlockedReservationData={unlockedReservationData}
-                lockedReservationData={lockedReservationData}
-              />
-            </Grid>
-          </Grid>
+            <div className={classes.videocallInfo}>
+              <Typography variant="body1" color="initial">
+                Peli pelataan Kotipelien pelaamiseen <br></br> kustomoidulla
+                videopuhelualustalla
+              </Typography>
+            </div>
+          </div>
           <KotitonniRulesBanner />
 
           <References />

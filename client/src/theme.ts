@@ -102,6 +102,7 @@ const theme = createMuiTheme({
         paddingRight: 12,
         borderRadius: 10,
         fontSize: '1.2rem',
+        border: 'solid 0.5px white',
         // Why affects only variant"text" ?
         '&$disabled': {
           color: 'rgb(92 92 92)',

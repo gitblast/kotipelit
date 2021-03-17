@@ -32,10 +32,6 @@ import logger from '../../utils/logger';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    container: {
-      marginTop: theme.spacing(1),
-      padding: theme.spacing(2),
-    },
     cardStyle: {
       width: 400,
       margin: theme.spacing(2),
@@ -69,11 +65,6 @@ const useStyles = makeStyles((theme: Theme) =>
     actionIcon: {
       padding: theme.spacing(0.5),
       color: theme.palette.primary.light,
-    },
-
-    inviteText: {
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(1),
     },
     popover: {
       pointerEvents: 'none',
@@ -307,14 +298,7 @@ const QueuedGame: React.FC<QueuedGameProps> = ({ game, username }) => {
           ))}
         </CardContent>
         <CardActions disableSpacing className={classes.actions}>
-          <div>
-            {lobbyButton()}
-
-            {/* For sharing gameLobby page in social medias */}
-            {/* <IconButton className={classes.actionIcon} aria-label="share">
-              <ShareIcon />
-            </IconButton> */}
-          </div>
+          <div>{lobbyButton()}</div>
 
           {startRTCButton()}
         </CardActions>

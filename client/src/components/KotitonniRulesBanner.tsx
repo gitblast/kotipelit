@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     gameRules: {
       padding: theme.spacing(3),
-      marginTop: theme.spacing(6),
+      marginTop: theme.spacing(3),
       marginLeft: theme.spacing(6),
       marginRight: theme.spacing(6),
       color: theme.palette.primary.light,

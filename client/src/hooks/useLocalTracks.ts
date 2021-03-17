@@ -1,12 +1,20 @@
 import React from 'react';
-import { createLocalTracks, LocalTrack } from 'twilio-video';
+import {
+  createLocalTracks,
+  LocalVideoTrack,
+  LocalAudioTrack,
+  LocalTrack,
+} from 'twilio-video';
 
 import logger from '../utils/logger';
 
-const useLocalTracks = (
-  onCall: boolean,
-  isSpectator: boolean
-): [null | LocalTrack[], null | string] => {
+interface LocalTracks {
+  localVideoTrack: LocalVideoTrack | null;
+  localAudioTrack: LocalAudioTrack | null;
+  error: string | null;
+}
+
+const useLocalTracks = (onCall: boolean): LocalTracks => {
   const [localTracks, setLocalTracks] = React.useState<null | LocalTrack[]>(
     null
   );
@@ -21,7 +29,7 @@ const useLocalTracks = (
       setLocalTracks(tracks);
     };
 
-    if (!isSpectator && onCall && !localTracks) {
+    if (onCall && !localTracks) {
       try {
         getLocalTracks();
       } catch (error) {
@@ -31,12 +39,30 @@ const useLocalTracks = (
       }
     }
 
-    if (isSpectator && onCall) {
-      logger.log('not getting local media tracks (spectator)');
-    }
-  }, [onCall, localTracks, isSpectator]);
+    return () => {
+      if (localTracks) {
+        logger.log('shutting off local tracks');
 
-  return [localTracks, error];
+        localTracks.forEach((track) => {
+          if (track.kind === 'video' || track.kind === 'audio') {
+            track.stop();
+          }
+        });
+      }
+    };
+  }, [onCall, localTracks]);
+
+  return {
+    localVideoTrack:
+      (localTracks?.find(
+        (track) => track.kind === 'video'
+      ) as LocalVideoTrack) ?? null,
+    localAudioTrack:
+      (localTracks?.find(
+        (track) => track.kind === 'audio'
+      ) as LocalAudioTrack) ?? null,
+    error,
+  };
 };
 
 export default useLocalTracks;

@@ -49,7 +49,16 @@ const useTwilioRoom = (
   isSpectator: boolean
 ) => {
   const [room, setRoom] = React.useState<null | Video.Room>(null);
-  const [localTracks, localTrackError] = useLocalTracks(onCall, isSpectator);
+  const {
+    localVideoTrack,
+    localAudioTrack,
+    error: localTrackError,
+  } = useLocalTracks(onCall && !isSpectator);
+  const localTracks = React.useMemo(() => {
+    return !!localVideoTrack && !!localAudioTrack
+      ? [localVideoTrack, localAudioTrack]
+      : null;
+  }, [localVideoTrack, localAudioTrack]);
   const [error, setError] = React.useState<null | string>(null);
   const [participants, setParticipants] = useParticipants(isSpectator);
 

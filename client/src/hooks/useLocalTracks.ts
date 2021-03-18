@@ -4,13 +4,23 @@ import {
   LocalVideoTrack,
   LocalAudioTrack,
   LocalTrack,
+  CreateLocalTracksOptions,
 } from 'twilio-video';
+
+import useDevices from './useDevices';
+
+import {
+  DEFAULT_VIDEO_CONSTRAINTS,
+  SAVED_AUDIO_DEVICE_ID,
+  SAVED_VIDEO_DEVICE_ID,
+} from '../constants';
 
 import logger from '../utils/logger';
 
 interface LocalTracks {
   localVideoTrack: LocalVideoTrack | null;
   localAudioTrack: LocalAudioTrack | null;
+  shutDownLocalTracks: () => void;
   error: string | null;
 }
 
@@ -19,17 +29,53 @@ const useLocalTracks = (onCall: boolean): LocalTracks => {
     null
   );
   const [error, setError] = React.useState<null | string>(null);
+  const { audioInputDevices, videoInputDevices } = useDevices();
 
   React.useEffect(() => {
     const getLocalTracks = async () => {
       logger.log('getting local media tracks');
 
-      const tracks = await createLocalTracks();
+      const preferredAudioInput = window.localStorage.getItem(
+        SAVED_AUDIO_DEVICE_ID
+      );
+      const preferredVideoInput = window.localStorage.getItem(
+        SAVED_VIDEO_DEVICE_ID
+      );
+
+      const preferredAudioExists =
+        preferredAudioInput &&
+        audioInputDevices?.some(
+          (device) => device.deviceId === preferredAudioInput
+        );
+
+      const preferredVideoExists =
+        !!preferredVideoInput &&
+        !!videoInputDevices?.some(
+          (device) => device.deviceId === preferredVideoInput
+        );
+
+      const options: CreateLocalTracksOptions = {
+        video: {
+          ...DEFAULT_VIDEO_CONSTRAINTS,
+          ...(preferredVideoInput &&
+            preferredVideoExists && {
+              deviceId: { exact: preferredVideoInput },
+            }),
+        },
+        audio: {
+          ...(preferredAudioInput &&
+            preferredAudioExists && {
+              deviceId: { exact: preferredAudioInput },
+            }),
+        },
+      };
+
+      const tracks = await createLocalTracks(options);
 
       setLocalTracks(tracks);
     };
 
-    if (onCall && !localTracks) {
+    if (onCall && audioInputDevices && videoInputDevices && !localTracks) {
       try {
         getLocalTracks();
       } catch (error) {
@@ -38,19 +84,19 @@ const useLocalTracks = (onCall: boolean): LocalTracks => {
         setError(`error getting tracks: ${error.message}`);
       }
     }
+  }, [onCall, localTracks, audioInputDevices, videoInputDevices]);
 
-    return () => {
-      if (localTracks) {
-        logger.log('shutting off local tracks');
+  const shutDownLocalTracks = React.useCallback(() => {
+    if (localTracks) {
+      logger.log('shutting down local tracks');
+    }
 
-        localTracks.forEach((track) => {
-          if (track.kind === 'video' || track.kind === 'audio') {
-            track.stop();
-          }
-        });
+    localTracks?.forEach((track) => {
+      if (track.kind === 'audio' || track.kind === 'video') {
+        track.stop();
       }
-    };
-  }, [onCall, localTracks]);
+    });
+  }, [localTracks]);
 
   return {
     localVideoTrack:
@@ -61,6 +107,7 @@ const useLocalTracks = (onCall: boolean): LocalTracks => {
       (localTracks?.find(
         (track) => track.kind === 'audio'
       ) as LocalAudioTrack) ?? null,
+    shutDownLocalTracks,
     error,
   };
 };

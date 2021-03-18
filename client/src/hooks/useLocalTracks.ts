@@ -11,6 +11,7 @@ import useDevices from './useDevices';
 
 import {
   DEFAULT_VIDEO_CONSTRAINTS,
+  DEFAULT_AUDIO_CONSTRAINTS,
   SAVED_AUDIO_DEVICE_ID,
   SAVED_VIDEO_DEVICE_ID,
 } from '../constants';
@@ -63,6 +64,7 @@ const useLocalTracks = (onCall: boolean): LocalTracks => {
             }),
         },
         audio: {
+          ...DEFAULT_AUDIO_CONSTRAINTS,
           ...(preferredAudioInput &&
             preferredAudioExists && {
               deviceId: { exact: preferredAudioInput },

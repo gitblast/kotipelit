@@ -7,7 +7,12 @@ import DeviceSelector from './DeviceSelector';
 import useLocalTracks from '../hooks/useLocalTracks';
 import logger from '../utils/logger';
 
-import { SAVED_AUDIO_DEVICE_ID, SAVED_VIDEO_DEVICE_ID } from '../constants';
+import {
+  SAVED_AUDIO_DEVICE_ID,
+  SAVED_VIDEO_DEVICE_ID,
+  DEFAULT_VIDEO_CONSTRAINTS,
+  DEFAULT_AUDIO_CONSTRAINTS,
+} from '../constants';
 import useDevices from '../hooks/useDevices';
 import Loader from './Loader';
 
@@ -40,7 +45,10 @@ const MediaPreview: React.FC = () => {
     (newDeviceId: string) => {
       window.localStorage.setItem(SAVED_AUDIO_DEVICE_ID, newDeviceId);
 
-      localAudioTrack?.restart({ deviceId: { exact: newDeviceId } });
+      localAudioTrack?.restart({
+        ...DEFAULT_AUDIO_CONSTRAINTS,
+        deviceId: { exact: newDeviceId },
+      });
     },
     [localAudioTrack]
   );
@@ -49,7 +57,10 @@ const MediaPreview: React.FC = () => {
     (newDeviceId: string) => {
       window.localStorage.setItem(SAVED_VIDEO_DEVICE_ID, newDeviceId);
 
-      localVideoTrack?.restart({ deviceId: { exact: newDeviceId } });
+      localVideoTrack?.restart({
+        ...DEFAULT_VIDEO_CONSTRAINTS,
+        deviceId: { exact: newDeviceId },
+      });
     },
     [localVideoTrack]
   );

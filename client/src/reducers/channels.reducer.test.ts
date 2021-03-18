@@ -2,7 +2,7 @@ import reducer from './channels.reducer';
 import * as actions from './channels.reducer';
 import userService from '../services/users';
 
-import { hardcodedChannels } from '../constants';
+import { hardcodedChannels } from '../helpers/tests';
 import { ChannelsState, Action, ActionType } from '../types';
 
 const getAll: jest.Mock = userService.getAll as jest.Mock;

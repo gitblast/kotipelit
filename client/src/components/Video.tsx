@@ -1,25 +1,25 @@
 import React from 'react';
 
 import { makeStyles, createStyles } from '@material-ui/core/styles';
-import { AudioTrack, VideoTrack } from 'twilio-video';
+import {
+  AudioTrack,
+  LocalAudioTrack,
+  LocalVideoTrack,
+  VideoTrack,
+} from 'twilio-video';
 
 const useStyles = makeStyles(() =>
   createStyles({
-    absolute: {
+    video: {
       width: '100%',
-      position: 'absolute',
-      top: 0,
-      bottom: 0,
-      left: 0,
-      right: 0,
     },
   })
 );
 
 interface VideoProps {
-  videoTrack: VideoTrack;
-  audioTrack: AudioTrack;
-  isMuted: boolean;
+  videoTrack?: VideoTrack | LocalVideoTrack | null;
+  audioTrack?: AudioTrack | LocalAudioTrack | null;
+  isMuted?: boolean;
 }
 
 const Video: React.FC<VideoProps> = ({ videoTrack, audioTrack, isMuted }) => {
@@ -29,21 +29,21 @@ const Video: React.FC<VideoProps> = ({ videoTrack, audioTrack, isMuted }) => {
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
 
   React.useEffect(() => {
-    if (videoRef.current) {
+    if (videoTrack && videoRef.current) {
       videoTrack.attach(videoRef.current);
     }
   }, [videoRef, videoTrack]);
 
   React.useEffect(() => {
-    if (audioRef.current) {
+    if (audioTrack && audioRef.current) {
       audioTrack.attach(audioRef.current);
     }
   }, [audioRef, audioTrack]);
 
   return (
     <>
-      <video className={classes.absolute} ref={videoRef} autoPlay playsInline />
-      <audio ref={audioRef} autoPlay muted={isMuted} />
+      <video className={classes.video} ref={videoRef} autoPlay playsInline />
+      {audioTrack && <audio ref={audioRef} autoPlay muted={isMuted} />}
     </>
   );
 };

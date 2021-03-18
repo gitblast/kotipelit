@@ -141,6 +141,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
       <PreGameInfo
         canJoin={isHost || game.status !== GameStatus.UPCOMING}
         handleJoinCall={handleJoinCall}
+        isSpectator={role === Role.SPECTATOR}
       />
     );
   }

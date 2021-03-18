@@ -1,6 +1,6 @@
 import reducer from './games.reducer';
 import * as actions from './games.reducer';
-import { hardcodedGames } from '../constants';
+import { hardcodedGames } from '../helpers/tests';
 
 import gameService from '../services/games';
 

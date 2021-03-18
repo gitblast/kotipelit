@@ -40,11 +40,13 @@ const VideoWithOverlay: React.FC<VideoWithOverlayProps> = ({
 
   return (
     <div className={classes.frame}>
-      <Video
-        videoTrack={videoTrack}
-        audioTrack={audioTrack}
-        isMuted={isMuted}
-      />
+      <div className={classes.absolute}>
+        <Video
+          videoTrack={videoTrack}
+          audioTrack={audioTrack}
+          isMuted={isMuted}
+        />
+      </div>
       <div className={classes.absolute} id="overlayContainer">
         {children}
       </div>

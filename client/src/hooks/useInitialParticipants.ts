@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { RTCParticipant, State } from '../types';
+import logger from '../utils/logger';
 
 const useInitialParticipants = (isSpectator: boolean) => {
   const game = useSelector((state: State) => state.rtc.game);
@@ -32,9 +33,11 @@ const useInitialParticipants = (isSpectator: boolean) => {
         })
         .concat(hostParticipant);
 
+      logger.log('setting initial participants');
+
       setInitialParticipants(initials);
     }
-  }, [game, initialParticipants, ownId, ownId]);
+  }, [game, initialParticipants, ownId]);
 
   return initialParticipants;
 };

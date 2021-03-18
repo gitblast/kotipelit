@@ -7,12 +7,14 @@ import logger from '../utils/logger';
 import useParticipants from './useParticipants';
 import useLocalTracks from './useLocalTracks';
 
-const mockRoom = {
+const mockRoom = ({
   localParticipant: {
     videoTracks: new Map(),
     audioTracks: new Map(),
+    tracks: new Map(),
   } as Video.LocalParticipant,
-} as Video.Room;
+  disconnect: () => null,
+} as unknown) as Video.Room;
 
 const addTracksToMockRoom = (
   localTracks: [Video.LocalVideoTrack, Video.LocalAudioTrack]
@@ -22,7 +24,17 @@ const addTracksToMockRoom = (
     track: localTracks[0],
   } as Video.LocalVideoTrackPublication);
 
+  mockRoom.localParticipant.tracks.set('video', {
+    kind: 'video',
+    track: localTracks[0],
+  } as Video.LocalVideoTrackPublication);
+
   mockRoom.localParticipant.audioTracks.set('audio', {
+    kind: 'audio',
+    track: localTracks[1],
+  } as Video.LocalAudioTrackPublication);
+
+  mockRoom.localParticipant.tracks.set('audio', {
     kind: 'audio',
     track: localTracks[1],
   } as Video.LocalAudioTrackPublication);
@@ -193,7 +205,7 @@ const useTwilioRoom = (
   ]);
 
   React.useEffect(() => {
-    if (room && room !== mockRoom) {
+    if (room) {
       return () => {
         if (room) {
           logger.log('cleaning up twilio room');

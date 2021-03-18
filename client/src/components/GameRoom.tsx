@@ -108,25 +108,34 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
     }
   }, [fullscreenRef]);
 
-  const handleJoinCall = React.useCallback(() => {
-    if (socket) {
-      const callback = (token: string) => {
-        logger.log('got twilio token');
+  const handleJoinCall = React.useCallback(
+    (dev?: boolean) => {
+      if (socket) {
+        const callback = dev
+          ? () => {
+              logger.log('using mock token');
 
-        setTwilioToken(token);
-      };
+              setTwilioToken('DEVELOPMENT');
+            }
+          : (token: string) => {
+              logger.log('got twilio token');
 
-      if (isHost) {
-        socket.emit('launch', callback);
+              setTwilioToken(token);
+            };
+
+        if (isHost) {
+          socket.emit('launch', callback);
+        } else {
+          socket.emit('get-twilio-token', callback);
+        }
+
+        setOnCall(true);
       } else {
-        socket.emit('get-twilio-token', callback);
+        logger.error('socket was null trying to emit launch');
       }
-
-      setOnCall(true);
-    } else {
-      logger.error('socket was null trying to emit launch');
-    }
-  }, [socket]);
+    },
+    [socket]
+  );
 
   if (!game) {
     return (

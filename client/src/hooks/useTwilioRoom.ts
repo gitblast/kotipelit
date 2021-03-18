@@ -7,6 +7,27 @@ import logger from '../utils/logger';
 import useParticipants from './useParticipants';
 import useLocalTracks from './useLocalTracks';
 
+const mockRoom = {
+  localParticipant: {
+    videoTracks: new Map(),
+    audioTracks: new Map(),
+  } as Video.LocalParticipant,
+} as Video.Room;
+
+const addTracksToMockRoom = (
+  localTracks: [Video.LocalVideoTrack, Video.LocalAudioTrack]
+) => {
+  mockRoom.localParticipant.videoTracks.set('video', {
+    kind: 'video',
+    track: localTracks[0],
+  } as Video.LocalVideoTrackPublication);
+
+  mockRoom.localParticipant.audioTracks.set('audio', {
+    kind: 'audio',
+    track: localTracks[1],
+  } as Video.LocalAudioTrackPublication);
+};
+
 const addRoomListeners = (videoRoom: Video.Room) => {
   videoRoom.on('participantReconnected', (participant) => {
     logger.log(`participant '${participant.identity}' reconnected`);
@@ -54,7 +75,9 @@ const useTwilioRoom = (
     localAudioTrack,
     error: localTrackError,
   } = useLocalTracks(onCall && !isSpectator);
-  const localTracks = React.useMemo(() => {
+  const localTracks = React.useMemo<
+    [Video.LocalVideoTrack, Video.LocalAudioTrack] | null
+  >(() => {
     return !!localVideoTrack && !!localAudioTrack
       ? [localVideoTrack, localAudioTrack]
       : null;
@@ -143,7 +166,17 @@ const useTwilioRoom = (
       try {
         logger.log('connecting room');
 
-        connectToRoom(accessToken, localTracks);
+        if (accessToken === 'DEVELOPMENT') {
+          logger.log('setting mock room');
+
+          if (localTracks) {
+            addTracksToMockRoom(localTracks);
+          }
+
+          setRoom(mockRoom);
+        } else {
+          connectToRoom(accessToken, localTracks);
+        }
       } catch (error) {
         logger.error(`error connecting to room: ${error.message}`);
 
@@ -160,7 +193,7 @@ const useTwilioRoom = (
   ]);
 
   React.useEffect(() => {
-    if (room) {
+    if (room && room !== mockRoom) {
       return () => {
         if (room) {
           logger.log('cleaning up twilio room');

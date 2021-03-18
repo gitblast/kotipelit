@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface PreGameInfoProps {
   canJoin: boolean;
-  handleJoinCall: () => void;
+  handleJoinCall: (dev?: boolean) => void;
   isSpectator: boolean;
 }
 
@@ -68,9 +68,18 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
               läpi.
             </Typography>
           </div>
-          <Button color="secondary" onClick={handleJoinCall} id="start">
+          <Button color="secondary" onClick={() => handleJoinCall()} id="start">
             Käynnistä video
           </Button>
+          {process.env.NODE_ENV === 'development' && (
+            <Button
+              color="secondary"
+              onClick={() => handleJoinCall(true)}
+              id="start-dev"
+            >
+              Käynnistä yhdistämättä Twilioon
+            </Button>
+          )}
         </>
       ) : (
         <>

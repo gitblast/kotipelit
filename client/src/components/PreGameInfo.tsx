@@ -6,7 +6,6 @@ import HeadsetIcon from '@material-ui/icons/Headset';
 import Typography from '@material-ui/core/Typography/Typography';
 import Button from '@material-ui/core/Button/Button';
 import MediaPreview from './MediaPreview';
-import { Fab } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,11 +26,13 @@ const useStyles = makeStyles((theme: Theme) =>
 interface PreGameInfoProps {
   canJoin: boolean;
   handleJoinCall: () => void;
+  isSpectator: boolean;
 }
 
 const PreGameInfo: React.FC<PreGameInfoProps> = ({
   handleJoinCall,
   canJoin,
+  isSpectator,
 }) => {
   const classes = useStyles();
   const [previewOpen, setPreviewOpen] = React.useState(false);
@@ -57,14 +58,21 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
           <Typography variant="h5">
             Host ei ole vielä käynnistänyt peliä!
           </Typography>
+        </>
+      )}
+      {!isSpectator && (
+        <>
           {previewOpen && (
             <div>
               <MediaPreview />
             </div>
           )}
-          <Fab variant="extended" onClick={() => setPreviewOpen(!previewOpen)}>
+          <Button
+            color="secondary"
+            onClick={() => setPreviewOpen(!previewOpen)}
+          >
             {previewOpen ? 'Lopeta testi' : 'Testaa kamera ja mikrofoni'}
-          </Fab>
+          </Button>
         </>
       )}
     </div>

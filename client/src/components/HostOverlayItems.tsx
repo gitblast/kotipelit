@@ -64,9 +64,6 @@ const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({ host }) => {
   if (gameType === GameType.KOTITONNI) {
     return (
       <div className={classes.flexCol}>
-        <div className={classes.flex}>
-          <div className={classes.spacer} />
-        </div>
         <div className={classes.spacer} />
         <div className={classes.flex}>
           <Grid container className={classes.nameBadge}>

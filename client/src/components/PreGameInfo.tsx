@@ -2,10 +2,15 @@ import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
+import { isSupported } from 'twilio-video';
+
 import HeadsetIcon from '@material-ui/icons/Headset';
 import Typography from '@material-ui/core/Typography/Typography';
 import Button from '@material-ui/core/Button/Button';
 import MediaPreview from './MediaPreview';
+import Alert from '@material-ui/lab/Alert';
+import { Link } from '@material-ui/core';
+import { AlertTitle } from '@material-ui/lab';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface PreGameInfoProps {
   canJoin: boolean;
-  handleJoinCall: () => void;
+  handleJoinCall: (dev?: boolean) => void;
   isSpectator: boolean;
 }
 
@@ -36,9 +41,23 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
 }) => {
   const classes = useStyles();
   const [previewOpen, setPreviewOpen] = React.useState(false);
+  const [alertOpen, setAlertOpen] = React.useState(!isSupported);
 
   return (
     <div className={classes.preInfo}>
+      {!isSupported && alertOpen && (
+        <Alert severity="info" onClose={() => setAlertOpen(false)}>
+          <AlertTitle>
+            Palvelu ei välttämättä toimi käyttämälläsi selaimella
+          </AlertTitle>
+          Jos peliin yhdistäminen ei onnistu, kokeile toista selainta. Näet
+          tukemamme selaimet{' '}
+          <Link href="https://www.twilio.com/docs/video/javascript#supported-browsers">
+            täältä
+          </Link>
+          .
+        </Alert>
+      )}
       {canJoin ? (
         <>
           <Typography variant="h5">Peli alkaa pian!</Typography>
@@ -49,9 +68,18 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
               läpi.
             </Typography>
           </div>
-          <Button color="secondary" onClick={handleJoinCall} id="start">
+          <Button color="secondary" onClick={() => handleJoinCall()} id="start">
             Käynnistä video
           </Button>
+          {process.env.NODE_ENV === 'development' && (
+            <Button
+              color="secondary"
+              onClick={() => handleJoinCall(true)}
+              id="start-dev"
+            >
+              Käynnistä yhdistämättä Twilioon
+            </Button>
+          )}
         </>
       ) : (
         <>

@@ -1,8 +1,10 @@
 import { Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { InGameSocket } from '../context';
 import useNewGameRoom from '../hooks/useNewGameRoom';
+import { setGame } from '../reducers/rtcGameSlice';
 import { GameStatus, Role } from '../types';
 import logger, { setDebug } from '../utils/logger';
 import AudioHandler from './AudioHandler';
@@ -83,12 +85,21 @@ setDebug(true);
 const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
   const isHost = role === Role.HOST;
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [onCall, setOnCall] = React.useState<boolean>(false);
   const { game, socket, participants, setTwilioToken } = useNewGameRoom(
     token,
     onCall,
     role
   );
+
+  React.useEffect(() => {
+    return () => {
+      logger.log('setting game to null');
+
+      dispatch(setGame(null));
+    };
+  }, [dispatch]);
 
   React.useEffect(() => {
     logger.log('participants changed:', participants);
@@ -108,25 +119,34 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
     }
   }, [fullscreenRef]);
 
-  const handleJoinCall = React.useCallback(() => {
-    if (socket) {
-      const callback = (token: string) => {
-        logger.log('got twilio token');
+  const handleJoinCall = React.useCallback(
+    (dev?: boolean) => {
+      if (socket) {
+        const callback = dev
+          ? () => {
+              logger.log('using mock token');
 
-        setTwilioToken(token);
-      };
+              setTwilioToken('DEVELOPMENT');
+            }
+          : (token: string) => {
+              logger.log('got twilio token');
 
-      if (isHost) {
-        socket.emit('launch', callback);
+              setTwilioToken(token);
+            };
+
+        if (isHost) {
+          socket.emit('launch', callback);
+        } else {
+          socket.emit('get-twilio-token', callback);
+        }
+
+        setOnCall(true);
       } else {
-        socket.emit('get-twilio-token', callback);
+        logger.error('socket was null trying to emit launch');
       }
-
-      setOnCall(true);
-    } else {
-      logger.error('socket was null trying to emit launch');
-    }
-  }, [socket]);
+    },
+    [socket]
+  );
 
   if (!game) {
     return (

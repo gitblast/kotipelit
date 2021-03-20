@@ -1,22 +1,16 @@
-import React from 'react';
-
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Fab, Grid, Typography, IconButton } from '@material-ui/core';
-
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import PauseIcon from '@material-ui/icons/Pause';
-import UndoIcon from '@material-ui/icons/Undo';
+import { Fab, Grid, IconButton, Typography } from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
-import { GameStatus, RTCGame, State } from '../types';
-import { useDispatch, useSelector } from 'react-redux';
-import logger from '../utils/logger';
-import { reset } from '../reducers/kotitonni.local.reducer';
-import InfoBar from './InfoBar';
-import { useHistory, useParams } from 'react-router-dom';
-import { InGameSocket } from '../context';
-import MainKotitonniButton from './MainKotitonniButton';
-import useGameHistory from '../hooks/useGameHistory';
+import PauseIcon from '@material-ui/icons/Pause';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import UndoIcon from '@material-ui/icons/Undo';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import useKotitonniHostControls from '../hooks/useKotitonniHostControls';
 import useTimer from '../hooks/useTimer';
+import { GameStatus, State } from '../types';
+import InfoBar from './InfoBar';
+import MainKotitonniButton from './MainKotitonniButton';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -88,210 +82,19 @@ const RTCHostControls: React.FC<{
   const {
     timerValue: timer,
     timerIsRunning: timerRunning,
-    startTimer,
-    stopTimer,
-    resetTimer,
+    toggleTimer,
   } = useTimer();
-  const { setHistory, returnToPrevious, noHistorySet } = useGameHistory();
+
+  const {
+    fetchLatestGameStatus,
+    handleFinish,
+    handleStart,
+    handlePointUpdate,
+    returnToPrevious,
+    noHistorySet,
+  } = useKotitonniHostControls();
   const classes = useStyles();
-  const history = useHistory();
-  const params = useParams<{ username: string }>();
-  const dispatch = useDispatch();
   const game = useSelector((state: State) => state.rtc.game);
-  const socket = React.useContext(InGameSocket);
-  const clickMap = useSelector(
-    (state: State) => state.rtc.localData.clickedMap
-  );
-
-  const handleUpdate = React.useCallback(
-    (newGame: RTCGame) => {
-      if (socket) {
-        socket.emit('update-game', newGame);
-      } else {
-        logger.error('no socket when trying to emit update');
-      }
-    },
-    [socket]
-  );
-
-  React.useEffect(() => {
-    // sets answering open to false if everyone has answered
-    if (game && game.info.answeringOpen) {
-      const playerWithTurnId = game.info.turn;
-
-      const everyoneHasAnswered = game.players.every((player) => {
-        if (player.hasTurn) {
-          return true;
-        }
-
-        const answers = player.privateData.answers[playerWithTurnId];
-
-        return (
-          answers && answers[game.info.round] && answers[game.info.round].length
-        );
-      });
-
-      if (everyoneHasAnswered) {
-        logger.log('everyone has answered, setting answering open to false');
-
-        handleUpdate({
-          ...game,
-          info: {
-            ...game.info,
-            answeringOpen: false,
-          },
-        });
-      }
-    }
-  }, [game, handleUpdate]);
-
-  React.useEffect(() => {
-    // sets answering open to false if timer reaches 0
-    if (game && game.info.answeringOpen && timer === 0) {
-      logger.log('timer is 0, setting answering open to false');
-
-      handleUpdate({
-        ...game,
-        info: {
-          ...game.info,
-          answeringOpen: false,
-        },
-      });
-    }
-  }, [timer, game, handleUpdate]);
-
-  const toggleTimer = () => {
-    if (timerRunning) {
-      stopTimer();
-    } else {
-      startTimer();
-    }
-  };
-
-  const handlePointUpdate = () => {
-    if (!game) {
-      logger.error('no game set when trying to update');
-
-      return;
-    }
-
-    if (!socket) {
-      logger.error('no socket set when trying to update');
-
-      return;
-    }
-
-    const playerInTurn = game.players.find((player) => player.hasTurn);
-
-    if (!playerInTurn) {
-      logger.error('no player with turn set when trying to update');
-
-      return;
-    }
-
-    setHistory(game);
-
-    const getPointAddition = (playerId: string, hasTurn: boolean): number => {
-      const playerCount = game.players.length;
-      const correctAnswers = game.players.reduce((sum, next) => {
-        return clickMap[next.id] ? sum + 1 : sum;
-      }, 0);
-
-      switch (correctAnswers) {
-        case playerCount - 1:
-          return hasTurn ? -50 : 0;
-        case 0:
-          return hasTurn ? -50 : 0;
-        case 1:
-          return clickMap[playerId] || hasTurn ? 100 : 0;
-        case 2:
-          return clickMap[playerId] || hasTurn ? 30 : 0;
-        case 3:
-          return clickMap[playerId] || hasTurn ? 10 : 0;
-      }
-
-      return correctAnswers;
-    };
-
-    const newPlayers = game.players.map((player) => {
-      return {
-        ...player,
-        points: player.points + getPointAddition(player.id, !!player.hasTurn),
-      };
-    });
-
-    const playerInTurnIndex = game.players.indexOf(playerInTurn);
-    let round: number;
-    let turn: string;
-
-    if (playerInTurnIndex === game.players.length - 1) {
-      round = game.info.round + 1;
-      turn = game.players[0].id;
-    } else {
-      round = game.info.round;
-      turn = game.players[playerInTurnIndex + 1].id;
-    }
-
-    const updatedGame: RTCGame = {
-      ...game,
-      status: round > 3 ? GameStatus.FINISHED : game.status,
-      players: newPlayers,
-      info: {
-        ...game.info,
-        round,
-        turn,
-      },
-    };
-
-    logger.log('updating game with', updatedGame);
-
-    socket.emit('update-game', updatedGame);
-
-    resetTimer();
-    dispatch(reset());
-  };
-
-  const fetchLatestGameStatus = () => {
-    if (!socket) {
-      logger.error('no socket set when trying to fetch new game status');
-
-      return;
-    }
-
-    if (socket.disconnected) {
-      logger.log('socket is disconnected, reconnecting');
-
-      socket.connect();
-    }
-
-    socket.emit('get-room-game');
-  };
-
-  const handleFinish = () => {
-    if (!socket) {
-      logger.error('no socket set when trying to emit finish game');
-
-      return;
-    }
-
-    socket.emit('end');
-
-    if (!params?.username) {
-      logger.error('no username in params when trying to redirect');
-
-      return;
-    }
-
-    history.push(`/${params.username}/kiitos`);
-  };
-
-  const handleStart = () => {
-    if (socket) {
-      socket.emit('start');
-    } else {
-      logger.error('socket was null when trying to emit start');
-    }
-  };
 
   if (!game) {
     return null;
@@ -323,7 +126,7 @@ const RTCHostControls: React.FC<{
             game={game}
             handleStart={handleStart}
             handleFinish={handleFinish}
-            handlePointUpdate={handlePointUpdate}
+            handlePointUpdate={() => handlePointUpdate(game)}
           />
           {game.status === GameStatus.RUNNING && (
             <Fab

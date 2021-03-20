@@ -35,12 +35,21 @@ const useTimer = () => {
     socket.emit('handle-timer', 'reset');
   }, [socket]);
 
+  const toggleTimer = React.useCallback(() => {
+    if (timerData?.isRunning) {
+      stopTimer();
+    } else {
+      startTimer();
+    }
+  }, [startTimer, stopTimer, timerData?.isRunning]);
+
   return {
     timerValue: timerData?.value ?? null,
     timerIsRunning: timerData?.isRunning ?? null,
     startTimer,
     stopTimer,
     resetTimer,
+    toggleTimer,
   };
 };
 

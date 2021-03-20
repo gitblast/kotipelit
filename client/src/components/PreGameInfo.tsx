@@ -101,7 +101,7 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
       ) : (
         <>
           <Typography variant="h5">
-            Host ei ole vielä käynnistänyt peliä!
+            Pelin juontaja ei ole vielä käynnistänyt peliä.
           </Typography>
         </>
       )}

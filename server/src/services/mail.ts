@@ -220,7 +220,7 @@ Kotipelit.com`,
     </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="2ea2cf5a-8d6f-4f20-9659-2306e3596c71" data-mc-module-version="2019-10-22">
     <tbody>
       <tr>
-        <td style="padding:18px 0px 0px 18px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: inherit"><span style="font-family: &quot;lucida sans unicode&quot;, &quot;lucida grande&quot;, sans-serif">Vaihtoehtoisesti voit kopioida peliin liittymislinkin selaimeen: ${
+        <td style="padding:18px 0px 0px 18px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: inherit"><span style="font-family: &quot;lucida sans unicode&quot;, &quot;lucida grande&quot;, sans-serif">Vaihtoehtoisesti voit kopioida peliinliittymislinkin selaimeen: ${
           inviteInfo.url
         }</span></div>
 <div style="font-family: inherit; text-align: inherit"><span style="font-family: &quot;lucida sans unicode&quot;, &quot;lucida grande&quot;, sans-serif">Huomioi, että linkki on jokaiselle pelaajalle uniikki. &nbsp;</span></div><div></div></div></td>

@@ -2,10 +2,11 @@ import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Typography, Paper } from '@material-ui/core';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { State } from '../types';
 import { Redirect } from 'react-router-dom';
 import logger from '../utils/logger';
+import { setGame } from '../reducers/rtcGameSlice';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -38,6 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const TYFPPage: React.FC = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   const game = useSelector((state: State) => state.rtc.game);
 
@@ -45,6 +47,12 @@ const TYFPPage: React.FC = () => {
     if (game) {
       logger.log('removing reservation data from local storage');
       window.localStorage.removeItem(`kotitonniReservation-gameID-${game.id}`);
+
+      return () => {
+        logger.log('setting game to null');
+
+        dispatch(setGame(null));
+      };
     }
   }, [game]);
 

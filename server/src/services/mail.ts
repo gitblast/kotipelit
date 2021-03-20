@@ -30,7 +30,8 @@ Huomioi, että pelissä käytetään myös yhdyssanoja ja erisnimiä.
 Peliin pääset tästä linkistä:
 ${inviteInfo.url}
         
-Jos tulee kysyttävää, voit olla yhteydessä vastaamalla tähän viestiin.
+Voit peruuttaa varauksesi tästä linkistä:
+${inviteInfo.cancelUrl}
         
 Hyviä pelejä!
         
@@ -64,14 +65,14 @@ Kotipelit.com`,
 <![endif]-->
       <style type="text/css">
     body, p, div {
-      font-family: arial,helvetica,sans-serif;
+      font-family: lucida sans unicode,lucida grande,sans-serif;
       font-size: 14px;
     }
     body {
       color: #000000;
     }
     body a {
-      color: #1188E6;
+      color: #85178b;
       text-decoration: none;
     }
     p { margin: 0; padding: 0; }
@@ -94,6 +95,18 @@ Kotipelit.com`,
     }
     .column.of-4 {
       width: 25%;
+    }
+    ul ul ul ul  {
+      list-style-type: disc !important;
+    }
+    ol ol {
+      list-style-type: lower-roman !important;
+    }
+    ol ol ol {
+      list-style-type: lower-latin !important;
+    }
+    ol ol ol ol {
+      list-style-type: decimal !important;
     }
     @media screen and (max-width:480px) {
       .preheader .rightColumnContent,
@@ -145,7 +158,7 @@ Kotipelit.com`,
       <!--user entered Head Start--><!--End Head user entered-->
     </head>
     <body>
-      <center class="wrapper" data-link-color="#1188E6" data-body-style="font-size:14px; font-family:arial,helvetica,sans-serif; color:#000000; background-color:#FFFFFF;">
+      <center class="wrapper" data-link-color="#85178b" data-body-style="font-size:14px; font-family:lucida sans unicode,lucida grande,sans-serif; color:#000000; background-color:#FFFFFF;">
         <div class="webkit">
           <table cellpadding="0" cellspacing="0" border="0" width="100%" class="wrapper" bgcolor="#FFFFFF">
             <tr>
@@ -181,7 +194,7 @@ Kotipelit.com`,
       <tr>
         <td style="padding:18px 18px 10px 18px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: center"><span style="font-size: 18px; color: #85178b; font-family: &quot;lucida sans unicode&quot;, &quot;lucida grande&quot;, sans-serif"><strong>Tervetuloa pelaamaan Kotitonnia ${dateString} klo ${timeString}!</strong></span><span style="font-family: &quot;lucida sans unicode&quot;, &quot;lucida grande&quot;, sans-serif"><strong>&nbsp;</strong></span></div>
 <div style="font-family: inherit; text-align: inherit"><br></div>
-<div style="font-family: inherit; text-align: inherit"><span style="color: #333333; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline; font-size: 14px; font-family: &quot;lucida sans unicode&quot;, &quot;lucida grande&quot;, sans-serif">Tässä ovat sanasi:</span><span style="font-family: &quot;lucida sans unicode&quot;, &quot;lucida grande&quot;, sans-serif"><br>
+<div style="font-family: inherit; text-align: inherit"><span style="color: #333333; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline; font-size: 14px; font-family: lucida sans unicode,lucida grande,sans-serif">Tässä ovat sanasi</span><span style="color: #333333; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline; font-size: 14px; font-family: &quot;lucida sans unicode&quot;, &quot;lucida grande&quot;, sans-serif">:</span><span style="font-family: &quot;lucida sans unicode&quot;, &quot;lucida grande&quot;, sans-serif"><br>
 </span><span style="color: #333333; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline; font-family: &quot;lucida sans unicode&quot;, &quot;lucida grande&quot;, sans-serif; font-size: 14px">${inviteInfo.data.words.join(
           ', '
         )}</span></div>
@@ -195,19 +208,28 @@ Kotipelit.com`,
             <table border="0" cellpadding="0" cellspacing="0" class="wrapper-mobile" style="text-align:center;">
               <tbody>
                 <tr>
-                <td align="center" bgcolor="#85178B" class="inner-td" style="border-radius:6px; font-size:16px; text-align:left; background-color:inherit;"><a href=${
+                <td align="center" bgcolor="#85178B" class="inner-td" style="border-radius:6px; font-size:16px; text-align:left; background-color:inherit;"><a href="${
                   inviteInfo.url
-                } style="background-color:#85178B; border:1px solid #85178b; border-color:#85178b; border-radius:6px; border-width:1px; color:#ffffff; display:inline-block; font-size:14px; font-weight:normal; letter-spacing:0px; line-height:normal; padding:12px 18px 12px 18px; text-align:center; text-decoration:none; border-style:solid; font-family:lucida sans unicode,lucida grande,sans-serif;" target="_blank">Liity peliin</a></td>
+                }" style="background-color:#85178B; border:1px solid #85178b; border-color:#85178b; border-radius:6px; border-width:1px; color:#ffffff; display:inline-block; font-size:14px; font-weight:normal; letter-spacing:0px; line-height:normal; padding:12px 18px 12px 18px; text-align:center; text-decoration:none; border-style:solid; font-family:lucida sans unicode,lucida grande,sans-serif;" target="_blank">Liity peliin</a></td>
                 </tr>
               </tbody>
             </table>
           </td>
         </tr>
       </tbody>
-    </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="0642ddd6-368f-47c3-8fac-b7aa7ad4fc73" data-mc-module-version="2019-10-22">
+    </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="2ea2cf5a-8d6f-4f20-9659-2306e3596c71" data-mc-module-version="2019-10-22">
     <tbody>
       <tr>
-        <td style="padding:18px 18px 18px 18px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit"><span style="color: #333333; font-family: NotoSans, sans-serif; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline">Jos tulee kysyttävää, voit olla yhteydessä vastaamalla tähän viestiin.</span></div><div></div></div></td>
+        <td style="padding:18px 0px 0px 18px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: inherit"><span style="font-family: &quot;lucida sans unicode&quot;, &quot;lucida grande&quot;, sans-serif">Vaihtoehtoisesti voit kopioida peliin liittymislinkin selaimeen: ${
+          inviteInfo.url
+        }</span></div>
+<div style="font-family: inherit; text-align: inherit"><span style="font-family: &quot;lucida sans unicode&quot;, &quot;lucida grande&quot;, sans-serif">Huomioi, että linkki on jokaiselle pelaajalle uniikki. &nbsp;</span></div><div></div></div></td>
+      </tr>
+    </tbody>
+  </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="0642ddd6-368f-47c3-8fac-b7aa7ad4fc73" data-mc-module-version="2019-10-22">
+    <tbody>
+      <tr>
+        <td style="padding:18px 18px 18px 18px; line-height:22px; text-align:inherit; background-color:#FFFFFF;" height="100%" valign="top" bgcolor="#FFFFFF" role="module-content"><div><div style="font-family: inherit; text-align: inherit"><span style="font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline; font-family: &quot;lucida sans unicode&quot;, &quot;lucida grande&quot;, sans-serif">Jos joudut peruuttamaan varauksesi, pyri tekemään se hyvissä ajoin.&nbsp;</span></div><div></div></div></td>
       </tr>
     </tbody>
   </table><table border="0" cellpadding="0" cellspacing="0" class="module" data-role="module-button" data-type="button" role="module" style="table-layout:fixed;" width="100%" data-muid="c4e5c415-a8f0-4b4b-afc5-b3c45ec1ef9f">
@@ -217,16 +239,23 @@ Kotipelit.com`,
             <table border="0" cellpadding="0" cellspacing="0" class="wrapper-mobile" style="text-align:center;">
               <tbody>
                 <tr>
-                <td align="center" bgcolor="#8e874e" class="inner-td" style="border-radius:6px; font-size:16px; text-align:left; background-color:inherit;"><a href=${
+                <td align="center" bgcolor="#8e874e" class="inner-td" style="border-radius:6px; font-size:16px; text-align:left; background-color:inherit;"><a href="${
                   inviteInfo.cancelUrl
-                } style="background-color:#8e874e; border:1px solid #8e874e; border-color:#8e874e; border-radius:6px; border-width:1px; color:#ffffff; display:inline-block; font-size:14px; font-weight:normal; letter-spacing:0px; line-height:normal; padding:12px 18px 12px 18px; text-align:center; text-decoration:none; border-style:solid; font-family:lucida sans unicode,lucida grande,sans-serif;" target="_blank">Peruuta varaus</a></td>
+                }" style="background-color:#8e874e; border:1px solid #8e874e; border-color:#8e874e; border-radius:6px; border-width:1px; color:#ffffff; display:inline-block; font-size:14px; font-weight:normal; letter-spacing:0px; line-height:normal; padding:12px 18px 12px 18px; text-align:center; text-decoration:none; border-style:solid; font-family:lucida sans unicode,lucida grande,sans-serif;" target="_blank">Peruuta varaus</a></td>
                 </tr>
               </tbody>
             </table>
           </td>
         </tr>
       </tbody>
-    </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="285eda3f-619d-430e-9882-7d55bb7c9f89" data-mc-module-version="2019-10-22">
+    </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="8d1a5ce7-afba-4c4c-b9b0-603cffd9c706" data-mc-module-version="2019-10-22">
+    <tbody>
+      <tr>
+        <td style="padding:18px 18px 0px 18px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: inherit"><em>Tulossa Kotipeleihin:</em></div>
+<div style="font-family: inherit; text-align: inherit"><em>Kotipelit live! Pian voit kutsua ystäväsi tai perheenjäsenesi seuraamaan peli-iltaa livenä, kuin olisit tv-visailun tähtenä.&nbsp;</em></div><div></div></div></td>
+      </tr>
+    </tbody>
+  </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="285eda3f-619d-430e-9882-7d55bb7c9f89" data-mc-module-version="2019-10-22">
     <tbody>
       <tr>
         <td style="padding:18px 18px 18px 18px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: inherit"><span style="color: #333333; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline; font-size: 14px; font-family: &quot;lucida sans unicode&quot;, &quot;lucida grande&quot;, sans-serif">Hyviä kotipelejä!</span><span style="font-size: 14px; font-family: &quot;lucida sans unicode&quot;, &quot;lucida grande&quot;, sans-serif"><br>

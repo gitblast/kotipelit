@@ -13,10 +13,11 @@ import { GameStatus, RTCGame, State } from '../types';
 import { useDispatch, useSelector } from 'react-redux';
 import logger from '../utils/logger';
 import { reset, setTimer } from '../reducers/kotitonni.local.reducer';
-import { setGame } from '../reducers/rtcGameSlice';
 import InfoBar from './InfoBar';
 import { useHistory, useParams } from 'react-router-dom';
 import { InGameSocket } from '../context';
+import MainKotitonniButton from './MainKotitonniButton';
+import useGameHistory from '../hooks/useGameHistory';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -45,18 +46,6 @@ const useStyles = makeStyles((theme: Theme) =>
       },
       [theme.breakpoints.down('xs')]: {
         display: 'none',
-      },
-    },
-    pointsButton: {
-      background: 'linear-gradient(to bottom, rgb(36 170 167), rgb(33 36 36))',
-      color: 'white',
-      // Give the box shadow when button is relevant?
-      boxShadow: 'rgb(231 239 191) 4px 3px 18px',
-      padding: 36,
-      border: 'solid',
-      borderColor: 'white',
-      [theme.breakpoints.down('sm')]: {
-        padding: theme.spacing(3.5),
       },
     },
     timerButton: {
@@ -97,6 +86,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const RTCHostControls: React.FC<{
   handleToggleFullscreen: () => void;
 }> = ({ handleToggleFullscreen }) => {
+  const { setHistory, returnToPrevious, noHistorySet } = useGameHistory();
   const classes = useStyles();
   const history = useHistory();
   const [timerRunning, setTimerRunning] = React.useState<boolean>(false);
@@ -188,8 +178,6 @@ const RTCHostControls: React.FC<{
       : null
   );
 
-  const historyRef = React.useRef<RTCGame | null>(null);
-
   const toggleTimer = () => {
     if (game && !game.info.answeringOpen && timer === 60) {
       logger.log('setting answering open to true');
@@ -227,7 +215,7 @@ const RTCHostControls: React.FC<{
       return;
     }
 
-    historyRef.current = game;
+    setHistory(game);
 
     const getPointAddition = (playerId: string, hasTurn: boolean): number => {
       const playerCount = game.players.length;
@@ -292,55 +280,6 @@ const RTCHostControls: React.FC<{
     dispatch(reset());
   };
 
-  const returnToPrevious = () => {
-    if (!game) {
-      logger.log('no game set');
-
-      return;
-    }
-
-    if (!historyRef.current) {
-      logger.log('no history set');
-
-      return;
-    }
-
-    const previousGame = historyRef.current;
-
-    const fixedPlayers = game.players.map((player) => {
-      const prevPlayer = previousGame.players.find((p) => p.id === player.id);
-
-      if (!prevPlayer) {
-        logger.error(
-          'unexpected error: no match found for player in history ref'
-        );
-
-        return player;
-      }
-
-      return {
-        ...player,
-        points: prevPlayer.points,
-        hasTurn: prevPlayer.hasTurn,
-      };
-    });
-
-    const gameWithPreviousPointsAndInfo = {
-      ...game,
-      players: fixedPlayers,
-      info: {
-        ...previousGame.info,
-        answeringOpen: false,
-      },
-    };
-
-    logger.log('returning to game state:', gameWithPreviousPointsAndInfo);
-
-    historyRef.current = null;
-
-    dispatch(setGame(gameWithPreviousPointsAndInfo));
-  };
-
   const fetchLatestGameStatus = () => {
     if (!socket) {
       logger.error('no socket set when trying to fetch new game status');
@@ -387,41 +326,6 @@ const RTCHostControls: React.FC<{
     return null;
   }
 
-  const getMainButtonClickHandler = (status: GameStatus) => {
-    switch (status) {
-      case GameStatus.RUNNING:
-        return handlePointUpdate;
-      case GameStatus.FINISHED:
-        return handleFinish;
-      default:
-        return handleStart;
-    }
-  };
-
-  const getMainButtonLabel = (status: GameStatus) => {
-    switch (status) {
-      case GameStatus.RUNNING:
-        return 'Päivitä pisteet';
-      case GameStatus.FINISHED:
-        return 'Lopeta peli';
-      default:
-        return 'Aloita peli';
-    }
-  };
-
-  const mainButton = () => {
-    return (
-      <Fab
-        className={classes.pointsButton}
-        onClick={getMainButtonClickHandler(game.status)}
-        disabled={GameStatus.RUNNING ? game.info.answeringOpen : false}
-        variant="extended"
-      >
-        <Typography variant="h6">{getMainButtonLabel(game.status)}</Typography>
-      </Fab>
-    );
-  };
-
   return (
     <div className={classes.container}>
       <Grid container className={classes.controlsContent}>
@@ -444,13 +348,18 @@ const RTCHostControls: React.FC<{
               <Typography variant="h6">{timer}</Typography>
             </Fab>
           )}
-          {mainButton()}
+          <MainKotitonniButton
+            game={game}
+            handleStart={handleStart}
+            handleFinish={handleFinish}
+            handlePointUpdate={handlePointUpdate}
+          />
           {game.status === GameStatus.RUNNING && (
             <Fab
               size="medium"
               color="secondary"
               onClick={returnToPrevious}
-              disabled={!historyRef.current}
+              disabled={noHistorySet}
               className={classes.returnPoints}
             >
               <UndoIcon className={classes.undoArrow} />

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles, createStyles } from '@material-ui/core/styles';
 import Video from './Video';
 import AudioLevelIndicator from './AudioLevelIndicator';
 import DeviceSelector from './DeviceSelector';
@@ -16,7 +16,7 @@ import {
 import useDevices from '../hooks/useDevices';
 import Loader from './Loader';
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     container: {
       maxWidth: 300,

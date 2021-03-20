@@ -67,12 +67,12 @@ const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({ host }) => {
         <div className={classes.spacer} />
         <div className={classes.flex}>
           <Grid container className={classes.nameBadge}>
-            <Grid item md={9} sm={8}>
+            <Grid item md={9} sm={7}>
               <Typography variant="subtitle2" className={classes.hostName}>
-                {`Hosted by ${host.displayName}`}
+                {host.displayName}
               </Typography>
             </Grid>
-            <Grid item md={3} sm={4}>
+            <Grid item md={3} sm={5}>
               <MediaControls participant={host} />
             </Grid>
             <div className={classes.spacer} />

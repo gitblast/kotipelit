@@ -1,7 +1,5 @@
 import React from 'react';
 
-import useInterval from '../hooks/useInterval';
-
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Fab, Grid, Typography, IconButton } from '@material-ui/core';
 
@@ -12,12 +10,13 @@ import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import { GameStatus, RTCGame, State } from '../types';
 import { useDispatch, useSelector } from 'react-redux';
 import logger from '../utils/logger';
-import { reset, setTimer } from '../reducers/kotitonni.local.reducer';
+import { reset } from '../reducers/kotitonni.local.reducer';
 import InfoBar from './InfoBar';
 import { useHistory, useParams } from 'react-router-dom';
 import { InGameSocket } from '../context';
 import MainKotitonniButton from './MainKotitonniButton';
 import useGameHistory from '../hooks/useGameHistory';
+import useTimer from '../hooks/useTimer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -86,11 +85,16 @@ const useStyles = makeStyles((theme: Theme) =>
 const RTCHostControls: React.FC<{
   handleToggleFullscreen: () => void;
 }> = ({ handleToggleFullscreen }) => {
+  const {
+    timerValue: timer,
+    timerIsRunning: timerRunning,
+    startTimer,
+    stopTimer,
+    resetTimer,
+  } = useTimer();
   const { setHistory, returnToPrevious, noHistorySet } = useGameHistory();
   const classes = useStyles();
   const history = useHistory();
-  const [timerRunning, setTimerRunning] = React.useState<boolean>(false);
-  const timer = useSelector((state: State) => state.rtc.localData.timer);
   const params = useParams<{ username: string }>();
   const dispatch = useDispatch();
   const game = useSelector((state: State) => state.rtc.game);
@@ -156,42 +160,12 @@ const RTCHostControls: React.FC<{
     }
   }, [timer, game, handleUpdate]);
 
-  useInterval(
-    () => {
-      if (timer === 1) {
-        setTimerRunning(false);
-      }
-
-      if (socket) {
-        socket.emit('timer', timer - 1);
-      } else {
-        console.error('no socket set when trying to emit timer change');
-      }
-
-      dispatch(setTimer(timer - 1));
-    },
-    timerRunning
-      ? // eslint-disable-next-line no-undef
-        process && process.env.NODE_ENV === 'development'
-        ? 10
-        : 1000
-      : null
-  );
-
   const toggleTimer = () => {
-    if (game && !game.info.answeringOpen && timer === 60) {
-      logger.log('setting answering open to true');
-
-      handleUpdate({
-        ...game,
-        info: {
-          ...game.info,
-          answeringOpen: true,
-        },
-      });
+    if (timerRunning) {
+      stopTimer();
+    } else {
+      startTimer();
     }
-
-    setTimerRunning((current) => !current);
   };
 
   const handlePointUpdate = () => {
@@ -273,10 +247,7 @@ const RTCHostControls: React.FC<{
 
     socket.emit('update-game', updatedGame);
 
-    if (timerRunning) {
-      setTimerRunning(false);
-    }
-
+    resetTimer();
     dispatch(reset());
   };
 

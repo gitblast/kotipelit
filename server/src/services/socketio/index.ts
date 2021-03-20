@@ -9,11 +9,20 @@ import logger from '../../utils/logger';
 import * as callbacks from './socketio.callbacks';
 
 import { SocketWithToken, Role, RTCGame, Answer } from '../../types';
+import { TimerData } from '../../utils/timer';
 
 const attachRTCListeners = (socket: SocketWithToken) => {
   logger.log('attaching listeners');
 
   // can handle game types here
+
+  socket.on('get-timer-state', (callback: (data: TimerData) => void) => {
+    void callbacks.getTimerState(socket, callback);
+  });
+
+  socket.on('get-room-state', () => {
+    void callbacks.getRoomState(socket);
+  });
 
   socket.on('get-twilio-token', (setToken: (token: string) => void) => {
     void callbacks.getTwilioToken(socket, setToken);
@@ -58,10 +67,6 @@ const attachRTCListeners = (socket: SocketWithToken) => {
 
     socket.on('handle-timer', (command: 'start' | 'stop' | 'reset') => {
       void callbacks.handleTimer(socket, command);
-    });
-
-    socket.on('timer', (value: number) => {
-      void callbacks.handleTimerChange(socket, value);
     });
   }
 };

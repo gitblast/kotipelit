@@ -137,7 +137,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
     [socket]
   );
 
-  if (!game) {
+  if (!game || !socket) {
     return (
       <div className={classes.centered}>
         <Loader msg={'Ladataan..'} spinner />

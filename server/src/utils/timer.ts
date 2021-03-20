@@ -1,6 +1,11 @@
 import { Server } from 'socket.io';
 import logger from './logger';
 
+export interface TimerData {
+  value: number;
+  isRunning: boolean;
+}
+
 export default class UpdateEmittingTimer {
   private ioServer: Server;
   private roomId: string;
@@ -18,13 +23,6 @@ export default class UpdateEmittingTimer {
 
   private emitUpdates() {
     this.ioServer.to(this.roomId).emit('timer-updated', this.getState());
-  }
-
-  private getState() {
-    return {
-      value: this.value,
-      isRunning: this.isRunning,
-    };
   }
 
   private setState(newIsRunning?: boolean, newValue?: number) {
@@ -45,6 +43,13 @@ export default class UpdateEmittingTimer {
     } else {
       this.timeOutHandle = null;
     }
+  }
+
+  getState(): TimerData {
+    return {
+      value: this.value,
+      isRunning: this.isRunning,
+    };
   }
 
   start() {

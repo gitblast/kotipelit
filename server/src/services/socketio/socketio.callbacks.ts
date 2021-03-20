@@ -374,6 +374,36 @@ export const handleAnswer = (socket: SocketWithToken, answer: Answer): void => {
   }
 };
 
+export const handleTimer = (
+  socket: SocketWithToken,
+  command: 'start' | 'stop' | 'reset'
+): void => {
+  try {
+    const { gameId } = socket.decodedToken;
+
+    const { timer } = rtcrooms.getRoomState(gameId);
+
+    switch (command) {
+      case 'start':
+        timer.start();
+
+        break;
+      case 'stop':
+        timer.stop();
+
+        break;
+      case 'reset':
+        timer.reset();
+
+        break;
+    }
+  } catch (e) {
+    logger.error(e.message);
+
+    socket.emit('rtc-error', e.message);
+  }
+};
+
 const emitUpdatedGame = (socket: SocketWithToken, newGame: RTCGame): void => {
   const room = rtcrooms.getRoom(newGame.id);
 

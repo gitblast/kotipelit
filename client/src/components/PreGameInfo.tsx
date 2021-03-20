@@ -19,10 +19,12 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
       alignItems: 'center',
       color: theme.palette.primary.light,
+      '& > * + *': {
+        marginBottom: theme.spacing(2),
+      },
     },
     infoContent: {
       display: 'flex',
-
       margin: 15,
     },
   })
@@ -68,6 +70,21 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
               läpi.
             </Typography>
           </div>
+          {!isSpectator && (
+            <>
+              {previewOpen && (
+                <div>
+                  <MediaPreview />
+                </div>
+              )}
+              <Button
+                color="primary"
+                onClick={() => setPreviewOpen(!previewOpen)}
+              >
+                {previewOpen ? 'Lopeta testi' : 'Testaa kamera ja mikrofoni'}
+              </Button>
+            </>
+          )}
           <Button color="secondary" onClick={() => handleJoinCall()} id="start">
             Käynnistä video
           </Button>
@@ -86,21 +103,6 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
           <Typography variant="h5">
             Host ei ole vielä käynnistänyt peliä!
           </Typography>
-        </>
-      )}
-      {!isSpectator && (
-        <>
-          {previewOpen && (
-            <div>
-              <MediaPreview />
-            </div>
-          )}
-          <Button
-            color="secondary"
-            onClick={() => setPreviewOpen(!previewOpen)}
-          >
-            {previewOpen ? 'Lopeta testi' : 'Testaa kamera ja mikrofoni'}
-          </Button>
         </>
       )}
     </div>

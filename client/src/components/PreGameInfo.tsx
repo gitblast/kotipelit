@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
       alignItems: 'center',
       color: theme.palette.primary.light,
+      marginTop: theme.spacing(2),
       '& > * + *': {
         marginBottom: theme.spacing(2),
       },
@@ -63,15 +64,16 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
       {canJoin ? (
         <>
           <Typography variant="h5">Peli alkaa pian!</Typography>
-          <div className={classes.infoContent}>
-            <HeadsetIcon fontSize="large"></HeadsetIcon>
-            <Typography>
-              Käytä kuulokkeita, niin pelin äänet eivät kuulu muille pelaajille
-              läpi.
-            </Typography>
-          </div>
+
           {!isSpectator && (
             <>
+              <div className={classes.infoContent}>
+                <HeadsetIcon fontSize="large"></HeadsetIcon>
+                <Typography>
+                  Käytä kuulokkeita, niin pelin äänet eivät kuulu muille
+                  pelaajille läpi.
+                </Typography>
+              </div>
               {previewOpen && (
                 <div>
                   <MediaPreview />
@@ -86,7 +88,7 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
             </>
           )}
           <Button color="secondary" onClick={() => handleJoinCall()} id="start">
-            Käynnistä video
+            Käynnistä peli
           </Button>
           {process.env.NODE_ENV === 'development' && (
             <Button
@@ -101,7 +103,7 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
       ) : (
         <>
           <Typography variant="h5">
-            Pelin juontaja ei ole vielä käynnistänyt peliä.
+            Odotetaan, että pelin juontaja käynnistää pelin..
           </Typography>
         </>
       )}

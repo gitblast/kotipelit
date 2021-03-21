@@ -1,7 +1,6 @@
 import React from 'react';
-import { Socket } from 'socket.io-client';
 
-import { InGameSocket } from '../context';
+import { useInGameSocket } from '../context';
 import logger from '../utils/logger';
 
 interface TimerData {
@@ -10,7 +9,7 @@ interface TimerData {
 }
 
 const useTimer = () => {
-  const socket = React.useContext<Socket>(InGameSocket);
+  const socket = useInGameSocket();
   const [timerData, setTimerData] = React.useState<TimerData | null>(null);
 
   React.useEffect(() => {

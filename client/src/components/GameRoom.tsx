@@ -1,7 +1,7 @@
 import { Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
-import { InGameSocket } from '../context';
+import { InGameSocketProvider } from '../context';
 import useNewGameRoom from '../hooks/useNewGameRoom';
 import { GameStatus, Role } from '../types';
 import logger, { setDebug } from '../utils/logger';
@@ -155,7 +155,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
     );
   }
   return (
-    <InGameSocket.Provider value={socket}>
+    <InGameSocketProvider value={socket}>
       <div className={classes.containerGame} ref={fullscreenRef}>
         <AudioHandler />
         <div className={classes.topGradient}></div>
@@ -181,7 +181,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
           )
         )}
       </div>
-    </InGameSocket.Provider>
+    </InGameSocketProvider>
   );
 };
 

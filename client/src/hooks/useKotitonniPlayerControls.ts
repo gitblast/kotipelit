@@ -1,14 +1,14 @@
-import { Socket } from 'socket.io-client';
 import React from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
-import { InGameSocket } from '../context';
+
+import { useInGameSocket } from '../context';
 import { State, KotitonniInfo } from '../types';
 import logger from '../utils/logger';
 import useTimer from './useTimer';
 
 const useKotitonniPlayerControls = () => {
   const game = useSelector((state: State) => state.rtc.game);
-  const socket = React.useContext<Socket>(InGameSocket);
+  const socket = useInGameSocket();
 
   const playerSelf = useSelector((state: State) => {
     const self = state.rtc.self;

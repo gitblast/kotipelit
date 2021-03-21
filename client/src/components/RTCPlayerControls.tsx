@@ -17,6 +17,7 @@ import logger from '../utils/logger';
 import InfoBar from './InfoBar';
 
 import { InGameSocket } from '../context';
+import useTimer from '../hooks/useTimer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -72,7 +73,7 @@ const RTCPlayerControls: React.FC<{
 }> = ({ handleToggleFullscreen }) => {
   const classes = useStyles();
   const [answer, setAnswer] = React.useState<string>('');
-  const timer = useSelector((state: State) => state.rtc.localData.timer);
+  const { timerValue, timerIsRunning } = useTimer();
   const game = useSelector((state: State) => state.rtc.game);
   const self = useSelector((state: State) => state.rtc.self);
   const socket = React.useContext(InGameSocket);
@@ -87,10 +88,9 @@ const RTCPlayerControls: React.FC<{
   const isDisabled = () => {
     if (
       !game ||
-      !game.info.answeringOpen ||
       !playerSelf ||
-      !playerSelf.privateData.answers ||
-      playerSelf.hasTurn
+      playerSelf.hasTurn ||
+      (!timerIsRunning && (timerValue === 0 || timerValue === 60))
     ) {
       return true;
     }
@@ -167,7 +167,7 @@ const RTCPlayerControls: React.FC<{
             className={classes.btnContainer}
           >
             <Typography className={classes.timer} variant="h6">
-              {timer}
+              {timerValue}
             </Typography>
 
             <div className={classes.answerField}>

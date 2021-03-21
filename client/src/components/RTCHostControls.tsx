@@ -5,10 +5,8 @@ import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import UndoIcon from '@material-ui/icons/Undo';
 import React from 'react';
-import { useSelector } from 'react-redux';
 import useKotitonniHostControls from '../hooks/useKotitonniHostControls';
-import useTimer from '../hooks/useTimer';
-import { GameStatus, State } from '../types';
+import { GameStatus } from '../types';
 import InfoBar from './InfoBar';
 import MainKotitonniButton from './MainKotitonniButton';
 
@@ -80,25 +78,27 @@ const RTCHostControls: React.FC<{
   handleToggleFullscreen: () => void;
 }> = ({ handleToggleFullscreen }) => {
   const {
-    timerValue: timer,
-    timerIsRunning: timerRunning,
-    toggleTimer,
-  } = useTimer();
-
-  const {
+    game,
     fetchLatestGameStatus,
     handleFinish,
     handleStart,
     handlePointUpdate,
     returnToPrevious,
     noHistorySet,
+    everyoneHasAnswered,
+    timerValue,
+    timerIsRunning,
+    toggleTimer,
   } = useKotitonniHostControls();
   const classes = useStyles();
-  const game = useSelector((state: State) => state.rtc.game);
 
   if (!game) {
     return null;
   }
+
+  const answeringOpen = timerIsRunning
+    ? !everyoneHasAnswered
+    : timerValue !== 0 && timerValue !== 60;
 
   return (
     <div className={classes.container}>
@@ -111,19 +111,20 @@ const RTCHostControls: React.FC<{
           {game.status === GameStatus.RUNNING && (
             <Fab
               size="large"
-              color={timerRunning ? 'primary' : 'secondary'}
+              color={timerIsRunning ? 'primary' : 'secondary'}
               onClick={() => {
                 toggleTimer();
                 fetchLatestGameStatus();
               }}
               className={classes.timerButton}
             >
-              {timerRunning ? <PauseIcon /> : <PlayArrowIcon />}
-              <Typography variant="h6">{timer}</Typography>
+              {timerIsRunning ? <PauseIcon /> : <PlayArrowIcon />}
+              <Typography variant="h6">{timerValue}</Typography>
             </Fab>
           )}
           <MainKotitonniButton
-            game={game}
+            gameStatus={game.status}
+            disabled={GameStatus.RUNNING ? answeringOpen : false}
             handleStart={handleStart}
             handleFinish={handleFinish}
             handlePointUpdate={() => handlePointUpdate(game)}

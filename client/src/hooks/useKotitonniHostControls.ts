@@ -1,8 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams, useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
-
 import { InGameSocket } from '../context';
 import { getNextKotitonniState } from '../helpers/games';
 import { reset } from '../reducers/kotitonni.local.reducer';
@@ -12,7 +11,9 @@ import useGameHistory from './useGameHistory';
 import useTimer from './useTimer';
 
 const useKotitonniHostControls = () => {
-  const { resetTimer } = useTimer();
+  const game = useSelector((state: State) => state.rtc.game);
+
+  const { timerValue, timerIsRunning, toggleTimer, resetTimer } = useTimer();
   const dispatch = useDispatch();
   const socket = React.useContext<Socket>(InGameSocket);
   const clickMap = useSelector(
@@ -69,7 +70,28 @@ const useKotitonniHostControls = () => {
     [socket, dispatch, clickMap]
   );
 
+  const everyoneHasAnswered = React.useMemo(() => {
+    if (!game) {
+      logger.error('no game set');
+
+      return false;
+    }
+
+    return game.players.every((player) => {
+      if (player.hasTurn) {
+        return true;
+      }
+
+      const answers = player.privateData.answers[game.info.turn];
+
+      return (
+        answers && answers[game.info.round] && answers[game.info.round].length
+      );
+    });
+  }, [game]);
+
   return {
+    game,
     handleUpdate,
     fetchLatestGameStatus,
     handleFinish,
@@ -77,6 +99,10 @@ const useKotitonniHostControls = () => {
     handlePointUpdate,
     returnToPrevious,
     noHistorySet,
+    everyoneHasAnswered,
+    timerValue,
+    timerIsRunning,
+    toggleTimer,
   };
 };
 

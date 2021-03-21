@@ -1,8 +1,7 @@
-import React from 'react';
-
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { GameStatus, RTCGame } from '../types';
 import { Fab, Typography } from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import React from 'react';
+import { GameStatus } from '../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,14 +21,16 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface MainKotitonniButtonProps {
-  game: RTCGame;
+  gameStatus: GameStatus;
+  disabled: boolean;
   handlePointUpdate: () => void;
   handleFinish: () => void;
   handleStart: () => void;
 }
 
 const MainKotitonniButton: React.FC<MainKotitonniButtonProps> = ({
-  game,
+  gameStatus,
+  disabled,
   handleFinish,
   handlePointUpdate,
   handleStart,
@@ -61,11 +62,11 @@ const MainKotitonniButton: React.FC<MainKotitonniButtonProps> = ({
   return (
     <Fab
       className={classes.pointsButton}
-      onClick={getMainButtonClickHandler(game.status)}
-      disabled={GameStatus.RUNNING ? game.info.answeringOpen : false}
+      onClick={getMainButtonClickHandler(gameStatus)}
+      disabled={disabled}
       variant="extended"
     >
-      <Typography variant="h6">{getMainButtonLabel(game.status)}</Typography>
+      <Typography variant="h6">{getMainButtonLabel(gameStatus)}</Typography>
     </Fab>
   );
 };

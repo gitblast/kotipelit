@@ -12,13 +12,20 @@ export default class UpdateEmittingTimer {
   private timeOutHandle: null | NodeJS.Timeout;
   value: number;
   isRunning: boolean;
+  tickInterval: number;
 
-  constructor(ioServer: Server, roomId: string, initialValue = 60) {
+  constructor(
+    ioServer: Server,
+    roomId: string,
+    initialValue = 60,
+    tickInterval = 1000
+  ) {
     this.ioServer = ioServer;
     this.roomId = roomId;
     this.value = initialValue;
     this.isRunning = false;
     this.timeOutHandle = null;
+    this.tickInterval = tickInterval;
   }
 
   private emitUpdates() {
@@ -39,7 +46,7 @@ export default class UpdateEmittingTimer {
 
     if (this.value > 0) {
       // needs to be bound, otherwise this will reference setTimeout
-      this.timeOutHandle = setTimeout(this.tick.bind(this), 1000);
+      this.timeOutHandle = setTimeout(this.tick.bind(this), this.tickInterval);
     } else {
       this.timeOutHandle = null;
     }
@@ -57,7 +64,7 @@ export default class UpdateEmittingTimer {
       this.setState(true);
 
       // needs to be bound, otherwise this will reference setTimeout
-      this.timeOutHandle = setTimeout(this.tick.bind(this), 1000);
+      this.timeOutHandle = setTimeout(this.tick.bind(this), this.tickInterval);
     } else {
       logger.log(`cannot start timer when value is ${this.value}`);
     }

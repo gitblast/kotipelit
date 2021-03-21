@@ -204,8 +204,16 @@ const convertToRTCGame = (game: GameModel): RTCGame => {
 const getInitialGameState = (game: RTCGame): RTCGameState => {
   switch (game.type) {
     case GameType.KOTITONNI:
+      const tickInterval = process.env.NODE_ENV === 'development' ? 50 : 1000;
+      const initialValue = 60;
+
       return {
-        timer: new UpdateEmittingTimer(ioServer, game.id),
+        timer: new UpdateEmittingTimer(
+          ioServer,
+          game.id,
+          initialValue,
+          tickInterval
+        ),
       };
     default:
       throw new Error(

@@ -11,6 +11,7 @@ interface GameToAdd {
   status: GameStatus;
   rounds: number;
   price: number;
+  allowedSpectators: number;
 }
 
 const useSaveGame = () => {

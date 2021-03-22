@@ -1,5 +1,6 @@
 import {
   Button,
+  CircularProgress,
   Step,
   StepContent,
   StepLabel,
@@ -12,7 +13,7 @@ import { GameStatus, GameType } from '../../types';
 import BottomContent from './BottomContent';
 import ChooseDate from './ChooseDate';
 import ChooseGame from './ChooseGame';
-import ChoosePrice from './ChoosePrice';
+import GameSettings from './GameSettings';
 import useNewKotitonniPlayers from './useNewKotitonniPlayers';
 import useSaveGame from './useSaveGame';
 
@@ -61,12 +62,18 @@ const useStyles = makeStyles((theme: Theme) =>
 const NewGame: React.FC = () => {
   const { saveGame, loading, error: saveGameError, addedGame } = useSaveGame();
   const classes = useStyles();
-  const { players, error: playerError } = useNewKotitonniPlayers();
+  const { players, setPlayers, error: playerError } = useNewKotitonniPlayers();
   const [gameType, setGameType] = React.useState<GameType | null>(null);
-  const [price, setPrice] = React.useState<number>(0);
   const [startTime, setStartTime] = React.useState<null | Date>(new Date());
   const [activeStep, setActiveStep] = React.useState(0);
-  const steps = React.useMemo(() => ['Ajankohta', 'Pelimuoto', 'Hinta'], []);
+  const [settings, setSettings] = React.useState({
+    price: 0,
+    allowedSpectators: 40,
+  });
+  const steps = React.useMemo(
+    () => ['Ajankohta', 'Pelimuoto', 'Asetukset'],
+    []
+  );
   const errors = React.useMemo(() => {
     const errors = [];
 
@@ -88,7 +95,25 @@ const NewGame: React.FC = () => {
       case 1:
         return <ChooseGame handleSelect={handleSelectGame} />;
       case 2:
-        return <ChoosePrice price={price} setPrice={setPrice} />;
+        if (!players) {
+          return playerError ? (
+            <Typography>
+              Odottamaton virhe alustaessa pelaajia. Yritä uudestaan
+              päivittämällä sivu
+            </Typography>
+          ) : (
+            <CircularProgress />
+          );
+        }
+
+        return (
+          <GameSettings
+            handleSettingsChange={setSettings}
+            settings={settings}
+            players={players}
+            handlePlayerChange={setPlayers}
+          />
+        );
 
       default:
         return 'Unknown step';
@@ -102,7 +127,8 @@ const NewGame: React.FC = () => {
       } else {
         const gameToAdd = {
           players,
-          price,
+          price: settings.price,
+          allowedSpectators: settings.allowedSpectators,
           startTime,
           type: gameType,
           status: GameStatus.UPCOMING,

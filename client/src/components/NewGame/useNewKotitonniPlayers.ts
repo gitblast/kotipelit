@@ -26,7 +26,7 @@ const useNewKotitonniPlayers = () => {
     }
   }, []);
 
-  return { players, error };
+  return { players, setPlayers, error };
 };
 
 export default useNewKotitonniPlayers;

@@ -43,11 +43,10 @@ import FormControl from '@material-ui/core/FormControl';
 
 interface ChoosePriceProps {
   price: number;
-  setPrice: React.Dispatch<React.SetStateAction<number>>;
+  setPrice: (newPrice: number) => void;
 }
 
-const ChoosePrice: React.FC<ChoosePriceProps> = () => {
-  const [price, setPrice] = React.useState(0);
+const ChoosePrice: React.FC<ChoosePriceProps> = ({ price, setPrice }) => {
   return (
     <FormControl component="fieldset">
       <RadioGroup

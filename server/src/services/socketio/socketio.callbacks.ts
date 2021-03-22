@@ -8,6 +8,7 @@ import {
   Answer,
 } from '../../types';
 import logger from '../../utils/logger';
+import { TimerData } from '../../utils/timer';
 import gameService from '../games';
 import rtcrooms from '../rtc/rtcrooms';
 import twilioService from '../twilio';
@@ -300,6 +301,20 @@ export const handleTimerChange = (
   }
 };
 
+export const getRoomState = (socket: SocketWithToken) => {
+  try {
+    const { gameId } = socket.decodedToken;
+
+    const state = rtcrooms.getRoomState(gameId);
+
+    socket.emit('room-state', state);
+  } catch (e) {
+    logger.error(e.message);
+
+    socket.emit('rtc-error', e.message);
+  }
+};
+
 const logRecievedMsg = (event: string, socket: SocketWithToken): void => {
   logger.log(`recieved '${event}' from ${socket.decodedToken.username}`);
 };
@@ -367,6 +382,61 @@ export const handleAnswer = (socket: SocketWithToken, answer: Answer): void => {
     }
 
     socket.emit('game-updated', gameService.filterGameForUser(updatedGame, id));
+  } catch (e) {
+    logger.error(e.message);
+
+    socket.emit('rtc-error', e.message);
+  }
+};
+
+export const handleTimer = (
+  socket: SocketWithToken,
+  command: 'start' | 'stop' | 'reset'
+): void => {
+  logRecievedMsg('handle-timer', socket);
+
+  try {
+    const { gameId } = socket.decodedToken;
+
+    const { timer } = rtcrooms.getRoomState(gameId);
+
+    switch (command) {
+      case 'start':
+        timer.start();
+
+        break;
+      case 'stop':
+        timer.stop();
+
+        break;
+      case 'reset':
+        timer.reset();
+
+        break;
+    }
+  } catch (e) {
+    logger.error(e.message);
+
+    socket.emit('rtc-error', e.message);
+  }
+};
+
+export const getTimerState = (
+  socket: SocketWithToken,
+  callback: (data: TimerData) => void
+): void => {
+  logRecievedMsg('get-timer-state', socket);
+
+  try {
+    const { gameId } = socket.decodedToken;
+
+    const state = rtcrooms.getRoomState(gameId);
+
+    if (!state.timer) {
+      throw new Error('no timer set, check game type');
+    }
+
+    callback(state.timer.getState());
   } catch (e) {
     logger.error(e.message);
 

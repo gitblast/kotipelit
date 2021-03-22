@@ -367,6 +367,7 @@ export interface RTCGame {
   status: GameStatus;
   type: GameType;
   price: number;
+  allowedSpectators?: number;
   rounds: number;
   startTime: Date;
   players: GamePlayer[];

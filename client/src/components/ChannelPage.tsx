@@ -23,9 +23,7 @@ const ChannelPage: React.FC<ChannelPageProps> = () => {
         <Route path="/:username/kiitos">
           <TYFPPage />
         </Route>
-        <Route path="/:username/newgame">
-          {user.loggedIn && <NewGame username={user.username} />}
-        </Route>
+        <Route path="/:username/newgame">{user.loggedIn && <NewGame />}</Route>
         <Route path="/:username/kutsut/:gameID">
           <GameLobby />
         </Route>

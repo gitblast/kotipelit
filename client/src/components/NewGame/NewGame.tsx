@@ -1,6 +1,5 @@
 import {
   Button,
-  CircularProgress,
   Step,
   StepContent,
   StepLabel,
@@ -9,8 +8,10 @@ import {
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
+import { useParams, useHistory } from 'react-router';
 import { GameStatus, GameType } from '../../types';
-import BottomContent from './BottomContent';
+import logger from '../../utils/logger';
+import AddedGameInfo from './AddedGameInfo';
 import ChooseDate from './ChooseDate';
 import ChooseGame from './ChooseGame';
 import GameSettings from './GameSettings';
@@ -59,8 +60,17 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+enum Steps {
+  AJANKOHTA,
+  PELIMUOTO,
+  ASETUKSET,
+  KUTSU_PELAAJAT,
+}
+
 const NewGame: React.FC = () => {
-  const { saveGame, loading, error: saveGameError, addedGame } = useSaveGame();
+  const { username } = useParams<{ username: string }>();
+  const history = useHistory();
+  const { saveGame, error: saveGameError, addedGame } = useSaveGame();
   const classes = useStyles();
   const { players, setPlayers, error: playerError } = useNewKotitonniPlayers();
   const [gameType, setGameType] = React.useState<GameType | null>(null);
@@ -71,17 +81,9 @@ const NewGame: React.FC = () => {
     allowedSpectators: 40,
   });
   const steps = React.useMemo(
-    () => ['Ajankohta', 'Pelimuoto', 'Asetukset'],
+    () => ['Ajankohta', 'Pelimuoto', 'Asetukset', 'Kutsu pelaajat'],
     []
   );
-  const errors = React.useMemo(() => {
-    const errors = [];
-
-    if (saveGameError) errors.push(saveGameError);
-    if (playerError) errors.push(playerError);
-
-    return errors;
-  }, [saveGameError, playerError]);
 
   const handleSelectGame = React.useCallback((selection: GameType) => {
     setGameType(selection);
@@ -90,39 +92,32 @@ const NewGame: React.FC = () => {
 
   const getStepContent = (step: number) => {
     switch (step) {
-      case 0:
+      case Steps.AJANKOHTA:
         return <ChooseDate selected={startTime} setSelected={setStartTime} />;
-      case 1:
+      case Steps.PELIMUOTO:
         return <ChooseGame handleSelect={handleSelectGame} />;
-      case 2:
-        if (!players) {
-          return playerError ? (
-            <Typography>
-              Odottamaton virhe alustaessa pelaajia. Yritä uudestaan
-              päivittämällä sivu
-            </Typography>
-          ) : (
-            <CircularProgress />
-          );
-        }
-
+      case Steps.ASETUKSET:
         return (
           <GameSettings
             handleSettingsChange={setSettings}
             settings={settings}
             players={players}
             handlePlayerChange={setPlayers}
+            error={playerError}
           />
         );
-
+      case Steps.KUTSU_PELAAJAT:
+        return <AddedGameInfo addedGame={addedGame} error={saveGameError} />;
       default:
         return 'Unknown step';
     }
   };
 
   const handleNext = () => {
-    if (activeStep === steps.length - 1) {
+    if (activeStep === Steps.ASETUKSET) {
       if (!players || !gameType || !startTime) {
+        logger.error('something important missing');
+
         return;
       } else {
         const gameToAdd = {
@@ -137,6 +132,10 @@ const NewGame: React.FC = () => {
 
         saveGame(gameToAdd);
       }
+    }
+
+    if (activeStep === Steps.KUTSU_PELAAJAT) {
+      history.push(`/${username}`);
     }
 
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -168,14 +167,16 @@ const NewGame: React.FC = () => {
               {getStepContent(index)}
               <div className={classes.actionsContainer}>
                 <div>
-                  <Button
-                    disabled={activeStep === 0}
-                    onClick={handleBack}
-                    variant="text"
-                    className={classes.button}
-                  >
-                    Palaa
-                  </Button>
+                  {activeStep !== steps.length - 1 && (
+                    <Button
+                      disabled={activeStep === 0}
+                      onClick={handleBack}
+                      variant="text"
+                      className={classes.button}
+                    >
+                      Palaa
+                    </Button>
+                  )}
                   {activeStep !== 1 && ( // not shown when choosing game type
                     <Button onClick={handleNext} className={classes.button}>
                       {activeStep === steps.length - 1 ? 'Valmis' : 'Seuraava'}
@@ -187,13 +188,6 @@ const NewGame: React.FC = () => {
           </Step>
         ))}
       </Stepper>
-      {activeStep === steps.length && (
-        <BottomContent
-          errors={errors}
-          loading={loading}
-          addedGame={addedGame}
-        />
-      )}
     </div>
   );
 };

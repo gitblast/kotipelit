@@ -23,7 +23,6 @@ export const hardcodedGames: RTCGame[] = [
           answers: {},
 
           inviteCode: 'code1',
-          twilioToken: null,
         },
         points: 0,
       },
@@ -35,7 +34,6 @@ export const hardcodedGames: RTCGame[] = [
           answers: {},
 
           inviteCode: 'code1',
-          twilioToken: null,
         },
         points: 0,
       },
@@ -47,7 +45,6 @@ export const hardcodedGames: RTCGame[] = [
           answers: {},
 
           inviteCode: 'code1',
-          twilioToken: null,
         },
         points: 0,
       },
@@ -59,7 +56,6 @@ export const hardcodedGames: RTCGame[] = [
           answers: {},
 
           inviteCode: 'code1',
-          twilioToken: null,
         },
         points: 0,
       },
@@ -71,7 +67,6 @@ export const hardcodedGames: RTCGame[] = [
           answers: {},
 
           inviteCode: 'code1',
-          twilioToken: null,
         },
         points: 0,
       },
@@ -102,7 +97,6 @@ export const hardcodedGames: RTCGame[] = [
           answers: {},
 
           inviteCode: 'code1',
-          twilioToken: null,
         },
         points: 0,
       },
@@ -114,7 +108,6 @@ export const hardcodedGames: RTCGame[] = [
           answers: {},
 
           inviteCode: 'code1',
-          twilioToken: null,
         },
         points: 0,
       },
@@ -126,7 +119,6 @@ export const hardcodedGames: RTCGame[] = [
           answers: {},
 
           inviteCode: 'code1',
-          twilioToken: null,
         },
         points: 0,
       },
@@ -138,7 +130,6 @@ export const hardcodedGames: RTCGame[] = [
           answers: {},
 
           inviteCode: 'code1',
-          twilioToken: null,
         },
         points: 0,
       },
@@ -150,7 +141,6 @@ export const hardcodedGames: RTCGame[] = [
           answers: {},
 
           inviteCode: 'code1',
-          twilioToken: null,
         },
         points: 0,
       },
@@ -189,7 +179,6 @@ export const hardcodedActiveSanakierto: RTCGame = {
         answers: {},
 
         inviteCode: 'code1',
-        twilioToken: null,
       },
       points: 0,
     },
@@ -201,7 +190,6 @@ export const hardcodedActiveSanakierto: RTCGame = {
         answers: {},
 
         inviteCode: 'code1',
-        twilioToken: null,
       },
       points: 0,
     },
@@ -213,7 +201,6 @@ export const hardcodedActiveSanakierto: RTCGame = {
         answers: {},
 
         inviteCode: 'code1',
-        twilioToken: null,
       },
       points: 0,
     },
@@ -225,7 +212,6 @@ export const hardcodedActiveSanakierto: RTCGame = {
         answers: {},
 
         inviteCode: 'code1',
-        twilioToken: null,
       },
       points: 0,
     },
@@ -237,7 +223,6 @@ export const hardcodedActiveSanakierto: RTCGame = {
         answers: {},
 
         inviteCode: 'code1',
-        twilioToken: null,
       },
       points: 0,
     },

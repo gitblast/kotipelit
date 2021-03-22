@@ -47,7 +47,6 @@ export interface LobbyGame extends BaseGame {
 
 export interface BasePrivateData {
   inviteCode: string;
-  twilioToken: string | null;
 }
 
 export interface KotitonniPrivateData extends BasePrivateData {

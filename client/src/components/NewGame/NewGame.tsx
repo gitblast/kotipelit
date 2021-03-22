@@ -1,29 +1,20 @@
-import React from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import {
-  Typography,
   Button,
-  Stepper,
   Step,
-  StepLabel,
   StepContent,
+  StepLabel,
+  Stepper,
+  Typography,
 } from '@material-ui/core';
-
-import { CircularProgress } from '@material-ui/core';
-
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import React from 'react';
+import { GameStatus, GameType } from '../../types';
+import BottomContent from './BottomContent';
 import ChooseDate from './ChooseDate';
 import ChooseGame from './ChooseGame';
 import ChoosePrice from './ChoosePrice';
-
-import { initializePlayers } from '../../helpers/games';
-import { addLocalGame } from '../../reducers/games.reducer';
-
-import gameService from '../../services/games';
-import { useHistory } from 'react-router-dom';
-
-import { GameType, GameStatus, RTCKotitonniPlayer, RTCGame } from '../../types';
-import logger from '../../utils/logger';
-import { useDispatch } from 'react-redux';
+import useNewKotitonniPlayers from './useNewKotitonniPlayers';
+import useSaveGame from './useSaveGame';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,15 +45,6 @@ const useStyles = makeStyles((theme: Theme) =>
     actionsContainer: {
       marginBottom: theme.spacing(2),
     },
-    resetContainer: {
-      marginTop: theme.spacing(6),
-      marginLeft: theme.spacing(6),
-      marginRight: theme.spacing(6),
-      [theme.breakpoints.down('sm')]: {
-        margin: 0,
-        width: '90%',
-      },
-    },
     lobbyLink: {
       wordBreak: 'break-word',
     },
@@ -76,57 +58,28 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface GameToAdd {
-  startTime: Date;
-  type: GameType;
-  players: RTCKotitonniPlayer[];
-  status: GameStatus;
-  rounds: number;
-  price: number;
-}
-
-const NewGame: React.FC<{ username: string }> = ({ username }) => {
+const NewGame: React.FC = () => {
+  const { saveGame, loading, error: saveGameError, addedGame } = useSaveGame();
   const classes = useStyles();
+  const { players, error: playerError } = useNewKotitonniPlayers();
   const [gameType, setGameType] = React.useState<GameType | null>(null);
   const [price, setPrice] = React.useState<number>(0);
-  const [players, setPlayers] = React.useState<null | RTCKotitonniPlayer[]>(
-    null
-  );
   const [startTime, setStartTime] = React.useState<null | Date>(new Date());
   const [activeStep, setActiveStep] = React.useState(0);
-  const [error, setError] = React.useState<string | null>(null);
-  const [loading, setLoading] = React.useState(false);
-  const [addedGame, setAddedGame] = React.useState<RTCGame | null>(null);
   const steps = React.useMemo(() => ['Ajankohta', 'Pelimuoto', 'Hinta'], []);
-  const history = useHistory();
-  const dispatch = useDispatch();
+  const errors = React.useMemo(() => {
+    const errors = [];
 
-  React.useEffect(() => {
-    const init = async () => {
-      const initialPlayers = await initializePlayers(5, 3);
-      setPlayers(initialPlayers);
-    };
+    if (saveGameError) errors.push(saveGameError);
+    if (playerError) errors.push(playerError);
 
-    try {
-      init();
-    } catch (error) {
-      console.error('error initializing players for new game:', error.message);
-
-      setError(error.message);
-    }
-  }, []);
+    return errors;
+  }, [saveGameError, playerError]);
 
   const handleSelectGame = React.useCallback((selection: GameType) => {
     setGameType(selection);
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   }, []);
-
-  /**
-   * Redirects back to host main page
-   */
-  const handleReturn = (): void => {
-    history.goBack();
-  };
 
   const getStepContent = (step: number) => {
     switch (step) {
@@ -142,28 +95,10 @@ const NewGame: React.FC<{ username: string }> = ({ username }) => {
     }
   };
 
-  const saveGame = async (gameToAdd: GameToAdd) => {
-    setLoading(true);
-
-    logger.log(`adding new game`, gameToAdd);
-
-    try {
-      const added = await gameService.addNew(gameToAdd);
-
-      setAddedGame(added);
-
-      dispatch(addLocalGame(added));
-    } catch (e) {
-      setError(e.message);
-    }
-
-    setLoading(false);
-  };
-
   const handleNext = () => {
     if (activeStep === steps.length - 1) {
       if (!players || !gameType || !startTime) {
-        setError('Odottamaton virhe: jokin vaadituista arvoista puuttuu');
+        return;
       } else {
         const gameToAdd = {
           players,
@@ -183,48 +118,6 @@ const NewGame: React.FC<{ username: string }> = ({ username }) => {
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const bottomContent = () => {
-    if (error) {
-      return <div>{error}</div>;
-    }
-
-    if (loading) {
-      return <CircularProgress />;
-    }
-
-    if (addedGame) {
-      const baseUrl =
-        // eslint-disable-next-line no-undef
-        process && process.env.NODE_ENV === 'development'
-          ? 'http://localhost:3000'
-          : 'https://www.kotipelit.com';
-
-      return (
-        <div className={classes.resetContainer}>
-          <Typography variant="caption">{`${baseUrl}/${username}/kutsut/${addedGame.id}`}</Typography>
-          <Typography variant="body1">
-            Jaa ylläoleva peliaulan linkki henkilöille, jotka haluat kutsua
-            pelaamaan.
-          </Typography>
-          <Button variant="contained" color="primary" onClick={handleReturn}>
-            Oma profiili
-          </Button>
-          {/* How to include game id?  */}
-          {/* <Button
-            variant="contained"
-            color="secondary"
-            component={Link}
-            to={`/${username}/kutsut/${game.id}`}
-          >
-            Peliaula
-          </Button> */}
-        </div>
-      );
-    }
-
-    setError('Odottamaton virhe peliä lisätessä');
   };
 
   return (
@@ -268,7 +161,13 @@ const NewGame: React.FC<{ username: string }> = ({ username }) => {
           </Step>
         ))}
       </Stepper>
-      {activeStep === steps.length && bottomContent()}
+      {activeStep === steps.length && (
+        <BottomContent
+          errors={errors}
+          loading={loading}
+          addedGame={addedGame}
+        />
+      )}
     </div>
   );
 };

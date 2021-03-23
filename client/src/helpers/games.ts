@@ -33,7 +33,6 @@ export const initializePlayers = async (
         words,
         answers: {},
         inviteCode: '',
-        twilioToken: null,
       },
     });
   }

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { capitalize } from 'lodash';
-import gameService from '../../services/games';
+import gameService from '../services/games';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
   Button,
@@ -22,13 +22,13 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 // Enable when possible to share on social media
 // import ShareIcon from '@material-ui/icons/Share';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
-import { GameStatus, RTCGame } from '../../types';
+import { GameStatus, RTCGame } from '../types';
 import { useDispatch } from 'react-redux';
-import { deleteGame } from '../../reducers/games.reducer';
+import { deleteGame } from '../reducers/games.reducer';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import fiLocale from 'date-fns/locale/fi';
-import logger from '../../utils/logger';
+import logger from '../utils/logger';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

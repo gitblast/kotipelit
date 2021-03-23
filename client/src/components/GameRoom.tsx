@@ -1,7 +1,7 @@
 import { Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
-import { InGameSocket } from '../context';
+import { InGameSocketProvider } from '../context';
 import useNewGameRoom from '../hooks/useNewGameRoom';
 import { GameStatus, Role } from '../types';
 import logger, { setDebug } from '../utils/logger';
@@ -11,6 +11,8 @@ import PreGameInfo from './PreGameInfo';
 import RTCHostControls from './RTCHostControls';
 import RTCPlayerControls from './RTCPlayerControls';
 import RTCVideoConference from './RTCVideoConference';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorFallBack from './ErrorFallBack';
 
 // import { Animated } from 'react-animated-css';
 
@@ -155,33 +157,37 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
     );
   }
   return (
-    <InGameSocket.Provider value={socket}>
-      <div className={classes.containerGame} ref={fullscreenRef}>
-        <AudioHandler />
-        <div className={classes.topGradient}></div>
-        <div className={classes.gameTitleBar}>
-          {/* For animation, should more topStyle divs be added? */}
-          <div className={classes.topStyle}></div>
-          <div>
-            <Typography variant="subtitle2">Kotitonni</Typography>
-            <Typography className={classes.kotipelit}>Kotipelit.com</Typography>
+    <ErrorBoundary FallbackComponent={ErrorFallBack}>
+      <InGameSocketProvider value={socket}>
+        <div className={classes.containerGame} ref={fullscreenRef}>
+          <AudioHandler />
+          <div className={classes.topGradient}></div>
+          <div className={classes.gameTitleBar}>
+            {/* For animation, should more topStyle divs be added? */}
+            <div className={classes.topStyle}></div>
+            <div>
+              <Typography variant="subtitle2">Kotitonni</Typography>
+              <Typography className={classes.kotipelit}>
+                Kotipelit.com
+              </Typography>
+            </div>
+
+            <div className={classes.topStyle}></div>
           </div>
 
-          <div className={classes.topStyle}></div>
+          <RTCVideoConference participants={participants} />
+          {role === Role.SPECTATOR ? null : isHost ? (
+            <RTCHostControls handleToggleFullscreen={handleToggleFullscreen} />
+          ) : (
+            game.status === GameStatus.RUNNING && (
+              <RTCPlayerControls
+                handleToggleFullscreen={handleToggleFullscreen}
+              />
+            )
+          )}
         </div>
-
-        <RTCVideoConference participants={participants} />
-        {role === Role.SPECTATOR ? null : isHost ? (
-          <RTCHostControls handleToggleFullscreen={handleToggleFullscreen} />
-        ) : (
-          game.status === GameStatus.RUNNING && (
-            <RTCPlayerControls
-              handleToggleFullscreen={handleToggleFullscreen}
-            />
-          )
-        )}
-      </div>
-    </InGameSocket.Provider>
+      </InGameSocketProvider>
+    </ErrorBoundary>
   );
 };
 

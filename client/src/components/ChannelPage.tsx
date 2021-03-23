@@ -2,10 +2,10 @@ import React from 'react';
 
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import NewGame from './host/NewGame';
+import NewGame from './NewGame/NewGame';
 import RTCGameRoom from './RTCGameRoom';
 import GameLobby from './GameLobby';
-import Dashboard from './host/Dashboard';
+import Dashboard from './Dashboard';
 import { useSelector } from 'react-redux';
 import { Role, State /**BaseUser */ } from '../types';
 import TYFPPage from './TYFPPage';
@@ -23,9 +23,7 @@ const ChannelPage: React.FC<ChannelPageProps> = () => {
         <Route path="/:username/kiitos">
           <TYFPPage />
         </Route>
-        <Route path="/:username/newgame">
-          {user.loggedIn && <NewGame username={user.username} />}
-        </Route>
+        <Route path="/:username/newgame">{user.loggedIn && <NewGame />}</Route>
         <Route path="/:username/kutsut/:gameID">
           <GameLobby />
         </Route>

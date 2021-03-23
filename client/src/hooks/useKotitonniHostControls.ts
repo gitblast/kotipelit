@@ -1,8 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { Socket } from 'socket.io-client';
-import { InGameSocket } from '../context';
+import { useInGameSocket } from '../context';
 import { getNextKotitonniState } from '../helpers/games';
 import { reset } from '../reducers/kotitonni.local.reducer';
 import { RTCGame, State } from '../types';
@@ -14,8 +13,8 @@ const useKotitonniHostControls = () => {
   const game = useSelector((state: State) => state.rtc.game);
 
   const { timerValue, timerIsRunning, toggleTimer, resetTimer } = useTimer();
+  const socket = useInGameSocket();
   const dispatch = useDispatch();
-  const socket = React.useContext<Socket>(InGameSocket);
   const clickMap = useSelector(
     (state: State) => state.rtc.localData.clickedMap
   );

@@ -14,7 +14,8 @@ const socketOnLeaveCallback = (socket: Socket) => {
   socket.emit('leave-room');
 };
 
-const useNewGameRoom = (token: string | null, onCall: boolean, role: Role) => {
+const useNewGameRoom = (token: string | null, role: Role) => {
+  const [onCall, setOnCall] = React.useState<boolean>(false);
   const history = useHistory();
   const dispatch = useDispatch();
   const { username: hostName } = useParams<{ username: string }>();
@@ -22,7 +23,7 @@ const useNewGameRoom = (token: string | null, onCall: boolean, role: Role) => {
   const [twilioToken, setTwilioToken] = React.useState<null | string>(null);
   const [socket, socketError] = useAuthSocket(token, socketOnLeaveCallback);
   const mySelf = useSelf(game, role);
-  const { participants, error: twilioError } = useTwilioRoom(
+  const { participants, spectatorCount, error: twilioError } = useTwilioRoom(
     twilioToken,
     onCall,
     role === Role.SPECTATOR
@@ -67,12 +68,43 @@ const useNewGameRoom = (token: string | null, onCall: boolean, role: Role) => {
     }
   }, [socket, dispatch, history, hostName]);
 
+  const handleJoinCall = React.useCallback(
+    (dev?: boolean) => {
+      if (socket) {
+        const callback = dev
+          ? () => {
+              logger.log('using mock token');
+
+              setTwilioToken('DEVELOPMENT');
+            }
+          : (token: string) => {
+              logger.log('got twilio token');
+
+              setTwilioToken(token);
+            };
+
+        if (role === Role.HOST) {
+          socket.emit('launch', callback);
+        } else {
+          socket.emit('get-twilio-token', callback);
+        }
+
+        setOnCall(true);
+      } else {
+        logger.error('socket was null trying to emit launch');
+      }
+    },
+    [socket]
+  );
+
   return {
     game,
     socket,
     mySelf,
     participants,
-    setTwilioToken,
+    onCall,
+    spectatorCount,
+    handleJoinCall,
   };
 };
 

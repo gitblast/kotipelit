@@ -1,8 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import express from 'express';
-import shortid from 'shortid';
 
 import {
   toNewGame,
@@ -18,18 +14,17 @@ import {
 import expressJwt from 'express-jwt';
 import jwt from 'jsonwebtoken';
 import config from '../utils/config';
-import mongoose from 'mongoose';
-
-import Game from '../models/game';
-import Word from '../models/word';
-import Url from '../models/url';
-import User from '../models/user';
 
 import gameService from '../services/games';
+import urlService from '../services/urls';
 import mailService from '../services/mail';
+import userService from '../services/users';
+import wordService from '../services/words';
+import lobbyService from '../services/lobby';
 
-import { GameStatus, Role, WordModel } from '../types';
+import { Role } from '../types';
 import { onlyForRole } from '../utils/middleware';
+import { getInviteMailData } from '../utils/helpers';
 import logger from '../utils/logger';
 
 const router = express.Router();
@@ -43,23 +38,15 @@ router.put('/lock', async (req, res, next) => {
     const displayName = parseString(req.body.displayName);
     const email = parseEmail(req.body.email);
 
-    const game = await Game.findById(gameId);
+    const game = await gameService.getGameById(gameId);
 
-    if (!game) {
-      throw new Error('Invalid request: no game found');
-    }
-
-    const host = await User.findById(game.host.id);
-
-    if (!host) {
-      throw new Error('Invalid request: no host found for game');
-    }
+    const host = await userService.getUserById(game.host.id);
 
     const playerReservationToLock = game.players.find((player) => {
       return player.reservedFor?.id === reservationId;
     });
 
-    if (!playerReservationToLock || !playerReservationToLock.reservedFor) {
+    if (!playerReservationToLock?.reservedFor) {
       throw new Error(
         `Invalid request: no reservation found with id '${reservationId}'`
       );
@@ -105,7 +92,7 @@ router.put('/lock', async (req, res, next) => {
 
     res.json(playerWithReservationLocked);
 
-    const inviteMailData = gameService.getInviteMailData(
+    const inviteMailData = getInviteMailData(
       savedGame,
       playerWithReservationLocked.id,
       displayName,
@@ -126,69 +113,17 @@ router.put('/reserve', async (req, res, next) => {
 
     const reservationId = toID(req.body.reservationId);
 
-    await gameService.refreshGameReservations(gameId);
+    await lobbyService.refreshGameReservations(gameId);
 
     const expiresAt = Date.now() + 300000 + 10000; // 5 min + 10 sec buffer
 
-    await Game.updateOne(
-      {
-        _id: mongoose.Types.ObjectId(gameId),
-        'players.reservedFor': null,
-      },
-
-      {
-        $set: {
-          'players.$.reservedFor': {
-            id: reservationId,
-            expires: expiresAt,
-          },
-        },
-      }
-    );
-
-    const gameAfterUpdate = await Game.findById(gameId);
-
-    if (!gameAfterUpdate) {
-      throw new Error(
-        `Unexpected error: no game found after update with id ${gameId}`
-      );
-    }
-
-    const reservations = gameAfterUpdate.players.map((player) =>
-      player.reservedFor ? player.reservedFor.id : null
-    );
-
-    if (!reservations.includes(reservationId)) {
-      if (reservations.indexOf(null) === -1) {
-        throw new Error('Invalid request: game is full');
-      }
-
-      throw new Error('Unexpected error reserving');
-    }
-
-    const reservedPlayer = gameAfterUpdate.players.find(
-      (player) => player.reservedFor?.id === reservationId
-    );
-
-    if (!reservedPlayer) {
-      throw new Error(
-        'Unexpected error reserving, reserved player was undefined'
-      );
-    }
-
-    logger.log(
-      'reserved a slot with id:',
+    const reservationData = await lobbyService.reserveIfSpotOpen(
+      gameId,
       reservationId,
-      'player id:',
-      reservedPlayer.id,
-      'expires at:',
       expiresAt
     );
 
-    res.json({
-      playerId: reservedPlayer.id,
-      expiresAt,
-    });
+    res.json(reservationData);
   } catch (e) {
     next(e);
   }
@@ -199,59 +134,7 @@ router.get('/cancel/:hostName/:inviteCode', async (req, res, next) => {
     const hostName = toID(req.params.hostName);
     const inviteCode = toID(req.params.inviteCode);
 
-    const urlData = await Url.findOne({ hostName, inviteCode });
-
-    if (!urlData) {
-      throw new Error(
-        `Invalid url: no game found with host name '${hostName}' and invite code '${inviteCode}'`
-      );
-    }
-
-    const { gameId } = urlData;
-
-    const game = await Game.findOne({ _id: gameId });
-
-    if (!game) {
-      throw new Error(`Invalid game id: no game found with id '${gameId}'`);
-    }
-
-    if (
-      game.status === GameStatus.RUNNING ||
-      game.status === GameStatus.FINISHED
-    ) {
-      throw new Error(`Invalid request: game already started`);
-    }
-
-    const newInviteCode = shortid.generate();
-
-    let inviteCodeWasUpdated = false;
-
-    game.players = game.players.map((player) => {
-      if (player.privateData.inviteCode === inviteCode) {
-        inviteCodeWasUpdated = true;
-
-        return {
-          ...player,
-          inviteCode: newInviteCode,
-          reservedFor: null,
-          name: 'Avoinna',
-        };
-      }
-
-      return player;
-    });
-
-    if (!inviteCodeWasUpdated) {
-      throw new Error(`no player found matching inviteCode ${inviteCode}`);
-    }
-
-    await game.save();
-
-    urlData.inviteCode = newInviteCode;
-
-    await urlData.save();
-
-    logger.log(`updated inviteCode ${inviteCode} to ${newInviteCode}`);
+    await lobbyService.cancelReservation(hostName, inviteCode);
 
     res.status(204).end();
   } catch (e) {
@@ -265,11 +148,8 @@ router.get('/spectate/:gameId', async (req, res, next) => {
   try {
     const gameId = toID(req.params.gameId);
 
-    const game = await Game.findById(gameId);
-
-    if (!game) {
-      throw new Error(`Invalid request: no game found with id '${gameId}'`);
-    }
+    // check that game exists
+    await gameService.getGameById(gameId);
 
     const spectatorId = `spectator-${Date.now()}`;
 
@@ -296,17 +176,9 @@ router.get('/join/:hostName/:inviteCode', async (req, res, next) => {
     const hostName = toID(req.params.hostName);
     const inviteCode = toID(req.params.inviteCode);
 
-    const urlData = await Url.findOne({ hostName, inviteCode });
+    const { gameId } = await urlService.getUrlData(hostName, inviteCode);
 
-    if (!urlData) {
-      throw new Error(
-        `Invalid url: no game found with host name '${hostName}' and invite code '${inviteCode}'`
-      );
-    }
-
-    const { gameId } = urlData;
-
-    const game = await Game.findOne({ _id: gameId });
+    const game = await gameService.getGameById(gameId);
     const player = validateGamePlayer(game, inviteCode);
 
     const payload = {
@@ -332,13 +204,13 @@ router.get('/lobby/:hostName/:gameId', async (req, res, next) => {
     const gameId = toID(req.params.gameId);
     const hostName = toID(req.params.hostName);
 
-    const game = await gameService.refreshGameReservations(gameId);
+    const game = await lobbyService.refreshGameReservations(gameId);
 
-    const host = await User.findOne({ username: hostName });
+    const host = await userService.getUserByUsername(hostName);
 
-    if (!host || game.host.id.toString() !== host._id.toString()) {
+    if (game.host.id.toString() !== host._id.toString()) {
       throw new Error(
-        `Invalid request: host missing or not matching fetched game`
+        `Invalid request: host username not matching fetched game`
       );
     }
 
@@ -370,13 +242,9 @@ router.get('/', async (req, res, next) => {
 
   try {
     const user = toAuthenticatedUser(req);
-    const allGames = await Game.find({});
+    const userGames = await gameService.getAllGamesByUser(user.id.toString());
 
-    const filteredGames = allGames.filter(
-      (game) => game.host.id.toString() === user.id
-    );
-
-    res.json(filteredGames);
+    res.json(userGames);
   } catch (error) {
     next(error);
   }
@@ -387,37 +255,9 @@ router.post('/', async (req, res, next) => {
     const user = toAuthenticatedUser(req);
     const newGame = toNewGame(req.body, user);
 
-    const game = new Game({
-      ...newGame,
-      createDate: new Date(),
-      info: gameService.getInitialInfo(newGame),
-      players: newGame.players.map((player) => {
-        return {
-          ...player,
-          id: shortid.generate(),
-          reservedFor: null,
-          privateData: {
-            ...player.privateData,
-            inviteCode: shortid.generate(),
-          },
-        };
-      }),
-    });
+    const savedGame = await gameService.addGame(newGame);
 
-    const savedGame = await game.save();
-
-    /** save short urls to database */
-    for (const player of savedGame.players) {
-      const urlObject = {
-        playerId: player.id,
-        gameId: savedGame._id.toString(),
-        hostName: user.username,
-        inviteCode: player.privateData.inviteCode,
-      };
-
-      const newUrl = new Url(urlObject);
-      await newUrl.save();
-    }
+    await urlService.createPlayerUrls(savedGame, user.username);
 
     res.json(savedGame);
   } catch (error) {
@@ -429,11 +269,7 @@ router.get('/token/:id', async (req, res, next) => {
   try {
     const gameId = toID(req.params.id);
 
-    const game = await Game.findById(gameId);
-
-    if (!game) {
-      throw new Error(`Invalid game id: ${gameId}`);
-    }
+    const game = await gameService.getGameById(gameId);
 
     const user = toAuthenticatedUser(req);
 
@@ -466,14 +302,14 @@ router.delete('/:id', async (req, res, next) => {
     const gameId = toID(req.params.id);
     const user = toAuthenticatedUser(req);
 
-    const game = await Game.findById(gameId);
+    const game = await gameService.getGameById(gameId);
 
     const validatedGame = validateGameHost(game, user.id.toString());
 
     await validatedGame.remove();
 
     // delete urls
-    await Url.deleteMany({ gameId });
+    await urlService.deleteGameUrls(gameId);
 
     res.status(204).end();
   } catch (error) {
@@ -486,9 +322,9 @@ router.get('/words/:amount', async (req, res, next) => {
   try {
     const amount = toPositiveInteger(req.params.amount);
 
-    const words = await Word.aggregate<WordModel>().sample(amount);
+    const words = await wordService.getRandomWords(amount);
 
-    res.json(words.map((word) => word.word));
+    res.json(words);
   } catch (error) {
     next(error);
   }

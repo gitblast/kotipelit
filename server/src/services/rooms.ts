@@ -8,7 +8,11 @@ import {
 } from '../types';
 import { RoomNotFoundError } from '../utils/errors';
 import logger from '../utils/logger';
-import gameService from './games';
+import {
+  filterGameForUser,
+  filterGameForSpectator,
+  getInitialGameState,
+} from '../utils/helpers';
 
 const rooms = new Map<string, RTCGameRoom>();
 
@@ -43,9 +47,9 @@ const joinRoom = (socket: SocketWithToken): RTCGame | FilteredRTCGame => {
   if (role === Role.HOST) {
     return room.game;
   } else if (role === Role.PLAYER) {
-    return gameService.filterGameForUser(room.game, id);
+    return filterGameForUser(room.game, id);
   } else {
-    return gameService.filterGameForSpectator(room.game);
+    return filterGameForSpectator(room.game);
   }
 };
 
@@ -97,7 +101,7 @@ const createRoom = (game: RTCGame): void => {
     game,
     socketMap,
     spectatorSockets: [],
-    state: gameService.getInitialGameState(game),
+    state: getInitialGameState(game),
   };
 
   setRoom(game.id, newRoom);

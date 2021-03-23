@@ -8,9 +8,15 @@ import {
   Answer,
 } from '../../types';
 import logger from '../../utils/logger';
+import {
+  convertToRTCGame,
+  filterGameForUser,
+  filterGameForSpectator,
+} from '../../utils/helpers';
 import { TimerData } from '../../utils/timer';
 import gameService from '../games';
 import roomService from '../rooms';
+import urlService from '../urls';
 import twilioService from '../twilio';
 
 // RTC
@@ -30,7 +36,7 @@ export const joinRTCRoom = async (socket: SocketWithToken): Promise<void> => {
         throw new Error('cannot join, game status is finished!');
       }
 
-      const rtcGame = gameService.convertToRTCGame(game);
+      const rtcGame = convertToRTCGame(game);
 
       roomService.createRoom(rtcGame);
     }
@@ -277,6 +283,9 @@ export const endRTCGame = async (socket: SocketWithToken): Promise<void> => {
     logger.log(success ? 'delete succesful' : 'delete failed');
 
     socket.to(gameId).emit('game-ended');
+
+    // delete game urls
+    await urlService.deleteGameUrls(gameId);
   } catch (e) {
     logger.error(e.message);
 
@@ -314,7 +323,7 @@ export const getRoomGame = (socket: SocketWithToken): void => {
       throw new Error(`no game set when trying to get room id ${gameId}`);
     }
 
-    const filteredGame = gameService.filterGameForUser(game, id);
+    const filteredGame = filterGameForUser(game, id);
 
     socket.emit('game-updated', filteredGame);
   } catch (e) {
@@ -364,7 +373,7 @@ export const handleAnswer = (socket: SocketWithToken, answer: Answer): void => {
       socket.to(hostSocketId).emit('game-updated', updatedGame);
     }
 
-    socket.emit('game-updated', gameService.filterGameForUser(updatedGame, id));
+    socket.emit('game-updated', filterGameForUser(updatedGame, id));
   } catch (e) {
     logger.error(e.message);
 
@@ -456,10 +465,7 @@ const emitUpdatedGame = (socket: SocketWithToken, newGame: RTCGame): void => {
 
           socket
             .to(socketId)
-            .emit(
-              'game-updated',
-              gameService.filterGameForUser(newGame, player.id)
-            );
+            .emit('game-updated', filterGameForUser(newGame, player.id));
         } else {
           didNotEmit.push(player.name);
         }
@@ -468,7 +474,7 @@ const emitUpdatedGame = (socket: SocketWithToken, newGame: RTCGame): void => {
       room.spectatorSockets.forEach((socketId) =>
         socket
           .to(socketId)
-          .emit('game-updated', gameService.filterGameForSpectator(newGame))
+          .emit('game-updated', filterGameForSpectator(newGame))
       );
     }
 

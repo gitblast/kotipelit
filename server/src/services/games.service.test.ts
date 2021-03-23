@@ -9,6 +9,7 @@ import {
 } from '../types';
 import gameService from './games';
 import Game from '../models/game';
+import { getInitialInfo } from '../utils/helpers';
 
 jest.mock('../models/game', () => ({
   findById: jest.fn(),
@@ -24,7 +25,7 @@ describe('games service', () => {
         type: 'invalid',
       } as unknown) as GameModel;
 
-      expect(() => gameService.getInitialInfo(mockGame)).toThrowError(
+      expect(() => getInitialInfo(mockGame)).toThrowError(
         `Invalid game type: ${mockGame.type}`
       );
     });
@@ -35,11 +36,11 @@ describe('games service', () => {
           type: GameType.KOTITONNI,
         } as unknown) as GameModel;
 
-        expect(() => gameService.getInitialInfo(mockGame)).toThrowError(
+        expect(() => getInitialInfo(mockGame)).toThrowError(
           'Game has no players set'
         );
         expect(() =>
-          gameService.getInitialInfo(({
+          getInitialInfo(({
             ...mockGame,
             players: [],
           } as unknown) as GameModel)
@@ -62,7 +63,7 @@ describe('games service', () => {
           answeringOpen: false,
         };
 
-        expect(gameService.getInitialInfo(mockGame)).toEqual(expectedInfo);
+        expect(getInitialInfo(mockGame)).toEqual(expectedInfo);
       });
     });
   });
@@ -84,7 +85,7 @@ describe('games service', () => {
       try {
         await gameService.getGameById(id);
       } catch (e) {
-        expect(e.message).toBe(`No game found with id ${id}`);
+        expect(e.message).toBe(`Invalid request: No game found with id ${id}`);
       }
     });
 
@@ -108,7 +109,7 @@ describe('games service', () => {
       try {
         await gameService.getGameById(id);
       } catch (e) {
-        expect(e.message).toBe(`No game found with id ${id}`);
+        expect(e.message).toBe(`Invalid request: No game found with id ${id}`);
       }
     });
 
@@ -144,7 +145,7 @@ describe('games service', () => {
       try {
         await gameService.getGameById(id);
       } catch (e) {
-        expect(e.message).toBe(`No game found with id ${id}`);
+        expect(e.message).toBe(`Invalid request: No game found with id ${id}`);
       }
     });
 

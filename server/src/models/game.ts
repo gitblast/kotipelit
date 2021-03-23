@@ -14,13 +14,11 @@ const gameSchema: Schema = new Schema(
     host: {
       id: { type: mongoose.Types.ObjectId, required: true },
       displayName: { type: String, required: true },
-      privateData: {
-        twilioToken: { type: String },
-      },
     },
     createDate: { type: Date, required: true },
     rounds: Number,
     price: { type: Number, required: true },
+    allowedSpectators: { type: Number, required: true },
   },
   { minimize: false }
 ); // minimize omits empty objects (causes errors in kotitonni answers)

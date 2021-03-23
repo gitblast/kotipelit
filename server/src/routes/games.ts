@@ -399,7 +399,6 @@ router.post('/', async (req, res, next) => {
           privateData: {
             ...player.privateData,
             inviteCode: shortid.generate(),
-            twilioToken: null,
           },
         };
       }),

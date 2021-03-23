@@ -44,6 +44,7 @@ const addDummyGame = async (user: UserModel): Promise<GameModel> => {
   const dummyGame: NewGame = {
     type: GameType.KOTITONNI,
     price: 10,
+    allowedSpectators: 0,
     players: [
       {
         id: 'id1',

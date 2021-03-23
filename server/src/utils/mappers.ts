@@ -161,6 +161,7 @@ export const toNewGame = (object: any, user: DecodedToken): NewGame => {
     },
     rounds: parseRounds(object.rounds),
     price: parseNumber(object.price),
+    allowedSpectators: parseNumber(object.allowedSpectators),
   };
 };
 

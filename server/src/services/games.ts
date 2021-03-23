@@ -19,10 +19,6 @@ import UpdateEmittingTimer from '../utils/timer';
 const filterGameForSpectator = (game: RTCGame): FilteredRTCGame => {
   return {
     ...game,
-    host: {
-      ...game.host,
-      privateData: null,
-    },
     players: game.players.map((player) => {
       return {
         ...player,
@@ -47,10 +43,6 @@ const filterGameForUser = (
     // hide private data
     return {
       ...game,
-      host: {
-        ...game.host,
-        privateData: null,
-      },
       players: game.players.map((player) => {
         return player.id === userId
           ? player
@@ -191,6 +183,7 @@ const convertToRTCGame = (game: GameModel): RTCGame => {
     price: game.price,
     startTime: game.startTime,
     players: game.players,
+    allowedSpectators: game.allowedSpectators,
     info: getInitialInfo(game),
     host: {
       id: game.host.id.toString(),

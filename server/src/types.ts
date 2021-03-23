@@ -12,6 +12,18 @@ export interface BaseRTCGame {
   startTime: Date;
   rounds: number;
   price: number;
+  allowedSpectators: number;
+}
+
+export interface RTCGame extends BaseRTCGame {
+  id: string;
+  players: GamePlayer[];
+  info: GameInfo;
+  host: {
+    id: string;
+    displayName: string;
+    privateData: null;
+  };
 }
 
 export interface NewGame extends BaseRTCGame {
@@ -135,22 +147,6 @@ export type RTCGameState = KotitonniGameState;
 
 export interface KotitonniGameState {
   timer: UpdateEmittingTimer;
-}
-
-export interface RTCGame {
-  id: string;
-  status: GameStatus;
-  type: GameType;
-  price: number;
-  startTime: Date;
-  players: GamePlayer[];
-  info: GameInfo;
-  host: {
-    id: string;
-    displayName: string;
-    privateData: null;
-  };
-  rounds: number;
 }
 
 export interface FilteredRTCGame extends BaseRTCGame {

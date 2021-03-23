@@ -36,6 +36,7 @@ const baseUrl = '/api/games';
 const dummyGame: Omit<NewGame, 'host'> = {
   type: GameType.KOTITONNI,
   price: 10,
+  allowedSpectators: 0,
   players: [
     {
       id: 'id1',

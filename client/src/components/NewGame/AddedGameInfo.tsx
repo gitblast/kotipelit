@@ -42,12 +42,14 @@ const AddedGameInfo = ({ addedGame, error }: AddedGameInfoProps) => {
 
   return (
     <div className={classes.container}>
-      <Typography>{`${baseUrl}/${username}/kutsut/${addedGame.id}`}</Typography>
-      <Typography>Jaa tämä linkki pelaajille</Typography>
+      <Typography variant="body2">{`${baseUrl}/${username}/kutsut/${addedGame.id}`}</Typography>
+      <Typography>
+        Jaa ylläoleva linkki kaikille, jotka haluat kutsua pelaamaan.
+      </Typography>
 
       {addedGame.allowedSpectators && (
         <>
-          <Typography>
+          <Typography variant="body2">
             {`${baseUrl}/${username}/live/${addedGame.id}`}
           </Typography>
           <Typography>Jaa tämä linkki katsojille</Typography>

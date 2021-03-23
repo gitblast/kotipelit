@@ -48,19 +48,6 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
 
   return (
     <div className={classes.preInfo}>
-      {!isSupported && alertOpen && (
-        <Alert severity="info" onClose={() => setAlertOpen(false)}>
-          <AlertTitle>
-            Palvelu ei välttämättä toimi käyttämälläsi selaimella
-          </AlertTitle>
-          Jos peliin yhdistäminen ei onnistu, kokeile toista selainta. Näet
-          tukemamme selaimet{' '}
-          <Link href="https://www.twilio.com/docs/video/javascript#supported-browsers">
-            täältä
-          </Link>
-          .
-        </Alert>
-      )}
       {canJoin ? (
         <>
           <Typography variant="h5">Peli alkaa pian!</Typography>
@@ -98,6 +85,19 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
             >
               Käynnistä yhdistämättä Twilioon
             </Button>
+          )}
+          {!isSupported && alertOpen && (
+            <Alert severity="info" onClose={() => setAlertOpen(false)}>
+              <AlertTitle>
+                Palvelu ei välttämättä toimi käyttämälläsi selaimella
+              </AlertTitle>
+              Jos peliin yhdistäminen ei onnistu, kokeile toista selainta. Näet
+              tukemamme selaimet{' '}
+              <Link href="https://www.twilio.com/docs/video/javascript#supported-browsers">
+                täältä
+              </Link>
+              .
+            </Alert>
           )}
         </>
       ) : (

@@ -23,7 +23,6 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       width: '100%',
       marginLeft: theme.spacing(4),
-      color: 'rgb(0 225 217)',
     },
     headline: {
       display: 'flex',
@@ -149,7 +148,7 @@ const NewGame: React.FC = () => {
     <div className={classes.root}>
       <div className={classes.headline}>
         <div className={classes.neonLight}></div>
-        <Typography variant="h3" color="initial">
+        <Typography variant="h4" color="initial">
           Luo uusi peli
         </Typography>
       </div>
@@ -161,7 +160,7 @@ const NewGame: React.FC = () => {
         {steps.map((label, index) => (
           <Step key={label}>
             <StepLabel>
-              <Typography variant="h5">{label}</Typography>
+              <Typography variant="h3">{label}</Typography>
             </StepLabel>
             <StepContent>
               {getStepContent(index)}

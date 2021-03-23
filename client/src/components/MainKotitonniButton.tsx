@@ -14,7 +14,12 @@ const useStyles = makeStyles((theme: Theme) =>
       border: 'solid',
       borderColor: 'white',
       [theme.breakpoints.down('sm')]: {
-        padding: theme.spacing(3.5),
+        padding: theme.spacing(3),
+      },
+    },
+    buttonText: {
+      [theme.breakpoints.down('sm')]: {
+        fontSize: 22,
       },
     },
   })
@@ -66,7 +71,9 @@ const MainKotitonniButton: React.FC<MainKotitonniButtonProps> = ({
       disabled={disabled}
       variant="extended"
     >
-      <Typography variant="h6">{getMainButtonLabel(gameStatus)}</Typography>
+      <Typography variant="h6" className={classes.buttonText}>
+        {getMainButtonLabel(gameStatus)}
+      </Typography>
     </Fab>
   );
 };

@@ -1,20 +1,29 @@
 import React from 'react';
 
-import { makeStyles, createStyles } from '@material-ui/core/styles';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { RTCKotitonniPlayer } from '../../types';
 import { Typography } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import IconButton from '@material-ui/core/IconButton/IconButton';
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     playerRow: {
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'space-between',
+      marginBottom: theme.spacing(2),
+      [theme.breakpoints.down('xs')]: {
+        flexDirection: 'column',
+        alignItems: 'normal',
+      },
     },
-    playerRowItem: {
-      flex: 1,
+    playerName: {},
+    wordsRow: {
+      display: 'flex',
+      marginLeft: theme.spacing(4),
+      [theme.breakpoints.down('xs')]: {
+        marginLeft: theme.spacing(2),
+      },
     },
     wordContainer: {
       display: 'flex',
@@ -38,22 +47,24 @@ const KotitonniPlayerPreview = ({
 
   return (
     <div className={classes.playerRow}>
-      <div className={classes.playerRowItem}>
+      <div className={classes.playerName}>
         <Typography>{`Pelaaja ${playerIndex + 1}`}</Typography>
       </div>
-      {player.privateData.words.map((word, index) => (
-        <div key={word} className={classes.playerRowItem}>
-          <div className={classes.wordContainer}>
-            {word}
-            <IconButton
-              size="small"
-              onClick={() => handleRefresh(player.id, index)}
-            >
-              <RefreshIcon />
-            </IconButton>
+      <div className={classes.wordsRow}>
+        {player.privateData.words.map((word, index) => (
+          <div key={word}>
+            <div className={classes.wordContainer}>
+              {word}
+              <IconButton
+                size="small"
+                onClick={() => handleRefresh(player.id, index)}
+              >
+                <RefreshIcon />
+              </IconButton>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };

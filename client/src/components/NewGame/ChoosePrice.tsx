@@ -40,6 +40,19 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    prices: {
+      display: 'flex',
+      marginLeft: theme.spacing(2),
+      [theme.breakpoints.down('xs')]: {
+        display: 'inline-grid',
+      },
+    },
+  })
+);
 
 interface ChoosePriceProps {
   price: number;
@@ -47,6 +60,7 @@ interface ChoosePriceProps {
 }
 
 const ChoosePrice: React.FC<ChoosePriceProps> = ({ price, setPrice }) => {
+  const classes = useStyles();
   return (
     <FormControl component="fieldset">
       <RadioGroup
@@ -55,11 +69,18 @@ const ChoosePrice: React.FC<ChoosePriceProps> = ({ price, setPrice }) => {
         value={price}
         onChange={(e) => setPrice(Number(e.target.value))}
       >
-        <FormControlLabel value={0} control={<Radio />} label="Ilmainen" />
+        <div className={classes.prices}>
+          <FormControlLabel value={0} control={<Radio />} label="Ilmainen" />
 
-        <FormControlLabel value={2} disabled control={<Radio />} label="2€" />
-        <FormControlLabel value={5} disabled control={<Radio />} label="5€" />
-        <FormControlLabel value={10} disabled control={<Radio />} label="10€" />
+          <FormControlLabel value={2} disabled control={<Radio />} label="2€" />
+          <FormControlLabel value={5} disabled control={<Radio />} label="5€" />
+          <FormControlLabel
+            value={10}
+            disabled
+            control={<Radio />}
+            label="10€"
+          />
+        </div>
       </RadioGroup>
     </FormControl>
   );

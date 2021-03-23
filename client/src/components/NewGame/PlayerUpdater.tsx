@@ -2,7 +2,6 @@ import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { RTCKotitonniPlayer } from '../../types';
-import { Paper } from '@material-ui/core';
 import KotitonniPlayerPreview from './KotitonniPlayerPreview';
 import wordService from '../../services/words';
 import logger from '../../utils/logger';
@@ -10,8 +9,8 @@ import logger from '../../utils/logger';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
-      padding: theme.spacing(2),
-      maxWidth: 1000,
+      margin: theme.spacing(2),
+      color: theme.palette.primary.light,
     },
   })
 );
@@ -61,7 +60,7 @@ const PlayerUpdater: React.FC<PlayerUpdaterProps> = ({
   );
 
   return (
-    <Paper className={classes.container}>
+    <div className={classes.container}>
       {players.map((player, index) => (
         <KotitonniPlayerPreview
           key={player.id}
@@ -70,7 +69,7 @@ const PlayerUpdater: React.FC<PlayerUpdaterProps> = ({
           handleRefresh={handleRefresh}
         />
       ))}
-    </Paper>
+    </div>
   );
 };
 

@@ -59,7 +59,9 @@ const TYFPPage: React.FC = () => {
   }
 
   const showPoints = () => {
-    const sortedByPoints = game.players.sort((a, b) => b.points - a.points);
+    const sortedByPoints = game.players
+      .concat()
+      .sort((a, b) => b.points - a.points);
 
     return sortedByPoints.map((player) => {
       return (

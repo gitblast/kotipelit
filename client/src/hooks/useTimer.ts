@@ -17,9 +17,17 @@ const useTimer = () => {
 
     socket.emit('get-timer-state', setTimerData);
 
-    socket.on('timer-updated', (data: TimerData) => {
+    const handler = (data: TimerData) => {
       setTimerData({ value: data.value, isRunning: data.isRunning });
-    });
+    };
+
+    socket.on('timer-updated', handler);
+
+    return () => {
+      logger.log('removing listener for timer');
+
+      socket.off('timer-updated', handler);
+    };
   }, [socket]);
 
   const startTimer = React.useCallback(() => {

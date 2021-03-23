@@ -47,14 +47,14 @@ const AddedGameInfo = ({ addedGame, error }: AddedGameInfoProps) => {
         Jaa ylläoleva linkki kaikille, jotka haluat kutsua pelaamaan.
       </Typography>
 
-      {addedGame.allowedSpectators && (
+      {addedGame.allowedSpectators !== 0 ? (
         <>
           <Typography variant="body2">
             {`${baseUrl}/${username}/live/${addedGame.id}`}
           </Typography>
           <Typography>Jaa tämä linkki katsojille</Typography>
         </>
-      )}
+      ) : null}
     </div>
   );
 };

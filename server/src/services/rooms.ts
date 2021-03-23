@@ -5,10 +5,10 @@ import {
   FilteredRTCGame,
   RTCGameRoom,
   RTCGameState,
-} from '../../types';
-import { RoomNotFoundError } from '../../utils/errors';
-import logger from '../../utils/logger';
-import gameService from '../games';
+} from '../types';
+import { RoomNotFoundError } from '../utils/errors';
+import logger from '../utils/logger';
+import gameService from './games';
 
 const rooms = new Map<string, RTCGameRoom>();
 

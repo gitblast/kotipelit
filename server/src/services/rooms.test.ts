@@ -1,4 +1,4 @@
-import rtcrooms from './rtcrooms';
+import rtcrooms from './rooms';
 
 describe('rtc rooms', () => {
   it('should init with empty rooms', () => {

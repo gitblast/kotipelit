@@ -10,7 +10,7 @@ import {
 import logger from '../../utils/logger';
 import { TimerData } from '../../utils/timer';
 import gameService from '../games';
-import rtcrooms from '../rtc/rtcrooms';
+import roomService from '../rooms';
 import twilioService from '../twilio';
 
 // RTC
@@ -21,7 +21,7 @@ export const joinRTCRoom = async (socket: SocketWithToken): Promise<void> => {
   try {
     const { gameId } = socket.decodedToken;
 
-    const existingRoom = rtcrooms.getRoomGame(gameId);
+    const existingRoom = roomService.getRoomGame(gameId);
 
     if (!existingRoom) {
       const game = await gameService.getGameById(gameId);
@@ -32,10 +32,10 @@ export const joinRTCRoom = async (socket: SocketWithToken): Promise<void> => {
 
       const rtcGame = gameService.convertToRTCGame(game);
 
-      rtcrooms.createRoom(rtcGame);
+      roomService.createRoom(rtcGame);
     }
 
-    const joinedRoomGame = rtcrooms.joinRoom(socket);
+    const joinedRoomGame = roomService.joinRoom(socket);
 
     socket.emit('game-updated', joinedRoomGame);
   } catch (e) {
@@ -67,7 +67,7 @@ export const leaveRTCRoom = (socket: SocketWithToken): void => {
 
   const { id, gameId } = socket.decodedToken;
 
-  rtcrooms.leaveRoom(socket);
+  roomService.leaveRoom(socket);
 
   socket.to(gameId).emit('user-left', id);
 };
@@ -78,7 +78,7 @@ export const startRTCGame = async (socket: SocketWithToken): Promise<void> => {
   try {
     const { gameId } = socket.decodedToken;
 
-    const game = rtcrooms.getRoomGame(gameId);
+    const game = roomService.getRoomGame(gameId);
 
     if (!game) {
       throw new Error(`no game set when starting, id ${gameId}`);
@@ -90,7 +90,7 @@ export const startRTCGame = async (socket: SocketWithToken): Promise<void> => {
 
     await gameService.setGameStatus(gameId, GameStatus.RUNNING);
 
-    const updatedGame = rtcrooms.updateRoomGame(gameId, {
+    const updatedGame = roomService.updateRoomGame(gameId, {
       ...game,
       status: GameStatus.RUNNING,
     });
@@ -112,7 +112,7 @@ export const launchRTCGame = async (
   try {
     const { gameId, id } = socket.decodedToken;
 
-    const game = rtcrooms.getRoomGame(gameId);
+    const game = roomService.getRoomGame(gameId);
 
     if (!game) {
       throw new Error(`no game set when launching, id ${gameId}`);
@@ -164,7 +164,7 @@ export const launchRTCGame = async (
       }),
     };
 
-    rtcrooms.updateRoomGame(gameId, updatedGame);
+    roomService.updateRoomGame(gameId, updatedGame);
 
     emitUpdatedGame(socket, updatedGame);
 
@@ -212,7 +212,7 @@ export const updateRTCGame = (
   try {
     const { gameId } = socket.decodedToken;
 
-    const game = rtcrooms.getRoomGame(gameId);
+    const game = roomService.getRoomGame(gameId);
 
     if (!game) {
       throw new Error(`no game set when updating, id ${gameId}`);
@@ -243,7 +243,7 @@ export const updateRTCGame = (
       players: updatedPlayers,
     };
 
-    rtcrooms.updateRoomGame(gameId, newGame);
+    roomService.updateRoomGame(gameId, newGame);
 
     emitUpdatedGame(socket, updatedGame);
   } catch (e) {
@@ -259,7 +259,7 @@ export const endRTCGame = async (socket: SocketWithToken): Promise<void> => {
   try {
     const { gameId } = socket.decodedToken;
 
-    const game = rtcrooms.getRoomGame(gameId);
+    const game = roomService.getRoomGame(gameId);
 
     if (!game) {
       throw new Error(`no game set when ending, id ${gameId}`);
@@ -272,7 +272,7 @@ export const endRTCGame = async (socket: SocketWithToken): Promise<void> => {
 
     logger.log(`deleting room... `);
 
-    const success = rtcrooms.deleteRoom(gameId);
+    const success = roomService.deleteRoom(gameId);
 
     logger.log(success ? 'delete succesful' : 'delete failed');
 
@@ -284,28 +284,11 @@ export const endRTCGame = async (socket: SocketWithToken): Promise<void> => {
   }
 };
 
-export const handleTimerChange = (
-  socket: SocketWithToken,
-  value: number
-): void => {
-  // log(`recieved 'timer' from ${socket.decodedToken.username}`);
-
-  try {
-    const { gameId } = socket.decodedToken;
-
-    socket.to(gameId).emit('timer-changed', value);
-  } catch (e) {
-    logger.error(e.message);
-
-    socket.emit('rtc-error', e.message);
-  }
-};
-
 export const getRoomState = (socket: SocketWithToken) => {
   try {
     const { gameId } = socket.decodedToken;
 
-    const state = rtcrooms.getRoomState(gameId);
+    const state = roomService.getRoomState(gameId);
 
     socket.emit('room-state', state);
   } catch (e) {
@@ -325,7 +308,7 @@ export const getRoomGame = (socket: SocketWithToken): void => {
   try {
     const { gameId, id } = socket.decodedToken;
 
-    const game = rtcrooms.getRoomGame(gameId);
+    const game = roomService.getRoomGame(gameId);
 
     if (!game) {
       throw new Error(`no game set when trying to get room id ${gameId}`);
@@ -346,7 +329,7 @@ export const handleAnswer = (socket: SocketWithToken, answer: Answer): void => {
   try {
     const { id, gameId } = socket.decodedToken;
 
-    const room = rtcrooms.getRoom(gameId);
+    const room = roomService.getRoom(gameId);
 
     if (!room) {
       throw new Error(`no room set when trying to answer, game id ${gameId}`);
@@ -373,7 +356,7 @@ export const handleAnswer = (socket: SocketWithToken, answer: Answer): void => {
       }),
     };
 
-    const updatedGame = rtcrooms.updateRoomGame(gameId, newGame);
+    const updatedGame = roomService.updateRoomGame(gameId, newGame);
 
     const hostSocketId = room.socketMap.get(room.game.host.id);
 
@@ -398,7 +381,7 @@ export const handleTimer = (
   try {
     const { gameId } = socket.decodedToken;
 
-    const { timer } = rtcrooms.getRoomState(gameId);
+    const { timer } = roomService.getRoomState(gameId);
 
     switch (command) {
       case 'start':
@@ -430,7 +413,7 @@ export const getTimerState = (
   try {
     const { gameId } = socket.decodedToken;
 
-    const state = rtcrooms.getRoomState(gameId);
+    const state = roomService.getRoomState(gameId);
 
     if (!state.timer) {
       throw new Error('no timer set, check game type');
@@ -445,7 +428,7 @@ export const getTimerState = (
 };
 
 const emitUpdatedGame = (socket: SocketWithToken, newGame: RTCGame): void => {
-  const room = rtcrooms.getRoom(newGame.id);
+  const room = roomService.getRoom(newGame.id);
 
   if (!room) {
     throw new Error(

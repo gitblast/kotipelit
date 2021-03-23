@@ -472,6 +472,9 @@ router.delete('/:id', async (req, res, next) => {
 
     await validatedGame.remove();
 
+    // delete urls
+    await Url.deleteMany({ gameId });
+
     res.status(204).end();
   } catch (error) {
     next(error);

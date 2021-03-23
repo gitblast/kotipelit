@@ -37,6 +37,10 @@ const joinRoom = (socket: SocketWithToken): RTCGame | FilteredRTCGame => {
   logger.log(`joining ${role} (${username}) to room ${gameId}`);
 
   if (role === Role.SPECTATOR) {
+    if (room.spectatorSockets.length >= room.maxSpectators) {
+      throw new Error('Spectator limit full');
+    }
+
     room.spectatorSockets.push(socket.id);
   } else {
     room.socketMap.set(id, socket.id);
@@ -101,6 +105,7 @@ const createRoom = (game: RTCGame): void => {
     game,
     socketMap,
     spectatorSockets: [],
+    maxSpectators: game.allowedSpectators,
     state: getInitialGameState(game),
   };
 
@@ -123,16 +128,18 @@ const leaveRoom = (socket: SocketWithToken): void => {
 
     setRoom(gameId, room);
 
-    if (id === room.game.host.id) {
-      logger.log(`host left`);
-    } else {
-      logger.log(`player '${username}' left`);
-    }
+    logger.log(`${role} '${username}' left`);
   }
 };
 
-const getRoom = (id: string): RTCGameRoom | null => {
-  return rooms.get(id) ?? null;
+const getRoom = (id: string): RTCGameRoom => {
+  const room = rooms.get(id);
+
+  if (!room) {
+    throw new RoomNotFoundError(id);
+  }
+
+  return room;
 };
 
 const getRooms = (): Map<string, RTCGameRoom> => rooms;

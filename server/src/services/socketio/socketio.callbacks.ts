@@ -45,7 +45,7 @@ export const joinRTCRoom = async (socket: SocketWithToken): Promise<void> => {
 
     socket.emit('game-updated', joinedRoomGame);
   } catch (e) {
-    logger.error(e.message);
+    logger.error(`Error joining room: ${e.message}`);
 
     socket.emit('rtc-error', e.message);
   }
@@ -59,10 +59,14 @@ export const socketDisconnected = (
     `recieved disconnect from ${socket.decodedToken.username}. reason: ${reason}. socket id: ${socket.id}`
   );
 
-  const { id, gameId } = socket.decodedToken;
+  const { id, gameId, role } = socket.decodedToken;
 
-  if (reason !== 'Ping timeout') {
-    // emit user-left?host
+  if (role === Role.SPECTATOR) {
+    logger.log('removing spectator socket from room');
+
+    roomService.leaveRoom(socket);
+
+    socket.to(gameId).emit('user-left', id);
   }
 
   socket.to(gameId).emit('user-socket-disconnected', id);
@@ -197,13 +201,21 @@ export const getTwilioToken = (
   );
 
   try {
-    const { gameId, id } = socket.decodedToken;
+    const { gameId, id, role } = socket.decodedToken;
+
+    if (role === Role.SPECTATOR) {
+      const room = roomService.getRoom(gameId);
+
+      if (!room.spectatorSockets.includes(socket.id)) {
+        throw new Error('socket id not in allowed spectators');
+      }
+    }
 
     const token = twilioService.getVideoAccessToken(id, `kotipelit-${gameId}`);
 
     setToken(token);
   } catch (e) {
-    logger.error(e.message);
+    logger.error(`error getting twilio token: ${e.message}`);
 
     socket.emit('rtc-error', e.message);
   }
@@ -340,10 +352,6 @@ export const handleAnswer = (socket: SocketWithToken, answer: Answer): void => {
 
     const room = roomService.getRoom(gameId);
 
-    if (!room) {
-      throw new Error(`no room set when trying to answer, game id ${gameId}`);
-    }
-
     const newGame = {
       ...room.game,
       players: room.game.players.map((player) => {
@@ -375,7 +383,7 @@ export const handleAnswer = (socket: SocketWithToken, answer: Answer): void => {
 
     socket.emit('game-updated', filterGameForUser(updatedGame, id));
   } catch (e) {
-    logger.error(e.message);
+    logger.error(`error answering: ${e.message}`);
 
     socket.emit('rtc-error', e.message);
   }
@@ -438,12 +446,6 @@ export const getTimerState = (
 
 const emitUpdatedGame = (socket: SocketWithToken, newGame: RTCGame): void => {
   const room = roomService.getRoom(newGame.id);
-
-  if (!room) {
-    throw new Error(
-      `no room set when trying to emit updated game, game id ${newGame.id}`
-    );
-  }
 
   const { role } = socket.decodedToken;
   logger.log(`emitting game-updated`);

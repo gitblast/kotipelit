@@ -1,5 +1,5 @@
 import React from 'react';
-import socketIOClient from 'socket.io-client';
+import { io as socketIOClient, Socket } from 'socket.io-client';
 
 import { CommonEvent } from '../types';
 
@@ -7,12 +7,9 @@ import logger from '../utils/logger';
 
 const useAuthSocket = (
   token: string | null,
-  onLeave?: (socket: SocketIOClient.Socket) => void
-): [SocketIOClient.Socket | null, string | null] => {
-  const [
-    socketClient,
-    setSocketClient,
-  ] = React.useState<SocketIOClient.Socket | null>(null);
+  onLeave?: (socket: Socket) => void
+) => {
+  const [socketClient, setSocketClient] = React.useState<Socket | null>(null);
 
   const [error, setError] = React.useState<null | string>(null);
 
@@ -30,7 +27,7 @@ const useAuthSocket = (
         auth: {
           token: `Bearer ${authToken}`,
         },
-      } as SocketIOClient.ConnectOpts);
+      });
 
       socket.on('connect_error', (error: Error) => {
         logger.error('socket.io connect error:', error.message);
@@ -80,7 +77,7 @@ const useAuthSocket = (
     };
   }, [token, socketClient, onLeave]);
 
-  return [socketClient, error];
+  return [socketClient, error] as const;
 };
 
 export default useAuthSocket;

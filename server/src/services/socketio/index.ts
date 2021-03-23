@@ -36,10 +36,6 @@ const attachRTCListeners = (socket: SocketWithToken) => {
     void callbacks.getRoomGame(socket);
   });
 
-  socket.on('answer', (answerObj: Answer) => {
-    void callbacks.handleAnswer(socket, answerObj);
-  });
-
   socket.on('disconnect', (reason: string) => {
     void callbacks.socketDisconnected(socket, reason);
   });
@@ -47,6 +43,12 @@ const attachRTCListeners = (socket: SocketWithToken) => {
   socket.on('leave-room', () => {
     void callbacks.leaveRTCRoom(socket);
   });
+
+  if (socket.decodedToken.role === Role.PLAYER) {
+    socket.on('answer', (answerObj: Answer) => {
+      void callbacks.handleAnswer(socket, answerObj);
+    });
+  }
 
   if (socket.decodedToken.role === Role.HOST) {
     socket.on('launch', (setToken: (token: string) => void) => {

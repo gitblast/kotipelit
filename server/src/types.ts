@@ -138,6 +138,7 @@ export interface RTCGameRoom {
   game: RTCGame;
   socketMap: Map<string, string | null>; // <player id, player socket id>
   spectatorSockets: string[];
+  maxSpectators: number;
   lastUpdated: number;
   state: RTCGameState;
 }

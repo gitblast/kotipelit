@@ -7,12 +7,17 @@ import { reset } from '../reducers/kotitonni.local.reducer';
 import { RTCGame, State } from '../types';
 import logger from '../utils/logger';
 import useGameHistory from './useGameHistory';
-import useTimer from './useTimer';
+import { useInGameTimer } from '../context/index';
 
 const useKotitonniHostControls = () => {
   const game = useSelector((state: State) => state.rtc.game);
 
-  const { timerValue, timerIsRunning, toggleTimer, resetTimer } = useTimer();
+  const {
+    timerValue,
+    timerIsRunning,
+    toggleTimer,
+    resetTimer,
+  } = useInGameTimer();
   const socket = useInGameSocket();
   const dispatch = useDispatch();
   const clickMap = useSelector(

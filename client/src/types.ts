@@ -360,6 +360,15 @@ export interface KotitonniInfo {
   answeringOpen: boolean;
 }
 
+export interface InGameTimerData {
+  timerValue: number | null;
+  timerIsRunning: boolean | null;
+  startTimer: () => void;
+  stopTimer: () => void;
+  resetTimer: () => void;
+  toggleTimer: () => void;
+}
+
 export type GameInfo = KotitonniInfo;
 
 export interface RTCGame {

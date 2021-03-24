@@ -4,7 +4,7 @@ import { useSelector, shallowEqual } from 'react-redux';
 import { useInGameSocket } from '../context';
 import { State, KotitonniInfo } from '../types';
 import logger from '../utils/logger';
-import useTimer from './useTimer';
+import { useInGameTimer } from '../context';
 
 const useKotitonniPlayerControls = () => {
   const game = useSelector((state: State) => state.rtc.game);
@@ -20,7 +20,7 @@ const useKotitonniPlayerControls = () => {
     return state.rtc.game?.players.find((player) => player.id === self.id);
   }, shallowEqual);
 
-  const { timerValue, timerIsRunning } = useTimer();
+  const { timerValue, timerIsRunning } = useInGameTimer();
 
   const answeringDisabled = React.useMemo(() => {
     if (

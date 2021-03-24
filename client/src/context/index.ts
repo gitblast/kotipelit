@@ -1,5 +1,6 @@
 import React from 'react';
 import { Socket } from 'socket.io-client';
+import { InGameTimerData } from '../types';
 
 const createCtx = <A extends unknown | null>() => {
   const ctx = React.createContext<A | undefined>(undefined);
@@ -14,3 +15,7 @@ const createCtx = <A extends unknown | null>() => {
 };
 
 export const [useInGameSocket, InGameSocketProvider] = createCtx<Socket>();
+
+export const [useInGameTimer, InGameTimerProvider] = createCtx<
+  InGameTimerData
+>();

@@ -13,6 +13,7 @@ import RTCPlayerControls from './RTCPlayerControls';
 import RTCVideoConference from './RTCVideoConference';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallBack from './ErrorFallBack';
+import TimerProvider from './TimerProvider/TimerProvider';
 
 // import { Animated } from 'react-animated-css';
 
@@ -132,36 +133,38 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallBack}>
       <InGameSocketProvider value={socket}>
-        <div className={classes.containerGame} ref={fullscreenRef}>
-          <AudioHandler />
-          <div className={classes.topGradient}></div>
-          <div className={classes.gameTitleBar}>
-            {/* For animation, should more topStyle divs be added? */}
-            <div className={classes.topStyle}></div>
-            <div>
-              <Typography variant="subtitle2">Kotitonni</Typography>
-              <Typography className={classes.kotipelit}>
-                Kotipelit.com
-              </Typography>
+        <TimerProvider>
+          <div className={classes.containerGame} ref={fullscreenRef}>
+            <AudioHandler />
+            <div className={classes.topGradient}></div>
+            <div className={classes.gameTitleBar}>
+              {/* For animation, should more topStyle divs be added? */}
+              <div className={classes.topStyle}></div>
+              <div>
+                <Typography variant="subtitle2">Kotitonni</Typography>
+                <Typography className={classes.kotipelit}>
+                  Kotipelit.com
+                </Typography>
+              </div>
+
+              <div className={classes.topStyle}></div>
             </div>
 
-            <div className={classes.topStyle}></div>
-          </div>
-
-          <RTCVideoConference participants={participants} />
-          {role === Role.SPECTATOR ? null : isHost ? (
-            <RTCHostControls
-              spectatorCount={spectatorCount}
-              handleToggleFullscreen={handleToggleFullscreen}
-            />
-          ) : (
-            game.status === GameStatus.RUNNING && (
-              <RTCPlayerControls
+            <RTCVideoConference participants={participants} />
+            {role === Role.SPECTATOR ? null : isHost ? (
+              <RTCHostControls
+                spectatorCount={spectatorCount}
                 handleToggleFullscreen={handleToggleFullscreen}
               />
-            )
-          )}
-        </div>
+            ) : (
+              game.status === GameStatus.RUNNING && (
+                <RTCPlayerControls
+                  handleToggleFullscreen={handleToggleFullscreen}
+                />
+              )
+            )}
+          </div>
+        </TimerProvider>
       </InGameSocketProvider>
     </ErrorBoundary>
   );

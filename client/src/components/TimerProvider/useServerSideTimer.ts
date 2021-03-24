@@ -1,14 +1,14 @@
 import React from 'react';
 
-import { useInGameSocket } from '../context';
-import logger from '../utils/logger';
+import { useInGameSocket } from '../../context';
+import logger from '../../utils/logger';
 
 interface TimerData {
   value: number;
   isRunning: boolean;
 }
 
-const useTimer = () => {
+const useServerSideTimer = () => {
   const socket = useInGameSocket();
   const [timerData, setTimerData] = React.useState<TimerData | null>(null);
 
@@ -60,4 +60,4 @@ const useTimer = () => {
   };
 };
 
-export default useTimer;
+export default useServerSideTimer;

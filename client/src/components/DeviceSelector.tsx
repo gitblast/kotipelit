@@ -26,7 +26,7 @@ const DeviceSelector: React.FC<DeviceSelectorProps> = ({
   mediaType,
 }) => {
   const classes = useStyles();
-  const [selected, setSelected] = React.useState(currentDeviceId ?? '');
+  const [selected, setSelected] = React.useState<string>(currentDeviceId ?? '');
 
   React.useEffect(() => {
     if (currentDeviceId) {
@@ -34,16 +34,14 @@ const DeviceSelector: React.FC<DeviceSelectorProps> = ({
     }
   }, [currentDeviceId]);
 
-  const deviceIndex = React.useMemo(
-    () =>
-      mediaDevices?.findIndex((device) => device.deviceId === selected) ?? -1,
-    [mediaDevices, selected]
-  );
-
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setSelected(event.target.value as string);
     handleTrackChange(event.target.value as string);
   };
+
+  const currentDeviceInDevices = !!mediaDevices?.find(
+    (device) => device.deviceId === currentDeviceId
+  );
 
   return (
     <FormControl className={classes.formControl}>
@@ -52,11 +50,12 @@ const DeviceSelector: React.FC<DeviceSelectorProps> = ({
       </InputLabel>
       <Select
         labelId={`${mediaType}-device-select`}
-        value={deviceIndex >= 0 ? deviceIndex : ''}
+        // here we make sure we don't pass an out of range value to select component
+        value={currentDeviceInDevices ? selected : ''}
         onChange={handleChange}
       >
-        {mediaDevices?.map((device, index) => (
-          <MenuItem key={device.deviceId} value={index}>
+        {mediaDevices?.map((device) => (
+          <MenuItem key={device.deviceId} value={device.deviceId}>
             {device.label}
           </MenuItem>
         ))}

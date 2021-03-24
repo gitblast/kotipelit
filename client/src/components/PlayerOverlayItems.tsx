@@ -1,4 +1,4 @@
-import { Grid, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 import { Animated } from 'react-animated-css';
@@ -13,6 +13,8 @@ import useKotitonniOverlayItems from '../hooks/useKotitonniOverlayItems';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     nameBadge: {
+      display: 'flex',
+      justifyContent: 'space-between',
       padding: theme.spacing(1),
       alignItems: 'center',
       backgroundColor: 'rgba(0, 0, 0, 0.8)',
@@ -57,7 +59,7 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingRight: theme.spacing(2),
       margin: theme.spacing(1),
     },
-    playerName: {
+    playerInfo: {
       [theme.breakpoints.down('sm')]: {
         fontSize: 18,
       },
@@ -132,21 +134,18 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
 
         <div className={classes.spacer} />
         <div className={classes.flex}>
-          <Grid container className={classes.nameBadge}>
-            <Grid item md={7} sm={6}>
-              <Typography variant="h6" className={classes.playerName}>
-                {player.name}
-              </Typography>
-            </Grid>
-            <Grid item md={2} sm={2}>
-              <Typography variant="h6">{player.points}</Typography>
-            </Grid>
+          <div className={classes.nameBadge}>
+            <Typography variant="h6" className={classes.playerInfo}>
+              {player.name}
+            </Typography>
 
-            <Grid item md={3} sm={4}>
+            <Typography variant="h6" className={classes.playerInfo}>
+              {player.points}
+            </Typography>
+            <div>
               <MediaControls participant={participant} />
-            </Grid>
-          </Grid>
-          <div className={classes.spacer} />
+            </div>
+          </div>
         </div>
       </div>
     );

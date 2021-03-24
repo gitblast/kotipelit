@@ -52,7 +52,6 @@ const addDummyGame = async (user: UserModel): Promise<GameModel> => {
         privateData: {
           answers: {},
           words: [],
-          twilioToken: null,
           inviteCode: 'player1code',
         },
         reservedFor: null,
@@ -65,7 +64,6 @@ const addDummyGame = async (user: UserModel): Promise<GameModel> => {
           answers: {},
           words: [],
           inviteCode: 'player2code',
-          twilioToken: null,
         },
         reservedFor: null,
       },
@@ -74,9 +72,7 @@ const addDummyGame = async (user: UserModel): Promise<GameModel> => {
     host: {
       id: user._id,
       displayName: 'hostname',
-      privateData: {
-        twilioToken: null,
-      },
+      privateData: null,
     },
     status: GameStatus.UPCOMING,
     rounds: 3,

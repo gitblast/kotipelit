@@ -78,7 +78,7 @@ const LockReservationForm: React.FC<LockReservationFormProps> = ({
             variant="standard"
             value={name}
             onChange={handleNameChange}
-            label="Nimi"
+            label="Nimimerkki"
             error={nameError !== ''}
             helperText={nameError}
           />

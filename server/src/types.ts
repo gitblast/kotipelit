@@ -1,5 +1,6 @@
 import { Document } from 'mongoose';
 import { Socket } from 'socket.io';
+import UpdateEmittingTimer from './utils/timer';
 
 export interface GameModel extends NewGame, Document {
   createDate: Date;
@@ -18,7 +19,7 @@ export interface NewGame extends BaseRTCGame {
   host: {
     id: UserModel['_id'];
     displayName: string;
-    privateData: BasePrivateData;
+    privateData: null;
   };
 }
 
@@ -79,11 +80,7 @@ export interface KotitonniPlayer extends BaseGamePlayer {
   privateData: KotitonniData;
 }
 
-export interface BasePrivateData {
-  twilioToken: string | null;
-}
-
-export interface PlayerPrivateData extends BasePrivateData {
+export interface PlayerPrivateData {
   inviteCode: string;
 }
 
@@ -131,6 +128,13 @@ export interface RTCGameRoom {
   socketMap: Map<string, string | null>; // <player id, player socket id>
   spectatorSockets: string[];
   lastUpdated: number;
+  state: RTCGameState;
+}
+
+export type RTCGameState = KotitonniGameState;
+
+export interface KotitonniGameState {
+  timer: UpdateEmittingTimer;
 }
 
 export interface RTCGame {
@@ -144,7 +148,7 @@ export interface RTCGame {
   host: {
     id: string;
     displayName: string;
-    privateData: BasePrivateData;
+    privateData: null;
   };
   rounds: number;
 }

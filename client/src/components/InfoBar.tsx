@@ -9,7 +9,9 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       color: 'rgba(218, 214, 214)',
-      width: '100%',
+      [theme.breakpoints.down('xs')]: {
+        display: 'none',
+      },
     },
     nextUpText: {
       color: theme.palette.primary.light,
@@ -23,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     infoBarText: {
-      marginLeft: theme.spacing(2),
+      display: 'flex',
     },
   })
 );
@@ -70,7 +72,7 @@ const InfoBar: React.FC = () => {
           <Typography
             variant="body1"
             className={classes.wordsText}
-          >{` ${playerWithTurn.privateData.words.join(', ')}`}</Typography>
+          >{` - ${playerWithTurn.privateData.words.join(', ')}`}</Typography>
         )}
       </div>
     );

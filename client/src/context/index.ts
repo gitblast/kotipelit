@@ -1,6 +1,10 @@
 import React from 'react';
 import { Socket } from 'socket.io-client';
-import { InGameTimerData, MediaMutedStates } from '../types';
+import {
+  InGameTimerData,
+  MediaMutedStates,
+  KotitonniLocalData,
+} from '../types';
 
 const createCtx = <A extends unknown | null>() => {
   const ctx = React.createContext<A | undefined>(undefined);
@@ -22,4 +26,8 @@ export const [useInGameTimer, InGameTimerProvider] = createCtx<
 
 export const [useMediaMutedStates, MediaMutedStatesProvider] = createCtx<
   MediaMutedStates
+>();
+
+export const [useKotitonniData, KotitonniDataProvider] = createCtx<
+  KotitonniLocalData
 >();

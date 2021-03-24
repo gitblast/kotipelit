@@ -10,6 +10,12 @@ export interface MediaMutedStates {
   toggleVideoDisabled: (participantId: string) => void;
 }
 
+export interface KotitonniLocalData {
+  clickedMap: Record<string, boolean>;
+  toggleClicked: (playerId: string) => void;
+  resetClicks: () => void;
+}
+
 export enum GameType {
   KOTITONNI = 'kotitonni',
 }
@@ -120,7 +126,6 @@ export interface State {
 
 export interface RTCState {
   game: RTCGame | null;
-  localData: LocalData;
   self: RTCSelf | null;
 }
 
@@ -273,16 +278,6 @@ export type Action =
   | {
       type: ActionType.CLEAR_ERROR;
     };
-
-export type LocalData = KotitonniLocalData;
-
-export type LocalDataAction = KotitonniLocalAction;
-
-export interface KotitonniLocalData {
-  clickedMap: Record<string, boolean>;
-  mutedMap: Record<string, boolean>;
-  videoDisabledMap: Record<string, boolean>;
-}
 
 export type KotitonniLocalAction =
   | {

@@ -1,19 +1,19 @@
 import { Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import { InGameSocketProvider } from '../context';
 import useNewGameRoom from '../hooks/useNewGameRoom';
 import { GameStatus, Role } from '../types';
 import logger, { setDebug } from '../utils/logger';
 import AudioHandler from './AudioHandler';
+import ErrorFallBack from './ErrorFallBack';
 import Loader from './Loader';
+import LocalDataProvider from './LocalDataProvider/LocalDataProvider';
 import PreGameInfo from './PreGameInfo';
 import RTCHostControls from './RTCHostControls';
 import RTCPlayerControls from './RTCPlayerControls';
 import RTCVideoConference from './RTCVideoConference';
-import { ErrorBoundary } from 'react-error-boundary';
-import ErrorFallBack from './ErrorFallBack';
-import TimerProvider from './TimerProvider/TimerProvider';
 
 // import { Animated } from 'react-animated-css';
 
@@ -133,7 +133,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallBack}>
       <InGameSocketProvider value={socket}>
-        <TimerProvider>
+        <LocalDataProvider game={game}>
           <div className={classes.containerGame} ref={fullscreenRef}>
             <AudioHandler />
             <div className={classes.topGradient}></div>
@@ -164,7 +164,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
               )
             )}
           </div>
-        </TimerProvider>
+        </LocalDataProvider>
       </InGameSocketProvider>
     </ErrorBoundary>
   );

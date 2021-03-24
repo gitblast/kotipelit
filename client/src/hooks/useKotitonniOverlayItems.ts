@@ -2,13 +2,11 @@ import React from 'react';
 
 import { useSelector, shallowEqual } from 'react-redux';
 import { State } from '../types';
-import { useInGameTimer } from '../context';
+import { useInGameTimer, useKotitonniData } from '../context';
 import { getPointAddition } from '../helpers/games';
 
 const useKotitonniOverlayItems = (playerId: string) => {
-  const clickMap = useSelector(
-    (state: State) => state.rtc.localData.clickedMap
-  );
+  const { clickedMap } = useKotitonniData();
   const { timerValue } = useInGameTimer();
   const game = useSelector((state: State) => state.rtc.game);
   const player = useSelector(
@@ -21,10 +19,10 @@ const useKotitonniOverlayItems = (playerId: string) => {
       return true;
     }
 
-    const values = Object.values(clickMap);
+    const values = Object.values(clickedMap);
 
     return values.some((val) => !!val);
-  }, [clickMap, timerValue]);
+  }, [clickedMap, timerValue]);
 
   const answer = React.useMemo(() => {
     if (!game?.info || !player?.privateData?.answers) {
@@ -47,8 +45,8 @@ const useKotitonniOverlayItems = (playerId: string) => {
       return 0;
     }
 
-    return getPointAddition(game, clickMap, player.id, !!player.hasTurn);
-  }, [game, clickMap, player]);
+    return getPointAddition(game, clickedMap, player.id, !!player.hasTurn);
+  }, [game, clickedMap, player]);
 
   return {
     answer,

@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux';
+import { combineReducers, Reducer } from 'redux';
 
 import games from './games.reducer';
 import user from './user.reducer';
@@ -7,13 +7,9 @@ import alert from './alert.reducer';
 
 // rtc
 import rtc, { createCustomReducer } from './rtc.reducer';
-import { Reducer } from 'react';
-import { LocalData, LocalDataAction } from '../types';
 
 // can be used to have a different reducer for different games
-export const createReducer = (
-  localDataReducer: Reducer<LocalData, LocalDataAction>
-) => {
+export const createReducer = (localDataReducer: Reducer) => {
   return combineReducers({
     games,
     user,

@@ -1,9 +1,8 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { useInGameSocket } from '../context';
+import { useInGameSocket, useKotitonniData } from '../context';
 import { getNextKotitonniState } from '../helpers/games';
-import { reset } from '../reducers/kotitonni.local.reducer';
 import { RTCGame, State } from '../types';
 import logger from '../utils/logger';
 import useGameHistory from './useGameHistory';
@@ -19,10 +18,7 @@ const useKotitonniHostControls = () => {
     resetTimer,
   } = useInGameTimer();
   const socket = useInGameSocket();
-  const dispatch = useDispatch();
-  const clickMap = useSelector(
-    (state: State) => state.rtc.localData.clickedMap
-  );
+  const { clickedMap, resetClicks } = useKotitonniData();
   const { setHistory, returnToPrevious, noHistorySet } = useGameHistory();
   const history = useHistory();
   const params = useParams<{ username: string }>();
@@ -62,16 +58,16 @@ const useKotitonniHostControls = () => {
     (game: RTCGame) => {
       setHistory(game);
 
-      const updatedGame = getNextKotitonniState(game, clickMap);
+      const updatedGame = getNextKotitonniState(game, clickedMap);
 
       logger.log('updating game with', updatedGame);
 
       socket.emit('update-game', updatedGame);
 
       resetTimer();
-      dispatch(reset());
+      resetClicks();
     },
-    [socket, dispatch, clickMap]
+    [socket, clickedMap, resetTimer, resetClicks]
   );
 
   const everyoneHasAnswered = React.useMemo(() => {

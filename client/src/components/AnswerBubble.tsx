@@ -1,10 +1,7 @@
+import { Checkbox, Paper, Typography } from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
-
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Paper, Typography, Checkbox } from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
-import { setClicked } from '../reducers/kotitonni.local.reducer';
-import { State } from '../types';
+import { useKotitonniData } from '../context';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,20 +28,14 @@ interface AnswerBubbleProps {
 const AnswerBubble: React.FC<AnswerBubbleProps> = ({ answer, playerId }) => {
   const classes = useStyles();
 
-  const dispatch = useDispatch();
+  const { clickedMap, toggleClicked } = useKotitonniData();
 
-  const checked = useSelector(
-    (state: State) => !!state.rtc.localData.clickedMap[playerId]
-  );
-
-  const handleChange = () => {
-    dispatch(setClicked(playerId, !checked));
-  };
+  const checked = !!clickedMap[playerId];
 
   return (
     <Paper className={classes.answerBubble}>
       <Typography variant="h6">{answer}</Typography>
-      <Checkbox checked={checked} onChange={handleChange} />
+      <Checkbox checked={checked} onChange={() => toggleClicked(playerId)} />
     </Paper>
   );
 };

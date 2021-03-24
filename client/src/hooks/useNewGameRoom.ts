@@ -6,7 +6,6 @@ import useSelf from './useSelf';
 import useTwilioRoom from './useTwilioRoom';
 import { useHistory, useParams } from 'react-router-dom';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { setTimer } from '../reducers/kotitonni.local.reducer';
 import { setGame as setGameInRedux } from '../reducers/rtcGameSlice';
 import { Socket } from 'socket.io-client';
 
@@ -60,10 +59,6 @@ const useNewGameRoom = (token: string | null, role: Role) => {
         logger.log(`recieved 'game-ended'`);
 
         history.push(`/${hostName}/kiitos`);
-      });
-
-      socket.on('timer-changed', (value: number) => {
-        dispatch(setTimer(value));
       });
     }
   }, [socket, dispatch, history, hostName]);

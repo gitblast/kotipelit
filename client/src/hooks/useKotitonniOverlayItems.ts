@@ -3,6 +3,7 @@ import React from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import { State } from '../types';
 import { useInGameTimer } from '../context';
+import { getPointAddition } from '../helpers/games';
 
 const useKotitonniOverlayItems = (playerId: string) => {
   const clickMap = useSelector(

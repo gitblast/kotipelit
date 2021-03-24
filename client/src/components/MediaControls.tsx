@@ -1,30 +1,27 @@
 import { IconButton } from '@material-ui/core';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { LocalParticipant } from 'twilio-video';
-import {
-  setMuted,
-  setVideoDisabled,
-} from '../reducers/kotitonni.local.reducer';
-import { RTCParticipant, State } from '../types';
+import { RTCParticipant } from '../types';
 
 import MicIcon from '@material-ui/icons/Mic';
 import MicOffIcon from '@material-ui/icons/MicOff';
 import VideocamIcon from '@material-ui/icons/Videocam';
 import VideocamOffIcon from '@material-ui/icons/VideocamOff';
+import { useMediaMutedStates } from '../context';
 
 interface MediaControlsProps {
   participant: RTCParticipant;
 }
 
 const MediaControls: React.FC<MediaControlsProps> = ({ participant }) => {
-  const dispatch = useDispatch();
-  const mutedMap = useSelector((state: State) => state.rtc.localData.mutedMap);
-  const videoDisabledMap = useSelector(
-    (state: State) => state.rtc.localData.videoDisabledMap
-  );
+  const {
+    mutedMap,
+    videoDisabledMap,
+    toggleMuted,
+    toggleVideoDisabled,
+  } = useMediaMutedStates();
 
-  const toggleMuted = () => {
+  const toggleAudio = () => {
     if (participant.isMe) {
       const localParticipant = participant.connection
         ? (participant.connection as LocalParticipant)
@@ -38,7 +35,7 @@ const MediaControls: React.FC<MediaControlsProps> = ({ participant }) => {
       });
     }
 
-    dispatch(setMuted(participant.id, !mutedMap[participant.id]));
+    toggleMuted(participant.id);
   };
 
   const toggleVideo = () => {
@@ -53,16 +50,14 @@ const MediaControls: React.FC<MediaControlsProps> = ({ participant }) => {
       track.isEnabled ? track.disable() : track.enable();
     });
 
-    dispatch(
-      setVideoDisabled(participant.id, !videoDisabledMap[participant.id])
-    );
+    toggleVideoDisabled(participant.id);
   };
 
   return (
     <>
       <IconButton
         size="small"
-        onClick={toggleMuted}
+        onClick={toggleAudio}
         disabled={!participant.connection}
       >
         {mutedMap[participant.id] ? <MicOffIcon color="error" /> : <MicIcon />}

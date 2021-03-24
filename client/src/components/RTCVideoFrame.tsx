@@ -7,6 +7,7 @@ import { GameStatus, RTCParticipant, State } from '../types';
 import HostOverlayItems from './HostOverlayItems';
 import PlayerOverlayItems from './PlayerOverlayItems';
 import VideoWithOverlay from './VideoWithOverlay';
+import { useMediaMutedStates } from '../context';
 
 type PropStyles = {
   order: number;
@@ -104,6 +105,7 @@ const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({
   order,
 }) => {
   const [videoTrack, audioTrack] = useParticipantTracks(participant);
+  const { mutedMap } = useMediaMutedStates();
   const classes = useStyles({ order });
   const gameStatus = useSelector((state: State) => state.rtc.game?.status);
   const playerWithTurnId = useSelector(
@@ -111,10 +113,7 @@ const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({
   );
   const style = React.useMemo(() => ({ order }), [order]);
 
-  const isMuted = useSelector(
-    (state: State) =>
-      !!state.rtc.localData.mutedMap[participant.id] || !!participant.isMe
-  );
+  const isMuted = !!participant.isMe || !!mutedMap[participant.id];
 
   const overlayContent = () => {
     return participant.isHost ? (

@@ -3,6 +3,7 @@ import React from 'react';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 
 import Loader from './Loader';
+import MediaStatesProvider from './MediaStatesProvider/MediaStatesProvider';
 import RTCVideoFrame from './RTCVideoFrame';
 
 import { RTCParticipant } from '../types';
@@ -53,15 +54,17 @@ const RTCVideoConference: React.FC<RTCVideoConferenceProps> = ({
   }
 
   return (
-    <div className={classes.videoConf}>
-      {participants.map((participant, index) => (
-        <RTCVideoFrame
-          key={participant.id}
-          participant={participant}
-          order={getOrder(index, participants.length)}
-        />
-      ))}
-    </div>
+    <MediaStatesProvider>
+      <div className={classes.videoConf}>
+        {participants.map((participant, index) => (
+          <RTCVideoFrame
+            key={participant.id}
+            participant={participant}
+            order={getOrder(index, participants.length)}
+          />
+        ))}
+      </div>
+    </MediaStatesProvider>
   );
 };
 

@@ -3,6 +3,13 @@
 import { Socket } from 'socket.io-client';
 import { Participant } from 'twilio-video';
 
+export interface MediaMutedStates {
+  mutedMap: Record<string, boolean>;
+  videoDisabledMap: Record<string, boolean>;
+  toggleMuted: (participantId: string) => void;
+  toggleVideoDisabled: (participantId: string) => void;
+}
+
 export enum GameType {
   KOTITONNI = 'kotitonni',
 }
@@ -273,7 +280,6 @@ export type LocalDataAction = KotitonniLocalAction;
 
 export interface KotitonniLocalData {
   clickedMap: Record<string, boolean>;
-  timer: number;
   mutedMap: Record<string, boolean>;
   videoDisabledMap: Record<string, boolean>;
 }

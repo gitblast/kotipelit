@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     infoBarText: {
-      marginLeft: theme.spacing(2),
+      display: 'flex',
     },
   })
 );
@@ -72,7 +72,7 @@ const InfoBar: React.FC = () => {
           <Typography
             variant="body1"
             className={classes.wordsText}
-          >{` ${playerWithTurn.privateData.words.join(', ')}`}</Typography>
+          >{` - ${playerWithTurn.privateData.words.join(', ')}`}</Typography>
         )}
       </div>
     );

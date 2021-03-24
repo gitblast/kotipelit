@@ -1,9 +1,9 @@
 import { Fab, Typography } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { GameStatus } from '../types';
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     pointsButton: {
       background: 'linear-gradient(to bottom, rgb(36 170 167), rgb(33 36 36))',
@@ -13,14 +13,6 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: 36,
       border: 'solid',
       borderColor: 'white',
-      [theme.breakpoints.down('sm')]: {
-        padding: theme.spacing(3),
-      },
-    },
-    buttonText: {
-      [theme.breakpoints.down('sm')]: {
-        fontSize: 22,
-      },
     },
   })
 );
@@ -71,9 +63,7 @@ const MainKotitonniButton: React.FC<MainKotitonniButtonProps> = ({
       disabled={disabled}
       variant="extended"
     >
-      <Typography variant="h6" className={classes.buttonText}>
-        {getMainButtonLabel(gameStatus)}
-      </Typography>
+      <Typography variant="h6">{getMainButtonLabel(gameStatus)}</Typography>
     </Fab>
   );
 };

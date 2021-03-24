@@ -17,6 +17,9 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'space-around',
       alignItems: 'center',
+      [theme.breakpoints.down('sm')]: {
+        justifyContent: 'center',
+      },
     },
     controlsIcons: {
       display: 'flex',
@@ -49,15 +52,8 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(4.5),
       border: 'solid',
       borderColor: 'white',
-      [theme.breakpoints.down('sm')]: {
-        padding: theme.spacing(3),
-      },
     },
-    timerText: {
-      [theme.breakpoints.down('sm')]: {
-        fontSize: 22,
-      },
-    },
+
     returnPoints: {
       background: 'linear-gradient(to bottom, rgb(36 170 167), rgb(33 36 36))',
       boxShadow: 'rgb(231 239 191) 4px 3px 18px',
@@ -99,10 +95,11 @@ const RTCHostControls: React.FC<{
 
   return (
     <Grid container className={classes.controlsContent}>
-      <Grid item md={4} sm={3} className={classes.controlsItem}>
+      <Grid item md={12} sm={12} className={classes.controlsItem}>
         {game.status === GameStatus.RUNNING && <InfoBar />}
       </Grid>
-      <Grid item md={4} sm={6} xs={12} className={classes.controlsItem}>
+      <Grid item md={4}></Grid>
+      <Grid item md={4} sm={12} className={classes.controlsItem}>
         {game.status === GameStatus.RUNNING && (
           <Fab
             size="large"
@@ -114,9 +111,7 @@ const RTCHostControls: React.FC<{
             className={classes.timerButton}
           >
             {timerIsRunning ? <PauseIcon /> : <PlayArrowIcon />}
-            <Typography variant="h6" className={classes.timerText}>
-              {timerValue}
-            </Typography>
+            <Typography variant="h6">{timerValue}</Typography>
           </Fab>
         )}
         <MainKotitonniButton
@@ -138,7 +133,7 @@ const RTCHostControls: React.FC<{
           </Fab>
         )}
       </Grid>
-      <Grid item md={4} sm={3} className={classes.controlsIcons}>
+      <Grid item md={4} className={classes.controlsIcons}>
         {/* <IconButton>
           <TvIcon></TvIcon>
           <span>

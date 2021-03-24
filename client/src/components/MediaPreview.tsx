@@ -28,14 +28,16 @@ const useStyles = makeStyles(() =>
 const MediaPreview: React.FC = () => {
   const classes = useStyles();
 
-  const { audioInputDevices, videoInputDevices } = useDevices();
-
   const {
     localVideoTrack,
     localAudioTrack,
     shutDownLocalTracks,
     error: localTrackError,
   } = useLocalTracks(true);
+
+  const { audioInputDevices, videoInputDevices } = useDevices(
+    !!localAudioTrack || !!localVideoTrack
+  );
 
   React.useEffect(() => {
     return shutDownLocalTracks;

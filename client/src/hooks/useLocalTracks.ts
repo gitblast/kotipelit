@@ -30,7 +30,8 @@ const useLocalTracks = (onCall: boolean): LocalTracks => {
     null
   );
   const [error, setError] = React.useState<null | string>(null);
-  const { audioInputDevices, videoInputDevices } = useDevices();
+
+  const { audioInputDevices, videoInputDevices } = useDevices(!!localTracks);
 
   React.useEffect(() => {
     const getLocalTracks = async () => {
@@ -44,8 +45,8 @@ const useLocalTracks = (onCall: boolean): LocalTracks => {
       );
 
       const preferredAudioExists =
-        preferredAudioInput &&
-        audioInputDevices?.some(
+        !!preferredAudioInput &&
+        !!audioInputDevices?.some(
           (device) => device.deviceId === preferredAudioInput
         );
 

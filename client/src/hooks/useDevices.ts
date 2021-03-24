@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const useDevices = () => {
+const useDevices = (premissionsGranted: boolean) => {
   const [devices, setDevices] = useState<MediaDeviceInfo[] | null>(null);
 
   useEffect(() => {
@@ -17,7 +17,7 @@ const useDevices = () => {
     return () => {
       navigator.mediaDevices.removeEventListener('devicechange', getDevices);
     };
-  }, []);
+  }, [premissionsGranted]);
 
   const audioInputDevices = React.useMemo(
     () => devices?.filter((device) => device.kind === 'audioinput') ?? null,

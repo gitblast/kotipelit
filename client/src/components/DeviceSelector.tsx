@@ -12,14 +12,14 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface AudioDeviceSelectorProps {
+interface DeviceSelectorProps {
   currentDeviceId: string | null;
   handleTrackChange: (newDeviceId: string) => void;
   mediaDevices: MediaDeviceInfo[] | null;
   mediaType: 'audio' | 'video';
 }
 
-const AudioDeviceSelector: React.FC<AudioDeviceSelectorProps> = ({
+const DeviceSelector: React.FC<DeviceSelectorProps> = ({
   currentDeviceId,
   handleTrackChange,
   mediaDevices,
@@ -34,6 +34,12 @@ const AudioDeviceSelector: React.FC<AudioDeviceSelectorProps> = ({
     }
   }, [currentDeviceId]);
 
+  const deviceIndex = React.useMemo(
+    () =>
+      mediaDevices?.findIndex((device) => device.deviceId === selected) ?? -1,
+    [mediaDevices, selected]
+  );
+
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setSelected(event.target.value as string);
     handleTrackChange(event.target.value as string);
@@ -46,11 +52,11 @@ const AudioDeviceSelector: React.FC<AudioDeviceSelectorProps> = ({
       </InputLabel>
       <Select
         labelId={`${mediaType}-device-select`}
-        value={selected}
+        value={deviceIndex >= 0 ? deviceIndex : ''}
         onChange={handleChange}
       >
-        {mediaDevices?.map((device) => (
-          <MenuItem key={device.deviceId} value={device.deviceId}>
+        {mediaDevices?.map((device, index) => (
+          <MenuItem key={device.deviceId} value={index}>
             {device.label}
           </MenuItem>
         ))}
@@ -59,4 +65,4 @@ const AudioDeviceSelector: React.FC<AudioDeviceSelectorProps> = ({
   );
 };
 
-export default AudioDeviceSelector;
+export default DeviceSelector;

@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useSelector, shallowEqual } from 'react-redux';
 import { State } from '../types';
+import { getPointAddition } from '../helpers/games';
 
 const useKotitonniOverlayItems = (playerId: string) => {
   const clickMap = useSelector(
@@ -42,31 +43,11 @@ const useKotitonniOverlayItems = (playerId: string) => {
 
   const pointAddition = React.useMemo(() => {
     if (!game || !player) {
-      return null;
+      return 0;
     }
 
-    const hasTurn = player.hasTurn;
-
-    const playerCount = game.players.length;
-    const correctAnswers = game.players.reduce((sum, next) => {
-      return clickMap[next.id] ? sum + 1 : sum;
-    }, 0);
-
-    switch (correctAnswers) {
-      case playerCount - 1:
-        return hasTurn ? -50 : 0;
-      case 0:
-        return hasTurn ? -50 : 0;
-      case 1:
-        return clickMap[playerId] || hasTurn ? 100 : 0;
-      case 2:
-        return clickMap[playerId] || hasTurn ? 30 : 0;
-      case 3:
-        return clickMap[playerId] || hasTurn ? 10 : 0;
-    }
-
-    return correctAnswers;
-  }, []);
+    return getPointAddition(game, clickMap, player.id, !!player.hasTurn);
+  }, [game, clickMap, player]);
 
   return {
     answer,

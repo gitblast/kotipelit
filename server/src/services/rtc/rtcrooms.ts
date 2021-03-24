@@ -4,7 +4,9 @@ import {
   Role,
   FilteredRTCGame,
   RTCGameRoom,
+  RTCGameState,
 } from '../../types';
+import { RoomNotFoundError } from '../../utils/errors';
 import logger from '../../utils/logger';
 import gameService from '../games';
 
@@ -25,7 +27,7 @@ const joinRoom = (socket: SocketWithToken): RTCGame | FilteredRTCGame => {
   const room = rooms.get(gameId);
 
   if (!room) {
-    throw new Error(`No room found with id ${gameId}`);
+    throw new RoomNotFoundError(gameId);
   }
 
   logger.log(`joining ${role} (${username}) to room ${gameId}`);
@@ -53,6 +55,29 @@ const getRoomGame = (id: string): RTCGame | null => {
   return room?.game ?? null;
 };
 
+const getRoomState = (roomId: string): RTCGameState => {
+  const room = rooms.get(roomId);
+
+  if (!room) {
+    throw new RoomNotFoundError(roomId);
+  }
+
+  return room.state;
+};
+
+const setRoomState = (roomId: string, newState: RTCGameState): void => {
+  const room = rooms.get(roomId);
+
+  if (!room) {
+    throw new RoomNotFoundError(roomId);
+  }
+
+  setRoom(roomId, {
+    ...room,
+    state: newState,
+  });
+};
+
 const createRoom = (game: RTCGame): void => {
   const existing = rooms.get(game.id);
 
@@ -68,10 +93,11 @@ const createRoom = (game: RTCGame): void => {
     socketMap.set(player.id, null);
   });
 
-  const newRoom = {
+  const newRoom: Omit<RTCGameRoom, 'lastUpdated'> = {
     game,
     socketMap,
     spectatorSockets: [],
+    state: gameService.getInitialGameState(game),
   };
 
   setRoom(game.id, newRoom);
@@ -111,7 +137,7 @@ const updateRoomGame = (gameId: string, newGame: RTCGame): RTCGame => {
   const room = rooms.get(gameId);
 
   if (!room) {
-    throw new Error(`no room set with id ${gameId}`);
+    throw new RoomNotFoundError(gameId);
   }
 
   const updatedRoom = {
@@ -137,4 +163,6 @@ export default {
   getRooms,
   getRoom,
   deleteRoom,
+  getRoomState,
+  setRoomState,
 };

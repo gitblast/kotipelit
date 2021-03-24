@@ -148,6 +148,11 @@ const theme = createMuiTheme({
         borderLeft: '1px solid',
       },
     },
+    MuiInputBase: {
+      root: {
+        minWidth: 240,
+      },
+    },
     MuiSvgIcon: {
       root: {
         color: 'rgb(168 164 136)',

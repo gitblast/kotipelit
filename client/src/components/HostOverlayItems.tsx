@@ -2,7 +2,7 @@ import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
-import { Typography, Grid } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 
 import MediaControls from './MediaControls';
 
@@ -14,6 +14,8 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     // Repeated code from PlayerOverlay!
     nameBadge: {
+      display: 'flex',
+      justifyContent: 'space-between',
       padding: theme.spacing(1),
       alignItems: 'center',
       // .. except for this
@@ -27,7 +29,6 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     hostName: {
-      fontSize: 28,
       [theme.breakpoints.down('sm')]: {
         fontSize: 18,
       },
@@ -66,17 +67,14 @@ const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({ host }) => {
       <div className={classes.flexCol}>
         <div className={classes.spacer} />
         <div className={classes.flex}>
-          <Grid container className={classes.nameBadge}>
-            <Grid item md={9} sm={7}>
-              <Typography variant="subtitle2" className={classes.hostName}>
-                {host.displayName}
-              </Typography>
-            </Grid>
-            <Grid item md={3} sm={5}>
+          <div className={classes.nameBadge}>
+            <Typography variant="h6" className={classes.hostName}>
+              {host.displayName}
+            </Typography>
+            <div>
               <MediaControls participant={host} />
-            </Grid>
-            <div className={classes.spacer} />
-          </Grid>
+            </div>
+          </div>
         </div>
       </div>
     );

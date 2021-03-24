@@ -18,6 +18,8 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       margin: theme.spacing(2),
       display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
       justifyContent: 'center',
     },
     loginField: {
@@ -25,6 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
       maxWidth: 350,
       color: theme.palette.primary.light,
       textAlign: 'center',
+      margin: theme.spacing(2),
     },
   })
 );
@@ -69,12 +72,11 @@ const LoginForm: React.FC = () => {
         <Button onClick={handleLogin} color="secondary">
           {user.loggingIn ? <CircularProgress /> : 'Kirjaudu'}
         </Button>
-
-        <Typography variant="body1">
-          Jos haluat alkaa järjestämään pelejä, ota yhteyttä info@kotipelit.com
-          niin teemme sinulle käyttäjätilin.
-        </Typography>
       </Paper>
+      <Typography variant="body2">
+        Jos haluat alkaa järjestämään pelejä, ota yhteyttä info@kotipelit.com
+        niin teemme sinulle käyttäjätilin.
+      </Typography>
     </div>
   );
 };

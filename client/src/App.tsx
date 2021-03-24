@@ -20,6 +20,7 @@ import { State, HostChannel } from './types';
 import logoImg from './assets/images/logo.png';
 import QuestionsAnswers from './components/QuestionsAnswers';
 import CompanyInfo from './components/CompanyInfo';
+import ScrollToTop from './components/ScrollToTop';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -49,8 +50,6 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-/** @TODO catch 404 */
-
 const App = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -78,6 +77,7 @@ const App = () => {
 
   return (
     <Router>
+      <ScrollToTop />
       <AppBar position="static" className={classes.navbar}>
         <Toolbar className={classes.toolbar}>
           <Link to="/" className={classes.logo}>

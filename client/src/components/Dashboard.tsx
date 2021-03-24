@@ -8,10 +8,10 @@ import { Button, Typography } from '@material-ui/core';
 
 import QueuedGame from './QueuedGame';
 
-import { State, LoggedUser, GameStatus } from '../../types';
+import { State, LoggedUser, GameStatus } from '../types';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { initGames } from '../../reducers/games.reducer';
+import { initGames } from '../reducers/games.reducer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

@@ -9,10 +9,12 @@ import {
   GameInfo,
   RTCGame,
   InviteInfo,
-  SocketWithToken,
   FilteredRTCGame,
   NewGame,
+  RTCGameState,
 } from '../types';
+import { io as ioServer } from '../index';
+import UpdateEmittingTimer from '../utils/timer';
 
 const filterGameForSpectator = (game: RTCGame): FilteredRTCGame => {
   return {
@@ -193,16 +195,31 @@ const convertToRTCGame = (game: GameModel): RTCGame => {
     host: {
       id: game.host.id.toString(),
       displayName: game.host.displayName,
-      privateData: {
-        twilioToken: null,
-      },
+      privateData: null,
     },
     rounds: game.rounds,
   };
 };
 
-const subscribeToUpdates = (socket: SocketWithToken): void => {
-  console.log('todo', socket);
+const getInitialGameState = (game: RTCGame): RTCGameState => {
+  switch (game.type) {
+    case GameType.KOTITONNI:
+      const tickInterval = process.env.NODE_ENV === 'development' ? 50 : 1000;
+      const initialValue = 60;
+
+      return {
+        timer: new UpdateEmittingTimer(
+          ioServer,
+          game.id,
+          initialValue,
+          tickInterval
+        ),
+      };
+    default:
+      throw new Error(
+        `cannot get initial game state: unknown game type '${game.type}'`
+      );
+  }
 };
 
 export default {
@@ -213,7 +230,7 @@ export default {
   convertToRTCGame,
   refreshGameReservations,
   getInviteMailData,
-  subscribeToUpdates,
   filterGameForUser,
   filterGameForSpectator,
+  getInitialGameState,
 };

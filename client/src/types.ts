@@ -47,7 +47,6 @@ export interface LobbyGame extends BaseGame {
 
 export interface BasePrivateData {
   inviteCode: string;
-  twilioToken: string | null;
 }
 
 export interface KotitonniPrivateData extends BasePrivateData {
@@ -368,6 +367,7 @@ export interface RTCGame {
   status: GameStatus;
   type: GameType;
   price: number;
+  allowedSpectators?: number;
   rounds: number;
   startTime: Date;
   players: GamePlayer[];

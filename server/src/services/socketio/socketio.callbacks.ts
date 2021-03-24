@@ -283,21 +283,21 @@ export const endRTCGame = async (socket: SocketWithToken): Promise<void> => {
       throw new Error(`no game set when ending, id ${gameId}`);
     }
 
+    socket.to(gameId).emit('game-ended');
+
     logger.log('saving finished game to db');
 
     // save to db
     await gameService.saveFinishedGame(gameId, game);
+
+    // delete game urls
+    await urlService.deleteGameUrls(gameId);
 
     logger.log(`deleting room... `);
 
     const success = roomService.deleteRoom(gameId);
 
     logger.log(success ? 'delete succesful' : 'delete failed');
-
-    socket.to(gameId).emit('game-ended');
-
-    // delete game urls
-    await urlService.deleteGameUrls(gameId);
   } catch (e) {
     logger.error(e.message);
 

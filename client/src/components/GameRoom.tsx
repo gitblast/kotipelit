@@ -95,10 +95,6 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
   } = useNewGameRoom(token, role);
 
   React.useEffect(() => {
-    logger.log('spectator count:', spectatorCount);
-  }, [spectatorCount]);
-
-  React.useEffect(() => {
     logger.log('participants changed:', participants);
   }, [participants]);
 
@@ -154,7 +150,10 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
 
           <RTCVideoConference participants={participants} />
           {role === Role.SPECTATOR ? null : isHost ? (
-            <RTCHostControls handleToggleFullscreen={handleToggleFullscreen} />
+            <RTCHostControls
+              spectatorCount={spectatorCount}
+              handleToggleFullscreen={handleToggleFullscreen}
+            />
           ) : (
             game.status === GameStatus.RUNNING && (
               <RTCPlayerControls

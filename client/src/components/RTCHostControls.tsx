@@ -4,12 +4,12 @@ import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import UndoIcon from '@material-ui/icons/Undo';
-// import TvIcon from '@material-ui/icons/Tv';
 import React from 'react';
 import useKotitonniHostControls from '../hooks/useKotitonniHostControls';
 import { GameStatus } from '../types';
 import InfoBar from './InfoBar';
 import MainKotitonniButton from './MainKotitonniButton';
+import SpectatorCount from './SpectatorCount';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -67,9 +67,15 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const RTCHostControls: React.FC<{
+interface RTCHostControlsProps {
   handleToggleFullscreen: () => void;
-}> = ({ handleToggleFullscreen }) => {
+  spectatorCount: number;
+}
+
+const RTCHostControls = ({
+  handleToggleFullscreen,
+  spectatorCount,
+}: RTCHostControlsProps) => {
   const {
     game,
     fetchLatestGameStatus,
@@ -133,16 +139,8 @@ const RTCHostControls: React.FC<{
           </Fab>
         )}
       </Grid>
-      <Grid item md={4} className={classes.controlsIcons}>
-        {/* <IconButton>
-          <TvIcon></TvIcon>
-          <span>
-            <Typography variant="body2" color="initial">
-              22
-            </Typography>
-          </span>
-        </IconButton> */}
-
+      <Grid item md={4} sm={3} className={classes.controlsIcons}>
+        <SpectatorCount count={spectatorCount} />
         <IconButton
           className={classes.controlBarIcons}
           onClick={handleToggleFullscreen}

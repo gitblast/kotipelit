@@ -16,6 +16,26 @@ import {
 
 const rooms = new Map<string, RTCGameRoom>();
 
+/**
+ * Deletes rooms that have not been updated within the given limit
+ * @param limit amount of idle time in milliseconds needed for game to be removed. defaults to 6 hours.
+ */
+const cleanup = (limit = 6 * 60 * 60 * 1000) => {
+  logger.log('cleaning up old rooms');
+
+  rooms.forEach((room, id) => {
+    if (Date.now() - room.lastUpdated > limit) {
+      logger.log(`deleting room '${id}'`);
+
+      rooms.delete(id);
+    }
+  });
+};
+
+const cleanUpInterval = 24 * 60 * 60 * 1000; // run cleanup every 24 hs
+
+setInterval(cleanup, cleanUpInterval);
+
 const setRoom = (id: string, updatedRoom: Omit<RTCGameRoom, 'lastUpdated'>) => {
   const timeStampedRoom: RTCGameRoom = {
     ...updatedRoom,

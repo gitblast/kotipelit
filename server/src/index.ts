@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import http from 'http';
 import { Server as socketIoServer } from 'socket.io';
 import express from 'express';
@@ -17,8 +13,10 @@ setDebug(true);
 const server = http.createServer(app);
 
 export const io = new socketIoServer(server, {
-  pingTimeout: 10000,
+  pingTimeout: 20000,
   pingInterval: 25000,
+  allowUpgrades: false,
+  transports: ['websocket'],
 });
 
 socketIOhandler(io);

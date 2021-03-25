@@ -51,18 +51,22 @@ const GameSettings: React.FC<GameSettingsProps> = ({
   const classes = useStyles();
 
   const handleSpectatorChange = React.useCallback(() => {
-    const newValue = settings.allowedSpectators === 0 ? 40 : 0;
-
     handleSettingsChange((prev: BaseGameSettings) => {
-      return { ...prev, allowedSpectators: newValue };
+      return {
+        ...prev,
+        allowedSpectators: prev.allowedSpectators === 0 ? 40 : 0,
+      };
     });
-  }, []);
+  }, [handleSettingsChange]);
 
-  const handlePriceChange = React.useCallback((newPrice: number) => {
-    handleSettingsChange((prev: BaseGameSettings) => {
-      return { ...prev, price: newPrice };
-    });
-  }, []);
+  const handlePriceChange = React.useCallback(
+    (newPrice: number) => {
+      handleSettingsChange((prev: BaseGameSettings) => {
+        return { ...prev, price: newPrice };
+      });
+    },
+    [handleSettingsChange]
+  );
 
   if (!players) {
     return error ? (

@@ -32,10 +32,12 @@ const getAll = async (): Promise<HostChannel[]> => {
   return response.data;
 };
 
-export default {
+const userService = {
   login,
   setToken,
   getAuthHeader,
   getAll,
   getToken,
 };
+
+export default userService;

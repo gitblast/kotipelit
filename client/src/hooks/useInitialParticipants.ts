@@ -37,7 +37,7 @@ const useInitialParticipants = (isSpectator: boolean) => {
 
       setInitialParticipants(initials);
     }
-  }, [game, initialParticipants, ownId]);
+  }, [game, initialParticipants, ownId, isSpectator]);
 
   return initialParticipants;
 };

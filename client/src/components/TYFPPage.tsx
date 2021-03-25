@@ -52,7 +52,7 @@ const TYFPPage: React.FC = () => {
         dispatch(setGame(null));
       };
     }
-  }, [game]);
+  }, [game, dispatch]);
 
   if (!game) {
     return <Redirect to="/" />;

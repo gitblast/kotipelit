@@ -89,7 +89,7 @@ const useNewGameRoom = (token: string | null, role: Role) => {
         logger.error('socket was null trying to emit launch');
       }
     },
-    [socket]
+    [socket, role]
   );
 
   return {

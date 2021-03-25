@@ -41,14 +41,8 @@ const useKotitonniHostControls = () => {
   const handleFinish = React.useCallback(() => {
     socket.emit('end');
 
-    if (!params?.username) {
-      logger.error('no username in params when trying to redirect');
-
-      return;
-    }
-
     history.push(`/${params.username}/kiitos`);
-  }, [socket, params]);
+  }, [socket, params, history]);
 
   const handleStart = React.useCallback(() => {
     socket.emit('start');
@@ -67,7 +61,7 @@ const useKotitonniHostControls = () => {
       resetTimer();
       resetClicks();
     },
-    [socket, clickedMap, resetTimer, resetClicks]
+    [socket, clickedMap, resetTimer, resetClicks, setHistory]
   );
 
   const everyoneHasAnswered = React.useMemo(() => {

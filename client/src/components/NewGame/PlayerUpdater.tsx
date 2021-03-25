@@ -56,7 +56,7 @@ const PlayerUpdater: React.FC<PlayerUpdaterProps> = ({
         logger.error(`error fetching word: ${e.message}`);
       }
     },
-    [players]
+    [players, handlePlayerChange]
   );
 
   return (

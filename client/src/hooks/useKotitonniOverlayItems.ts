@@ -38,7 +38,7 @@ const useKotitonniOverlayItems = (playerId: string) => {
     }
 
     return answers[round];
-  }, [game?.info]);
+  }, [game?.info, player?.privateData?.answers]);
 
   const pointAddition = React.useMemo(() => {
     if (!game || !player) {

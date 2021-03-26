@@ -1,9 +1,9 @@
 import React from 'react';
-import { Socket } from 'socket.io-client';
 import {
   InGameTimerData,
   MediaMutedStates,
   KotitonniLocalData,
+  GameData,
 } from '../types';
 
 const createCtx = <A extends unknown | null>() => {
@@ -18,8 +18,6 @@ const createCtx = <A extends unknown | null>() => {
   return [useCtx, ctx.Provider] as const; // 'as const' makes TypeScript infer a tuple
 };
 
-export const [useInGameSocket, InGameSocketProvider] = createCtx<Socket>();
-
 export const [useInGameTimer, InGameTimerProvider] = createCtx<
   InGameTimerData
 >();
@@ -31,3 +29,5 @@ export const [useMediaMutedStates, MediaMutedStatesProvider] = createCtx<
 export const [useKotitonniData, KotitonniDataProvider] = createCtx<
   KotitonniLocalData
 >();
+
+export const [useGameData, BaseGameDataProvider] = createCtx<GameData>();

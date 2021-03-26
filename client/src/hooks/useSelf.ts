@@ -1,19 +1,11 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 
-import { Role, RTCGame } from '../types';
+import { Role, RTCGame, RTCSelf } from '../types';
 
 import logger from '../utils/logger';
 
-import { setSelf } from '../reducers/rtcSelfSlice';
-
-interface MySelf {
-  id: string;
-  isHost: boolean;
-}
-
-const getMyId = (game: RTCGame, isHost?: boolean) => {
-  if (isHost) {
+const getMyId = (game: RTCGame, role: Role) => {
+  if (role === Role.HOST) {
     return game.host.id;
   }
 
@@ -25,27 +17,24 @@ const getMyId = (game: RTCGame, isHost?: boolean) => {
 };
 
 const useSelf = (game: RTCGame | null, role: Role) => {
-  const [mySelf, setMySelf] = React.useState<null | MySelf>(null);
-  const dispatch = useDispatch();
+  const [mySelf, setMySelf] = React.useState<null | RTCSelf>(null);
 
   React.useEffect(() => {
     if (!mySelf && game && role !== Role.SPECTATOR) {
-      const myId = getMyId(game, role === Role.HOST);
+      const myId = getMyId(game, role);
 
       if (!myId) {
         logger.error('self object not found!');
       } else {
         const self = {
           id: myId,
-          isHost: role === Role.HOST,
+          role,
         };
-
-        dispatch(setSelf(self));
 
         setMySelf(self);
       }
     }
-  }, [game, mySelf, role, dispatch]);
+  }, [game, mySelf, role]);
 
   return mySelf;
 };

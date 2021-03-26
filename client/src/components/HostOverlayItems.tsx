@@ -1,14 +1,10 @@
-import React from 'react';
-
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-
 import { Typography } from '@material-ui/core';
-
-import MediaControls from './MediaControls';
-
-import { GameType, RTCParticipant, State } from '../types';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import React from 'react';
+import { useGameData } from '../context';
+import { GameType, RTCParticipant } from '../types';
 import logger from '../utils/logger';
-import { useSelector } from 'react-redux';
+import MediaControls from './MediaControls';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -55,14 +51,10 @@ interface HostOverlayItemsProps {
 const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({ host }) => {
   const classes = useStyles();
 
-  const gameType = useSelector((state: State) => state.rtc.game?.type);
-
-  if (!gameType) {
-    return null;
-  }
+  const { game } = useGameData();
 
   // handle different game types here, "if gameType === kotitonni return kotitonni-items" etc
-  if (gameType === GameType.KOTITONNI) {
+  if (game.type === GameType.KOTITONNI) {
     return (
       <div className={classes.flexCol}>
         <div className={classes.spacer} />

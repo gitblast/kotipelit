@@ -2,14 +2,13 @@ import { Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { InGameSocketProvider } from '../context';
 import useNewGameRoom from '../hooks/useNewGameRoom';
 import { GameStatus, Role } from '../types';
 import logger, { setDebug } from '../utils/logger';
-import AudioHandler from './AudioHandler';
+import AudioHandler from './AudioHandler/AudioHandler';
 import ErrorFallBack from './ErrorFallBack';
 import Loader from './Loader';
-import LocalDataProvider from './LocalDataProvider/LocalDataProvider';
+import GameDataProvider from './GameDataProvider/GameDataProvider';
 import PreGameInfo from './PreGameInfo';
 import RTCHostControls from './RTCHostControls';
 import RTCPlayerControls from './RTCPlayerControls';
@@ -88,6 +87,8 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
   const classes = useStyles();
   const {
     game,
+    updateGame,
+    mySelf,
     socket,
     participants,
     spectatorCount,
@@ -113,7 +114,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
     }
   }, [fullscreenRef]);
 
-  if (!game || !socket) {
+  if (!game || !socket || !mySelf) {
     return (
       <div className={classes.centered}>
         <Loader msg={'Ladataan..'} spinner />
@@ -132,40 +133,43 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
   }
   return (
     <ErrorBoundary FallbackComponent={ErrorFallBack}>
-      <InGameSocketProvider value={socket}>
-        <LocalDataProvider game={game}>
-          <div className={classes.containerGame} ref={fullscreenRef}>
-            <AudioHandler />
-            <div className={classes.topGradient}></div>
-            <div className={classes.gameTitleBar}>
-              {/* For animation, should more topStyle divs be added? */}
-              <div className={classes.topStyle}></div>
-              <div>
-                <Typography variant="subtitle2">Kotitonni</Typography>
-                <Typography className={classes.kotipelit}>
-                  Kotipelit.com
-                </Typography>
-              </div>
-
-              <div className={classes.topStyle}></div>
+      <GameDataProvider
+        game={game}
+        updateGame={updateGame}
+        self={mySelf}
+        socket={socket}
+      >
+        <div className={classes.containerGame} ref={fullscreenRef}>
+          <AudioHandler />
+          <div className={classes.topGradient}></div>
+          <div className={classes.gameTitleBar}>
+            {/* For animation, should more topStyle divs be added? */}
+            <div className={classes.topStyle}></div>
+            <div>
+              <Typography variant="subtitle2">Kotitonni</Typography>
+              <Typography className={classes.kotipelit}>
+                Kotipelit.com
+              </Typography>
             </div>
 
-            <RTCVideoConference participants={participants} />
-            {role === Role.SPECTATOR ? null : isHost ? (
-              <RTCHostControls
-                spectatorCount={spectatorCount}
+            <div className={classes.topStyle}></div>
+          </div>
+
+          <RTCVideoConference participants={participants} />
+          {role === Role.SPECTATOR ? null : isHost ? (
+            <RTCHostControls
+              spectatorCount={spectatorCount}
+              handleToggleFullscreen={handleToggleFullscreen}
+            />
+          ) : (
+            game.status === GameStatus.RUNNING && (
+              <RTCPlayerControls
                 handleToggleFullscreen={handleToggleFullscreen}
               />
-            ) : (
-              game.status === GameStatus.RUNNING && (
-                <RTCPlayerControls
-                  handleToggleFullscreen={handleToggleFullscreen}
-                />
-              )
-            )}
-          </div>
-        </LocalDataProvider>
-      </InGameSocketProvider>
+            )
+          )}
+        </div>
+      </GameDataProvider>
     </ErrorBoundary>
   );
 };

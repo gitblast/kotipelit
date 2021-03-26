@@ -283,7 +283,9 @@ export const endRTCGame = async (socket: SocketWithToken): Promise<void> => {
       throw new Error(`no game set when ending, id ${gameId}`);
     }
 
+    // emit to self and room
     socket.to(gameId).emit('game-ended');
+    socket.emit('game-ended');
 
     logger.log('saving finished game to db');
 

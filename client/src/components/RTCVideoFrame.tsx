@@ -1,13 +1,12 @@
 import { Card, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useGameData, useMediaMutedStates } from '../context';
 import useParticipantTracks from '../hooks/useParticipantTracks';
-import { GameStatus, RTCParticipant, State } from '../types';
+import { GameStatus, RTCParticipant } from '../types';
 import HostOverlayItems from './HostOverlayItems';
 import PlayerOverlayItems from './PlayerOverlayItems';
 import VideoWithOverlay from './VideoWithOverlay';
-import { useMediaMutedStates } from '../context';
 
 type PropStyles = {
   order: number;
@@ -107,10 +106,9 @@ const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({
   const [videoTrack, audioTrack] = useParticipantTracks(participant);
   const { mutedMap } = useMediaMutedStates();
   const classes = useStyles({ order });
-  const gameStatus = useSelector((state: State) => state.rtc.game?.status);
-  const playerWithTurnId = useSelector(
-    (state: State) => state.rtc.game?.info.turn
-  );
+  const { game } = useGameData();
+  const gameStatus = game.status;
+  const playerWithTurnId = game.info.turn;
   const style = React.useMemo(() => ({ order }), [order]);
 
   const isMuted = !!participant.isMe || !!mutedMap[participant.id];

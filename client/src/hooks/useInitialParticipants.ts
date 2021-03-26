@@ -1,12 +1,13 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 
-import { RTCParticipant, State } from '../types';
+import { RTCParticipant, RTCGame } from '../types';
 import logger from '../utils/logger';
 
-const useInitialParticipants = (isSpectator: boolean) => {
-  const game = useSelector((state: State) => state.rtc.game);
-  const ownId = useSelector((state: State) => state.rtc.self?.id ?? null);
+const useInitialParticipants = (
+  game: RTCGame | null,
+  ownId: string | null,
+  isSpectator: boolean
+) => {
   const [initialParticipants, setInitialParticipants] = React.useState<
     null | RTCParticipant[]
   >(null);

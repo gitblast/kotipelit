@@ -3,6 +3,13 @@
 import { Socket } from 'socket.io-client';
 import { Participant } from 'twilio-video';
 
+export interface GameData {
+  game: RTCGame;
+  updateGame: (updatedGame: RTCGame) => void;
+  self: RTCSelf;
+  socket: Socket;
+}
+
 export interface MediaMutedStates {
   mutedMap: Record<string, boolean>;
   videoDisabledMap: Record<string, boolean>;
@@ -121,12 +128,6 @@ export interface State {
   user: User;
   channels: ChannelsState;
   alert: AlertState;
-  rtc: RTCState;
-}
-
-export interface RTCState {
-  game: RTCGame | null;
-  self: RTCSelf | null;
 }
 
 export type AlertState = string | null;
@@ -279,51 +280,6 @@ export type Action =
       type: ActionType.CLEAR_ERROR;
     };
 
-export type KotitonniLocalAction =
-  | {
-      type: 'SET_CLICK';
-      payload: {
-        playerId: string;
-        clicked: boolean;
-      };
-    }
-  | {
-      type: 'SET_TIMER';
-      payload: number;
-    }
-  | {
-      type: 'SET_MUTED';
-      payload: {
-        playerId: string;
-        muted: boolean;
-      };
-    }
-  | {
-      type: 'SET_VIDEO_DISABLED';
-      payload: {
-        playerId: string;
-        disabled: boolean;
-      };
-    }
-  | {
-      type: 'RESET';
-    };
-
-export type RTCGameAction = {
-  type: 'SET_GAME';
-  payload: RTCGame;
-};
-
-export type RTCSelfAction =
-  | {
-      type: 'SET_SELF';
-      payload: RTCSelf;
-    }
-  | {
-      type: 'SET_STREAM';
-      payload: MediaStream;
-    };
-
 // SOCKET IO EVENTS
 
 export enum CommonEvent {
@@ -350,7 +306,7 @@ export interface MockSocket {
 
 export interface RTCSelf {
   id: string;
-  isHost: boolean;
+  role: Role;
 }
 
 export type GamePlayer = RTCKotitonniPlayer; // handle other game types here
@@ -358,7 +314,6 @@ export type GamePlayer = RTCKotitonniPlayer; // handle other game types here
 export interface KotitonniInfo {
   round: number;
   turn: string; // player id
-  answeringOpen: boolean;
 }
 
 export interface InGameTimerData {
@@ -377,7 +332,7 @@ export interface RTCGame {
   status: GameStatus;
   type: GameType;
   price: number;
-  allowedSpectators?: number;
+  allowedSpectators: number;
   rounds: number;
   startTime: Date;
   players: GamePlayer[];
@@ -385,9 +340,7 @@ export interface RTCGame {
   host: {
     id: string;
     displayName: string;
-    privateData: {
-      twilioToken: string | null;
-    };
+    privateData?: null;
   };
 }
 

@@ -6,6 +6,7 @@ import logger from '../utils/logger';
 
 import useParticipants from './useParticipants';
 import useLocalTracks from './useLocalTracks';
+import { RTCGame } from '../types';
 
 import {
   getMockRoom,
@@ -14,6 +15,8 @@ import {
 } from '../helpers/twilio';
 
 const useTwilioRoom = (
+  game: RTCGame | null,
+  ownId: string | null,
   accessToken: string | null,
   onCall: boolean,
   isSpectator: boolean
@@ -35,7 +38,11 @@ const useTwilioRoom = (
       : null;
   }, [localVideoTrack, localAudioTrack]);
   const [error, setError] = React.useState<null | string>(null);
-  const [participants, setParticipants] = useParticipants(isSpectator);
+  const [participants, setParticipants] = useParticipants(
+    game,
+    ownId,
+    isSpectator
+  );
 
   if (localTrackError) {
     logger.error(`local track error: ${localTrackError}`);

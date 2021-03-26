@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { GameStatus, State } from '../types';
+import { GameStatus, Role } from '../types';
 import { Typography } from '@material-ui/core';
-import { useSelector } from 'react-redux';
+import { useGameData } from '../context';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,15 +33,12 @@ const useStyles = makeStyles((theme: Theme) =>
 const InfoBar: React.FC = () => {
   const classes = useStyles();
 
-  const gameStatus = useSelector((state: State) => state.rtc.game?.status);
-  const players = useSelector((state: State) => state.rtc.game?.players);
-  const self = useSelector((state: State) => state.rtc.self);
+  const { game, self } = useGameData();
+
+  const gameStatus = game.status;
+  const players = game.players;
 
   const playerWithTurn = React.useMemo(() => {
-    if (!players) {
-      return null;
-    }
-
     return players.find((player) => player.hasTurn);
   }, [players]);
 
@@ -68,7 +65,7 @@ const InfoBar: React.FC = () => {
             ? `Sinun vuorosi!`
             : `Vuorossa: ${playerWithTurn.name}`}
         </Typography>
-        {(self?.isHost || playerWithTurn.id === self?.id) && (
+        {(self.role === Role.HOST || playerWithTurn.id === self.id) && (
           <Typography
             variant="body1"
             className={classes.wordsText}

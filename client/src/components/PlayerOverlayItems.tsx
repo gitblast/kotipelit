@@ -2,13 +2,12 @@ import { Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 import { Animated } from 'react-animated-css';
-import { useSelector } from 'react-redux';
-import { GameStatus, GameType, RTCParticipant, State } from '../types';
+import useKotitonniOverlayItems from '../hooks/useKotitonniOverlayItems';
+import { GameStatus, GameType, RTCParticipant } from '../types';
 import logger from '../utils/logger';
 import AnswerBubble from './AnswerBubble';
-import MediaControls from './MediaControls';
 import DevItems from './DevItems';
-import useKotitonniOverlayItems from '../hooks/useKotitonniOverlayItems';
+import MediaControls from './MediaControls';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -76,17 +75,16 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
 }) => {
   const classes = useStyles();
 
-  const forHost = useSelector((state: State) => state.rtc.self?.isHost);
-
   const {
     game,
     player,
     pointAddition,
     answer,
     showPointAddition,
+    forHost,
   } = useKotitonniOverlayItems(participant.id);
 
-  if (!game || !player) {
+  if (!player) {
     return null;
   }
 

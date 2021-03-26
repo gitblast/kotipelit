@@ -1,12 +1,11 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { setGame } from '../reducers/rtcGameSlice';
 import { RTCGame } from '../types';
 import logger from '../utils/logger';
+import { useGameData } from '../context';
 
 const useGameHistory = () => {
   const historyRef = React.useRef<RTCGame | null>(null);
-  const dispatch = useDispatch();
+  const { updateGame } = useGameData();
 
   const setHistory = React.useCallback((game: RTCGame) => {
     historyRef.current = game;
@@ -33,8 +32,8 @@ const useGameHistory = () => {
 
     historyRef.current = null;
 
-    dispatch(setGame(previousGameState));
-  }, [dispatch]);
+    updateGame(previousGameState);
+  }, [updateGame]);
 
   return {
     setHistory,

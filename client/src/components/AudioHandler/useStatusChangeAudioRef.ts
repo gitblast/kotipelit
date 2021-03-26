@@ -1,35 +1,32 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { GameStatus, State } from '../types';
+import { GameStatus } from '../../types';
 
 /**
  * Plays audio when status changes from oldStatus to newStatus
  * @param ref
+ * @param currentStatus
  * @param oldStatus
  * @param newStatus
  */
 const useStatusChangeAudioRef = (
   ref: React.MutableRefObject<HTMLAudioElement | null>,
+  currentStatus: GameStatus,
   oldStatus: GameStatus,
   newStatus: GameStatus
 ) => {
-  const gameStatus = useSelector((state: State) => {
-    return state.rtc.game ? state.rtc.game.status : null;
-  });
-
   const previousStatus = React.useRef<null | GameStatus>(null);
 
   React.useEffect(() => {
     if (
       previousStatus.current === oldStatus &&
-      gameStatus === newStatus &&
+      currentStatus === newStatus &&
       ref.current
     ) {
       ref.current.play();
     }
 
-    previousStatus.current = gameStatus;
-  }, [gameStatus, ref, oldStatus, newStatus]);
+    previousStatus.current = currentStatus;
+  }, [currentStatus, ref, oldStatus, newStatus]);
 
   return ref;
 };

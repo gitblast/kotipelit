@@ -1,13 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, Redirect } from 'react-router-dom';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Typography, Paper, Button } from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
-import { State } from '../types';
-import { Redirect } from 'react-router-dom';
 import logger from '../utils/logger';
-import { setGame } from '../reducers/rtcGameSlice';
+import { RTCGame } from '../../../server/src/types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,26 +32,27 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+interface LocationState {
+  game: RTCGame | undefined;
+}
+
 const TYFPPage: React.FC = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
 
-  const game = useSelector((state: State) => state.rtc.game);
+  const location = useLocation<LocationState | undefined>();
+
+  const game = location.state?.game;
 
   React.useEffect(() => {
     if (game) {
       logger.log('removing reservation data from local storage');
       window.localStorage.removeItem(`kotitonniReservation-gameID-${game.id}`);
-
-      return () => {
-        logger.log('setting game to null');
-
-        dispatch(setGame(null));
-      };
     }
-  }, [game, dispatch]);
+  }, [game]);
 
   if (!game) {
+    logger.error('no game was set');
+
     return <Redirect to="/" />;
   }
 

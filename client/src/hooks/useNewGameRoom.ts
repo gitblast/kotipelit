@@ -1,12 +1,10 @@
 import React from 'react';
-import { Role, RTCGame, State } from '../types';
+import { Role, RTCGame } from '../types';
 import logger from '../utils/logger';
 import useAuthSocket from './useAuthSocket';
 import useSelf from './useSelf';
 import useTwilioRoom from './useTwilioRoom';
 import { useHistory, useParams } from 'react-router-dom';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { setGame as setGameInRedux } from '../reducers/rtcGameSlice';
 import { Socket } from 'socket.io-client';
 
 const socketOnLeaveCallback = (socket: Socket) => {
@@ -14,15 +12,17 @@ const socketOnLeaveCallback = (socket: Socket) => {
 };
 
 const useNewGameRoom = (token: string | null, role: Role) => {
+  const [gameEnded, setGameEnded] = React.useState(false);
   const [onCall, setOnCall] = React.useState<boolean>(false);
   const history = useHistory();
-  const dispatch = useDispatch();
   const { username: hostName } = useParams<{ username: string }>();
-  const game = useSelector((state: State) => state.rtc.game, shallowEqual);
+  const [game, setGame] = React.useState<RTCGame | null>(null);
   const [twilioToken, setTwilioToken] = React.useState<null | string>(null);
   const [socket, socketError] = useAuthSocket(token, socketOnLeaveCallback);
   const mySelf = useSelf(game, role);
   const { participants, spectatorCount, error: twilioError } = useTwilioRoom(
+    game,
+    mySelf?.id ?? null,
     twilioToken,
     onCall,
     role === Role.SPECTATOR
@@ -34,6 +34,8 @@ const useNewGameRoom = (token: string | null, role: Role) => {
   // socketio listeners
   React.useEffect(() => {
     if (socket) {
+      logger.log('attaching socket io listeners');
+
       socket.emit('join-room');
 
       socket.on('game-updated', (updatedGame: RTCGame) => {
@@ -44,7 +46,7 @@ const useNewGameRoom = (token: string | null, role: Role) => {
           hasTurn: player.id === updatedGame.info.turn,
         }));
 
-        dispatch(setGameInRedux({ ...updatedGame, players: mappedPlayers }));
+        setGame({ ...updatedGame, players: mappedPlayers });
       });
 
       socket.on('twilio-token', (token: string) => {
@@ -56,12 +58,18 @@ const useNewGameRoom = (token: string | null, role: Role) => {
       });
 
       socket.on('game-ended', () => {
-        logger.log(`recieved 'game-ended'`);
-
-        history.push(`/${hostName}/kiitos`);
+        setGameEnded(true);
       });
     }
-  }, [socket, dispatch, history, hostName]);
+  }, [socket]);
+
+  React.useEffect(() => {
+    if (gameEnded) {
+      logger.log('redirecting to thank you page');
+
+      history.push({ pathname: `/${hostName}/kiitos`, state: { game } });
+    }
+  }, [gameEnded, history, hostName, game]);
 
   const handleJoinCall = React.useCallback(
     (dev?: boolean) => {
@@ -92,8 +100,14 @@ const useNewGameRoom = (token: string | null, role: Role) => {
     [socket, role]
   );
 
+  const updateGame = React.useCallback((updatedGame: RTCGame) => {
+    setGame(updatedGame);
+  }, []);
+
   return {
+    test,
     game,
+    updateGame,
     socket,
     mySelf,
     participants,

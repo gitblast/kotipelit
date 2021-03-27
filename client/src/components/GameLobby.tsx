@@ -32,11 +32,10 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     highlighted: {
-      // handle in theme
-      color: '#d517df',
+      color: theme.palette.success.main,
     },
     invitationText: {
-      color: '#f1dc4a',
+      color: theme.palette.info.main,
       [theme.breakpoints.down('sm')]: {
         textAlign: 'center',
       },

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import TvIcon from '@material-ui/icons/Tv';
+import LiveTvIcon from '@material-ui/icons/LiveTv';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
@@ -26,7 +26,7 @@ const SpectatorCount = ({ count }: SpectatorCountProps) => {
 
   return (
     <div className={classes.container}>
-      <TvIcon />
+      <LiveTvIcon />
       <Typography className={classes.text} variant="body2" color="initial">
         {count}
       </Typography>

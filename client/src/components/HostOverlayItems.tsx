@@ -15,22 +15,24 @@ const useStyles = makeStyles((theme: Theme) =>
     // Repeated code from PlayerOverlay!
     nameBadge: {
       display: 'flex',
-      justifyContent: 'space-between',
-      padding: theme.spacing(1),
       alignItems: 'center',
-      // .. except for this
-      backgroundColor: 'rgb(34 110 108)',
-      color: 'white',
+      backgroundColor: 'rgba(0, 0, 0, 0.8)',
       width: '100%',
-      // .. except for this
-
+      justifyContent: 'space-around',
+      padding: theme.spacing(2),
+      borderTop: 'dotted 3px rgb(0 225 217)',
+      clipPath: 'polygon(10% 0, 90% 0, 91% 4%, 100% 100%, 0 100%, 8% 5%)',
       [theme.breakpoints.down('sm')]: {
         padding: theme.spacing(0.5),
       },
     },
     hostName: {
+      color: theme.palette.primary.light,
       [theme.breakpoints.down('sm')]: {
         fontSize: 18,
+      },
+      [theme.breakpoints.down('xs')]: {
+        fontSize: theme.spacing(4),
       },
     },
 

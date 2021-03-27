@@ -47,19 +47,24 @@ const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
     hasTurn: {
       background: (props) => `${colors[props.order]}`,
       boxShadow: 'rgb(231 239 191) 4px 3px 18px',
-      border: '7px dotted white',
+      border: '5px dotted white',
       [theme.breakpoints.down('xs')]: {
-        width: '95%',
+        width: '29%',
+        zIndex: 2,
+        position: 'absolute',
+        top: '22%',
+        left: '3%',
       },
     },
     hostStyle: {
       [theme.breakpoints.down('xs')]: {
+        order: '-2 !important',
         width: '95%',
       },
     },
     notActive: {
       [theme.breakpoints.down('xs')]: {
-        display: 'none',
+        width: '22%',
       },
     },
     placeHolderText: {
@@ -70,6 +75,9 @@ const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
       right: 0,
       color: 'rgba(218, 214, 214)',
       textAlign: 'center',
+      [theme.breakpoints.down('xs')]: {
+        display: 'none',
+      },
     },
     absolute: {
       width: '100%',

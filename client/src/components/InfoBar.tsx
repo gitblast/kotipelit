@@ -25,7 +25,9 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     infoBarText: {
-      display: 'flex',
+      [theme.breakpoints.down('sm')]: {
+        display: 'flex',
+      },
     },
   })
 );

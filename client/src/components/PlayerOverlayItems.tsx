@@ -1,7 +1,6 @@
 import { Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
-import { Animated } from 'react-animated-css';
 import { useSelector } from 'react-redux';
 import { GameStatus, GameType, RTCParticipant, State } from '../types';
 import logger from '../utils/logger';
@@ -9,19 +8,25 @@ import AnswerBubble from './AnswerBubble';
 import MediaControls from './MediaControls';
 import DevItems from './DevItems';
 import useKotitonniOverlayItems from '../hooks/useKotitonniOverlayItems';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     nameBadge: {
       display: 'flex',
-      justifyContent: 'space-between',
-      padding: theme.spacing(1),
+      justifyContent: 'space-around',
+      padding: theme.spacing(2),
       alignItems: 'center',
       backgroundColor: 'rgba(0, 0, 0, 0.8)',
+      borderTop: 'dotted 3px rgb(0 225 217)',
       color: 'white',
       width: '100%',
+      clipPath: 'polygon(10% 0, 90% 0, 91% 4%, 100% 100%, 0 100%, 8% 5%)',
       [theme.breakpoints.down('sm')]: {
         padding: theme.spacing(0.5),
+      },
+      [theme.breakpoints.down('xs')]: {
+        display: 'none',
       },
     },
     flexCol: {
@@ -48,6 +53,9 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
       top: '4%',
       left: '80%',
+      [theme.breakpoints.down('xs')]: {
+        display: 'none',
+      },
     },
     // Repeating same code from HostOverlayItems
     controlIcon: {
@@ -59,7 +67,14 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingRight: theme.spacing(2),
       margin: theme.spacing(1),
     },
-    playerInfo: {
+    playerName: {
+      color: theme.palette.primary.light,
+      [theme.breakpoints.down('sm')]: {
+        fontSize: 18,
+      },
+    },
+    playerPoints: {
+      color: 'rgb(0 225 217)',
       [theme.breakpoints.down('sm')]: {
         fontSize: 18,
       },
@@ -75,7 +90,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
   participant,
 }) => {
   const classes = useStyles();
-
+  const isWideEnough = useMediaQuery('(min-width:550px)');
   const forHost = useSelector((state: State) => state.rtc.self?.isHost);
 
   const {
@@ -110,19 +125,12 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
         />
         {forHost && showPointAddition && pointAddition !== 0 && (
           <div>
-            <Animated
-              animationIn="fadeIn"
-              animationInDuration={2000}
-              animationOut="fadeOut"
-              isVisible={true}
-            >
-              <Typography variant="h6" className={classes.pointsAddition}>
-                {pointAddition}
-              </Typography>
-            </Animated>
+            <Typography variant="h6" className={classes.pointsAddition}>
+              {pointAddition}
+            </Typography>
           </div>
         )}
-        {forHost && answer && (
+        {forHost && answer && isWideEnough && (
           <AnswerBubble answer={answer} playerId={participant.id} />
         )}
         {game.status === GameStatus.FINISHED && (
@@ -135,11 +143,11 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
         <div className={classes.spacer} />
         <div className={classes.flex}>
           <div className={classes.nameBadge}>
-            <Typography variant="h6" className={classes.playerInfo}>
+            <Typography variant="h6" className={classes.playerName}>
               {player.name}
             </Typography>
 
-            <Typography variant="h6" className={classes.playerInfo}>
+            <Typography variant="h6" className={classes.playerPoints}>
               {player.points}
             </Typography>
             <div>

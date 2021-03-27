@@ -11,6 +11,8 @@ import InfoBar from './InfoBar';
 import MainKotitonniButton from './MainKotitonniButton';
 import SpectatorCount from './SpectatorCount';
 
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     controlsItem: {
@@ -31,6 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     controlsContent: {
       alignItems: 'center',
+      justifyContent: 'center',
       paddingTop: theme.spacing(0.5),
       paddingBottom: theme.spacing(3),
       [theme.breakpoints.down('sm')]: {
@@ -95,16 +98,20 @@ const RTCHostControls = ({
     return null;
   }
 
+  const isWideEnough = useMediaQuery('(min-width:960px)');
+
   const answeringOpen = timerIsRunning
     ? !everyoneHasAnswered
     : timerValue !== 0 && timerValue !== 60;
 
   return (
     <Grid container className={classes.controlsContent}>
-      <Grid item md={12} sm={12} className={classes.controlsItem}>
-        {game.status === GameStatus.RUNNING && <InfoBar />}
+      <Grid item sm={12} className={classes.controlsItem}>
+        {game.status === GameStatus.RUNNING && !isWideEnough && <InfoBar />}
       </Grid>
-      <Grid item md={4}></Grid>
+      <Grid item md={4} className={classes.controlsItem}>
+        {game.status === GameStatus.RUNNING && isWideEnough && <InfoBar />}
+      </Grid>
       <Grid item md={4} sm={12} className={classes.controlsItem}>
         {game.status === GameStatus.RUNNING && (
           <Fab
@@ -139,8 +146,11 @@ const RTCHostControls = ({
           </Fab>
         )}
       </Grid>
-      <Grid item md={4} sm={3} className={classes.controlsIcons}>
-        <SpectatorCount count={spectatorCount} />
+      <Grid item md={4} className={classes.controlsIcons}>
+        {game.status === GameStatus.RUNNING && isWideEnough && (
+          <SpectatorCount count={spectatorCount} />
+        )}
+
         <IconButton
           className={classes.controlBarIcons}
           onClick={handleToggleFullscreen}

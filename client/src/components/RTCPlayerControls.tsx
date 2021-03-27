@@ -16,6 +16,9 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.down('sm')]: {
         padding: theme.spacing(1),
       },
+      [theme.breakpoints.down('sm')]: {
+        justifyContent: 'center',
+      },
     },
     controlsItem: {
       display: 'flex',
@@ -47,9 +50,6 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'white',
       margin: theme.spacing(1),
       fontSize: 45,
-      [theme.breakpoints.down('xs')]: {
-        display: 'none',
-      },
     },
   })
 );
@@ -76,10 +76,9 @@ const RTCPlayerControls: React.FC<{
 
   return (
     <Grid container className={classes.controlsContent}>
-      <Grid item md={12} sm={12} className={classes.controlsItem}>
+      <Grid item md={4} sm={12} className={classes.controlsItem}>
         <InfoBar />
       </Grid>
-      <Grid item md={4}></Grid>
       <Grid item md={4} sm={12} className={classes.controlsItem}>
         <Typography className={classes.timer} variant="h6">
           {timerValue}

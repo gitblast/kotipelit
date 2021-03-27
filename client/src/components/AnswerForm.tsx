@@ -8,6 +8,10 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'space-around',
       alignItems: 'center',
+      [theme.breakpoints.down('xs')]: {
+        flexDirection: 'column',
+        justifyContent: 'center',
+      },
     },
     sendAnswerBtn: {
       background: 'linear-gradient(to bottom, rgb(36 170 167), rgb(33 36 36))',

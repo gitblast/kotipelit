@@ -74,9 +74,7 @@ const useLobbySystem = () => {
           setGame(fetchedGame);
         }
       } catch (e) {
-        setError(
-          'Ilmoittautuminen on päättynyt! Tarkista pelin linkki sähköpostistasi.'
-        );
+        setError('Ilmoittautuminen on päättynyt!');
       }
     };
 

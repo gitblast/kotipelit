@@ -1,19 +1,15 @@
 import React from 'react';
 
 import KotitonniAudioHandler from './KotitonniAudioHandler';
-import { useSelector } from 'react-redux';
-import logger from '../utils/logger';
+import logger from '../../utils/logger';
 
-import { GameType, State } from '../types';
+import { GameType } from '../../types';
+import { useGameData } from '../../context';
 
 const AudioHandler: React.FC = () => {
-  const gameType = useSelector((state: State) => state.rtc.game?.type);
+  const { game } = useGameData();
 
-  if (!gameType) {
-    return null;
-  }
-
-  switch (gameType) {
+  switch (game.type) {
     case GameType.KOTITONNI:
       return <KotitonniAudioHandler />;
     default: {

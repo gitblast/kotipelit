@@ -60,7 +60,6 @@ describe('games service', () => {
         const expectedInfo = {
           round: 1,
           turn: mockPlayer.id,
-          answeringOpen: false,
         };
 
         expect(getInitialInfo(mockGame)).toEqual(expectedInfo);

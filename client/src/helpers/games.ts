@@ -1,6 +1,6 @@
 import shortid from 'shortid';
 import wordService from '../services/words';
-import { GameStatus, RTCGame, RTCKotitonniPlayer } from '../types';
+import { GameStatus, RTCGame, RTCKotitonniPlayer, RTCSelf } from '../types';
 import logger from '../utils/logger';
 
 /**
@@ -112,4 +112,38 @@ export const getNextKotitonniState = (
   };
 
   return updatedGame;
+};
+
+export const getAnswerCount = (game: RTCGame) => {
+  let answerCount = 0;
+
+  game.players.forEach((player) => {
+    if (!player.privateData) {
+      return;
+    }
+
+    Object.values(player.privateData.answers).forEach((answerMap) => {
+      answerCount += Object.values(answerMap).length;
+    });
+  });
+
+  return answerCount;
+};
+
+export const selfIsWinner = (game: RTCGame, self: RTCSelf) => {
+  if (game.status !== GameStatus.FINISHED) {
+    return false;
+  }
+
+  const playerSelf = game.players.find((player) => player.id === self.id);
+
+  if (!playerSelf) {
+    return false;
+  }
+
+  const playersSortedByPoints = game.players.sort(
+    (a, b) => b.points - a.points
+  );
+
+  return playersSortedByPoints[0].points === playerSelf.points;
 };

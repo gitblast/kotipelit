@@ -114,7 +114,7 @@ const cancelReservation = async (hostName: string, inviteCode: string) => {
   }
 };
 
-export default {
+const gameService = {
   getAll,
   addNew,
   deleteGame,
@@ -126,3 +126,5 @@ export default {
   lockSpotForGame,
   cancelReservation,
 };
+
+export default gameService;

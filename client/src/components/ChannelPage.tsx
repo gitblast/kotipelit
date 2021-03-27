@@ -18,7 +18,6 @@ const ChannelPage: React.FC<ChannelPageProps> = () => {
   const user = useSelector((state: State) => state.user);
 
   const basePath = '/:username';
-
   return (
     <Switch>
       <Route path={`${basePath}/kiitos`}>

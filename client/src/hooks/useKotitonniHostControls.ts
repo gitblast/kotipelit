@@ -1,27 +1,21 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
-import { useInGameSocket, useKotitonniData } from '../context';
+import { useGameData, useKotitonniData } from '../context';
 import { getNextKotitonniState } from '../helpers/games';
-import { RTCGame, State } from '../types';
+import { RTCGame } from '../types';
 import logger from '../utils/logger';
 import useGameHistory from './useGameHistory';
 import { useInGameTimer } from '../context/index';
 
 const useKotitonniHostControls = () => {
-  const game = useSelector((state: State) => state.rtc.game);
-
   const {
     timerValue,
     timerIsRunning,
     toggleTimer,
     resetTimer,
   } = useInGameTimer();
-  const socket = useInGameSocket();
+  const { socket, game } = useGameData();
   const { clickedMap, resetClicks } = useKotitonniData();
   const { setHistory, returnToPrevious, noHistorySet } = useGameHistory();
-  const history = useHistory();
-  const params = useParams<{ username: string }>();
 
   const handleUpdate = React.useCallback(
     (newGame: RTCGame) => socket.emit('update-game', newGame),
@@ -40,15 +34,7 @@ const useKotitonniHostControls = () => {
 
   const handleFinish = React.useCallback(() => {
     socket.emit('end');
-
-    if (!params?.username) {
-      logger.error('no username in params when trying to redirect');
-
-      return;
-    }
-
-    history.push(`/${params.username}/kiitos`);
-  }, [socket, params]);
+  }, [socket]);
 
   const handleStart = React.useCallback(() => {
     socket.emit('start');
@@ -67,16 +53,10 @@ const useKotitonniHostControls = () => {
       resetTimer();
       resetClicks();
     },
-    [socket, clickedMap, resetTimer, resetClicks]
+    [socket, clickedMap, resetTimer, resetClicks, setHistory]
   );
 
   const everyoneHasAnswered = React.useMemo(() => {
-    if (!game) {
-      logger.error('no game set');
-
-      return false;
-    }
-
     return game.players.every((player) => {
       if (player.hasTurn) {
         return true;

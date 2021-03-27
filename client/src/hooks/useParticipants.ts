@@ -1,15 +1,17 @@
 import React from 'react';
-import { RTCParticipant } from '../types';
+import { RTCParticipant, RTCGame } from '../types';
 
 import useInitialParticipants from './useInitialParticipants';
 
 const useParticipants = (
+  game: RTCGame | null,
+  ownId: string | null,
   isSpectator: boolean
 ): [
   RTCParticipant[] | null,
   React.Dispatch<React.SetStateAction<RTCParticipant[] | null>>
 ] => {
-  const initialParticipants = useInitialParticipants(isSpectator);
+  const initialParticipants = useInitialParticipants(game, ownId, isSpectator);
 
   const [participants, setParticipants] = React.useState<
     RTCParticipant[] | null

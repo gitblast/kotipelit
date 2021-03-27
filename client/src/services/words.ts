@@ -35,7 +35,9 @@ const getMany = async (amount: number): Promise<string[]> => {
   return response.data;
 };
 
-export default {
+const wordService = {
   getOne,
   getMany,
 };
+
+export default wordService;

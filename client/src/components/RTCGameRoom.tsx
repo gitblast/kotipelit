@@ -1,11 +1,8 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import useHostGameToken from '../hooks/useHostGameToken';
 import usePlayerGameToken from '../hooks/usePlayerGameToken';
 import useSpectatorGameToken from '../hooks/useSpectatorGameToken';
-import { setGame } from '../reducers/rtcGameSlice';
 import { Role } from '../types';
-import logger from '../utils/logger';
 import GameRoom from './GameRoom';
 
 const RTCGameForSpectator: React.FC = () => {
@@ -44,24 +41,6 @@ interface RTCGameRoomProps {
 
 // redirects to correct component
 const RTCGameRoom: React.FC<RTCGameRoomProps> = ({ role }) => {
-  const [gameNullified, setGameNullified] = React.useState(false);
-  const dispatch = useDispatch();
-
-  // this makes sure game is initially null
-  React.useEffect(() => {
-    if (!gameNullified) {
-      logger.log('setting initial game null');
-
-      dispatch(setGame(null));
-
-      setGameNullified(true);
-    }
-  }, [dispatch, gameNullified]);
-
-  if (!gameNullified) {
-    return null;
-  }
-
   switch (role) {
     case Role.HOST:
       return <RTCGameForHost />;

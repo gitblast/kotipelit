@@ -1,17 +1,16 @@
 import React from 'react';
 
-import { useSelector, shallowEqual } from 'react-redux';
-import { State } from '../types';
-import { useInGameTimer, useKotitonniData } from '../context';
+import { useInGameTimer, useKotitonniData, useGameData } from '../context';
 import { getPointAddition } from '../helpers/games';
+import { Role } from '../types';
 
 const useKotitonniOverlayItems = (playerId: string) => {
   const { clickedMap } = useKotitonniData();
   const { timerValue } = useInGameTimer();
-  const game = useSelector((state: State) => state.rtc.game);
-  const player = useSelector(
-    (state: State) => state.rtc.game?.players.find((p) => p.id === playerId),
-    shallowEqual
+  const { game, self } = useGameData();
+  const player = React.useMemo(
+    () => game.players.find((p) => p.id === playerId),
+    [game.players, playerId]
   );
 
   const showPointAddition = React.useMemo(() => {
@@ -25,7 +24,7 @@ const useKotitonniOverlayItems = (playerId: string) => {
   }, [clickedMap, timerValue]);
 
   const answer = React.useMemo(() => {
-    if (!game?.info || !player?.privateData?.answers) {
+    if (!player?.privateData?.answers) {
       return null;
     }
 
@@ -38,10 +37,10 @@ const useKotitonniOverlayItems = (playerId: string) => {
     }
 
     return answers[round];
-  }, [game?.info]);
+  }, [game.info, player?.privateData?.answers]);
 
   const pointAddition = React.useMemo(() => {
-    if (!game || !player) {
+    if (!player) {
       return 0;
     }
 
@@ -54,6 +53,7 @@ const useKotitonniOverlayItems = (playerId: string) => {
     game,
     player,
     showPointAddition,
+    forHost: self.role === Role.HOST,
   };
 };
 

@@ -1,21 +1,10 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { State } from '../types';
-
-export const selector = (state: State) => {
-  const game = state.rtc.game;
-
-  if (!game) {
-    return null;
-  }
-  return game.players.map((player) => player.points);
-};
 
 const useAnyPointChangeAudioRef = (
+  pointsArray: number[] | null,
   ref: React.MutableRefObject<HTMLAudioElement | null>,
   delta: number
 ) => {
-  const pointsArray = useSelector(selector);
   const previousPointsRef = React.useRef<number[] | null>(null);
 
   React.useEffect(() => {

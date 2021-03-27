@@ -2,3 +2,5 @@
 jest.mock('./index', () => {
   return {};
 });
+
+jest.useFakeTimers();

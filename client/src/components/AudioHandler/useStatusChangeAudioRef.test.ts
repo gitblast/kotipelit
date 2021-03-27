@@ -1,10 +1,6 @@
 import { renderHook, cleanup } from '@testing-library/react-hooks';
 import useStatusChangeAudioRef from './useStatusChangeAudioRef';
-import * as redux from 'react-redux';
-import { GameStatus } from '../types';
-
-jest.mock('react-redux');
-const mockSelector = redux.useSelector as jest.Mock;
+import { GameStatus } from '../../types';
 
 const mockRef = {
   current: {
@@ -24,6 +20,7 @@ describe('useIntroRef hook', () => {
       useStatusChangeAudioRef(
         statusChangeRef,
         '' as GameStatus,
+        '' as GameStatus,
         '' as GameStatus
       )
     );
@@ -35,15 +32,20 @@ describe('useIntroRef hook', () => {
     const oldStatus = GameStatus.WAITING;
     const newStatus = GameStatus.RUNNING;
 
-    mockSelector.mockReturnValueOnce(oldStatus);
+    let currentStatus = oldStatus;
 
     const { rerender } = renderHook(() =>
-      useStatusChangeAudioRef(statusChangeRef, oldStatus, newStatus)
+      useStatusChangeAudioRef(
+        statusChangeRef,
+        currentStatus,
+        oldStatus,
+        newStatus
+      )
     );
 
     expect(mockRef.current.play).not.toHaveBeenCalled();
 
-    mockSelector.mockReturnValueOnce(newStatus);
+    currentStatus = newStatus;
 
     rerender();
 
@@ -59,15 +61,20 @@ describe('useIntroRef hook', () => {
               continue;
             }
 
-            mockSelector.mockReturnValueOnce(first);
+            let currentStatus = first;
 
             const { rerender } = renderHook(() =>
-              useStatusChangeAudioRef(statusChangeRef, oldValue, newValue)
+              useStatusChangeAudioRef(
+                statusChangeRef,
+                currentStatus,
+                oldValue,
+                newValue
+              )
             );
 
             expect(mockRef.current.play).not.toHaveBeenCalled();
 
-            mockSelector.mockReturnValueOnce(second);
+            currentStatus = second;
 
             rerender();
 

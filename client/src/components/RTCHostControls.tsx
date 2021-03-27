@@ -93,12 +93,11 @@ const RTCHostControls = ({
     toggleTimer,
   } = useKotitonniHostControls();
   const classes = useStyles();
+  const isWideEnough = useMediaQuery('(min-width:960px)');
 
   if (!game) {
     return null;
   }
-
-  const isWideEnough = useMediaQuery('(min-width:960px)');
 
   const answeringOpen = timerIsRunning
     ? !everyoneHasAnswered

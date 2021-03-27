@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'space-around',
       alignItems: 'center',
+      marginBottom: theme.spacing(1.5),
       [theme.breakpoints.down('sm')]: {
         justifyContent: 'center',
       },

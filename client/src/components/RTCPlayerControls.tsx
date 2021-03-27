@@ -3,7 +3,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import React from 'react';
 import useKotitonniPlayerControls from '../hooks/useKotitonniPlayerControls';
-
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import AnswerForm from './AnswerForm';
 import InfoBar from './InfoBar';
 
@@ -50,6 +50,9 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'white',
       margin: theme.spacing(1),
       fontSize: 45,
+      [theme.breakpoints.down('xs')]: {
+        textAlign: 'center',
+      },
     },
   })
 );
@@ -58,6 +61,7 @@ const RTCPlayerControls: React.FC<{
   handleToggleFullscreen: () => void;
 }> = ({ handleToggleFullscreen }) => {
   const classes = useStyles();
+  const isWideEnough = useMediaQuery('(min-width:550px)');
   const {
     handleAnswer,
     fetchLatestGameStatus,
@@ -76,13 +80,23 @@ const RTCPlayerControls: React.FC<{
 
   return (
     <Grid container className={classes.controlsContent}>
-      <Grid item md={4} sm={12} className={classes.controlsItem}>
+      <Grid item md={4} sm={12} xs={12} className={classes.controlsItem}>
         <InfoBar />
       </Grid>
+      <Grid item xs={12}>
+        {!isWideEnough && (
+          <Typography className={classes.timer} variant="h6">
+            {timerValue}
+          </Typography>
+        )}
+      </Grid>
       <Grid item md={4} sm={12} className={classes.controlsItem}>
-        <Typography className={classes.timer} variant="h6">
-          {timerValue}
-        </Typography>
+        {isWideEnough && (
+          <Typography className={classes.timer} variant="h6">
+            {timerValue}
+          </Typography>
+        )}
+
         <AnswerForm
           handleAnswer={handleAnswerWithInfo}
           fetchLatestGameStatus={fetchLatestGameStatus}

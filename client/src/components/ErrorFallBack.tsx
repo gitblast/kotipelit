@@ -21,7 +21,7 @@ const ErrorFallBack: React.FC<FallbackProps> = ({
 
   return (
     <Paper className={classes.container}>
-      <Typography variant="h1" gutterBottom>
+      <Typography variant="h5" gutterBottom>
         Tapahtui odottamaton virhe:
       </Typography>
       <Typography gutterBottom>{error.message}</Typography>

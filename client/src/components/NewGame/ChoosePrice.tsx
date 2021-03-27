@@ -71,14 +71,11 @@ const ChoosePrice: React.FC<ChoosePriceProps> = ({ price, setPrice }) => {
       >
         <div className={classes.prices}>
           <FormControlLabel value={0} control={<Radio />} label="Ilmainen" />
-
-          <FormControlLabel value={2} disabled control={<Radio />} label="2€" />
-          <FormControlLabel value={5} disabled control={<Radio />} label="5€" />
           <FormControlLabel
-            value={10}
+            value={5}
             disabled
             control={<Radio />}
-            label="10€"
+            label="Maksullinen (tulossa)"
           />
         </div>
       </RadioGroup>

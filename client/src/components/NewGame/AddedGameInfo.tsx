@@ -11,6 +11,9 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       padding: theme.spacing(1),
     },
+    shareLink: {
+      color: theme.palette.success.main,
+    },
   })
 );
 
@@ -42,17 +45,25 @@ const AddedGameInfo = ({ addedGame, error }: AddedGameInfoProps) => {
 
   return (
     <div className={classes.container}>
+      <Typography variant="overline" color="initial">
+        Kotipelit
+      </Typography>
       <Typography variant="body2">{`${baseUrl}/${username}/kutsut/${addedGame.id}`}</Typography>
-      <Typography>
+      <Typography className={classes.shareLink}>
         Jaa ylläoleva linkki kaikille, jotka haluat kutsua pelaamaan.
       </Typography>
 
       {addedGame.allowedSpectators !== 0 ? (
         <>
+          <Typography variant="subtitle1" color="initial">
+            Kotipelit-TV
+          </Typography>
           <Typography variant="body2">
             {`${baseUrl}/${username}/live/${addedGame.id}`}
           </Typography>
-          <Typography>Jaa tämä linkki katsojille</Typography>
+          <Typography className={classes.shareLink}>
+            Jaa tämä linkki katsojille
+          </Typography>
         </>
       ) : null}
     </div>

@@ -9,9 +9,6 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       color: 'rgba(218, 214, 214)',
-      [theme.breakpoints.down('xs')]: {
-        display: 'none',
-      },
     },
     nextUpText: {
       color: theme.palette.primary.light,

@@ -1,7 +1,8 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 
 import Zrnic from './assets/fonts/zrnic-rg.ttf';
-// import BeautySchoolDropoutII from './assets/fonts/BeautySchoolDropoutII.ttf';
+import BeautySchoolDropoutII from './assets/fonts/BeautySchoolDropoutII.ttf';
+import ChicagoNeon from './assets/fonts/ChicagoNeon.ttf';
 
 // Instructions (Self hosted fonts) https://material-ui.com/customization/typography/
 
@@ -18,18 +19,31 @@ const zrnic = {
     'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2035, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF',
 };
 
-// const beautySchoolDropoutII = {
-//   fontFamily: 'BeautySchoolDropoutII',
-//   fontStyle: 'normal',
-//   fontWeight: 400,
-//   src: `
-//     local('BeautySchoolDropoutII'),
-//     url(${BeautySchoolDropoutII}),
-//     url(${BeautySchoolDropoutII}) format('ttf')
-//   `,
-//   unicodeRange:
-//     'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2035, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF',
-// };
+const beautySchoolDropoutII = {
+  fontFamily: 'BeautySchoolDropoutII',
+  fontStyle: 'normal',
+  fontWeight: 400,
+  src: `
+    local('BeautySchoolDropoutII'),
+    url(${BeautySchoolDropoutII}),
+    url(${BeautySchoolDropoutII}) format('ttf')
+  `,
+  unicodeRange:
+    'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2035, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF',
+};
+
+const chicagoNeon = {
+  fontFamily: 'ChicagoNeon',
+  fontStyle: 'normal',
+  fontWeight: 400,
+  src: `
+    local('ChicagoNeon'),
+    url(${ChicagoNeon}),
+    url(${ChicagoNeon}) format('ttf')
+  `,
+  unicodeRange:
+    'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2035, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF',
+};
 
 const theme = createMuiTheme({
   palette: {
@@ -115,6 +129,12 @@ const theme = createMuiTheme({
       fontSize: '1rem',
       color: 'rgb(135 135 135)',
     },
+    // Used to display Kotipelit, probably better to use another typo variant
+    overline: {
+      fontFamily: 'chicagoNeon',
+      fontSize: '3.4rem',
+      lineHeight: 1,
+    },
   },
   breakpoints: {
     values: {
@@ -128,7 +148,7 @@ const theme = createMuiTheme({
   overrides: {
     MuiCssBaseline: {
       '@global': {
-        '@font-face': [zrnic],
+        '@font-face': [zrnic, beautySchoolDropoutII, chicagoNeon],
       },
     },
     MuiButton: {

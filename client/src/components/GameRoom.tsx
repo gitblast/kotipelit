@@ -19,8 +19,9 @@ import RTCVideoConference from './RTCVideoConference';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     containerGame: {
+      // Effecting how it shows on fullscreen?
       minHeight: '91vh',
-      background: 'linear-gradient(to bottom, rgb(32 82 100), rgb(63 93 91))',
+      background: 'linear-gradient(to bottom, rgb(32 82 100), rgb(14 25 30))',
     },
     centered: {
       minHeight: 400,
@@ -33,9 +34,6 @@ const useStyles = makeStyles((theme: Theme) =>
     gameTitleBar: {
       display: 'flex',
       justifyContent: 'space-around',
-      [theme.breakpoints.down('sm')]: {
-        display: 'none',
-      },
     },
     kotipelit: {
       position: 'relative',
@@ -51,6 +49,9 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '30vw',
       alignSelf: 'center',
       marginTop: '15px',
+      [theme.breakpoints.down('sm')]: {
+        width: '20vw',
+      },
     },
     startBtnContainer: {
       position: 'absolute',

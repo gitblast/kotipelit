@@ -92,7 +92,11 @@ const GameSettings: React.FC<GameSettingsProps> = ({
               onChange={handleSpectatorChange}
             />
           }
-          label={'Kotipelit-TV'}
+          label={
+            <Typography variant="subtitle1" color="initial">
+              Kotipelit-TV
+            </Typography>
+          }
           labelPlacement="start"
         />
       </div>

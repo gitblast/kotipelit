@@ -113,18 +113,10 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
       </div>
       <div className={classes.headline}>
         <div className={classes.neonLight}></div>
-        <Typography variant="h4">Käynnissä olevat pelit</Typography>
-      </div>
-      {filterGamesByStatus('', GameStatus.RUNNING)}
-      <div className={classes.headline}>
-        <div className={classes.neonLight}></div>
-        <Typography variant="h4">Odottaa pelaajia</Typography>
-      </div>
-      {filterGamesByStatus('', GameStatus.WAITING)}
-      <div className={classes.headline}>
-        <div className={classes.neonLight}></div>
         <Typography variant="h4">Tulevat pelit</Typography>
       </div>
+      {filterGamesByStatus('', GameStatus.RUNNING)}
+      {filterGamesByStatus('', GameStatus.WAITING)}
       {filterGamesByStatus('', GameStatus.UPCOMING)}
       <div className={classes.headline}>
         <div className={classes.neonLight}></div>

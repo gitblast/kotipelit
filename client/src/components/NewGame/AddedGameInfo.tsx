@@ -49,6 +49,9 @@ const AddedGameInfo = ({ addedGame, error }: AddedGameInfoProps) => {
 
       {addedGame.allowedSpectators !== 0 ? (
         <>
+          <Typography variant="subtitle1" color="initial">
+            Kotipelit-TV
+          </Typography>
           <Typography variant="body2">
             {`${baseUrl}/${username}/live/${addedGame.id}`}
           </Typography>

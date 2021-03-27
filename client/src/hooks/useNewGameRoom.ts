@@ -105,7 +105,6 @@ const useNewGameRoom = (token: string | null, role: Role) => {
   }, []);
 
   return {
-    test,
     game,
     updateGame,
     socket,

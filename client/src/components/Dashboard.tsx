@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Button, Typography } from '@material-ui/core';
 
-import QueuedGame from './QueuedGame';
+import GameCard from './GameCard/GameCard';
 
 import { State, LoggedUser, GameStatus } from '../types';
 import { useSelector, useDispatch } from 'react-redux';
@@ -90,7 +90,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
         </div>
         <div className={classes.games}>
           {filtered.map((game) => (
-            <QueuedGame key={game.id} game={game} username={user.username} />
+            <GameCard key={game.id} game={game} hostName={user.username} />
           ))}
         </div>
       </>

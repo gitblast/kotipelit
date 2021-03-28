@@ -51,7 +51,7 @@ const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
         width: '29%',
         zIndex: 2,
         position: 'absolute',
-        top: '18%',
+        top: '30%',
         left: '3%',
       },
     },

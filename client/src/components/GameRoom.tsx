@@ -34,26 +34,27 @@ const useStyles = makeStyles((theme: Theme) =>
     gameTitleBar: {
       display: 'flex',
       justifyContent: 'space-around',
-      [theme.breakpoints.down('sm')]: {
-        display: 'none',
-      },
+    },
+    kotitonniTitle: {
+      fontSize: '5.2rem',
+      color: 'rgb(185 231 229)',
     },
     kotipelit: {
       position: 'relative',
-      top: -18,
-      left: 94,
+      top: -8,
+      left: 193,
       fontSize: '0.8rem',
       color: 'rgb(185 231 229)',
     },
     topStyle: {
-      borderTop: '15px dotted rgb(185 231 229)',
+      borderTop: '22px dotted rgb(185 231 229)',
       background: 'rgb(86 124 123)',
       boxShadow: 'rgb(231 239 191) 1px 8px 44px',
       width: '30vw',
       alignSelf: 'center',
       marginTop: '15px',
       [theme.breakpoints.down('sm')]: {
-        width: '20vw',
+        display: 'none',
       },
     },
     startBtnContainer: {
@@ -150,7 +151,12 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
             {/* For animation, should more topStyle divs be added? */}
             <div className={classes.topStyle}></div>
             <div>
-              <Typography variant="subtitle2">Kotitonni</Typography>
+              <Typography
+                variant="subtitle1"
+                className={classes.kotitonniTitle}
+              >
+                Kotitonni
+              </Typography>
               <Typography className={classes.kotipelit}>
                 Kotipelit.com
               </Typography>

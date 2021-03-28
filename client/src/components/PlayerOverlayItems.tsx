@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
     nameBadge: {
       display: 'flex',
       justifyContent: 'space-around',
-      padding: theme.spacing(2),
+      padding: theme.spacing(1.4),
       alignItems: 'center',
       backgroundColor: 'rgba(0, 0, 0, 0.8)',
       borderTop: 'dotted 3px rgb(0 225 217)',
@@ -145,11 +145,11 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
         <div className={classes.spacer} />
         <div className={classes.flex}>
           <div className={classes.nameBadge}>
-            <Typography variant="h6" className={classes.playerName}>
+            <Typography variant="subtitle2" className={classes.playerName}>
               {player.name}
             </Typography>
 
-            <Typography variant="h6" className={classes.playerPoints}>
+            <Typography variant="subtitle2" className={classes.playerPoints}>
               {player.points}
             </Typography>
             <div>

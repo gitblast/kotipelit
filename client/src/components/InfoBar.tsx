@@ -50,7 +50,7 @@ const InfoBar: React.FC = () => {
       return (
         // korjaa tämä!
         <div>
-          <Typography variant="h6" color="secondary">
+          <Typography variant="body1" color="secondary">
             Peli on päättynyt! Kiitos osallistumisesta. Muista antaa palautetta.
           </Typography>
         </div>

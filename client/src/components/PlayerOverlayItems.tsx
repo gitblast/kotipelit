@@ -127,7 +127,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
         />
         {forHost && showPointAddition && pointAddition !== 0 && (
           <div>
-            <Typography variant="h6" className={classes.pointsAddition}>
+            <Typography variant="body1" className={classes.pointsAddition}>
               {pointAddition}
             </Typography>
           </div>
@@ -145,11 +145,11 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
         <div className={classes.spacer} />
         <div className={classes.flex}>
           <div className={classes.nameBadge}>
-            <Typography variant="subtitle2" className={classes.playerName}>
+            <Typography variant="body1" className={classes.playerName}>
               {player.name}
             </Typography>
 
-            <Typography variant="subtitle2" className={classes.playerPoints}>
+            <Typography variant="body1" className={classes.playerPoints}>
               {player.points}
             </Typography>
             <div>

@@ -39,7 +39,7 @@ const AnswerBubble: React.FC<AnswerBubbleProps> = ({ answer, playerId }) => {
 
   return (
     <Paper className={classes.answerBubble}>
-      <Typography variant="h6" className={classes.answerText}>
+      <Typography variant="body1" className={classes.answerText}>
         {answer}
       </Typography>
       <Checkbox checked={checked} onChange={() => toggleClicked(playerId)} />

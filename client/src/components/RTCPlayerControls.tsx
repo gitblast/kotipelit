@@ -86,7 +86,7 @@ const RTCPlayerControls: React.FC<{
 
       {!isWideEnough && (
         <Grid item xs={12}>
-          <Typography className={classes.timer} variant="h6">
+          <Typography className={classes.timer} variant="body1">
             {timerValue}
           </Typography>
         </Grid>
@@ -94,7 +94,7 @@ const RTCPlayerControls: React.FC<{
 
       <Grid item md={4} sm={12} className={classes.controlsItem}>
         {isWideEnough && (
-          <Typography className={classes.timer} variant="h6">
+          <Typography className={classes.timer} variant="body1">
             {timerValue}
           </Typography>
         )}

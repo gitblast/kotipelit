@@ -63,7 +63,7 @@ const MainKotitonniButton: React.FC<MainKotitonniButtonProps> = ({
       disabled={disabled}
       variant="extended"
     >
-      <Typography variant="h6">{getMainButtonLabel(gameStatus)}</Typography>
+      <Typography variant="body1">{getMainButtonLabel(gameStatus)}</Typography>
     </Fab>
   );
 };

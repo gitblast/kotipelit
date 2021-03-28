@@ -124,7 +124,7 @@ const RTCHostControls = ({
             className={classes.timerButton}
           >
             {timerIsRunning ? <PauseIcon /> : <PlayArrowIcon />}
-            <Typography variant="h6">{timerValue}</Typography>
+            <Typography variant="body1">{timerValue}</Typography>
           </Fab>
         )}
         <MainKotitonniButton

@@ -110,7 +110,7 @@ const theme = createMuiTheme({
       lineHeight: 1,
     },
     subtitle1: {
-      fontFamily: 'BeautySchoolDropoutII',
+      fontFamily: 'beautySchoolDropoutII',
       textTransform: 'uppercase',
       fontSize: '3rem',
       lineHeight: '1',

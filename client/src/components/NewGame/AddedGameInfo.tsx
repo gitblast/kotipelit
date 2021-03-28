@@ -48,7 +48,7 @@ const AddedGameInfo = ({ addedGame, error }: AddedGameInfoProps) => {
       <Typography variant="overline" color="initial">
         Kotipelit
       </Typography>
-      <Typography variant="body2">{`${baseUrl}/${username}/kutsut/${addedGame.id}`}</Typography>
+      <Typography variant="caption">{`${baseUrl}/${username}/kutsut/${addedGame.id}`}</Typography>
       <Typography className={classes.shareLink}>
         Jaa ylläoleva linkki kaikille, jotka haluat kutsua pelaamaan.
       </Typography>
@@ -58,7 +58,7 @@ const AddedGameInfo = ({ addedGame, error }: AddedGameInfoProps) => {
           <Typography variant="subtitle1" color="initial">
             Kotipelit-TV
           </Typography>
-          <Typography variant="body2">
+          <Typography variant="caption">
             {`${baseUrl}/${username}/live/${addedGame.id}`}
           </Typography>
           <Typography className={classes.shareLink}>

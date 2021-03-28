@@ -20,18 +20,25 @@ const useSelf = (game: RTCGame | null, role: Role) => {
   const [mySelf, setMySelf] = React.useState<null | RTCSelf>(null);
 
   React.useEffect(() => {
-    if (!mySelf && game && role !== Role.SPECTATOR) {
-      const myId = getMyId(game, role);
-
-      if (!myId) {
-        logger.error('self object not found!');
-      } else {
-        const self = {
-          id: myId,
+    if (!mySelf && game) {
+      if (role === Role.SPECTATOR) {
+        setMySelf({
+          id: 'spectator',
           role,
-        };
+        });
+      } else {
+        const myId = getMyId(game, role);
 
-        setMySelf(self);
+        if (!myId) {
+          logger.error('self object not found!');
+        } else {
+          const self = {
+            id: myId,
+            role,
+          };
+
+          setMySelf(self);
+        }
       }
     }
   }, [game, mySelf, role]);

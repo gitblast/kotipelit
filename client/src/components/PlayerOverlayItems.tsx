@@ -48,10 +48,13 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(2),
       display: 'flex',
       justifyContent: 'flex-end',
-      fontSize: theme.spacing(4),
+      fontSize: theme.spacing(2.5),
       position: 'absolute',
       top: '4%',
       left: '80%',
+      [theme.breakpoints.down('sm')]: {
+        display: 'none',
+      },
       [theme.breakpoints.down('xs')]: {
         display: 'none',
       },

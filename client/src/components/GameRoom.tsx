@@ -34,6 +34,9 @@ const useStyles = makeStyles((theme: Theme) =>
     gameTitleBar: {
       display: 'flex',
       justifyContent: 'space-around',
+      [theme.breakpoints.down('sm')]: {
+        display: 'none',
+      },
     },
     kotipelit: {
       position: 'relative',

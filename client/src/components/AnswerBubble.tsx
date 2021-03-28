@@ -17,6 +17,11 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
     },
+    answerText: {
+      [theme.breakpoints.down('sm')]: {
+        fontSize: '1.4rem',
+      },
+    },
   })
 );
 
@@ -34,7 +39,9 @@ const AnswerBubble: React.FC<AnswerBubbleProps> = ({ answer, playerId }) => {
 
   return (
     <Paper className={classes.answerBubble}>
-      <Typography variant="h6">{answer}</Typography>
+      <Typography variant="h6" className={classes.answerText}>
+        {answer}
+      </Typography>
       <Checkbox checked={checked} onChange={() => toggleClicked(playerId)} />
     </Paper>
   );

@@ -14,6 +14,9 @@ const useStyles = makeStyles((theme: Theme) =>
         flexWrap: 'wrap',
       },
     },
+    disclaimers: {
+      fontSize: '0.85rem',
+    },
   })
 );
 
@@ -95,11 +98,15 @@ const LockReservationForm: React.FC<LockReservationFormProps> = ({
             error={emailError !== ''}
             helperText={emailError}
           />
-          <Typography variant="body2">
+          <Typography variant="body2" className={classes.disclaimers}>
             Saat pelin tiedot sähköpostiisi.
           </Typography>
-          <Typography variant="body2">
+          <Typography variant="body2" className={classes.disclaimers}>
             Tietosi poistuu järjestelmästä kolmen päivän kuluessa.
+          </Typography>
+          <Typography variant="body2" className={classes.disclaimers}>
+            Ilmottautumalla hyväksyt, että pelin aikana käytetään
+            videopuheluyhteyttä.
           </Typography>
         </div>
       </div>

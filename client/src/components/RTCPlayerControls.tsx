@@ -83,13 +83,15 @@ const RTCPlayerControls: React.FC<{
       <Grid item md={4} sm={12} xs={12} className={classes.controlsItem}>
         <InfoBar />
       </Grid>
-      <Grid item xs={12}>
-        {!isWideEnough && (
+
+      {!isWideEnough && (
+        <Grid item xs={12}>
           <Typography className={classes.timer} variant="h6">
             {timerValue}
           </Typography>
-        )}
-      </Grid>
+        </Grid>
+      )}
+
       <Grid item md={4} sm={12} className={classes.controlsItem}>
         {isWideEnough && (
           <Typography className={classes.timer} variant="h6">

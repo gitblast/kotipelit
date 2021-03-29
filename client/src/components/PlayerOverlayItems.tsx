@@ -73,13 +73,14 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: theme.spacing(4.5),
       color: theme.palette.primary.light,
       [theme.breakpoints.down('sm')]: {
-        fontSize: 18,
+        fontSize: '1.2rem',
       },
     },
     playerPoints: {
+      fontSize: '2.6rem',
       color: 'rgb(0 225 217)',
       [theme.breakpoints.down('sm')]: {
-        fontSize: 18,
+        fontSize: '1.5rem',
       },
     },
   })

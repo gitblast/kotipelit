@@ -38,6 +38,9 @@ const useStyles = makeStyles((theme: Theme) =>
     kotitonniTitle: {
       fontSize: '5.2rem',
       color: 'rgb(185 231 229)',
+      [theme.breakpoints.down('sm')]: {
+        fontSize: '3.8rem',
+      },
     },
     kotipelit: {
       position: 'relative',
@@ -45,6 +48,9 @@ const useStyles = makeStyles((theme: Theme) =>
       left: 190,
       fontSize: '0.85rem',
       color: 'rgb(185 231 229)',
+      [theme.breakpoints.down('sm')]: {
+        display: 'none',
+      },
     },
     topStyle: {
       borderTop: '22px dotted rgb(185 231 229)',
@@ -53,8 +59,9 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '30vw',
       alignSelf: 'center',
       marginTop: '15px',
-      [theme.breakpoints.down('sm')]: {
-        display: 'none',
+      [theme.breakpoints.down('xs')]: {
+        width: '20vw',
+        borderTop: '15px dotted rgb(185 231 229)',
       },
     },
     startBtnContainer: {

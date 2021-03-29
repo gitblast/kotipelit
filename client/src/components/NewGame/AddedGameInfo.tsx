@@ -45,7 +45,7 @@ const AddedGameInfo = ({ addedGame, error }: AddedGameInfoProps) => {
 
   return (
     <div className={classes.container}>
-      <Typography variant="overline" color="initial">
+      <Typography variant="subtitle2" color="initial">
         Kotipelit
       </Typography>
       <Typography variant="caption">{`${baseUrl}/${username}/kutsut/${addedGame.id}`}</Typography>
@@ -62,7 +62,7 @@ const AddedGameInfo = ({ addedGame, error }: AddedGameInfoProps) => {
             {`${baseUrl}/${username}/live/${addedGame.id}`}
           </Typography>
           <Typography className={classes.shareLink}>
-            Jaa tämä linkki katsojille
+            Jaa tämä kaikille, jotka haluat kutsua katsojiksi
           </Typography>
         </>
       ) : null}

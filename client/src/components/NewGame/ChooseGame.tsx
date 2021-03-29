@@ -54,7 +54,7 @@ const ChooseGame: React.FC<ChooseGameProps> = ({ handleSelect }) => {
       >
         <CardActionArea>
           <CardContent>
-            <Typography variant="subtitle2">Kotitonni</Typography>
+            <Typography variant="subtitle1">Kotitonni</Typography>
             <CardMedia>
               <img
                 src={kotitonniImg}

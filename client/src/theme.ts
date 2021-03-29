@@ -104,10 +104,9 @@ const theme = createMuiTheme({
     h5: {
       fontSize: '1.4rem',
     },
+    // No use atm
     h6: {
-      fontFamily: 'beautySchoolDropout',
-      fontSize: 30,
-      lineHeight: 1,
+      fontSize: '1.2rem',
     },
     subtitle1: {
       fontFamily: 'beautySchoolDropoutII',
@@ -117,10 +116,9 @@ const theme = createMuiTheme({
     },
     // Used to display the game name and host name in GameRoom
     subtitle2: {
-      fontFamily: 'beautySchoolDropoutII',
-      textTransform: 'uppercase',
-      fontSize: 30,
-      lineHeight: 1,
+      fontFamily: 'chicagoNeon',
+      lineHeight: 0.6,
+      fontSize: '3.4rem',
     },
     // Used to display links
     caption: {
@@ -130,11 +128,6 @@ const theme = createMuiTheme({
       color: 'rgb(135 135 135)',
     },
     // Used to display Kotipelit, probably better to use another typo variant
-    overline: {
-      fontFamily: 'chicagoNeon',
-      fontSize: '3.4rem',
-      lineHeight: 1,
-    },
   },
   breakpoints: {
     values: {

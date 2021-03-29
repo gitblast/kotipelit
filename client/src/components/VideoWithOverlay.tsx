@@ -16,6 +16,7 @@ const useStyles = makeStyles(() =>
     },
     frame: {
       width: '100%',
+      backgroundColor: 'black',
       paddingTop: '75%',
       position: 'relative',
     },

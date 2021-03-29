@@ -41,9 +41,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     kotipelit: {
       position: 'relative',
-      top: -21,
-      left: 219,
-      fontSize: '0.8rem',
+      top: -9,
+      left: 190,
+      fontSize: '0.85rem',
       color: 'rgb(185 231 229)',
     },
     topStyle: {
@@ -151,11 +151,14 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
             {/* For animation, should more topStyle divs be added? */}
             <div className={classes.topStyle}></div>
             <div>
-              <Typography variant="overline" className={classes.kotitonniTitle}>
+              <Typography
+                variant="subtitle1"
+                className={classes.kotitonniTitle}
+              >
                 Kotitonni
               </Typography>
               <Typography className={classes.kotipelit}>
-                Kotipelit.com
+                kotipelit.com
               </Typography>
             </div>
 

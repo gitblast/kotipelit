@@ -50,7 +50,7 @@ const MainKotitonniButton: React.FC<MainKotitonniButtonProps> = ({
       case GameStatus.RUNNING:
         return 'Päivitä pisteet';
       case GameStatus.FINISHED:
-        return 'Lopeta peli';
+        return 'Poistu';
       default:
         return 'Aloita peli';
     }
@@ -63,7 +63,7 @@ const MainKotitonniButton: React.FC<MainKotitonniButtonProps> = ({
       disabled={disabled}
       variant="extended"
     >
-      <Typography variant="body1">{getMainButtonLabel(gameStatus)}</Typography>
+      <Typography variant="h5">{getMainButtonLabel(gameStatus)}</Typography>
     </Fab>
   );
 };

@@ -124,7 +124,7 @@ const RTCHostControls = ({
             className={classes.timerButton}
           >
             {timerIsRunning ? <PauseIcon /> : <PlayArrowIcon />}
-            <Typography variant="body1">{timerValue}</Typography>
+            <Typography variant="h5">{timerValue}</Typography>
           </Fab>
         )}
         <MainKotitonniButton
@@ -147,9 +147,7 @@ const RTCHostControls = ({
         )}
       </Grid>
       <Grid item md={4} className={classes.controlsIcons}>
-        {game.status === GameStatus.RUNNING && isWideEnough && (
-          <SpectatorCount count={spectatorCount} />
-        )}
+        {isWideEnough && <SpectatorCount count={spectatorCount} />}
 
         <IconButton
           className={classes.controlBarIcons}

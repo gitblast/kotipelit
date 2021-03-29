@@ -41,7 +41,6 @@ const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
       paddingTop: '75%',
       backgroundColor: 'rgba(11,43,56)',
       position: 'relative',
-      color: 'white',
     },
     hasTurn: {
       background: (props) => `${colors[props.order]}`,

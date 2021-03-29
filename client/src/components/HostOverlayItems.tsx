@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: 'rgba(0, 0, 0, 0.8)',
       width: '100%',
       justifyContent: 'space-around',
-      padding: theme.spacing(1.4),
+      padding: theme.spacing(1.6),
       borderTop: 'dotted 3px rgb(0 225 217)',
       clipPath: 'polygon(10% 0, 90% 0, 91% 4%, 100% 100%, 0 100%, 8% 5%)',
       [theme.breakpoints.down('sm')]: {
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     hostName: {
-      fontSize: theme.spacing(4),
+      fontSize: theme.spacing(4.5),
       color: theme.palette.info.main,
       [theme.breakpoints.down('sm')]: {
         fontSize: 18,
@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme: Theme) =>
         fontSize: theme.spacing(4),
       },
     },
-
     flexCol: {
       height: '100%',
       display: 'flex',

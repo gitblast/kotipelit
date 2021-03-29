@@ -1,8 +1,7 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 
 import Zrnic from './assets/fonts/zrnic-rg.ttf';
-import BeautySchoolDropoutII from './assets/fonts/BeautySchoolDropoutII.ttf';
-import BeautySchoolDropout from './assets/fonts/BeautySchoolDropout.ttf';
+import BeautySchoolDropoutII from './assets/fonts/BeautySchoolDropoutII.woff';
 import ChicagoNeon from './assets/fonts/ChicagoNeon.ttf';
 
 // Instructions (Self hosted fonts) https://material-ui.com/customization/typography/
@@ -27,20 +26,7 @@ const beautySchoolDropoutII = {
   src: `
     local('BeautySchoolDropoutII'),
     url(${BeautySchoolDropoutII}),
-    url(${BeautySchoolDropoutII}) format('ttf')
-  `,
-  unicodeRange:
-    'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2035, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF',
-};
-
-const beautySchoolDropout = {
-  fontFamily: 'BeautySchoolDropout',
-  fontStyle: 'normal',
-  fontWeight: 400,
-  src: `
-    local('BeautySchoolDropout'),
-    url(${BeautySchoolDropout}),
-    url(${BeautySchoolDropout}) format('ttf')
+    url(${BeautySchoolDropoutII}) format('woff')
   `,
   unicodeRange:
     'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2035, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF',
@@ -162,12 +148,7 @@ const theme = createMuiTheme({
   overrides: {
     MuiCssBaseline: {
       '@global': {
-        '@font-face': [
-          zrnic,
-          beautySchoolDropoutII,
-          beautySchoolDropout,
-          chicagoNeon,
-        ],
+        '@font-face': [zrnic, beautySchoolDropoutII, chicagoNeon],
       },
     },
     MuiButton: {

@@ -81,7 +81,7 @@ const AnswerForm: React.FC<AnswerFormProps> = ({
         variant="extended"
         disabled={answeringDisabled}
       >
-        <Typography variant="body1">Vastaa</Typography>
+        <Typography variant="h6">Vastaa</Typography>
       </Fab>
     </form>
   );

@@ -33,7 +33,7 @@ export const useHostGameToken = () => {
     }
   }, [gameID, token, setError]);
 
-  return [token] as const;
+  return token;
 };
 
 export default useHostGameToken;

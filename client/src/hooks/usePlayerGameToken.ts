@@ -22,7 +22,6 @@ export const usePlayerGameToken = () => {
     const fetchToken = async () => {
       try {
         logger.log(`fetching player token`);
-
         const gameToken = await gameService.getPlayerTokenForGame(
           username,
           playerId,
@@ -45,7 +44,7 @@ export const usePlayerGameToken = () => {
     }
   }, [token, username, playerId, setError]);
 
-  return [token] as const;
+  return token;
 };
 
 export default usePlayerGameToken;

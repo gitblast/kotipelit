@@ -11,6 +11,7 @@ import PreGameInfo from './PreGameInfo';
 import RTCHostControls from './RTCHostControls';
 import RTCPlayerControls from './RTCPlayerControls';
 import RTCVideoConference from './RTCVideoConference';
+import { useGameErrorState } from '../context';
 
 // import { Animated } from 'react-animated-css';
 
@@ -23,6 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     centered: {
       minHeight: 400,
+      textAlign: 'center',
     },
     topGradient: {
       background: 'linear-gradient(to bottom, rgb(11 42 56), rgb(32 82 100))',
@@ -106,6 +108,8 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
     handleJoinCall,
   } = useNewGameRoom(token, role);
 
+  const { errorState } = useGameErrorState();
+
   React.useEffect(() => {
     logger.log('participants changed:', participants);
   }, [participants]);
@@ -127,7 +131,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
   if (!game || !socket || !mySelf) {
     return (
       <div className={classes.centered}>
-        <Loader msg={'Ladataan..'} spinner />
+        <Loader msg={'Ladataan..'} spinner errored={!!errorState} />
       </div>
     );
   }

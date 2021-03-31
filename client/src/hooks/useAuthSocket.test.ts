@@ -1,10 +1,16 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import useAuthSocket from './useAuthSocket';
-import socketIOClient from 'socket.io-client';
+import socketIOClient, { Socket } from 'socket.io-client';
 import { CommonEvent, MockSocket } from '../types';
 
 // mock socketio
 jest.mock('socket.io-client');
+
+const mockErrorSetter = jest.fn();
+
+jest.mock('../context', () => ({
+  useGameErrorState: () => ({ setError: mockErrorSetter }),
+}));
 
 const getMockSocket = () =>
   (({
@@ -13,22 +19,23 @@ const getMockSocket = () =>
     connected: true,
     on: jest.fn().mockImplementation(
       // saves the attached listeners in the listeners -object so they can be called later
-      function (this: MockSocket, event: string, callback: Function) {
+      function (this: MockSocket, event: string, callback: () => void) {
         this.listeners[event] = callback;
         return this;
       }
     ),
     emit: jest.fn(),
-  } as unknown) as SocketIOClient.Socket);
+  } as unknown) as Socket);
 
 describe('useSocket hook', () => {
   const SocketMock = (socketIOClient as unknown) as jest.Mock;
   const token = 'token';
 
-  let mock: SocketIOClient.Socket;
+  let mock: Socket;
 
   beforeEach(() => {
     SocketMock.mockClear();
+    mockErrorSetter.mockClear();
 
     mock = getMockSocket();
 
@@ -40,9 +47,7 @@ describe('useSocket hook', () => {
       initialProps: { token: null },
     });
 
-    expect(result.current.length).toBe(2);
-    expect(result.current[0]).toBeNull();
-    expect(result.current[1]).toBeNull();
+    expect(result.current).toBeNull();
   });
 
   it('should call init socket if not already set when token becomes not null', () => {
@@ -68,7 +73,7 @@ describe('useSocket hook', () => {
 
     const asMock = (mock as unknown) as MockSocket;
 
-    expect(result.current[0]).toBeNull();
+    expect(result.current).toBeNull();
     expect(SocketMock).toHaveBeenCalledTimes(1);
 
     act(() => {
@@ -76,7 +81,7 @@ describe('useSocket hook', () => {
       asMock.listeners[CommonEvent.CONNECT]();
     });
 
-    expect(result.current[0]).not.toBeNull();
+    expect(result.current).not.toBeNull();
     expect(SocketMock).toHaveBeenCalledTimes(1);
   });
 
@@ -103,11 +108,11 @@ describe('useSocket hook', () => {
       asMock.listeners[CommonEvent.CONNECT]();
     });
 
-    expect(result.current[0]).toBe(mock);
+    expect(result.current).toBe(mock);
   });
 
   it('should set error on unauthorized', () => {
-    const { result } = renderHook(({ token }) => useAuthSocket(token), {
+    renderHook(({ token }) => useAuthSocket(token), {
       initialProps: { token },
     });
 
@@ -116,13 +121,14 @@ describe('useSocket hook', () => {
     act(() => {
       asMock.listeners[CommonEvent.CONNECT]();
     });
-    expect(result.current[1]).toBeNull();
+
+    expect(mockErrorSetter).not.toHaveBeenCalled();
 
     act(() => {
       asMock.listeners['connect_error']({ message: 'error msg' });
     });
 
-    expect(result.current[1]).toBe('error msg');
+    expect(mockErrorSetter).toHaveBeenCalled();
   });
 
   it('should call disconnect as cleanup if socket is set', () => {
@@ -139,14 +145,14 @@ describe('useSocket hook', () => {
       asMock.listeners[CommonEvent.CONNECT]();
     });
 
-    if (!result.current[0]) {
+    if (!result.current) {
       throw new Error('expected socket to not be null');
     }
 
-    expect(result.current[0].disconnect).not.toHaveBeenCalled();
+    expect(result.current.disconnect).not.toHaveBeenCalled();
 
     unmount();
 
-    expect(result.current[0].disconnect).toHaveBeenCalled();
+    expect(result.current.disconnect).toHaveBeenCalled();
   });
 });

@@ -3,6 +3,7 @@ import React from 'react';
 import { Role, RTCGame, RTCSelf } from '../types';
 
 import logger from '../utils/logger';
+import { useGameErrorState } from '../context';
 
 const getMyId = (game: RTCGame, role: Role) => {
   if (role === Role.HOST) {
@@ -19,6 +20,8 @@ const getMyId = (game: RTCGame, role: Role) => {
 const useSelf = (game: RTCGame | null, role: Role) => {
   const [mySelf, setMySelf] = React.useState<null | RTCSelf>(null);
 
+  const { setError } = useGameErrorState();
+
   React.useEffect(() => {
     if (!mySelf && game) {
       if (role === Role.SPECTATOR) {
@@ -31,6 +34,11 @@ const useSelf = (game: RTCGame | null, role: Role) => {
 
         if (!myId) {
           logger.error('self object not found!');
+
+          setError(
+            new Error('ID:tä vastaavaa pelaajaa ei löytynyt'),
+            'Odottamaton virhe:'
+          );
         } else {
           const self = {
             id: myId,
@@ -41,7 +49,7 @@ const useSelf = (game: RTCGame | null, role: Role) => {
         }
       }
     }
-  }, [game, mySelf, role]);
+  }, [game, mySelf, role, setError]);
 
   return mySelf;
 };

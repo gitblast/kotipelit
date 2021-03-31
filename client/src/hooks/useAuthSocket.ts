@@ -4,6 +4,7 @@ import { io as socketIOClient, Socket } from 'socket.io-client';
 import { CommonEvent } from '../types';
 
 import logger from '../utils/logger';
+import { useGameErrorState } from '../context';
 
 const useAuthSocket = (
   token: string | null,
@@ -11,7 +12,7 @@ const useAuthSocket = (
 ) => {
   const [socketClient, setSocketClient] = React.useState<Socket | null>(null);
 
-  const [error, setError] = React.useState<null | string>(null);
+  const { setError } = useGameErrorState();
 
   React.useEffect(() => {
     const initSocket = (authToken: string) => {
@@ -32,11 +33,13 @@ const useAuthSocket = (
       socket.on('connect_error', (error: Error) => {
         logger.error('socket.io connect error:', error.message);
 
-        setError(error.message);
+        setError(error, 'Ongelma yhdistäessä pelipalvelimeen');
       });
 
       socket.on('error', (error: Error) => {
         logger.error('socket.io error:', error.message);
+
+        setError(error, 'Ongelma yhteydessä pelipalvelimen');
       });
 
       socket.on('disconnect', (reason: string) => {
@@ -75,9 +78,9 @@ const useAuthSocket = (
         socketClient.disconnect();
       }
     };
-  }, [token, socketClient, onLeave]);
+  }, [token, socketClient, onLeave, setError]);
 
-  return [socketClient, error] as const;
+  return socketClient;
 };
 
 export default useAuthSocket;

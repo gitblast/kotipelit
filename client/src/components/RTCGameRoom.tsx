@@ -11,19 +11,19 @@ import ErrorDialog from './ErrorDialog';
 import useGameError from '../hooks/useGameError';
 
 const RTCGameForSpectator: React.FC = () => {
-  const [token] = useSpectatorGameToken();
+  const token = useSpectatorGameToken();
 
   return <GameRoom token={token} role={Role.SPECTATOR} />;
 };
 
 const RTCGameForPlayer: React.FC = () => {
-  const [token] = usePlayerGameToken();
+  const token = usePlayerGameToken();
 
   return <GameRoom token={token} role={Role.PLAYER} />;
 };
 
 const RTCGameForHost: React.FC = () => {
-  const [token] = useHostGameToken();
+  const token = useHostGameToken();
 
   return <GameRoom token={token} role={Role.HOST} />;
 };
@@ -36,13 +36,7 @@ interface RTCGameRoomProps {
 const RTCGameRoom: React.FC<RTCGameRoomProps> = ({ role }) => {
   const gameErrorState = useGameError();
 
-  const { setError, errorState } = gameErrorState;
-
-  const handleRefreshGame = React.useCallback(() => {
-    setError(null, '');
-
-    window.location.reload();
-  }, [setError]);
+  const { errorState, refreshGame } = gameErrorState;
 
   const getContent = () => {
     switch (role) {
@@ -61,7 +55,7 @@ const RTCGameRoom: React.FC<RTCGameRoomProps> = ({ role }) => {
         {errorState && (
           <ErrorDialog
             errorState={errorState}
-            handleRefreshGame={handleRefreshGame}
+            handleRefreshGame={refreshGame}
           />
         )}
         {getContent()}

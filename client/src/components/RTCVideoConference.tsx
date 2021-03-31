@@ -7,6 +7,7 @@ import MediaStatesProvider from './MediaStatesProvider/MediaStatesProvider';
 import RTCVideoFrame from './RTCVideoFrame';
 
 import { RTCParticipant } from '../types';
+import { useGameErrorState } from '../context';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -29,6 +30,8 @@ const RTCVideoConference: React.FC<RTCVideoConferenceProps> = ({
 }) => {
   const classes = useStyles();
 
+  const { errorState } = useGameErrorState();
+
   /**
    * Calculates the order for the video windows, setting host as bottom -center if 6 players
    */
@@ -48,7 +51,7 @@ const RTCVideoConference: React.FC<RTCVideoConferenceProps> = ({
     return (
       // Check the browser here latest? + Add message for waiting for host
       <div className={classes.videoConf}>
-        <Loader msg="Ladataan.." spinner />
+        <Loader msg="Ladataan.." spinner errored={!!errorState} />
       </div>
     );
   }

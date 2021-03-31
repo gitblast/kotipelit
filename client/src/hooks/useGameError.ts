@@ -15,9 +15,16 @@ const useGameError = () => {
     []
   );
 
+  const refreshGame = React.useCallback(() => {
+    setState(null);
+
+    window.location.reload();
+  }, []);
+
   return {
     errorState: state,
     setError: setGameError,
+    refreshGame,
   };
 };
 

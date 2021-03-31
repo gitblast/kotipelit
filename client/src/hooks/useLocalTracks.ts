@@ -17,77 +17,80 @@ import {
 } from '../constants';
 
 import logger from '../utils/logger';
+import { useGameErrorState } from '../context';
 
 interface LocalTracks {
   localVideoTrack: LocalVideoTrack | null;
   localAudioTrack: LocalAudioTrack | null;
   shutDownLocalTracks: () => void;
-  error: string | null;
 }
 
 const useLocalTracks = (onCall: boolean): LocalTracks => {
   const [localTracks, setLocalTracks] = React.useState<null | LocalTrack[]>(
     null
   );
-  const [error, setError] = React.useState<null | string>(null);
+  const { setError } = useGameErrorState();
 
   const { audioInputDevices, videoInputDevices } = useDevices(!!localTracks);
 
   React.useEffect(() => {
     const getLocalTracks = async () => {
-      logger.log('getting local media tracks');
-
-      const preferredAudioInput = window.localStorage.getItem(
-        SAVED_AUDIO_DEVICE_ID
-      );
-      const preferredVideoInput = window.localStorage.getItem(
-        SAVED_VIDEO_DEVICE_ID
-      );
-
-      const preferredAudioExists =
-        !!preferredAudioInput &&
-        !!audioInputDevices?.some(
-          (device) => device.deviceId === preferredAudioInput
-        );
-
-      const preferredVideoExists =
-        !!preferredVideoInput &&
-        !!videoInputDevices?.some(
-          (device) => device.deviceId === preferredVideoInput
-        );
-
-      const options: CreateLocalTracksOptions = {
-        video: {
-          ...DEFAULT_VIDEO_CONSTRAINTS,
-          ...(preferredVideoInput &&
-            preferredVideoExists && {
-              deviceId: { exact: preferredVideoInput },
-            }),
-        },
-        audio: {
-          ...DEFAULT_AUDIO_CONSTRAINTS,
-          ...(preferredAudioInput &&
-            preferredAudioExists && {
-              deviceId: { exact: preferredAudioInput },
-            }),
-        },
-      };
-
-      const tracks = await createLocalTracks(options);
-
-      setLocalTracks(tracks);
-    };
-
-    if (onCall && audioInputDevices && videoInputDevices && !localTracks) {
       try {
-        getLocalTracks();
+        const preferredAudioInput = window.localStorage.getItem(
+          SAVED_AUDIO_DEVICE_ID
+        );
+        const preferredVideoInput = window.localStorage.getItem(
+          SAVED_VIDEO_DEVICE_ID
+        );
+
+        const preferredAudioExists =
+          !!preferredAudioInput &&
+          !!audioInputDevices?.some(
+            (device) => device.deviceId === preferredAudioInput
+          );
+
+        const preferredVideoExists =
+          !!preferredVideoInput &&
+          !!videoInputDevices?.some(
+            (device) => device.deviceId === preferredVideoInput
+          );
+
+        const options: CreateLocalTracksOptions = {
+          video: {
+            ...DEFAULT_VIDEO_CONSTRAINTS,
+            ...(preferredVideoInput &&
+              preferredVideoExists && {
+                deviceId: { exact: preferredVideoInput },
+              }),
+          },
+          audio: {
+            ...DEFAULT_AUDIO_CONSTRAINTS,
+            ...(preferredAudioInput &&
+              preferredAudioExists && {
+                deviceId: { exact: preferredAudioInput },
+              }),
+          },
+        };
+
+        const tracks = await createLocalTracks(options);
+
+        setLocalTracks(tracks);
       } catch (error) {
         logger.error(`error getting tracks: ${error.message}`);
 
-        setError(`error getting tracks: ${error.message}`);
+        setError(
+          error,
+          'Ongelma paikallisen median kanssa. Varmista, että kamera ja mikrofoni ovat selaimen käytettävissä.'
+        );
       }
+    };
+
+    if (onCall && audioInputDevices && videoInputDevices && !localTracks) {
+      logger.log('getting local media tracks');
+
+      getLocalTracks();
     }
-  }, [onCall, localTracks, audioInputDevices, videoInputDevices]);
+  }, [onCall, localTracks, audioInputDevices, videoInputDevices, setError]);
 
   const shutDownLocalTracks = React.useCallback(() => {
     if (localTracks) {
@@ -111,7 +114,6 @@ const useLocalTracks = (onCall: boolean): LocalTracks => {
         (track) => track.kind === 'audio'
       ) as LocalAudioTrack) ?? null,
     shutDownLocalTracks,
-    error,
   };
 };
 

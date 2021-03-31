@@ -25,6 +25,7 @@ import { Typography } from '@material-ui/core';
 interface ErrorDialogProps {
   errorState: ErrorState | null;
   handleRefreshGame: () => void;
+  enableRefresh?: boolean;
 }
 
 const isAxiosError = (error: any): error is AxiosError => {
@@ -35,7 +36,11 @@ const isAxiosError = (error: any): error is AxiosError => {
   return true;
 };
 
-const ErrorDialog = ({ errorState, handleRefreshGame }: ErrorDialogProps) => {
+const ErrorDialog = ({
+  errorState,
+  handleRefreshGame,
+  enableRefresh = true,
+}: ErrorDialogProps) => {
   const [open, setOpen] = React.useState(!!errorState);
 
   if (!errorState) {
@@ -66,8 +71,13 @@ const ErrorDialog = ({ errorState, handleRefreshGame }: ErrorDialogProps) => {
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleRefreshGame} color="primary" autoFocus>
-          Yritä uudestaan
+        {enableRefresh && (
+          <Button onClick={handleRefreshGame} color="secondary" autoFocus>
+            Lataa sivu uudelleen
+          </Button>
+        )}
+        <Button onClick={() => setOpen(false)} color="primary" autoFocus>
+          Sulje
         </Button>
       </DialogActions>
     </Dialog>

@@ -5,7 +5,6 @@ import Video from './Video';
 import AudioLevelIndicator from './AudioLevelIndicator';
 import DeviceSelector from './DeviceSelector';
 import useLocalTracks from '../hooks/useLocalTracks';
-import logger from '../utils/logger';
 
 import {
   SAVED_AUDIO_DEVICE_ID,
@@ -32,7 +31,6 @@ const MediaPreview: React.FC = () => {
     localVideoTrack,
     localAudioTrack,
     shutDownLocalTracks,
-    error: localTrackError,
   } = useLocalTracks(true);
 
   const { audioInputDevices, videoInputDevices } = useDevices(
@@ -66,10 +64,6 @@ const MediaPreview: React.FC = () => {
     },
     [localVideoTrack]
   );
-
-  if (localTrackError) {
-    logger.error(localTrackError);
-  }
 
   if (
     !localVideoTrack ||

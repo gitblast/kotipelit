@@ -313,8 +313,8 @@ export interface RecievedError {
 // TESTING
 
 export interface MockSocket {
-  listeners: Record<string, unknown>;
-  emitted: Record<string, unknown>;
+  listeners: Record<string, (...args: any[]) => void>;
+  emitted: Record<string, (...args: any[]) => void>;
   on: unknown;
   emit: unknown;
 }

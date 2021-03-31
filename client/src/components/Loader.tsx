@@ -33,9 +33,10 @@ const useStyles = makeStyles((theme: Theme) =>
 interface LoaderProps {
   msg: string;
   spinner?: boolean;
+  errored?: boolean;
 }
 
-const Loader: React.FC<LoaderProps> = ({ msg, spinner }) => {
+const Loader: React.FC<LoaderProps> = ({ msg, spinner, errored }) => {
   const classes = useStyles();
   const [progress, setProgress] = React.useState(25);
 
@@ -57,13 +58,23 @@ const Loader: React.FC<LoaderProps> = ({ msg, spinner }) => {
 
   return (
     <div className={classes.centered}>
-      <Typography variant="body2" className={classes.loadingText} gutterBottom>
-        {msg}
-      </Typography>
-      {spinner && (
-        <div className={classes.root}>
-          <LinearProgress variant="determinate" value={progress} />
-        </div>
+      {errored ? (
+        <Typography color="error">Tapahtui virhe</Typography>
+      ) : (
+        <>
+          <Typography
+            variant="body2"
+            className={classes.loadingText}
+            gutterBottom
+          >
+            {msg}
+          </Typography>
+          {spinner && (
+            <div className={classes.root}>
+              <LinearProgress variant="determinate" value={progress} />
+            </div>
+          )}
+        </>
       )}
     </div>
   );

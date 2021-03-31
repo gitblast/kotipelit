@@ -6,30 +6,29 @@ import useSelf from './useSelf';
 import useTwilioRoom from './useTwilioRoom';
 import { useHistory, useParams } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
+import { useGameErrorState } from '../context';
 
 const socketOnLeaveCallback = (socket: Socket) => {
   socket.emit('leave-room');
 };
 
 const useNewGameRoom = (token: string | null, role: Role) => {
+  const { setError } = useGameErrorState();
   const [gameEnded, setGameEnded] = React.useState(false);
   const [onCall, setOnCall] = React.useState<boolean>(false);
   const history = useHistory();
   const { username: hostName } = useParams<{ username: string }>();
   const [game, setGame] = React.useState<RTCGame | null>(null);
   const [twilioToken, setTwilioToken] = React.useState<null | string>(null);
-  const [socket, socketError] = useAuthSocket(token, socketOnLeaveCallback);
+  const socket = useAuthSocket(token, socketOnLeaveCallback);
   const mySelf = useSelf(game, role);
-  const { participants, spectatorCount, error: twilioError } = useTwilioRoom(
+  const { participants, spectatorCount } = useTwilioRoom(
     game,
     mySelf?.id ?? null,
     twilioToken,
     onCall,
     role === Role.SPECTATOR
   );
-
-  if (socketError) console.error('socket error:', socketError);
-  if (twilioError) logger.error('twilio error:', twilioError);
 
   // socketio listeners
   React.useEffect(() => {
@@ -55,13 +54,15 @@ const useNewGameRoom = (token: string | null, role: Role) => {
 
       socket.on('rtc-error', (msg: string) => {
         logger.error('rtc error:', msg);
+
+        setError(new Error(msg), 'Ongelma peliyhteydessä');
       });
 
       socket.on('game-ended', () => {
         setGameEnded(true);
       });
     }
-  }, [socket]);
+  }, [socket, setError]);
 
   React.useEffect(() => {
     if (gameEnded) {

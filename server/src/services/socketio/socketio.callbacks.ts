@@ -131,7 +131,7 @@ export const launchRTCGame = async (
     let alreadyLaunched = false; // for dev purposes
 
     if (game.status !== GameStatus.UPCOMING) {
-      logger.error(`game with id ${gameId} already launched`);
+      logger.log(`game with id ${gameId} already launched`);
 
       alreadyLaunched = true;
     }

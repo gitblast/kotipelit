@@ -42,16 +42,12 @@ const useStyles = makeStyles((theme: Theme) =>
     },
 
     pointsAddition: {
-      color: 'white',
-      backgroundColor: 'rgb(34 110 108)',
-      borderRadius: '50%',
-      padding: theme.spacing(2),
+      backgroundColor: 'black',
+      width: '100%',
+      padding: theme.spacing(0.5),
       display: 'flex',
-      justifyContent: 'flex-end',
-      fontSize: theme.spacing(2.5),
+      justifyContent: 'center',
       position: 'absolute',
-      top: '4%',
-      left: '80%',
       [theme.breakpoints.down('sm')]: {
         display: 'none',
       },
@@ -128,10 +124,11 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
           inviteCode={player?.privateData?.inviteCode}
         />
         {forHost && showPointAddition && pointAddition !== 0 && (
-          <div>
-            <Typography variant="body1" className={classes.pointsAddition}>
-              {pointAddition}
+          <div className={classes.pointsAddition}>
+            <Typography variant="body2" color="initial">
+              {pointAddition >= 0 && `+ `}
             </Typography>
+            <Typography variant="body2">{pointAddition}</Typography>
           </div>
         )}
         {forHost && answer && isWideEnough && (

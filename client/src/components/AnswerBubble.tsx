@@ -10,12 +10,11 @@ const useStyles = makeStyles((theme: Theme) =>
       clipPath:
         'polygon(0% 0%, 100% 0%, 100% 75%, 79% 75%, 80% 99%, 55% 76%, 0% 75%)',
       position: 'absolute',
+      top: 22,
       width: 'fit-content',
       padding: theme.spacing(1),
       paddingBottom: theme.spacing(3),
-      margin: theme.spacing(1),
-      display: 'flex',
-      alignItems: 'center',
+      margin: theme.spacing(0.5),
     },
     answerText: {
       [theme.breakpoints.down('sm')]: {
@@ -41,8 +40,13 @@ const AnswerBubble: React.FC<AnswerBubbleProps> = ({ answer, playerId }) => {
     <Paper className={classes.answerBubble}>
       <Typography variant="body1" className={classes.answerText}>
         {answer}
+        <span>
+          <Checkbox
+            checked={checked}
+            onChange={() => toggleClicked(playerId)}
+          />
+        </span>
       </Typography>
-      <Checkbox checked={checked} onChange={() => toggleClicked(playerId)} />
     </Paper>
   );
 };

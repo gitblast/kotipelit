@@ -4,7 +4,8 @@
  * Example usage: yarn add_user username password emailaddress channelname
  */
 
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
 const bcrypt = require('bcryptjs');
 
 const User = require('../dist/models/user').default;

@@ -4,10 +4,11 @@ import { useParams } from 'react-router-dom';
 import gameService from '../services/games';
 
 import logger from '../utils/logger';
+import { useGameErrorState } from '../context';
 
 export const useSpectatorGameToken = () => {
   const [token, setToken] = React.useState<null | string>(null);
-  const [error, setError] = React.useState<null | string>(null);
+  const { setError } = useGameErrorState();
 
   const { gameID } = useParams<{ gameID: string }>();
 
@@ -19,16 +20,20 @@ export const useSpectatorGameToken = () => {
         setToken(gameToken);
       } catch (e) {
         logger.error(`Error with spectator token: ${e.message}`);
-        setError(e.message);
+
+        const errorMsg =
+          'Peliin liittyminen epäonnistui. Tarkista pelilinkkisi.';
+
+        setError(e, errorMsg);
       }
     };
 
     if (gameID && !token) {
       fetchToken();
     }
-  }, [gameID, token]);
+  }, [gameID, token, setError]);
 
-  return [token, error];
+  return [token] as const;
 };
 
 export default useSpectatorGameToken;

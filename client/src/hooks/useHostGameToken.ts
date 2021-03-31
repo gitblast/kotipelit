@@ -4,10 +4,11 @@ import { useParams } from 'react-router-dom';
 import gameService from '../services/games';
 
 import logger from '../utils/logger';
+import { useGameErrorState } from '../context';
 
 export const useHostGameToken = () => {
   const [token, setToken] = React.useState<null | string>(null);
-  const [error, setError] = React.useState<null | string>(null);
+  const { setError } = useGameErrorState();
 
   const { gameID } = useParams<{ gameID: string }>();
 
@@ -19,16 +20,20 @@ export const useHostGameToken = () => {
         setToken(gameToken);
       } catch (e) {
         logger.error(`Error with host token: ${e.message}`);
-        setError(e.message);
+
+        const errorMsg =
+          'Peliin liittyminen epäonnistui. Tarkista pelilinkkisi.';
+
+        setError(e, errorMsg);
       }
     };
 
     if (gameID && !token) {
       fetchToken();
     }
-  }, [gameID, token]);
+  }, [gameID, token, setError]);
 
-  return [token, error];
+  return [token] as const;
 };
 
 export default useHostGameToken;

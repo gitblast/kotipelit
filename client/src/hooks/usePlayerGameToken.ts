@@ -5,15 +5,16 @@ import { useParams } from 'react-router-dom';
 import gameService from '../services/games';
 
 import logger from '../utils/logger';
+import { useGameErrorState } from '../context';
 
 interface ParamTypes {
   username: string;
   playerId: string;
 }
 
-export const usePlayerGameToken = (): [string | null, string | null] => {
+export const usePlayerGameToken = () => {
   const [token, setToken] = React.useState<null | string>(null);
-  const [error, setError] = React.useState<null | string>(null);
+  const { setError } = useGameErrorState();
 
   const { username, playerId } = useParams<ParamTypes>();
 
@@ -31,16 +32,20 @@ export const usePlayerGameToken = (): [string | null, string | null] => {
         setToken(gameToken);
       } catch (e) {
         logger.error('error with player token', e.message);
-        setError(e.message);
+
+        const errorMsg =
+          'Peliin liittyminen epäonnistui. Tarkista pelilinkkisi.';
+
+        setError(e, errorMsg);
       }
     };
 
     if (username && playerId && !token) {
       fetchToken();
     }
-  }, [token, username, playerId]);
+  }, [token, username, playerId, setError]);
 
-  return [token, error];
+  return [token] as const;
 };
 
 export default usePlayerGameToken;

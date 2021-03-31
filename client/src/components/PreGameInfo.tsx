@@ -61,17 +61,6 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
                   pelaajille läpi.
                 </Typography>
               </div>
-              {previewOpen && (
-                <div>
-                  <MediaPreview />
-                </div>
-              )}
-              <Button
-                color="primary"
-                onClick={() => setPreviewOpen(!previewOpen)}
-              >
-                {previewOpen ? 'Lopeta testi' : 'Testaa kamera ja mikrofoni'}
-              </Button>
             </>
           )}
           <Button color="secondary" onClick={() => handleJoinCall()} id="start">
@@ -105,6 +94,14 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
           <Typography variant="h5">
             Odotetaan, että pelin juontaja käynnistää pelin..
           </Typography>
+          {previewOpen && (
+            <div>
+              <MediaPreview />
+            </div>
+          )}
+          <Button color="primary" onClick={() => setPreviewOpen(!previewOpen)}>
+            {previewOpen ? 'Lopeta testi' : 'Testaa kamera ja mikrofoni'}
+          </Button>
         </>
       )}
     </div>

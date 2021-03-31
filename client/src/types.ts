@@ -3,6 +3,21 @@
 import { Socket } from 'socket.io-client';
 import { Participant } from 'twilio-video';
 
+export interface ErrorState {
+  error: Error;
+  explanationMsg: string;
+}
+
+export interface GameErrorState {
+  errorState: ErrorState | null;
+  setError: GameErrorSetter;
+}
+
+export type GameErrorSetter = (
+  error: Error | null,
+  explanationMsg: string
+) => void;
+
 export interface GameData {
   game: RTCGame;
   updateGame: (updatedGame: RTCGame) => void;

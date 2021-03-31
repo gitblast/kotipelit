@@ -1,12 +1,10 @@
 import { Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
 import useNewGameRoom from '../hooks/useNewGameRoom';
 import { GameStatus, Role } from '../types';
 import logger, { setDebug } from '../utils/logger';
 import AudioHandler from './AudioHandler/AudioHandler';
-import ErrorFallBack from './ErrorFallBack';
 import Loader from './Loader';
 import GameDataProvider from './GameDataProvider/GameDataProvider';
 import PreGameInfo from './PreGameInfo';
@@ -144,50 +142,43 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
     );
   }
   return (
-    <ErrorBoundary FallbackComponent={ErrorFallBack}>
-      <GameDataProvider
-        game={game}
-        updateGame={updateGame}
-        self={mySelf}
-        socket={socket}
-      >
-        <div className={classes.containerGame} ref={fullscreenRef}>
-          <AudioHandler />
-          <div className={classes.topGradient}></div>
-          <div className={classes.gameTitleBar}>
-            {/* For animation, should more topStyle divs be added? */}
-            <div className={classes.topStyle}></div>
-            <div>
-              <Typography
-                variant="subtitle1"
-                className={classes.kotitonniTitle}
-              >
-                Kotitonni
-              </Typography>
-              <Typography className={classes.kotipelit}>
-                kotipelit.com
-              </Typography>
-            </div>
-
-            <div className={classes.topStyle}></div>
+    <GameDataProvider
+      game={game}
+      updateGame={updateGame}
+      self={mySelf}
+      socket={socket}
+    >
+      <div className={classes.containerGame} ref={fullscreenRef}>
+        <AudioHandler />
+        <div className={classes.topGradient}></div>
+        <div className={classes.gameTitleBar}>
+          {/* For animation, should more topStyle divs be added? */}
+          <div className={classes.topStyle}></div>
+          <div>
+            <Typography variant="subtitle1" className={classes.kotitonniTitle}>
+              Kotitonni
+            </Typography>
+            <Typography className={classes.kotipelit}>kotipelit.com</Typography>
           </div>
 
-          <RTCVideoConference participants={participants} />
-          {role === Role.SPECTATOR ? null : isHost ? (
-            <RTCHostControls
-              spectatorCount={spectatorCount}
+          <div className={classes.topStyle}></div>
+        </div>
+
+        <RTCVideoConference participants={participants} />
+        {role === Role.SPECTATOR ? null : isHost ? (
+          <RTCHostControls
+            spectatorCount={spectatorCount}
+            handleToggleFullscreen={handleToggleFullscreen}
+          />
+        ) : (
+          game.status === GameStatus.RUNNING && (
+            <RTCPlayerControls
               handleToggleFullscreen={handleToggleFullscreen}
             />
-          ) : (
-            game.status === GameStatus.RUNNING && (
-              <RTCPlayerControls
-                handleToggleFullscreen={handleToggleFullscreen}
-              />
-            )
-          )}
-        </div>
-      </GameDataProvider>
-    </ErrorBoundary>
+          )
+        )}
+      </div>
+    </GameDataProvider>
   );
 };
 

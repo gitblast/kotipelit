@@ -4,6 +4,7 @@ import {
   MediaMutedStates,
   KotitonniLocalData,
   GameData,
+  GameErrorState,
 } from '../types';
 
 const createCtx = <A extends unknown | null>() => {
@@ -31,3 +32,7 @@ export const [useKotitonniData, KotitonniDataProvider] = createCtx<
 >();
 
 export const [useGameData, BaseGameDataProvider] = createCtx<GameData>();
+
+export const [useGameErrorState, GameErrorStateProvider] = createCtx<
+  GameErrorState
+>();

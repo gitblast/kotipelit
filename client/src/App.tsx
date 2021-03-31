@@ -21,6 +21,7 @@ import logoImg from './assets/images/logo.png';
 import QuestionsAnswers from './components/QuestionsAnswers';
 import CompanyInfo from './components/CompanyInfo';
 import ScrollToTop from './components/ScrollToTop';
+import NotFoundPage from './components/NotFoundPage';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -98,8 +99,11 @@ const App = () => {
           <Route path="/yritys">
             <CompanyInfo />
           </Route>
-          <Route path="/">
+          <Route exact path="/">
             <FrontPage />
+          </Route>
+          <Route path="*">
+            <NotFoundPage />
           </Route>
         </Switch>
       </div>

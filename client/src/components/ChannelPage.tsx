@@ -9,6 +9,7 @@ import Dashboard from './Dashboard';
 import { useSelector } from 'react-redux';
 import { Role, State /**BaseUser */ } from '../types';
 import TYFPPage from './TYFPPage';
+import NotFoundPage from './NotFoundPage';
 
 interface ChannelPageProps {
   labelText: string;
@@ -38,6 +39,9 @@ const ChannelPage: React.FC<ChannelPageProps> = () => {
       </Route>
       <Route exact path={`${basePath}`}>
         {user.loggedIn && <Dashboard user={user} />}
+      </Route>
+      <Route path="*">
+        <NotFoundPage />
       </Route>
     </Switch>
   );

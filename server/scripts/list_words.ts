@@ -1,14 +1,14 @@
-const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '../.env') });
+import path from 'path';
+import config from '../src/utils/config';
 
-const fs = require('fs');
+import fs from 'fs';
 
-const Word = require('../dist/models/word').default;
-const connection = require('../dist/utils/connection').default;
+import Word from '../src/models/word';
+import connection from '../src/utils/connection';
 
 const listWords = async () => {
   try {
-    connection.connect(process.env.MONGODB_URI);
+    await connection.connect(config.MONGODB_URI);
 
     console.log('connected to db');
     console.log('fetching words...');
@@ -19,8 +19,6 @@ const listWords = async () => {
     const wordsInDbAsList = wordsInDb.map((w) => w.word);
 
     console.log(wordsInDbAsList.length, 'words found.');
-
-    const date = new Date();
 
     const fileName = `words-${new Date().getDate()}-${
       new Date().getMonth() + 1

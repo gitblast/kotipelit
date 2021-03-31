@@ -6,11 +6,12 @@
   "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development ts-node-dev src/index.ts",
-    "clean": "node scripts/clean.js",
+    "clean": "ts-node scripts/clean.ts",
     "build": "tsc",
     "lint": "eslint --ext .ts .",
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand --detectOpenHandles",
-    "start": "node scripts/check_client_bundle.js && cross-env NODE_ENV=production node dist/index.js"
+    "start": "ts-node scripts/check_client_bundle.ts && cross-env NODE_ENV=production node dist/index.js",
+    "add_user": "ts-node scripts/add_user.ts"
   },
   "author": "Jarkko Mämmelä",
   "license": "ISC",
@@ -54,6 +55,7 @@
     "socket.io-client": "^3.1.1",
     "supertest": "^4.0.2",
     "ts-jest": "^26.1.1",
+    "ts-node": "^9.1.1",
     "ts-node-dev": "^1.0.0-pre.49",
     "typescript": "^3.9.5"
   },

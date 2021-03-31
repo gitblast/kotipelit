@@ -1,9 +1,9 @@
-const fs = require('fs');
-const path = require('path');
+import { existsSync } from 'fs';
+import { join } from 'path';
 
-const buildFolderPath = path.join(__dirname, '../build');
+const buildFolderPath = join(__dirname, '../build');
 
-if (fs.existsSync(buildFolderPath)) {
+if (existsSync(buildFolderPath)) {
   console.log('found client bundle (build folder)');
 } else {
   throw new Error(

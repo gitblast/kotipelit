@@ -1,17 +1,17 @@
-require('dotenv').config();
+import config from '../src/utils/config';
 
-const Word = require('../dist/models/word').default;
-const connection = require('../dist/utils/connection').default;
+import Word from '../src/models/word';
+import connection from '../src/utils/connection';
 
 const doIt = async () => {
   let changes = 0;
 
   try {
-    await connection.connect(process.env.MONGODB_URI);
+    await connection.connect(config.MONGODB_URI);
 
     const words = await Word.find({});
 
-    const handled = [];
+    const handled: string[] = [];
 
     for (const word of words) {
       const content = word.word;

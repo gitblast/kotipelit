@@ -1,15 +1,13 @@
 /**
- * Run tsc before using!
- *
- * Example usage: yarn add_user username password emailaddress channelname
+ * Example usage: npx ts-node add_user username password emailaddress channelname
  */
 
-require('dotenv').config();
-const bcrypt = require('bcryptjs');
+import config from '../src/utils/config';
+import bcrypt from 'bcryptjs';
 
-const User = require('../dist/models/user').default;
-const connection = require('../dist/utils/connection').default;
-const { toNewUser } = require('../dist/utils/mappers');
+import User from '../src/models/user';
+import connection from '../src/utils/connection';
+import { toNewUser } from '../src/utils/mappers';
 
 const username = process.argv[2];
 const password = process.argv[3];
@@ -23,7 +21,7 @@ if (!channelName) throw new Error('Anna kanavan nimi neljäntenä parametrina!')
 
 const addUser = async () => {
   try {
-    await connection.connect(process.env.MONGODB_URI);
+    await connection.connect(config.MONGODB_URI);
 
     const newUser = toNewUser({
       username,

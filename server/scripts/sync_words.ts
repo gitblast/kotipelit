@@ -1,13 +1,10 @@
-/** Example use: node sync_words.js path/to/wordlist.txt */
+/** Example use: npx ts-node sync_words.js path/to/wordlist.txt */
 
-const path = require('path');
+import config from '../src/utils/config';
 
-require('dotenv').config({ path: path.join(__dirname, '../.env') });
-
-const fs = require('fs');
-
-const Word = require('../dist/models/word').default;
-const connection = require('../dist/utils/connection').default;
+import fs from 'fs';
+import Word from '../src/models/word';
+import connection from '../src/utils/connection';
 
 const filepath = process.argv[2];
 
@@ -19,7 +16,7 @@ const syncWords = async () => {
   try {
     let added = 0;
 
-    await connection.connect(process.env.MONGODB_URI);
+    await connection.connect(config.MONGODB_URI);
 
     const file = fs.readFileSync(filepath).toString();
 

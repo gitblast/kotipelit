@@ -2,6 +2,7 @@ import { Fab, Typography } from '@material-ui/core';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { GameStatus } from '../types';
+import MusicNoteIcon from '@material-ui/icons/MusicNote';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -13,6 +14,9 @@ const useStyles = makeStyles(() =>
       padding: 36,
       border: 'solid',
       borderColor: 'white',
+    },
+    musicIcon: {
+      color: 'white',
     },
   })
 );
@@ -52,7 +56,15 @@ const MainKotitonniButton: React.FC<MainKotitonniButtonProps> = ({
       case GameStatus.FINISHED:
         return 'Poistu';
       default:
-        return 'Aloita peli';
+        return (
+          <>
+            <MusicNoteIcon className={classes.musicIcon}></MusicNoteIcon>
+            <MusicNoteIcon className={classes.musicIcon}></MusicNoteIcon>
+            <Typography variant="body1" color="initial">
+              Aloita intro
+            </Typography>
+          </>
+        );
     }
   };
 

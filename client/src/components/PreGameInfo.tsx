@@ -28,6 +28,26 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       margin: 15,
     },
+    spectatorHead: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      marginBottom: theme.spacing(3),
+    },
+    tvText: {
+      fontSize: '3.5rem',
+      lineHeight: 0.7,
+      color: theme.palette.info.main,
+    },
+    tvSubText: {
+      color: theme.palette.success.main,
+    },
+    gameDescription: {
+      color: 'rgb(185 231 229)',
+      display: 'flex',
+      alignItems: 'center',
+      flexDirection: 'column',
+    },
   })
 );
 
@@ -50,10 +70,9 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
     <div className={classes.preInfo}>
       {canJoin ? (
         <>
-          <Typography variant="h5">Peli alkaa pian!</Typography>
-
-          {!isSpectator && (
+          {!isSpectator ? (
             <>
+              <Typography variant="h5">Peli alkaa pian!</Typography>
               <div className={classes.infoContent}>
                 <HeadsetIcon fontSize="large"></HeadsetIcon>
                 <Typography>
@@ -73,9 +92,43 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
                 {previewOpen ? 'Lopeta testi' : 'Testaa kamera ja mikrofoni'}
               </Button>
             </>
+          ) : (
+            <>
+              <div className={classes.spectatorHead}>
+                <Typography variant="subtitle1" className={classes.tvText}>
+                  Kotipelit-tv
+                </Typography>
+                <Typography variant="body2" className={classes.tvSubText}>
+                  Peliviihdeillat oman porukan kesken
+                </Typography>
+              </div>
+              <div className={classes.gameDescription}>
+                <Typography variant="subtitle1">Kotitonni</Typography>
+                <div className={classes.spectatorHead}>
+                  <Typography variant="h3" color="initial">
+                    Lähetys alkaa 16.4 klo 20.00
+                  </Typography>
+                  <Typography variant="body1" color="initial">
+                    Katsojapaikkoja on rajoitettu määrä
+                  </Typography>
+                </div>
+                <Typography variant="h5" color="initial">
+                  Pelaamassa tänään:
+                </Typography>
+                <Typography variant="h5" color="initial">
+                  Pelaaja, Pelaaja, Pelaaja, Pelaaja, Pelaaja,
+                </Typography>
+                <Typography variant="h5" color="initial">
+                  Pelin juontaa:
+                </Typography>
+                <Typography variant="h5" color="initial">
+                  Hostname
+                </Typography>
+              </div>
+            </>
           )}
           <Button color="secondary" onClick={() => handleJoinCall()} id="start">
-            Käynnistä peli
+            {!isSpectator ? `Käynnistä peli` : `Siirry katsomaan`}
           </Button>
           {process.env.NODE_ENV === 'development' && (
             <Button

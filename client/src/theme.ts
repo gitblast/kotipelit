@@ -108,6 +108,7 @@ const theme = createMuiTheme({
     h6: {
       fontSize: '1.2rem',
     },
+    // Used as Kotipelit-tv, KotitonniTitle and player names. Unify fontsize to  eventually most used
     subtitle1: {
       fontFamily: 'beautySchoolDropoutII',
       textTransform: 'uppercase',

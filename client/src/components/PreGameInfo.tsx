@@ -48,6 +48,9 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       flexDirection: 'column',
     },
+    celebraties: {
+      color: theme.palette.info.main,
+    },
   })
 );
 
@@ -68,95 +71,113 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
 
   return (
     <div className={classes.preInfo}>
-      {canJoin ? (
-        <>
-          {!isSpectator ? (
-            <>
-              <Typography variant="h5">Peli alkaa pian!</Typography>
-              <div className={classes.infoContent}>
-                <HeadsetIcon fontSize="large"></HeadsetIcon>
-                <Typography>
-                  Käytä kuulokkeita, niin pelin äänet eivät kuulu muille
-                  pelaajille läpi.
-                </Typography>
+      <>
+        {!isSpectator ? (
+          <>
+            <Typography variant="h3">Hauskaa peli-iltaa!</Typography>
+            <div className={classes.infoContent}>
+              <HeadsetIcon fontSize="large"></HeadsetIcon>
+              <Typography>
+                Käytä kuulokkeita, niin pelin äänet eivät kuulu muille
+                pelaajille läpi.
+              </Typography>
+            </div>
+            {previewOpen && (
+              <div>
+                <MediaPreview />
               </div>
-            </>
-          ) : (
-            <>
+            )}
+            <Button
+              color="primary"
+              onClick={() => setPreviewOpen(!previewOpen)}
+            >
+              {previewOpen ? 'Lopeta testi' : 'Testaa kamera ja mikrofoni'}
+            </Button>
+            {!isSupported && alertOpen && (
+              <Alert severity="info" onClose={() => setAlertOpen(false)}>
+                <AlertTitle>
+                  Palvelu ei välttämättä toimi käyttämälläsi selaimella
+                </AlertTitle>
+                Jos peliin yhdistäminen ei onnistu, kokeile toista selainta.
+                Näet tukemamme selaimet{' '}
+                <Link href="https://www.twilio.com/docs/video/javascript#supported-browsers">
+                  täältä
+                </Link>
+                .
+              </Alert>
+            )}
+          </>
+        ) : (
+          // Spectator pregame view
+          <>
+            <div className={classes.spectatorHead}>
+              <Typography variant="subtitle1" className={classes.tvText}>
+                Kotipelit-tv
+              </Typography>
+              <Typography variant="body2" className={classes.tvSubText}>
+                Peliviihdeillat oman porukan kesken
+              </Typography>
+            </div>
+            <div className={classes.gameDescription}>
+              <Typography variant="subtitle1">Kotitonni</Typography>
               <div className={classes.spectatorHead}>
-                <Typography variant="subtitle1" className={classes.tvText}>
-                  Kotipelit-tv
+                <Typography variant="h5" color="initial">
+                  Lähetys alkaa 16.4 klo 20.00
                 </Typography>
-                <Typography variant="body2" className={classes.tvSubText}>
-                  Peliviihdeillat oman porukan kesken
+                <Typography variant="body2" color="initial">
+                  Katsojapaikkoja on rajoitettu määrä
                 </Typography>
               </div>
-              <div className={classes.gameDescription}>
-                <Typography variant="subtitle1">Kotitonni</Typography>
-                <div className={classes.spectatorHead}>
-                  <Typography variant="h3" color="initial">
-                    Lähetys alkaa 16.4 klo 20.00
-                  </Typography>
-                  <Typography variant="body1" color="initial">
-                    Katsojapaikkoja on rajoitettu määrä
-                  </Typography>
-                </div>
-                <Typography variant="h5" color="initial">
-                  Pelaamassa tänään:
-                </Typography>
-                <Typography variant="h5" color="initial">
-                  Pelaaja, Pelaaja, Pelaaja, Pelaaja, Pelaaja,
-                </Typography>
-                <Typography variant="h5" color="initial">
-                  Pelin juontaa:
-                </Typography>
-                <Typography variant="h5" color="initial">
-                  Hostname
-                </Typography>
-              </div>
-            </>
-          )}
-          <Button color="secondary" onClick={() => handleJoinCall()} id="start">
-            {!isSpectator ? `Käynnistä peli` : `Siirry katsomaan`}
-          </Button>
-          {process.env.NODE_ENV === 'development' && (
+              <Typography variant="h5" color="initial">
+                Pelaamassa tänään:
+              </Typography>
+              <Typography
+                variant="h5"
+                color="initial"
+                className={classes.celebraties}
+              >
+                Player, player, player...
+              </Typography>
+              <Typography variant="h5" color="initial">
+                Pelin juontaa:
+              </Typography>
+              <Typography
+                variant="h5"
+                color="initial"
+                className={classes.celebraties}
+              >
+                Hostname
+              </Typography>
+            </div>
+          </>
+        )}
+        {canJoin ? (
+          <>
             <Button
               color="secondary"
-              onClick={() => handleJoinCall(true)}
-              id="start-dev"
+              onClick={() => handleJoinCall()}
+              id="start"
             >
-              Käynnistä yhdistämättä Twilioon
+              {!isSpectator ? `Käynnistä peli` : `Siirry katsomaan`}
             </Button>
-          )}
-          {!isSupported && alertOpen && (
-            <Alert severity="info" onClose={() => setAlertOpen(false)}>
-              <AlertTitle>
-                Palvelu ei välttämättä toimi käyttämälläsi selaimella
-              </AlertTitle>
-              Jos peliin yhdistäminen ei onnistu, kokeile toista selainta. Näet
-              tukemamme selaimet{' '}
-              <Link href="https://www.twilio.com/docs/video/javascript#supported-browsers">
-                täältä
-              </Link>
-              .
-            </Alert>
-          )}
-        </>
-      ) : (
-        <>
-          <Typography variant="h5">
-            Odotetaan, että pelin juontaja käynnistää pelin..
-          </Typography>
-          {previewOpen && (
-            <div>
-              <MediaPreview />
-            </div>
-          )}
-          <Button color="primary" onClick={() => setPreviewOpen(!previewOpen)}>
-            {previewOpen ? 'Lopeta testi' : 'Testaa kamera ja mikrofoni'}
-          </Button>
-        </>
-      )}
+            {process.env.NODE_ENV === 'development' && (
+              <Button
+                color="secondary"
+                onClick={() => handleJoinCall(true)}
+                id="start-dev"
+              >
+                Käynnistä yhdistämättä Twilioon
+              </Button>
+            )}
+          </>
+        ) : (
+          <>
+            <Typography variant="body2">
+              Odotetaan, että pelin juontaja käynnistää pelin..
+            </Typography>
+          </>
+        )}
+      </>
     </div>
   );
 };

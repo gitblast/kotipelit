@@ -9,6 +9,8 @@ import RTCVideoFrame from './RTCVideoFrame';
 import { RTCParticipant } from '../types';
 import { useGameErrorState } from '../context';
 
+// import Skeleton from '@material-ui/lab/Skeleton';
+
 const useStyles = makeStyles(() =>
   createStyles({
     videoConf: {
@@ -49,6 +51,7 @@ const RTCVideoConference: React.FC<RTCVideoConferenceProps> = ({
 
   if (!participants) {
     return (
+      // <Skeleton variant="rect" width={210} height={400} />
       // Check the browser here latest? + Add message for waiting for host
       <div className={classes.videoConf}>
         <Loader msg="Ladataan.." spinner errored={!!errorState} />

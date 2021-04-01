@@ -13,8 +13,6 @@ import RTCPlayerControls from './RTCPlayerControls';
 import RTCVideoConference from './RTCVideoConference';
 import { useGameErrorState } from '../context';
 
-// import { Animated } from 'react-animated-css';
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     containerGame: {

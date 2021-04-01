@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 
 import NewGame from './NewGame/NewGame';
 import RTCGameRoom from './RTCGameRoom';
@@ -25,7 +25,9 @@ const ChannelPage: React.FC<ChannelPageProps> = () => {
       <Route path={`${basePath}/kiitos`}>
         <TYFPPage />
       </Route>
-      <Route path={`${basePath}/newgame`}>{user.loggedIn && <NewGame />}</Route>
+      <Route path={`${basePath}/newgame`}>
+        {user.loggedIn ? <NewGame /> : <Redirect to="/kirjaudu" />}
+      </Route>
       <Route path={`${basePath}/peruuta/:inviteCode`}>
         <CancelPage />
       </Route>
@@ -36,13 +38,21 @@ const ChannelPage: React.FC<ChannelPageProps> = () => {
         <RTCGameRoom role={Role.SPECTATOR} />
       </Route>
       <Route path={`${basePath}/pelit/:gameID`}>
-        {user.loggedIn && <RTCGameRoom role={Role.HOST} />}
+        {user.loggedIn ? (
+          <RTCGameRoom role={Role.HOST} />
+        ) : (
+          <Redirect to="/kirjaudu" />
+        )}
       </Route>
       <Route path={`${basePath}/:inviteCode`}>
-        {!user.loggedIn && <RTCGameRoom role={Role.PLAYER} />}
+        {<RTCGameRoom role={Role.PLAYER} />}
       </Route>
       <Route exact path={`${basePath}`}>
-        {user.loggedIn && <Dashboard user={user} />}
+        {user.loggedIn ? (
+          <Dashboard user={user} />
+        ) : (
+          <Redirect to="/kirjaudu" />
+        )}
       </Route>
       <Route path="*">
         <NotFoundPage />

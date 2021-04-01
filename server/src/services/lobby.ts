@@ -28,7 +28,11 @@ const cancelReservation = async (hostName: string, inviteCode: string) => {
 
       return {
         ...player,
-        inviteCode: newInviteCode,
+        privateData: {
+          ...player.privateData,
+
+          inviteCode: newInviteCode,
+        },
         reservedFor: null,
         name: 'Avoinna',
       };

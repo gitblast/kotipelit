@@ -9,14 +9,14 @@ import { useGameErrorState } from '../context';
 
 interface ParamTypes {
   username: string;
-  playerId: string;
+  inviteCode: string;
 }
 
 export const usePlayerGameToken = () => {
   const [token, setToken] = React.useState<null | string>(null);
   const { setError } = useGameErrorState();
 
-  const { username, playerId } = useParams<ParamTypes>();
+  const { username, inviteCode } = useParams<ParamTypes>();
 
   React.useEffect(() => {
     const fetchToken = async () => {
@@ -24,7 +24,7 @@ export const usePlayerGameToken = () => {
         logger.log(`fetching player token`);
         const gameToken = await gameService.getPlayerTokenForGame(
           username,
-          playerId,
+          inviteCode,
           true
         );
 
@@ -39,10 +39,10 @@ export const usePlayerGameToken = () => {
       }
     };
 
-    if (username && playerId && !token) {
+    if (username && inviteCode && !token) {
       fetchToken();
     }
-  }, [token, username, playerId, setError]);
+  }, [token, username, inviteCode, setError]);
 
   return token;
 };

@@ -105,13 +105,7 @@ const getLobbyGame = async (
 };
 
 const cancelReservation = async (hostName: string, inviteCode: string) => {
-  try {
-    await axios.get(`${baseUrl}/cancel/${hostName}/${inviteCode}`);
-
-    return true;
-  } catch (e) {
-    return false;
-  }
+  return await axios.get(`${baseUrl}/cancel/${hostName}/${inviteCode}`);
 };
 
 const gameService = {

@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import { Role, State /**BaseUser */ } from '../types';
 import TYFPPage from './TYFPPage';
 import NotFoundPage from './NotFoundPage';
+import CancelPage from './CancelPage';
 
 interface ChannelPageProps {
   labelText: string;
@@ -25,6 +26,9 @@ const ChannelPage: React.FC<ChannelPageProps> = () => {
         <TYFPPage />
       </Route>
       <Route path={`${basePath}/newgame`}>{user.loggedIn && <NewGame />}</Route>
+      <Route path={`${basePath}/peruuta/:inviteCode`}>
+        <CancelPage />
+      </Route>
       <Route path={`${basePath}/kutsut/:gameID`}>
         <GameLobby />
       </Route>
@@ -34,7 +38,7 @@ const ChannelPage: React.FC<ChannelPageProps> = () => {
       <Route path={`${basePath}/pelit/:gameID`}>
         {user.loggedIn && <RTCGameRoom role={Role.HOST} />}
       </Route>
-      <Route path={`${basePath}/:playerId`}>
+      <Route path={`${basePath}/:inviteCode`}>
         {!user.loggedIn && <RTCGameRoom role={Role.PLAYER} />}
       </Route>
       <Route exact path={`${basePath}`}>

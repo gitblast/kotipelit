@@ -2,6 +2,7 @@ import Game from '../models/game';
 import { GameModel, GameStatus, NewGame, RTCGame } from '../types';
 import shortid from 'shortid';
 import { getInitialInfo } from '../utils/helpers';
+import { shuffle } from 'lodash';
 
 const getAllGamesByUser = async (userId: string) => {
   return await Game.find({ 'host.id': userId });
@@ -42,9 +43,7 @@ const saveFinishedGame = async (
   gameId: string,
   game: RTCGame
 ): Promise<GameModel> => {
-  const gameInDB = await Game.findById(gameId);
-
-  if (!gameInDB) throw new Error(`No game found with id ${gameId}`);
+  const gameInDB = await getGameById(gameId);
 
   gameInDB.players = game.players;
 
@@ -57,13 +56,19 @@ const setGameStatus = async (
   gameId: string,
   newStatus: GameStatus
 ): Promise<GameModel> => {
-  const game = await Game.findById(gameId);
-
-  if (!game) throw new Error(`No game found with id ${gameId}`);
+  const game = await getGameById(gameId);
 
   game.status = newStatus;
 
   return await game.save();
+};
+
+const shufflePlayers = async (gameId: string) => {
+  const game = await getGameById(gameId);
+
+  game.players = shuffle(game.players);
+
+  await game.save();
 };
 
 export default {
@@ -72,4 +77,5 @@ export default {
   getGameById,
   getAllGamesByUser,
   addGame,
+  shufflePlayers,
 };

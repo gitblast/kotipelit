@@ -84,6 +84,9 @@ const reserveIfSpotOpen = async (
   reservationId: string,
   expiryTime: number
 ) => {
+  // shuffle players
+  await gameService.shufflePlayers(gameId);
+
   await Game.updateOne(
     {
       _id: mongoose.Types.ObjectId(gameId),

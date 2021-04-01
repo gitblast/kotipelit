@@ -2,6 +2,8 @@ import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
+import { format } from 'date-fns';
+import fiLocale from 'date-fns/locale/fi';
 import { isSupported } from 'twilio-video';
 
 import HeadsetIcon from '@material-ui/icons/Headset';
@@ -11,6 +13,7 @@ import MediaPreview from './MediaPreview';
 import Alert from '@material-ui/lab/Alert';
 import { Link } from '@material-ui/core';
 import { AlertTitle } from '@material-ui/lab';
+import { Role, RTCGame, GameStatus } from '../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -55,24 +58,26 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface PreGameInfoProps {
-  canJoin: boolean;
+  game: RTCGame;
   handleJoinCall: (dev?: boolean) => void;
-  isSpectator: boolean;
+  role: Role;
 }
 
 const PreGameInfo: React.FC<PreGameInfoProps> = ({
   handleJoinCall,
-  canJoin,
-  isSpectator,
+  game,
+  role,
 }) => {
   const classes = useStyles();
   const [previewOpen, setPreviewOpen] = React.useState(false);
   const [alertOpen, setAlertOpen] = React.useState(!isSupported);
 
+  const canJoin = role === Role.HOST || game.status !== GameStatus.UPCOMING;
+
   return (
     <div className={classes.preInfo}>
       <>
-        {!isSpectator ? (
+        {role !== Role.SPECTATOR ? (
           <>
             <Typography variant="h3">Hauskaa peli-iltaa!</Typography>
             <div className={classes.infoContent}>
@@ -122,7 +127,13 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
               <Typography variant="subtitle1">Kotitonni</Typography>
               <div className={classes.spectatorHead}>
                 <Typography variant="h5" color="initial">
-                  Lähetys alkaa 16.4 klo 20.00
+                  {`Lähetys alkaa ${format(
+                    new Date(game.startTime),
+                    'd.M. HH:mm',
+                    {
+                      locale: fiLocale,
+                    }
+                  )}`}
                 </Typography>
                 <Typography variant="body2" color="initial">
                   Katsojapaikkoja on rajoitettu määrä
@@ -136,7 +147,7 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
                 color="initial"
                 className={classes.celebraties}
               >
-                Player, player, player...
+                {game.players.map((p) => p.name).join(', ')}
               </Typography>
               <Typography variant="h5" color="initial">
                 Pelin juontaa:
@@ -146,7 +157,7 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
                 color="initial"
                 className={classes.celebraties}
               >
-                Hostname
+                {game.host.displayName}
               </Typography>
             </div>
           </>
@@ -158,7 +169,7 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
               onClick={() => handleJoinCall()}
               id="start"
             >
-              {!isSpectator ? `Käynnistä peli` : `Siirry katsomaan`}
+              {role !== Role.SPECTATOR ? `Käynnistä peli` : `Siirry katsomaan`}
             </Button>
             {process.env.NODE_ENV === 'development' && (
               <Button

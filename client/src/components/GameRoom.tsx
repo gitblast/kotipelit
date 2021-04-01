@@ -136,11 +136,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
 
   if (!onCall) {
     return (
-      <PreGameInfo
-        canJoin={isHost || game.status !== GameStatus.UPCOMING}
-        handleJoinCall={handleJoinCall}
-        isSpectator={role === Role.SPECTATOR}
-      />
+      <PreGameInfo game={game} handleJoinCall={handleJoinCall} role={role} />
     );
   }
   return (

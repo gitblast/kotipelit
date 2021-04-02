@@ -1,6 +1,7 @@
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
+import path from 'path';
 
-dotenv.config();
+dotenv.config({ path: path.join(__dirname, '../../.env') });
 
 const PORT = process.env.PORT;
 const MONGODB_URI = process.env.MONGODB_URI;

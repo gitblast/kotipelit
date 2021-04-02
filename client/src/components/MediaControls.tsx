@@ -1,19 +1,21 @@
 import { IconButton } from '@material-ui/core';
-import React from 'react';
-import { LocalParticipant } from 'twilio-video';
-import { RTCParticipant } from '../types';
-
 import MicIcon from '@material-ui/icons/Mic';
 import MicOffIcon from '@material-ui/icons/MicOff';
 import VideocamIcon from '@material-ui/icons/Videocam';
 import VideocamOffIcon from '@material-ui/icons/VideocamOff';
-import { useMediaMutedStates } from '../context';
+import React from 'react';
+import { LocalParticipant } from 'twilio-video';
+import { useGameData, useMediaMutedStates } from '../context';
+import { Role, RTCParticipant } from '../types';
+import logger from '../utils/logger';
 
 interface MediaControlsProps {
   participant: RTCParticipant;
 }
 
 const MediaControls: React.FC<MediaControlsProps> = ({ participant }) => {
+  const { socket, self } = useGameData();
+
   const {
     mutedMap,
     videoDisabledMap,
@@ -22,17 +24,14 @@ const MediaControls: React.FC<MediaControlsProps> = ({ participant }) => {
   } = useMediaMutedStates();
 
   const toggleAudio = () => {
-    if (participant.isMe) {
-      const localParticipant = participant.connection
-        ? (participant.connection as LocalParticipant)
-        : null;
+    if (self.role === Role.HOST) {
+      const isMuted = !!mutedMap[participant.id];
 
-      // toggle enable/disable audio tracks if self
-      localParticipant?.audioTracks.forEach((publication) => {
-        const { track } = publication;
+      logger.log(
+        `${isMuted ? 'unmuting' : 'muting'} ${participant.displayName}`
+      );
 
-        track.isEnabled ? track.disable() : track.enable();
-      });
+      socket.emit('set-player-muted', participant.id, !isMuted);
     }
 
     toggleMuted(participant.id);
@@ -58,7 +57,7 @@ const MediaControls: React.FC<MediaControlsProps> = ({ participant }) => {
       <IconButton
         size="small"
         onClick={toggleAudio}
-        disabled={!participant.connection}
+        disabled={!participant.isMe && self.role !== Role.HOST}
       >
         {mutedMap[participant.id] ? <MicOffIcon color="error" /> : <MicIcon />}
       </IconButton>

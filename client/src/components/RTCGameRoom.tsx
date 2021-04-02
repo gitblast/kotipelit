@@ -4,6 +4,8 @@ import { GameErrorStateProvider } from '../context';
 import useHostGameToken from '../hooks/useHostGameToken';
 import usePlayerGameToken from '../hooks/usePlayerGameToken';
 import useSpectatorGameToken from '../hooks/useSpectatorGameToken';
+
+import MediaStatesProvider from './MediaStatesProvider/MediaStatesProvider';
 import { Role } from '../types';
 import ErrorFallBack from './ErrorFallBack';
 import GameRoom from './GameRoom';
@@ -51,15 +53,17 @@ const RTCGameRoom: React.FC<RTCGameRoomProps> = ({ role }) => {
 
   return (
     <ErrorBoundary FallbackComponent={ErrorFallBack}>
-      <GameErrorStateProvider value={gameErrorState}>
-        {errorState && (
-          <ErrorDialog
-            errorState={errorState}
-            handleRefreshGame={refreshGame}
-          />
-        )}
-        {getContent()}
-      </GameErrorStateProvider>
+      <MediaStatesProvider>
+        <GameErrorStateProvider value={gameErrorState}>
+          {errorState && (
+            <ErrorDialog
+              errorState={errorState}
+              handleRefreshGame={refreshGame}
+            />
+          )}
+          {getContent()}
+        </GameErrorStateProvider>
+      </MediaStatesProvider>
     </ErrorBoundary>
   );
 };

@@ -70,6 +70,10 @@ const attachRTCListeners = (socket: SocketWithToken) => {
     socket.on('handle-timer', (command: 'start' | 'stop' | 'reset') => {
       void callbacks.handleTimer(socket, command);
     });
+
+    socket.on('set-player-muted', (playerId: string, muted: boolean) => {
+      void callbacks.handleMute(socket, playerId, muted);
+    });
   }
 };
 

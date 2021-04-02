@@ -26,6 +26,7 @@ export interface GameData {
 }
 
 export interface MediaMutedStates {
+  setMuted: (participantId: string, muted: boolean) => void;
   mutedMap: Record<string, boolean>;
   videoDisabledMap: Record<string, boolean>;
   toggleMuted: (participantId: string) => void;

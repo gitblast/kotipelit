@@ -6,6 +6,18 @@ const useMediaStateControls = () => {
     Record<string, boolean>
   >({});
 
+  const setMuted = React.useCallback(
+    (participantId: string, muted: boolean) => {
+      setMutedMap((previousState) => {
+        return {
+          ...previousState,
+          [participantId]: muted,
+        };
+      });
+    },
+    []
+  );
+
   const toggleMuted = React.useCallback((participantId: string) => {
     setMutedMap((previousState) => {
       const previouslyMuted = !!previousState[participantId];
@@ -29,6 +41,7 @@ const useMediaStateControls = () => {
   }, []);
 
   return {
+    setMuted,
     mutedMap,
     videoDisabledMap,
     toggleMuted,

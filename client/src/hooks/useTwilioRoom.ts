@@ -14,6 +14,7 @@ import {
   addRoomListeners,
 } from '../helpers/twilio';
 import { useGameErrorState } from '../context';
+import useMuteHandler from './useMuteHandler';
 
 const useTwilioRoom = (
   game: RTCGame | null,
@@ -23,6 +24,9 @@ const useTwilioRoom = (
   isSpectator: boolean
 ) => {
   const [room, setRoom] = React.useState<null | Video.Room>(null);
+
+  useMuteHandler(room?.localParticipant.audioTracks ?? null, ownId);
+
   const [spectatorCount, setSpectatorCount] = React.useState(
     isSpectator ? 1 : 0
   );

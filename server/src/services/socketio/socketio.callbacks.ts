@@ -446,6 +446,32 @@ export const getTimerState = (
   }
 };
 
+export const handleMute = (
+  socket: SocketWithToken,
+  playerId: string,
+  muted: boolean
+) => {
+  logRecievedMsg('set-player-muted', socket);
+
+  try {
+    const { gameId } = socket.decodedToken;
+
+    const room = roomService.getRoom(gameId);
+
+    const socketId = room.socketMap.get(playerId);
+
+    if (!socketId) {
+      throw new Error(`No socket found for player id '${playerId}'`);
+    }
+
+    socket.to(socketId).emit('set-audio-muted', playerId, muted);
+  } catch (e) {
+    logger.error(`Error trying to mute player: ${e.message}`);
+
+    socket.emit('rtc-error', `Error trying to mute player: ${e.message}`);
+  }
+};
+
 const emitUpdatedGame = (socket: SocketWithToken, newGame: RTCGame): void => {
   const room = roomService.getRoom(newGame.id);
 

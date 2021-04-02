@@ -6,13 +6,14 @@ import useSelf from './useSelf';
 import useTwilioRoom from './useTwilioRoom';
 import { useHistory, useParams } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
-import { useGameErrorState } from '../context';
+import { useGameErrorState, useMediaMutedStates } from '../context';
 
 const socketOnLeaveCallback = (socket: Socket) => {
   socket.emit('leave-room');
 };
 
 const useNewGameRoom = (token: string | null, role: Role) => {
+  const { setMuted } = useMediaMutedStates();
   const { setError } = useGameErrorState();
   const [gameEnded, setGameEnded] = React.useState(false);
   const [onCall, setOnCall] = React.useState<boolean>(false);
@@ -61,8 +62,14 @@ const useNewGameRoom = (token: string | null, role: Role) => {
       socket.on('game-ended', () => {
         setGameEnded(true);
       });
+
+      socket.on('set-audio-muted', (id: string, muted: boolean) => {
+        logger.log(`audio ${muted ? 'muted' : 'unmuted'} remotely`);
+
+        setMuted(id, muted);
+      });
     }
-  }, [socket, setError]);
+  }, [socket, setError, setMuted]);
 
   React.useEffect(() => {
     if (socket) {

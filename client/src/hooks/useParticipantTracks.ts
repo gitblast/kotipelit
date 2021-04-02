@@ -12,6 +12,7 @@ import {
 } from 'twilio-video';
 import { RTCParticipant } from '../types';
 import logger from '../utils/logger';
+import { useMediaMutedStates } from '../context';
 
 type LocalVideoSetter = (track: LocalVideoTrack) => void;
 type LocalAudioSetter = (track: LocalAudioTrack) => void;
@@ -21,7 +22,8 @@ const useParticipantLocalTracks = (
   audioSet: boolean,
   localParticipant: LocalParticipant | null,
   setVideoTrack: LocalVideoSetter,
-  setAudioTrack: LocalAudioSetter
+  setAudioTrack: LocalAudioSetter,
+  handleMute: (muted: boolean) => void
 ) => {
   React.useEffect(() => {
     if (localParticipant && !videoSet) {
@@ -43,9 +45,12 @@ const useParticipantLocalTracks = (
 
       logger.log('setting local audio', audioTrack);
 
+      audioTrack.on('disabled', () => handleMute(true));
+      audioTrack.on('enabled', () => handleMute(false));
+
       setAudioTrack(audioTrack);
     }
-  }, [localParticipant, setAudioTrack, audioSet]);
+  }, [localParticipant, setAudioTrack, audioSet, handleMute]);
 };
 
 const useParticipantRemoteTracks = (
@@ -53,7 +58,8 @@ const useParticipantRemoteTracks = (
   audioSet: boolean,
   remoteParticipant: RemoteParticipant | null,
   setVideoTrack: (track: RemoteVideoTrack) => void,
-  setAudioTrack: (track: RemoteAudioTrack) => void
+  setAudioTrack: (track: RemoteAudioTrack) => void,
+  handleMute: (muted: boolean) => void
 ) => {
   React.useEffect(() => {
     if (remoteParticipant && !videoSet) {
@@ -73,11 +79,14 @@ const useParticipantRemoteTracks = (
         if (track.kind === 'audio') {
           logger.log('setting remote audio', track);
 
+          track.on('disabled', () => handleMute(true));
+          track.on('enabled', () => handleMute(false));
+
           setAudioTrack(track);
         }
       });
     }
-  }, [remoteParticipant, setAudioTrack, audioSet]);
+  }, [remoteParticipant, setAudioTrack, audioSet, handleMute]);
 };
 
 const useParticipantTracks = (
@@ -86,12 +95,22 @@ const useParticipantTracks = (
   const [videoTrack, setVideoTrack] = React.useState<VideoTrack | null>(null);
   const [audioTrack, setAudioTrack] = React.useState<AudioTrack | null>(null);
 
+  const { setMuted } = useMediaMutedStates();
+
+  const handleMute = React.useCallback(
+    (muted: boolean) => {
+      setMuted(participant.id, muted);
+    },
+    [participant.id, setMuted]
+  );
+
   useParticipantLocalTracks(
     !!videoTrack,
     !!audioTrack,
     participant.isMe ? (participant.connection as LocalParticipant) : null,
     setVideoTrack,
-    setAudioTrack
+    setAudioTrack,
+    handleMute
   );
 
   useParticipantRemoteTracks(
@@ -99,7 +118,8 @@ const useParticipantTracks = (
     !!audioTrack,
     participant.isMe ? null : (participant.connection as RemoteParticipant),
     setVideoTrack,
-    setAudioTrack
+    setAudioTrack,
+    handleMute
   );
 
   React.useEffect(() => {

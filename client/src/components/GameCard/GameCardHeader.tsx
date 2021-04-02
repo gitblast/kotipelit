@@ -75,11 +75,13 @@ const GameCardHeader = ({ game }: GameCardHeaderProps) => {
             anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             transformOrigin={{ vertical: 'top', horizontal: 'center' }}
           >
-            <MenuItem disabled>
+            {/* <MenuItem disabled>
               <Typography>Muokkaa</Typography>
-            </MenuItem>
+            </MenuItem> */}
             <MenuItem onClick={handleRemove}>
-              <Typography color="secondary">Poista</Typography>
+              <Typography variant="body1" color="error">
+                Poista peli
+              </Typography>
             </MenuItem>
           </Menu>
         </>

@@ -50,13 +50,13 @@ const AddedGameInfo = ({ addedGame, error }: AddedGameInfoProps) => {
       </Typography>
       <Typography variant="caption">{`${baseUrl}/${username}/kutsut/${addedGame.id}`}</Typography>
       <Typography className={classes.shareLink}>
-        Jaa ylläoleva linkki kaikille, jotka haluat kutsua pelaamaan.
+        Jaa ylläoleva peliaulan linkki kaikille, jotka haluat kutsua pelaamaan.
       </Typography>
 
       {addedGame.allowedSpectators !== 0 ? (
         <>
           <Typography variant="subtitle1" color="initial">
-            Kotipelit-TV
+            Kotipelit-tv
           </Typography>
           <Typography variant="caption">
             {`${baseUrl}/${username}/live/${addedGame.id}`}

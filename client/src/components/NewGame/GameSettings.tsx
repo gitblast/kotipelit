@@ -94,7 +94,7 @@ const GameSettings: React.FC<GameSettingsProps> = ({
           }
           label={
             <Typography variant="subtitle1" color="initial">
-              Kotipelit-TV
+              Kotipelit-tv
             </Typography>
           }
           labelPlacement="start"

@@ -26,9 +26,11 @@ const useTwilioRoom = (
   const [spectatorCount, setSpectatorCount] = React.useState(
     isSpectator ? 1 : 0
   );
-  const { localVideoTrack, localAudioTrack } = useLocalTracks(
-    onCall && !isSpectator
-  );
+  const {
+    localVideoTrack,
+    localAudioTrack,
+    shutDownLocalTracks,
+  } = useLocalTracks(onCall && !isSpectator);
   const localTracks = React.useMemo<
     [Video.LocalVideoTrack, Video.LocalAudioTrack] | null
   >(() => {
@@ -164,19 +166,13 @@ const useTwilioRoom = (
         if (room) {
           logger.log('cleaning up twilio room');
 
-          room.localParticipant.tracks.forEach((publication) => {
-            const { track } = publication;
-
-            if (track.kind === 'video' || track.kind === 'audio') {
-              track.stop();
-            }
-          });
+          shutDownLocalTracks();
 
           room.disconnect();
         }
       };
     }
-  }, [room]);
+  }, [room, shutDownLocalTracks]);
 
   const participantsWithLocalSet = React.useMemo(
     () =>

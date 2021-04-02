@@ -2,7 +2,7 @@ import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import { LinearProgress } from '@material-ui/core';
+import { LinearProgress, Button } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -59,7 +59,14 @@ const Loader: React.FC<LoaderProps> = ({ msg, spinner, errored }) => {
   return (
     <div className={classes.centered}>
       {errored ? (
-        <Typography color="error">Tapahtui virhe</Typography>
+        <>
+          <Typography color="error" gutterBottom>
+            Tapahtui virhe
+          </Typography>
+          <Button color="secondary" onClick={() => window.location.reload()}>
+            Lataa sivu uudelleen
+          </Button>
+        </>
       ) : (
         <>
           <Typography

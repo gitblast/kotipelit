@@ -71,7 +71,7 @@ const useNewGameRoom = (token: string | null, role: Role) => {
 
         setError(
           new Error('Päällekkäiset yhteydet'),
-          'Yhteytesi on katkaistu, sillä olet liittynyt peliin muualla.'
+          'Yhteytesi on katkaistu, sillä olet liittynyt peliin muualla. Jos haluat jatkaa pelaamista tällä laitteella, lataa sivu uudelleen.'
         );
 
         logger.log('disconnecting socket');

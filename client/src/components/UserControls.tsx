@@ -80,10 +80,8 @@ const UserControls: React.FC<UserControlsProps> = ({ user }) => {
           onClose={() => setAnchorEl(null)}
         >
           <MenuItem onClick={handleMenuClick}>Profiili</MenuItem>
-          <MenuItem onClick={handleMenuClick}>
-            <Link onClick={handleLogout}>
-              <Typography variant="body1">Kirjaudu ulos</Typography>
-            </Link>
+          <MenuItem onClick={handleLogout}>
+            <Typography variant="body1">Kirjaudu ulos</Typography>
           </MenuItem>
         </Menu>
       </div>

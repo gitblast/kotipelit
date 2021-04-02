@@ -33,13 +33,13 @@ const useAuthSocket = (
       socket.on('connect_error', (error: Error) => {
         logger.error('socket.io connect error:', error.message);
 
-        setError(error, 'Ongelma yhdistäessä pelipalvelimeen');
+        setError(error, 'Ongelma yhdistäessä pelipalvelimeen.');
       });
 
       socket.on('error', (error: Error) => {
         logger.error('socket.io error:', error.message);
 
-        setError(error, 'Ongelma yhteydessä pelipalvelimen');
+        setError(error, 'Ongelma yhteydessä pelipalvelimeen.');
       });
 
       socket.on('disconnect', (reason: string) => {

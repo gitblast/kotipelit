@@ -63,6 +63,12 @@ const joinRoom = (socket: SocketWithToken): RTCGame | FilteredRTCGame => {
 
     room.spectatorSockets.push(socket.id);
   } else {
+    const existingSocketId = room.socketMap.get(id);
+
+    if (existingSocketId) {
+      socket.to(existingSocketId).emit('duplicate');
+    }
+
     room.socketMap.set(id, socket.id);
   }
 

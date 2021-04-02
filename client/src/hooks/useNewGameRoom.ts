@@ -22,7 +22,7 @@ const useNewGameRoom = (token: string | null, role: Role) => {
   const [twilioToken, setTwilioToken] = React.useState<null | string>(null);
   const socket = useAuthSocket(token, socketOnLeaveCallback);
   const mySelf = useSelf(game, role);
-  const { participants, spectatorCount } = useTwilioRoom(
+  const { room, participants, spectatorCount } = useTwilioRoom(
     game,
     mySelf?.id ?? null,
     twilioToken,
@@ -63,6 +63,33 @@ const useNewGameRoom = (token: string | null, role: Role) => {
       });
     }
   }, [socket, setError]);
+
+  React.useEffect(() => {
+    if (socket) {
+      const handler = () => {
+        logger.error('duplicate connection');
+
+        setError(
+          new Error('Päällekkäiset yhteydet'),
+          'Yhteytesi on katkaistu, sillä olet liittynyt peliin muualla.'
+        );
+
+        logger.log('disconnecting socket');
+        socket.disconnect();
+
+        if (room) {
+          logger.log('disconnecting room');
+          room?.disconnect();
+        }
+      };
+
+      socket.on('duplicate', handler);
+
+      return () => {
+        socket.off('duplicate', handler);
+      };
+    }
+  }, [socket, room, setError]);
 
   React.useEffect(() => {
     if (gameEnded) {

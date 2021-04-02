@@ -191,6 +191,7 @@ const useTwilioRoom = (
   );
 
   return {
+    room,
     participants: participantsWithLocalSet,
     spectatorCount,
   };

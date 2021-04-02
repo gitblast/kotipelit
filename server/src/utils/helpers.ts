@@ -72,6 +72,10 @@ export const getInviteMailData = (
         gameType: GameType.KOTITONNI,
         displayName: displayName.trim(),
         startTime: game.startTime,
+        spectatorUrl:
+          game.allowedSpectators !== 0
+            ? `https://www.kotipelit.com/${hostName}/live/${game._id.toString()}`
+            : null,
         data: {
           words: player.privateData.words,
         },

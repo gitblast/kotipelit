@@ -171,6 +171,7 @@ export interface BaseInviteInfo {
   displayName: string;
   gameType: GameType;
   startTime: Date;
+  spectatorUrl: string | null;
 }
 
 export interface KotitonniInviteInfo extends BaseInviteInfo {

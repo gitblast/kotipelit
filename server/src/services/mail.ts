@@ -7,6 +7,40 @@ import { format } from 'date-fns';
 
 sgMail.setApiKey(config.SENDGRID_API_KEY);
 
+const sendInvite = async (
+  recipient: string,
+  inviteInfo: InviteInfo
+): Promise<void> => {
+  try {
+    const date = new Date(inviteInfo.startTime);
+    const dateString = format(date, 'd.M.');
+    const timeString = format(date, 'HH:mm');
+
+    const subject = `${capitalize(
+      inviteInfo.gameType
+    )} ${dateString} klo ${timeString}`;
+
+    const mailContent = getInviteMailContent(inviteInfo);
+
+    const msg = {
+      to: recipient,
+      from: 'info@kotipelit.com',
+      subject,
+      text: mailContent.text,
+      html: mailContent.html,
+    };
+
+    await sgMail.send(msg);
+
+    logger.log(`invitation mail sent for '${inviteInfo.displayName}'`);
+  } catch (e) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if (e.response) logger.error(e.response.body);
+
+    throw new Error(`Error sending invite email`);
+  }
+};
+
 export const getInviteMailContent = (
   inviteInfo: InviteInfo
 ): InviteMailContent => {
@@ -291,40 +325,6 @@ Kotipelit.com`,
     default: {
       throw new Error('unknown game type');
     }
-  }
-};
-
-const sendInvite = async (
-  recipient: string,
-  inviteInfo: InviteInfo
-): Promise<void> => {
-  try {
-    const date = new Date(inviteInfo.startTime);
-    const dateString = format(date, 'd.M.');
-    const timeString = format(date, 'HH:mm');
-
-    const subject = `${capitalize(
-      inviteInfo.gameType
-    )} ${dateString} klo ${timeString}`;
-
-    const mailContent = getInviteMailContent(inviteInfo);
-
-    const msg = {
-      to: recipient,
-      from: 'info@kotipelit.com',
-      subject,
-      text: mailContent.text,
-      html: mailContent.html,
-    };
-
-    await sgMail.send(msg);
-
-    logger.log(`invitation mail sent for '${inviteInfo.displayName}'`);
-  } catch (e) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (e.response) logger.error(e.response.body);
-
-    throw new Error(`Error sending invite email`);
   }
 };
 

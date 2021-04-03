@@ -118,8 +118,10 @@ const theme = createMuiTheme({
     // Used to display the game name and host name in GameRoom
     subtitle2: {
       fontFamily: 'chicagoNeon',
+      fontSize: 36,
       lineHeight: 0.6,
-      fontSize: '3.4rem',
+      // info.main
+      color: 'rgb(241 220 74)',
     },
     // Used to display links
     caption: {

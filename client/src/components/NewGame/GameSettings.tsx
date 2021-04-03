@@ -23,6 +23,9 @@ const useStyles = makeStyles((theme: Theme) =>
         alignItems: 'normal',
       },
     },
+    tvLink: {
+      fontSize: '2rem',
+    },
   })
 );
 
@@ -93,7 +96,11 @@ const GameSettings: React.FC<GameSettingsProps> = ({
             />
           }
           label={
-            <Typography variant="subtitle1" color="initial">
+            <Typography
+              variant="subtitle1"
+              color="initial"
+              className={classes.tvLink}
+            >
               Kotipelit-tv
             </Typography>
           }

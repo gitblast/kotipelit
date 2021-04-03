@@ -23,7 +23,6 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     hostName: {
-      fontSize: theme.spacing(4.5),
       color: theme.palette.info.main,
       [theme.breakpoints.down('sm')]: {
         fontSize: 18,

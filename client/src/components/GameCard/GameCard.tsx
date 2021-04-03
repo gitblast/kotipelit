@@ -22,7 +22,10 @@ const useStyles = makeStyles((theme: Theme) =>
         margin: theme.spacing(0.7),
       },
     },
-
+    tvLink: {
+      fontSize: '2rem',
+      color: theme.palette.info.main,
+    },
     actions: {
       display: 'flex',
       justifyContent: 'space-between',
@@ -53,6 +56,14 @@ const GameCard: React.FC<GameCardProps> = ({ game, hostName }) => {
             />
           ))}
         </CardContent>
+        {/* <CardContent>
+          <Typography variant="subtitle1" className={classes.tvLink}>
+            Kotipelit-tv
+          </Typography>
+          <Typography variant="caption" color="initial">
+            Tv-linkki tähän
+          </Typography>
+        </CardContent> */}
         <CardActions disableSpacing className={classes.actions}>
           {game.status !== GameStatus.FINISHED && (
             <>

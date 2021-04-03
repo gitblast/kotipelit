@@ -10,6 +10,10 @@ const useStyles = makeStyles((theme: Theme) =>
     emailConfText: {
       marginBottom: theme.spacing(1),
     },
+    tvLink: {
+      fontSize: '2rem',
+      color: theme.palette.info.main,
+    },
   })
 );
 
@@ -65,6 +69,12 @@ const ReservationData: React.FC<ReservatioDataProps> = ({ data }) => {
       </Typography>
       {getWordList(data.privateData?.words)}
       {getGameUrl(data.url)}
+      {/* <Typography variant="subtitle1" className={classes.tvLink}>
+        Kotipelit-tv
+      </Typography>
+      <Typography variant="caption" color="initial">
+        Tv-linkki tähän
+      </Typography> */}
       {/** peruuta varaus-nappi? */}
     </>
   );

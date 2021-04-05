@@ -56,6 +56,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     returnBtn: {
       color: '#8da1a1',
+      marginTop: theme.spacing(1),
+      marginRight: theme.spacing(1),
     },
   })
 );

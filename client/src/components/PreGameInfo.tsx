@@ -79,7 +79,6 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
       <>
         {role !== Role.SPECTATOR ? (
           <>
-            <Typography variant="h3">Hauskaa peli-iltaa!</Typography>
             <div className={classes.infoContent}>
               <HeadsetIcon fontSize="large"></HeadsetIcon>
               <Typography>

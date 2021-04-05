@@ -162,10 +162,15 @@ const theme = createMuiTheme({
         },
       },
       text: {
+        paddingTop: 8,
+        paddingBottom: 8,
+        paddingLeft: 12,
+        paddingRight: 12,
         border: 0,
-        color: '#d5c44b',
+        color: '#d6d6d6',
+        background: '#143340',
         '&:hover': {
-          color: '#a0943b',
+          color: 'rgb(168 164 136)',
         },
       },
     },

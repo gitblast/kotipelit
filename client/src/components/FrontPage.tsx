@@ -30,8 +30,11 @@ const useStyles = makeStyles((theme: Theme) =>
     showcaseImage: {
       height: 347,
       marginBottom: theme.spacing(3),
+      [theme.breakpoints.down('sm')]: {
+        maxHeight: 250,
+      },
       [theme.breakpoints.down('xs')]: {
-        maxHeight: 205,
+        maxHeight: 190,
       },
     },
     sectionStyle: {

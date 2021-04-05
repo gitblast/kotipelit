@@ -33,7 +33,6 @@ const useStyles = makeStyles((theme: Theme) =>
       height: 3,
       background:
         'linear-gradient(to right, rgb(0 225 217), rgba(11, 43, 56, 1))',
-      boxShadow: 'rgb(231 239 191) -23px 8px 44px',
       width: '11vw',
       alignSelf: 'center',
       marginTop: '6px',

@@ -18,11 +18,17 @@ const getGameById = async (gameId: string): Promise<GameModel> => {
   return gameInDB;
 };
 
+const getGameAsObject = (game: GameModel): RTCGame => {
+  return {
+    ...game.toObject(),
+    id: game._id.toString(),
+  };
+};
+
 const addGame = async (newGame: NewGame) => {
-  const game = new Game({
+  const gameWithoutInfo = {
     ...newGame,
     createDate: new Date(),
-    info: getInitialInfo(newGame),
     players: newGame.players.map((player) => {
       return {
         ...player,
@@ -34,6 +40,11 @@ const addGame = async (newGame: NewGame) => {
         },
       };
     }),
+  };
+
+  const game = new Game({
+    ...gameWithoutInfo,
+    info: getInitialInfo(gameWithoutInfo),
   });
 
   return await game.save();
@@ -78,4 +89,5 @@ export default {
   getAllGamesByUser,
   addGame,
   shufflePlayers,
+  getGameAsObject,
 };

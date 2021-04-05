@@ -4,11 +4,13 @@ import UpdateEmittingTimer from './utils/timer';
 
 export interface GameModel extends NewGame, Document {
   createDate: Date;
+  info: GameInfo;
 }
 
 export interface BaseRTCGame {
   type: GameType;
   status: GameStatus;
+  info: GameInfo;
   startTime: Date;
   rounds: number;
   price: number;
@@ -18,7 +20,6 @@ export interface BaseRTCGame {
 export interface RTCGame extends BaseRTCGame {
   id: string;
   players: GamePlayer[];
-  info: GameInfo;
   host: {
     id: string;
     displayName: string;
@@ -26,7 +27,7 @@ export interface RTCGame extends BaseRTCGame {
   };
 }
 
-export interface NewGame extends BaseRTCGame {
+export interface NewGame extends Omit<BaseRTCGame, 'info'> {
   players: GamePlayer[];
   host: {
     id: UserModel['_id'];
@@ -135,7 +136,6 @@ export interface SocketWithToken extends Socket {
 }
 
 export interface RTCGameRoom {
-  game: RTCGame;
   socketMap: Map<string, string | null>; // <player id, player socket id>
   spectatorSockets: string[];
   maxSpectators: number;

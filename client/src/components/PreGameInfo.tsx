@@ -92,10 +92,8 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
                 <MediaPreview />
               </div>
             )}
-            <Button
-              color="primary"
-              onClick={() => setPreviewOpen(!previewOpen)}
-            >
+
+            <Button variant="text" onClick={() => setPreviewOpen(!previewOpen)}>
               {previewOpen ? 'Lopeta testi' : 'Testaa kamera ja mikrofoni'}
             </Button>
             {!isSupported && alertOpen && (

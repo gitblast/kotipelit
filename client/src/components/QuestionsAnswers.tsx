@@ -1,13 +1,25 @@
 import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Paper, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       padding: theme.spacing(2),
       margin: theme.spacing(4),
+    },
+    roleContent: {
+      marginBottom: theme.spacing(3),
+      '& > * + *': {
+        margin: theme.spacing(1),
+      },
+    },
+    roleTitle: {
+      color: theme.palette.info.main,
+    },
+    roleSubtitle: {
+      color: theme.palette.success.main,
     },
   })
 );
@@ -16,62 +28,70 @@ const QuestionsAnswers = () => {
   const classes = useStyles();
   return (
     <>
-      <Paper className={classes.container}>
-        <Typography variant="h3" color="initial">
-          Pelin järjestäjälle
-        </Typography>
-        <Typography variant="body1" color="initial">
-          Maksaako pelien järjestäminen?
-        </Typography>
-        <Typography variant="body2" color="initial">
-          Pelien järjestäminen ei maksa mitään. Toistaiseksi myös pelaaminen on
-          täysin ilmaista. Kehitteillä on ominaisuus, jolla pelin juontajana
-          voit halutessasi asettaa pelaajille hinnan, josta 80% tulisi sinulle
-          ja 20% käytetään Kotipelit-sivuston kehittämiseen.
-        </Typography>
-        <Typography variant="body1" color="initial">
-          Voinko juontaa ystävilleni jatkossakin ilmaisia peli-iltoja?
-        </Typography>
-        <Typography variant="body2" color="initial">
-          Peli-iltasi voi jatkossakin olla pelaajille ilmaisia ja alkuun näin
-          suosittelemme tekemäänkin. Maksullisissa peleissä tulee olemaan
-          kuitenkin vakaamman yhteyden lisäksi muitakin lisäominaisuuksia.
-        </Typography>
-        <Typography variant="body1" color="initial">
-          Kuinka järjestän peli-illan?
-        </Typography>
-        <Typography variant="body2" color="initial">
-          Kun olemme tehneet sinulle käyttäjätilin, saat luotua pelejä ja
-          kutsuttua kavereita helposti peliin ilmottatumislinkin avulla.
-          Pisteiden päivitys yms. pelin toiminnot videopuhelun aikana ovat
-          helppokäyttöisiä ja apua voi kysyä milloin vaan.
-        </Typography>
-        <Typography variant="h3" color="initial">
-          Pelaajille
-        </Typography>
-        <Typography variant="body1" color="initial">
-          Tarvitsenko käyttäjätilin pelatakseni?
-        </Typography>
-        <Typography variant="body2" color="initial">
-          Pelaajat eivät tarvitse käyttäjätiliä, mutta pelin juontajalla tulee
-          olla tili voidaakseen luoda pelejä.
-        </Typography>
-        <Typography variant="body1" color="initial">
-          Miksi maksaisin peli-illasta?
-        </Typography>
-        <Typography variant="body2" color="initial">
-          80% peli-illan tuotosta menee pelin juontajalle, joka voi esimerkiksi
-          olla ystäväsi tai sukulaisesi. Maksullisissa peleissä on myös vakaampi
-          yhteys ja lisäominaisuuksia, mitä ilmaisissa peleissä ei ole.
-        </Typography>
-        <Typography variant="body1" color="initial">
-          Miten voin tilata peli-illan ystävilleni, perheelle tai yritykselle?
-        </Typography>
-        <Typography variant="body2" color="initial">
-          Voit ottaa yhteyttä info [at] kotipelit.com ja etsimme teidän
-          ajankohdalle vapaan pelijuontajan.
-        </Typography>
-      </Paper>
+      <div className={classes.container}>
+        <div className={classes.roleContent}>
+          <Typography variant="h3" className={classes.roleTitle}>
+            Pelin järjestäjälle
+          </Typography>
+          <div>
+            <Typography variant="body1" className={classes.roleSubtitle}>
+              Maksaako pelien järjestäminen?
+            </Typography>
+            <Typography variant="body2" color="initial">
+              Pelien järjestäminen ei maksa mitään. Toistaiseksi myös pelaaminen
+              on täysin ilmaista. Kehitteillä on ominaisuus, jolla pelin
+              juontajana voit halutessasi asettaa pelaajille hinnan, jonka
+              tuotoista suurinosa tulisi sinulle ja osa käytetään
+              Kotipelit-sivuston kehittämiseen.
+            </Typography>
+          </div>
+          <div>
+            <Typography variant="body1" className={classes.roleSubtitle}>
+              Voinko juontaa ystävilleni jatkossakin ilmaisia peli-iltoja?
+            </Typography>
+            <Typography variant="body2" color="initial">
+              Peli-iltasi voi jatkossakin olla pelaajille ilmaisia ja alkuun
+              näin suosittelemme tekemäänkin. Maksullisissa peleissä tulee
+              olemaan kuitenkin lisäominaisuuksia, joita ilmaispeleissä ei ole.
+            </Typography>
+          </div>
+          <div>
+            <Typography variant="body1" className={classes.roleSubtitle}>
+              Kuinka järjestän peli-illan?
+            </Typography>
+            <Typography variant="body2" color="initial">
+              Kun sinulla on käyttäjätili, saat luotua pelejä profiilistasi ja
+              kutsuttua pelaajia vaivattomasti ilmoittautumislinkin avulla.
+              Pisteiden päivitys yms. pelin toiminnot videopuhelun aikana ovat
+              helppokäyttöisiä ja apua voi kysyä milloin vaan.
+            </Typography>
+          </div>
+        </div>
+        <div className={classes.roleContent}>
+          <Typography variant="h3" className={classes.roleTitle}>
+            Pelaajille
+          </Typography>
+          <div>
+            <Typography variant="body1" className={classes.roleSubtitle}>
+              Miten voin tilata peli-illan ystävilleni, perheelle tai
+              yritykselle?
+            </Typography>
+            <Typography variant="body2" color="initial">
+              Voit ottaa yhteyttä info [at] kotipelit.com ja etsimme teidän
+              ajankohdalle vapaan pelijuontajan.
+            </Typography>
+          </div>
+          <div>
+            <Typography variant="body1" className={classes.roleSubtitle}>
+              Tarvitsenko käyttäjätilin pelatakseni?
+            </Typography>
+            <Typography variant="body2" color="initial">
+              Pelaajat eivät tarvitse käyttäjätiliä, mutta pelin juontajalla
+              tulee olla tili voidaakseen järjestää pelejä.
+            </Typography>
+          </div>
+        </div>
+      </div>
     </>
   );
 };

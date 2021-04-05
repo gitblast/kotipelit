@@ -21,6 +21,9 @@ const useStyles = makeStyles((theme: Theme) =>
     gameInfo: {
       marginTop: theme.spacing(2),
       marginBottom: theme.spacing(2),
+      [theme.breakpoints.down('xs')]: {
+        maxWidth: 200,
+      },
     },
   })
 );
@@ -64,7 +67,7 @@ const AddedGameInfo = ({ addedGame, error }: AddedGameInfoProps) => {
         </Typography>
       </div>
       {addedGame.allowedSpectators !== 0 ? (
-        <>
+        <div className={classes.gameInfo}>
           <Typography
             variant="subtitle1"
             color="initial"
@@ -78,7 +81,7 @@ const AddedGameInfo = ({ addedGame, error }: AddedGameInfoProps) => {
           <Typography className={classes.shareLink}>
             Jaa tämä kaikille, jotka haluat kutsua katsojiksi
           </Typography>
-        </>
+        </div>
       ) : null}
     </div>
   );

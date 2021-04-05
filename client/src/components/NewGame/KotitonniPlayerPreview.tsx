@@ -10,20 +10,11 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     playerRow: {
       display: 'flex',
-      alignItems: 'center',
-      marginBottom: theme.spacing(2),
-      [theme.breakpoints.down('xs')]: {
-        flexDirection: 'column',
-        alignItems: 'normal',
-      },
+      flexDirection: 'column',
+      marginBottom: theme.spacing(1),
     },
-    playerName: {},
     wordsRow: {
       display: 'flex',
-      marginLeft: theme.spacing(4),
-      [theme.breakpoints.down('xs')]: {
-        marginLeft: theme.spacing(2),
-      },
     },
     wordContainer: {
       display: 'flex',
@@ -47,7 +38,7 @@ const KotitonniPlayerPreview = ({
 
   return (
     <div className={classes.playerRow}>
-      <div className={classes.playerName}>
+      <div>
         <Typography>{`Pelaaja ${playerIndex + 1}`}</Typography>
       </div>
       <div className={classes.wordsRow}>

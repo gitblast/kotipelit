@@ -12,25 +12,6 @@ import {
 import { io as ioServer } from '../index';
 import UpdateEmittingTimer from './timer';
 
-export const convertToRTCGame = (game: GameModel): RTCGame => {
-  return {
-    id: game._id.toString(),
-    status: game.status,
-    type: game.type,
-    price: game.price,
-    startTime: game.startTime,
-    players: game.players,
-    allowedSpectators: game.allowedSpectators,
-    info: getInitialInfo(game),
-    host: {
-      id: game.host.id.toString(),
-      displayName: game.host.displayName,
-      privateData: null,
-    },
-    rounds: game.rounds,
-  };
-};
-
 export const getInitialInfo = (game: NewGame): GameInfo => {
   /** handle different game types here */
   switch (game.type) {
@@ -88,7 +69,7 @@ export const getInviteMailData = (
 };
 
 export const filterGameForSpectator = (game: RTCGame): FilteredRTCGame => {
-  return {
+  const filtered = {
     ...game,
     players: game.players.map((player) => {
       return {
@@ -98,10 +79,12 @@ export const filterGameForSpectator = (game: RTCGame): FilteredRTCGame => {
       };
     }),
   };
+
+  return filtered;
 };
 
 export const filterGameForUser = (
-  game: RTCGame | GameModel,
+  game: RTCGame,
   userId: string
 ): FilteredRTCGame | RTCGame => {
   if (userId === game.host.id.toString()) {
@@ -130,7 +113,7 @@ export const filterGameForUser = (
   throw new Error(`invalid game type: ${game.type}`);
 };
 
-export const getInitialGameState = (game: RTCGame): RTCGameState => {
+export const getInitialGameState = (game: GameModel): RTCGameState => {
   switch (game.type) {
     case GameType.KOTITONNI:
       const tickInterval = process.env.NODE_ENV === 'development' ? 50 : 1000;

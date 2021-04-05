@@ -1,18 +1,8 @@
-import {
-  RTCGame,
-  SocketWithToken,
-  Role,
-  FilteredRTCGame,
-  RTCGameRoom,
-  RTCGameState,
-} from '../types';
+import { Role, RTCGameRoom, RTCGameState, SocketWithToken } from '../types';
 import { RoomNotFoundError } from '../utils/errors';
+import { getInitialGameState } from '../utils/helpers';
 import logger from '../utils/logger';
-import {
-  filterGameForUser,
-  filterGameForSpectator,
-  getInitialGameState,
-} from '../utils/helpers';
+import { GameModel } from '../types';
 
 const rooms = new Map<string, RTCGameRoom>();
 
@@ -45,7 +35,7 @@ const setRoom = (id: string, updatedRoom: Omit<RTCGameRoom, 'lastUpdated'>) => {
   rooms.set(id, timeStampedRoom);
 };
 
-const joinRoom = (socket: SocketWithToken): RTCGame | FilteredRTCGame => {
+const joinRoom = (socket: SocketWithToken) => {
   const { role, gameId, id, username } = socket.decodedToken;
 
   const room = rooms.get(gameId);
@@ -73,20 +63,6 @@ const joinRoom = (socket: SocketWithToken): RTCGame | FilteredRTCGame => {
   }
 
   setRoom(gameId, room);
-
-  if (role === Role.HOST) {
-    return room.game;
-  } else if (role === Role.PLAYER) {
-    return filterGameForUser(room.game, id);
-  } else {
-    return filterGameForSpectator(room.game);
-  }
-};
-
-const getRoomGame = (id: string): RTCGame | null => {
-  const room = rooms.get(id);
-
-  return room?.game ?? null;
 };
 
 const getRoomState = (roomId: string): RTCGameState => {
@@ -112,7 +88,7 @@ const setRoomState = (roomId: string, newState: RTCGameState): void => {
   });
 };
 
-const createRoom = (game: RTCGame): void => {
+const createRoom = (game: GameModel): void => {
   const existing = rooms.get(game.id);
 
   if (existing) {
@@ -128,7 +104,6 @@ const createRoom = (game: RTCGame): void => {
   });
 
   const newRoom: Omit<RTCGameRoom, 'lastUpdated'> = {
-    game,
     socketMap,
     spectatorSockets: [],
     maxSpectators: game.allowedSpectators,
@@ -170,23 +145,6 @@ const getRoom = (id: string): RTCGameRoom => {
 
 const getRooms = (): Map<string, RTCGameRoom> => rooms;
 
-const updateRoomGame = (gameId: string, newGame: RTCGame): RTCGame => {
-  const room = rooms.get(gameId);
-
-  if (!room) {
-    throw new RoomNotFoundError(gameId);
-  }
-
-  const updatedRoom = {
-    ...room,
-    game: newGame,
-  };
-
-  setRoom(gameId, updatedRoom);
-
-  return newGame;
-};
-
 const deleteRoom = (gameId: string): boolean => {
   return rooms.delete(gameId);
 };
@@ -194,9 +152,7 @@ const deleteRoom = (gameId: string): boolean => {
 export default {
   createRoom,
   joinRoom,
-  getRoomGame,
   leaveRoom,
-  updateRoomGame,
   getRooms,
   getRoom,
   deleteRoom,

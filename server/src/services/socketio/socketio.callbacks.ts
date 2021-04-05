@@ -338,12 +338,14 @@ export const handleAnswer = async (
 
     await game.save();
 
-    const hostSocketId = room.socketMap.get(game.host.id);
+    const hostSocketId = room.socketMap.get(game.host.id.toString());
 
     if (hostSocketId) {
       socket
         .to(hostSocketId)
         .emit('game-updated', gameService.getGameAsObject(game));
+    } else {
+      logger.error('no host socket found when delivering answer');
     }
 
     emitUpdatedGameToOne(socket, game);

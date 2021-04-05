@@ -64,7 +64,7 @@ const theme = createMuiTheme({
     },
     // Used in important information, like in gamelobby invitation
     info: {
-      main: '#f1dc4a',
+      main: '#d5c44b',
     },
     // Used in highlighted information, i.e. Host name in Gamelobby
     success: {
@@ -161,11 +161,30 @@ const theme = createMuiTheme({
           color: 'rgb(92 92 92)',
         },
       },
+      text: {
+        paddingTop: 8,
+        paddingBottom: 8,
+        paddingLeft: 12,
+        paddingRight: 12,
+        border: 0,
+        color: '#d6d6d6',
+        background: '#143340',
+        '&:hover': {
+          color: 'rgb(168 164 136)',
+        },
+      },
     },
     MuiLink: {
       root: {
         cursor: 'pointer',
         underline: 'none',
+      },
+    },
+    MuiList: {
+      root: {
+        backgroundColor: 'rgb(180 178 161)',
+        // general background color
+        color: 'rgb(11 43 56)',
       },
     },
     MuiLinearProgress: {
@@ -184,6 +203,9 @@ const theme = createMuiTheme({
       root: {
         borderColor: 'rgb(0 225 217)',
         borderLeft: '1px solid',
+      },
+      last: {
+        marginLeft: 0,
       },
     },
     MuiStepConnector: {
@@ -233,7 +255,6 @@ const theme = createMuiTheme({
     MuiButton: {
       disableRipple: true,
       variant: 'contained',
-      color: 'primary',
     },
     MuiCheckbox: {
       disableRipple: true,

@@ -33,7 +33,6 @@ const useStyles = makeStyles((theme: Theme) =>
       height: 3,
       background:
         'linear-gradient(to right, rgb(0 225 217), rgba(11, 43, 56, 1))',
-      boxShadow: 'rgb(231 239 191) -23px 8px 44px',
       width: '11vw',
       alignSelf: 'center',
       marginTop: '6px',
@@ -41,7 +40,6 @@ const useStyles = makeStyles((theme: Theme) =>
     button: {
       marginTop: theme.spacing(1),
       marginRight: theme.spacing(1),
-      padding: theme.spacing(1),
     },
     actionsContainer: {
       marginBottom: theme.spacing(2),
@@ -55,6 +53,11 @@ const useStyles = makeStyles((theme: Theme) =>
         padding: 0,
         paddingTop: theme.spacing(2),
       },
+    },
+    returnBtn: {
+      color: '#8da1a1',
+      marginTop: theme.spacing(1),
+      marginRight: theme.spacing(1),
     },
   })
 );
@@ -171,13 +174,17 @@ const NewGame: React.FC = () => {
                       disabled={activeStep === 0}
                       onClick={handleBack}
                       variant="text"
-                      className={classes.button}
+                      className={classes.returnBtn}
                     >
                       Palaa
                     </Button>
                   )}
                   {activeStep !== 1 && ( // not shown when choosing game type
-                    <Button onClick={handleNext} className={classes.button}>
+                    <Button
+                      onClick={handleNext}
+                      color="primary"
+                      className={classes.button}
+                    >
                       {activeStep === steps.length - 1 ? 'Valmis' : 'Seuraava'}
                     </Button>
                   )}

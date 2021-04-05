@@ -17,7 +17,7 @@ import Footer from './components/Footer';
 import ChannelPage from './components/ChannelPage';
 import { State, HostChannel } from './types';
 
-import logoImg from './assets/images/logo.png';
+import logoImg from './assets/images/logoTransparent.png';
 import QuestionsAnswers from './components/QuestionsAnswers';
 import CompanyInfo from './components/CompanyInfo';
 import ScrollToTop from './components/ScrollToTop';

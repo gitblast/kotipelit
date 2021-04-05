@@ -15,12 +15,14 @@ import kotitonniImg from '../../assets/images/kotitonni.png';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     gameCard: {
-      maxWidth: 280,
+      maxWidth: 240,
       background: 'rgb(29 18 55)',
       border: '2px dotted white',
       color: 'rgb(185 231 229)',
       textAlign: 'center',
-      padding: theme.spacing(2),
+      [theme.breakpoints.down('xs')]: {
+        marginLeft: 0,
+      },
     },
     kotitonniImage: {
       height: 100,

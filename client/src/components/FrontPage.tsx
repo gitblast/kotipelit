@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Typography, Grid, Button } from '@material-ui/core';
 
-import logoImg from '../assets/images/logo.png';
+import logoImg from '../assets/images/logoTransparent.png';
 import gamehostImg from '../assets/images/gamehost.png';
 import gameviewImg from '../assets/images/gameview.png';
 
@@ -29,8 +29,12 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     showcaseImage: {
       height: 347,
+      marginBottom: theme.spacing(3),
+      [theme.breakpoints.down('sm')]: {
+        maxHeight: 250,
+      },
       [theme.breakpoints.down('xs')]: {
-        maxHeight: 240,
+        maxHeight: 190,
       },
     },
     sectionStyle: {
@@ -70,7 +74,6 @@ const useStyles = makeStyles((theme: Theme) =>
       height: 3,
       background:
         'linear-gradient(to right, rgb(0 225 217), rgba(11, 43, 56, 1))',
-      boxShadow: 'rgb(231 239 191) -23px 8px 44px',
       width: '11vw',
       alignSelf: 'center',
       marginTop: '6px',
@@ -97,6 +100,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     step: {
+      color: 'black',
       textAlign: 'center',
       width: 34,
       height: 34,
@@ -106,7 +110,6 @@ const useStyles = makeStyles((theme: Theme) =>
     stepNeon: {
       borderTop: 'solid 4px rgb(250 227 74)',
       background: 'rgb(167 203 176)',
-      boxShadow: 'rgb(231 239 191) -1px 8px 44px',
       alignSelf: 'flex-start',
       width: '12%',
       marginTop: '15px',

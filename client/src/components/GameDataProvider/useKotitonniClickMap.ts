@@ -18,10 +18,22 @@ const useKotitonniClickMap = () => {
 
   const resetClicks = React.useCallback(() => setClickedMap({}), []);
 
+  const setClicked = React.useCallback(
+    (playerId: string, clicked: boolean) =>
+      setClickedMap((previousState) => {
+        return {
+          ...previousState,
+          [playerId]: clicked,
+        };
+      }),
+    []
+  );
+
   return {
     clickedMap,
     toggleClicked,
     resetClicks,
+    setClicked,
   };
 };
 

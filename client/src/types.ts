@@ -36,6 +36,7 @@ export interface MediaMutedStates {
 export interface KotitonniLocalData {
   clickedMap: Record<string, boolean>;
   toggleClicked: (playerId: string) => void;
+  setClicked: (playerId: string, clicked: boolean) => void;
   resetClicks: () => void;
 }
 

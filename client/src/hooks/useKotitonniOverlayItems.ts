@@ -2,7 +2,42 @@ import React from 'react';
 
 import { useInGameTimer, useKotitonniData, useGameData } from '../context';
 import { getPointAddition } from '../helpers/games';
-import { Role } from '../types';
+import { Role, RTCKotitonniPlayer } from '../types';
+
+const useCorrectAnswerSetter = (
+  playerId: string,
+  answer: string | null,
+  players: RTCKotitonniPlayer[]
+) => {
+  const [handled, setHandled] = React.useState(false);
+
+  const { setClicked } = useKotitonniData();
+
+  // correct answers as a joint string, eg. tunneli-palaveri-liipasin
+  const correctAnwersAsString = React.useMemo(
+    () =>
+      players
+        .find((p) => p.hasTurn)
+        ?.privateData?.words.join('-')
+        .toLowerCase(),
+    [players]
+  );
+
+  React.useEffect(() => {
+    if (
+      !handled &&
+      answer &&
+      correctAnwersAsString?.includes(answer.toLowerCase())
+    ) {
+      setClicked(playerId, true);
+      setHandled(true);
+    }
+  }, [playerId, answer, correctAnwersAsString, setClicked, handled]);
+
+  React.useEffect(() => {
+    setHandled(false);
+  }, [correctAnwersAsString]);
+};
 
 const useKotitonniOverlayItems = (playerId: string) => {
   const { clickedMap } = useKotitonniData();
@@ -46,6 +81,8 @@ const useKotitonniOverlayItems = (playerId: string) => {
 
     return getPointAddition(game, clickedMap, player.id, !!player.hasTurn);
   }, [game, clickedMap, player]);
+
+  useCorrectAnswerSetter(playerId, answer, game.players);
 
   return {
     answer,

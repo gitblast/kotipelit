@@ -6,16 +6,21 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import ReservationData from './ReservationData';
 
-// import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { LobbyGamePlayer } from '../types';
+import Typography from '@material-ui/core/Typography';
 
-// const useStyles = makeStyles((theme: Theme) =>
-//   createStyles({
-//     reservationKotitonni: {
-//       backgroundColor: 'white',
-//     },
-//   })
-// );
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      background: 'linear-gradient(to bottom, rgb(32 82 100), rgb(14 25 30))',
+      border: 'dotted 3px rgb(0 225 217)',
+    },
+    dialogHighlights: {
+      color: theme.palette.info.main,
+    },
+  })
+);
 
 interface ReservationConfirmedDialogProps {
   open: boolean;
@@ -28,18 +33,24 @@ const ReservationConfirmedDialog: React.FC<ReservationConfirmedDialogProps> = ({
   handleClose,
   lockedReservationData,
 }) => {
-  // const classes = useStyles();
+  const classes = useStyles();
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>{'Varaus onnistui!'}</DialogTitle>
-      <DialogContent>
-        <ReservationData data={lockedReservationData} />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} color="primary" autoFocus>
-          Selvä
-        </Button>
-      </DialogActions>
+      <div className={classes.root}>
+        <DialogTitle>
+          <Typography variant="body1" className={classes.dialogHighlights}>
+            Varaus onnistui!
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          <ReservationData data={lockedReservationData} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} variant="text" autoFocus>
+            Selvä
+          </Button>
+        </DialogActions>
+      </div>
     </Dialog>
   );
 };

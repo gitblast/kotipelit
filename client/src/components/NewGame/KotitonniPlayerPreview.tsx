@@ -2,9 +2,7 @@ import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { RTCKotitonniPlayer } from '../../types';
-import { Typography } from '@material-ui/core';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import IconButton from '@material-ui/core/IconButton/IconButton';
+import { Typography, Button } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -16,9 +14,10 @@ const useStyles = makeStyles((theme: Theme) =>
     wordsRow: {
       display: 'flex',
     },
-    wordContainer: {
-      display: 'flex',
-      alignItems: 'center',
+    wordRefreshBtn: {
+      [theme.breakpoints.down('xs')]: {
+        fontSize: 12,
+      },
     },
   })
 );
@@ -39,20 +38,19 @@ const KotitonniPlayerPreview = ({
   return (
     <div className={classes.playerRow}>
       <div>
-        <Typography>{`Pelaaja ${playerIndex + 1}`}</Typography>
+        <Typography variant="body2">{`Pelaaja ${playerIndex + 1}`}</Typography>
       </div>
       <div className={classes.wordsRow}>
         {player.privateData.words.map((word, index) => (
           <div key={word}>
-            <div className={classes.wordContainer}>
+            <Button
+              variant="text"
+              color="default"
+              onClick={() => handleRefresh(player.id, index)}
+              className={classes.wordRefreshBtn}
+            >
               {word}
-              <IconButton
-                size="small"
-                onClick={() => handleRefresh(player.id, index)}
-              >
-                <RefreshIcon />
-              </IconButton>
-            </div>
+            </Button>
           </div>
         ))}
       </div>

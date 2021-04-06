@@ -11,6 +11,10 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       margin: theme.spacing(2),
       color: theme.palette.primary.light,
+      [theme.breakpoints.down('xs')]: {
+        fontSize: 12,
+        margin: 0,
+      },
     },
   })
 );

@@ -72,11 +72,11 @@ const ErrorDialog = ({
       </DialogContent>
       <DialogActions>
         {enableRefresh && (
-          <Button onClick={handleRefreshGame} color="secondary" autoFocus>
+          <Button onClick={handleRefreshGame} variant="text" autoFocus>
             Lataa sivu uudelleen
           </Button>
         )}
-        <Button onClick={() => setOpen(false)} color="primary" autoFocus>
+        <Button onClick={() => setOpen(false)} variant="text" autoFocus>
           Sulje
         </Button>
       </DialogActions>

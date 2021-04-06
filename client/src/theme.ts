@@ -71,7 +71,7 @@ const theme = createMuiTheme({
       main: '#d517df',
     },
     text: {
-      primary: 'rgb(170 161 85)',
+      primary: 'rgb(168 164 136)',
       secondary: 'rgb(168 164 136)',
       disabled: 'rgb(168 164 136)',
       hint: 'rgba(135, 56, 43)',

@@ -10,6 +10,12 @@ const useStyles = makeStyles((theme: Theme) =>
     emailConfText: {
       marginBottom: theme.spacing(1),
     },
+    dialogHighlights: {
+      color: theme.palette.info.main,
+    },
+    registeringInfo: {
+      marginBottom: theme.spacing(2),
+    },
     tvLink: {
       fontSize: '2rem',
       color: theme.palette.info.main,
@@ -24,7 +30,7 @@ interface ReservatioDataProps {
 const ReservationData: React.FC<ReservatioDataProps> = ({ data }) => {
   const classes = useStyles();
 
-  const emailString = data.email ? ` (${data.email})` : '.';
+  const emailString = data.email ? ` ${data.email}` : '.';
 
   const getWordList = (words?: string[]) => {
     if (!words) {
@@ -34,10 +40,12 @@ const ReservationData: React.FC<ReservatioDataProps> = ({ data }) => {
     }
 
     return (
-      <>
-        <Typography variant="body2">Tässä ovat pelin sanasi:</Typography>
-        <Typography>{words.join(', ')}</Typography>
-      </>
+      <div className={classes.registeringInfo}>
+        <Typography variant="body1">Tässä ovat pelin sanasi:</Typography>
+        <Typography variant="body1" className={classes.dialogHighlights}>
+          {words.join(', ')}
+        </Typography>
+      </div>
     );
   };
 
@@ -49,24 +57,17 @@ const ReservationData: React.FC<ReservatioDataProps> = ({ data }) => {
     }
 
     return (
-      <>
-        <Typography variant="body2">
+      <div className={classes.registeringInfo}>
+        <Typography variant="body1" color="initial">
           Peliin pääset liittymään osoitteessa:
         </Typography>
         <Typography variant="caption">{url}</Typography>
-      </>
+      </div>
     );
   };
 
   return (
     <>
-      <Typography variant="body1">
-        {`Lähetimme pelin tiedot sähköpostiisi${emailString}`}
-        {/** Lähetä uudestaan -nappi, vaihda sposti-toiminto? */}
-      </Typography>
-      <Typography variant="body2" className={classes.emailConfText}>
-        Jos et saanut viestiä, kirjoita itsellesi alla olevat tiedot muistiin.
-      </Typography>
       {getWordList(data.privateData?.words)}
       {getGameUrl(data.url)}
       {/* <Typography variant="subtitle1" className={classes.tvLink}>
@@ -76,6 +77,10 @@ const ReservationData: React.FC<ReservatioDataProps> = ({ data }) => {
         Tv-linkki tähän
       </Typography> */}
       {/** peruuta varaus-nappi? */}
+      <Typography variant="body2" className={classes.emailConfText}>
+        {`Jos et saanut viestiä osoitteeseen ${emailString}, kirjoita itsellesi ylläolevat tiedot muistiin.`}
+        {/** Lähetä uudestaan -nappi, vaihda sposti-toiminto? */}
+      </Typography>
     </>
   );
 };

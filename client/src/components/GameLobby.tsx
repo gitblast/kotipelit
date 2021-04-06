@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import fiLocale from 'date-fns/locale/fi';
 import { capitalize } from 'lodash';
 import React from 'react';
-import logoImg from '../assets/images/logo.png';
+import logoImg from '../assets/images/logoTransparent.png';
 import useLobbySystem from '../hooks/useLobbySystem';
 import { LobbyGamePlayer } from '../types';
 import KotitonniRulesBanner from './KotitonniRulesBanner';
@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: 'center',
     },
     showcaseImage: {
-      height: 347,
+      height: 325,
       [theme.breakpoints.down('xs')]: {
         maxHeight: 200,
       },

@@ -8,7 +8,7 @@ import logger from '../../utils/logger';
 import gameService from '../../services/games';
 
 import ClearIcon from '@material-ui/icons/Clear';
-import PlayerInfoTooltip from './PlayerInfoTooltip';
+import InfoTooltip from './InfoTooltip';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -78,7 +78,11 @@ const PlayerInfo = ({ player, gameStatus, hostName }: PlayerInfoProps) => {
           ? 'http://localhost:3000'
           : 'https://www.kotipelit.com'
       }/${hostName}/${player.privateData.inviteCode}`}</Typography>
-      <PlayerInfoTooltip />
+      <InfoTooltip
+        text={
+          'Pelaajat saavat sähköpostiinsa linkin, jolla pääsevät peliin. Jos ylläoleva pelaaja hukkaa linkkinsä, jaa tämä hänelle.'
+        }
+      />
     </div>
   );
 };

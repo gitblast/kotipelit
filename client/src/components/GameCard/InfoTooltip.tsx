@@ -21,9 +21,11 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-// interface PlayerInfoTooltipProps {}
+interface InfoTooltipProps {
+  text: string;
+}
 
-const PlayerInfoTooltip = () => {
+const InfoTooltip = ({ text }: InfoTooltipProps) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
@@ -42,7 +44,6 @@ const PlayerInfoTooltip = () => {
   return (
     <span>
       <IconButton
-        aria-owns={open ? 'mouse-over-popover' : undefined}
         aria-haspopup="true"
         onMouseEnter={handlePopoverOpen}
         onMouseLeave={handlePopoverClose}
@@ -53,7 +54,6 @@ const PlayerInfoTooltip = () => {
       </IconButton>
 
       <Popover
-        id="mouse-over-popover"
         className={classes.popover}
         classes={{
           paper: classes.paper,
@@ -71,13 +71,10 @@ const PlayerInfoTooltip = () => {
         onClose={handlePopoverClose}
         disableRestoreFocus
       >
-        <Typography variant="body2">
-          Pelaajat saavat sähköpostiinsa linkin, jolla pääsevät peliin. Jos
-          ylläoleva pelaaja hukkaa linkkinsä, jaa tämä hänelle.
-        </Typography>
+        <Typography variant="body2">{text}</Typography>
       </Popover>
     </span>
   );
 };
 
-export default PlayerInfoTooltip;
+export default InfoTooltip;

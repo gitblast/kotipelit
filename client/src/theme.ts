@@ -71,9 +71,9 @@ const theme = createMuiTheme({
       main: '#d517df',
     },
     text: {
-      primary: 'rgb(168 164 136)',
+      primary: '#d5c44b',
       secondary: 'rgb(168 164 136)',
-      disabled: 'rgb(168 164 136)',
+      disabled: 'rgb(96 95 89)',
       hint: 'rgba(135, 56, 43)',
     },
   },
@@ -203,6 +203,7 @@ const theme = createMuiTheme({
       root: {
         borderColor: 'rgb(0 225 217)',
         borderLeft: '1px solid',
+        color: 'rgb(168 164 136)',
       },
       last: {
         marginLeft: 0,

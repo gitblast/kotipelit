@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(0.5),
     },
     answerText: {
+      textTransform: 'capitalize',
       [theme.breakpoints.down('sm')]: {
         fontSize: '1.4rem',
       },

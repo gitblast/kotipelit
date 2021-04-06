@@ -9,6 +9,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import PlayerUpdater from './PlayerUpdater';
+import InfoTooltip from '../GameCard/InfoTooltip';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -105,6 +106,11 @@ const GameSettings: React.FC<GameSettingsProps> = ({
             </Typography>
           }
           labelPlacement="start"
+        />
+        <InfoTooltip
+          text={
+            'Kotipelit-tv mahdollistaa, että voitte pyytää tuttunne seuraamaan peli-iltaanne livenä. Maksimimäärä katsojia on 40.'
+          }
         />
       </div>
       <div className={classes.pricesBlock}>

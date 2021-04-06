@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
     },
     wordRefreshBtn: {
+      color: theme.palette.primary.light,
       [theme.breakpoints.down('xs')]: {
         fontSize: 12,
       },
@@ -45,7 +46,6 @@ const KotitonniPlayerPreview = ({
           <div key={word}>
             <Button
               variant="text"
-              color="default"
               onClick={() => handleRefresh(player.id, index)}
               className={classes.wordRefreshBtn}
             >

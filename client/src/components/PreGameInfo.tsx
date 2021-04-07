@@ -28,8 +28,11 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     infoContent: {
-      display: 'flex',
-      margin: 15,
+      margin: theme.spacing(2),
+      textAlign: 'center',
+      '& > * + *': {
+        margin: theme.spacing(2),
+      },
     },
     spectatorHead: {
       display: 'flex',
@@ -80,11 +83,24 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
         {role !== Role.SPECTATOR ? (
           <>
             <div className={classes.infoContent}>
-              <HeadsetIcon fontSize="large"></HeadsetIcon>
-              <Typography>
-                Käytä kuulokkeita, niin pelin äänet eivät kuulu muille
-                pelaajille läpi.
+              <Typography variant="body1">
+                <span>
+                  <HeadsetIcon></HeadsetIcon>
+                </span>
+                Käytä kuulokkeita, niin pelin äänet eivät kuulu muille läpi.
               </Typography>
+              {role === Role.HOST && (
+                <>
+                  <Typography variant="body1" color="initial">
+                    Voit hiljentää pelaajan kaikilta, jos taustalta kuuluu
+                    melua.
+                  </Typography>
+                  <Typography variant="body1" color="initial">
+                    Ohjelma ehdottaa oikeaa vastausta, mutta voit hyväksyä
+                    vastauksen myös klikkaamalla sitä.
+                  </Typography>
+                </>
+              )}
             </div>
             {previewOpen && (
               <div>

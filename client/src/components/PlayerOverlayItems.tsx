@@ -48,6 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
       position: 'absolute',
+      color: 'rgb(0 225 217)',
       [theme.breakpoints.down('sm')]: {
         display: 'none',
       },
@@ -55,9 +56,8 @@ const useStyles = makeStyles((theme: Theme) =>
         display: 'none',
       },
     },
-    // Repeating same code from HostOverlayItems
-    controlIcon: {
-      color: 'white',
+    pointsEV: {
+      color: 'rgb(0 225 217)',
     },
     positionLabel: {
       position: 'absolute',
@@ -125,10 +125,12 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
         />
         {forHost && showPointAddition && pointAddition !== 0 && (
           <div className={classes.pointsAddition}>
-            <Typography variant="body2" color="initial">
+            <Typography variant="body2" className={classes.pointsEV}>
               {pointAddition >= 0 && `+ `}
             </Typography>
-            <Typography variant="body2">{pointAddition}</Typography>
+            <Typography variant="body2" className={classes.pointsEV}>
+              {pointAddition}
+            </Typography>
           </div>
         )}
         {forHost && answer && isWideEnough && (

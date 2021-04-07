@@ -6,21 +6,23 @@ import { useKotitonniData } from '../context';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     answerBubble: {
-      // Shapes made with https://bennettfeely.com/clippy/
-      clipPath:
-        'polygon(0% 0%, 100% 0%, 100% 75%, 79% 75%, 80% 99%, 55% 76%, 0% 75%)',
       position: 'absolute',
       top: 22,
       width: 'fit-content',
-      padding: theme.spacing(1),
-      paddingBottom: theme.spacing(3),
+      backgroundColor: 'rgb(171 34 186)',
+      padding: theme.spacing(0.8),
       margin: theme.spacing(0.5),
+      boxShadow: '3px 3px 5px black',
     },
     answerText: {
       textTransform: 'capitalize',
+      color: 'black',
       [theme.breakpoints.down('sm')]: {
         fontSize: '1.4rem',
       },
+    },
+    correctAnswer: {
+      backgroundColor: 'rgb(41 174 170)',
     },
   })
 );
@@ -38,7 +40,11 @@ const AnswerBubble: React.FC<AnswerBubbleProps> = ({ answer, playerId }) => {
   const checked = !!clickedMap[playerId];
 
   return (
-    <Paper className={classes.answerBubble}>
+    <Paper
+      className={`${classes.answerBubble} ${
+        checked ? classes.correctAnswer : classes.answerBubble
+      }`}
+    >
       <Typography variant="body1" className={classes.answerText}>
         {answer}
         <span>

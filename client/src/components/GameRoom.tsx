@@ -18,7 +18,12 @@ const useStyles = makeStyles((theme: Theme) =>
     containerGame: {
       // Effecting how it shows on fullscreen?
       minHeight: '91vh',
-      background: 'linear-gradient(to bottom, rgb(32 82 100), rgb(14 25 30))',
+      background: 'linear-gradient(to bottom, rgb(32 82 100), rgb(28 47 56))',
+    },
+    containerGameWait: {
+      // Effecting how it shows on fullscreen?
+      minHeight: '91vh',
+      background: 'rgb(11 43 56)',
     },
     centered: {
       minHeight: 400,
@@ -29,9 +34,21 @@ const useStyles = makeStyles((theme: Theme) =>
       height: 30,
       width: '100%',
     },
+    topGradientWait: {
+      background: 'rgb(11 43 56)',
+      height: 30,
+      width: '100%',
+    },
     gameTitleBar: {
       display: 'flex',
       justifyContent: 'space-around',
+    },
+    kotitonniTitleWait: {
+      fontSize: '5.2rem',
+      color: 'rgb(185, 231, 229, 16%)',
+      [theme.breakpoints.down('sm')]: {
+        fontSize: '3.8rem',
+      },
     },
     kotitonniTitle: {
       fontSize: '5.2rem',
@@ -50,6 +67,26 @@ const useStyles = makeStyles((theme: Theme) =>
         display: 'none',
       },
     },
+    kotipelitWait: {
+      position: 'relative',
+      top: -9,
+      left: 190,
+      fontSize: '0.85rem',
+      color: 'rgb(185, 231, 229, 16%)',
+      [theme.breakpoints.down('sm')]: {
+        display: 'none',
+      },
+    },
+    topStyleWait: {
+      borderTop: '22px dotted rgb(185, 231, 229, 16% )',
+      width: '30vw',
+      alignSelf: 'center',
+      marginTop: '15px',
+      [theme.breakpoints.down('xs')]: {
+        width: '20vw',
+        borderTop: '15px dotted rgb(185 231 229)',
+      },
+    },
     topStyle: {
       borderTop: '22px dotted rgb(185 231 229)',
       background: 'rgb(86 124 123)',
@@ -61,24 +98,6 @@ const useStyles = makeStyles((theme: Theme) =>
         width: '20vw',
         borderTop: '15px dotted rgb(185 231 229)',
       },
-    },
-    startBtnContainer: {
-      position: 'absolute',
-    },
-    backdropBottom: {
-      zIndex: theme.zIndex.drawer + 1,
-      backgroundColor: 'rgba(0,0,0,0.9)',
-      display: 'flex',
-      alignItems: 'flex-start',
-      color: 'white',
-      justifyContent: 'center',
-    },
-
-    backdropContent: {
-      zIndex: theme.zIndex.drawer + 3,
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
     },
   })
 );
@@ -146,20 +165,66 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
       self={mySelf}
       socket={socket}
     >
-      <div className={classes.containerGame} ref={fullscreenRef}>
+      <div
+        className={`${
+          game.status === GameStatus.RUNNING ||
+          game.status === GameStatus.FINISHED
+            ? classes.containerGame
+            : classes.containerGameWait
+        }`}
+        ref={fullscreenRef}
+      >
         <AudioHandler />
-        <div className={classes.topGradient}></div>
+        <div
+          className={`${
+            game.status === GameStatus.RUNNING ||
+            game.status === GameStatus.FINISHED
+              ? classes.topGradient
+              : classes.topGradientWait
+          }`}
+        ></div>
         <div className={classes.gameTitleBar}>
           {/* For animation, should more topStyle divs be added? */}
-          <div className={classes.topStyle}></div>
+          <div
+            className={`${
+              game.status === GameStatus.RUNNING ||
+              game.status === GameStatus.FINISHED
+                ? classes.topStyle
+                : classes.topStyleWait
+            }`}
+          ></div>
           <div>
-            <Typography variant="subtitle1" className={classes.kotitonniTitle}>
+            <Typography
+              variant="subtitle1"
+              className={`${
+                game.status === GameStatus.RUNNING ||
+                game.status === GameStatus.FINISHED
+                  ? classes.kotitonniTitle
+                  : classes.kotitonniTitleWait
+              }`}
+            >
               Kotitonni
             </Typography>
-            <Typography className={classes.kotipelit}>kotipelit.com</Typography>
+            <Typography
+              className={`${
+                game.status === GameStatus.RUNNING ||
+                game.status === GameStatus.FINISHED
+                  ? classes.kotipelit
+                  : classes.kotipelitWait
+              }`}
+            >
+              kotipelit.com
+            </Typography>
           </div>
 
-          <div className={classes.topStyle}></div>
+          <div
+            className={`${
+              game.status === GameStatus.RUNNING ||
+              game.status === GameStatus.FINISHED
+                ? classes.topStyle
+                : classes.topStyleWait
+            }`}
+          ></div>
         </div>
 
         <RTCVideoConference participants={participants} />

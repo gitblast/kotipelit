@@ -109,7 +109,7 @@ const GameSettings: React.FC<GameSettingsProps> = ({
         />
         <InfoTooltip
           text={
-            'Kotipelit-tv mahdollistaa, että voitte pyytää tuttunne seuraamaan peli-iltaanne livenä. Maksimimäärä katsojia on 40.'
+            'Tällä asetuksella saatte oman live-kanavan, johon voitte pyytää tuttunne katsojiksi. Maksimimäärä katsojia on 40.'
           }
         />
       </div>

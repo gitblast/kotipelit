@@ -89,11 +89,10 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     topStyle: {
       borderTop: '22px dotted rgb(185 231 229)',
-      background: 'rgb(86 124 123)',
+      background: 'rgb(103 136 129)',
       boxShadow: 'rgb(231 239 191) 1px 8px 44px',
       width: '30vw',
       alignSelf: 'center',
-      marginTop: '15px',
       [theme.breakpoints.down('xs')]: {
         width: '20vw',
         borderTop: '15px dotted rgb(185 231 229)',

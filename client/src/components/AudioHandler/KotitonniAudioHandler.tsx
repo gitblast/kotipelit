@@ -12,23 +12,16 @@ import ThirtyPoints from '../../assets/audio/ktThirtypoints.mp3';
 import TenPoints from '../../assets/audio/ktTenpoints.mp3';
 import MinusFiftyPoints from '../../assets/audio/ktMinusFiftypoints.mp3';
 import AnswerRecieved from '../../assets/audio/ktAnswer.mp3';
-import AnswerCorrect from '../../assets/audio/ktAddpoints.mp3';
 import Winner from '../../assets/audio/ktWinner.mp3';
 
 import { GameStatus, Role } from '../../types';
-import { useKotitonniData, useGameData } from '../../context';
+import { useGameData } from '../../context';
 import { getAnswerCount, selfIsWinner } from '../../helpers/games';
 
 const KotitonniAudioHandler: React.FC = () => {
   const { game, self } = useGameData();
 
   const isHost = self.role === Role.HOST;
-
-  const { clickedMap } = useKotitonniData();
-
-  const clickCount = Object.values(clickedMap).reduce((total, next) => {
-    return next ? total + 1 : total;
-  }, 0);
 
   const answerCount = getAnswerCount(game);
 
@@ -74,10 +67,26 @@ const KotitonniAudioHandler: React.FC = () => {
     answerCount
   );
 
+  /* answer correct audio:
+
+  
+  import AnswerCorrect from '../../assets/audio/ktAddpoints.mp3';
+
+  import { useKotitonniData } from '../../context';
+  
+  const { clickedMap } = useKotitonniData();
+
+  const clickCount = Object.values(clickedMap).reduce((total, next) => {
+    return next ? total + 1 : total;
+  }, 0);
+
   const answerCorrectRef = useAudioOnIncreaseRef(
     React.useRef(null),
     clickCount
-  );
+  ); 
+  
+  
+  */
 
   const selfDidWin = selfIsWinner(game, self);
 
@@ -96,7 +105,7 @@ const KotitonniAudioHandler: React.FC = () => {
       {isHost && (
         <>
           <audio src={AnswerRecieved} ref={answerRecievedRef} />
-          <audio src={AnswerCorrect} ref={answerCorrectRef} />
+          {/* <audio src={AnswerCorrect} ref={answerCorrectRef} /> */}
         </>
       )}
 

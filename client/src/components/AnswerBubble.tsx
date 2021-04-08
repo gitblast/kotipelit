@@ -5,7 +5,7 @@ import { useKotitonniData } from '../context';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    answerBubble: {
+    wrongAnswer: {
       position: 'absolute',
       top: 22,
       width: 'fit-content',
@@ -22,6 +22,12 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     correctAnswer: {
+      position: 'absolute',
+      top: 22,
+      width: 'fit-content',
+      padding: theme.spacing(0.8),
+      margin: theme.spacing(0.5),
+      boxShadow: '3px 3px 5px black',
       backgroundColor: 'rgb(41 174 170)',
     },
   })
@@ -41,9 +47,7 @@ const AnswerBubble: React.FC<AnswerBubbleProps> = ({ answer, playerId }) => {
 
   return (
     <Paper
-      className={`${classes.answerBubble} ${
-        checked ? classes.correctAnswer : classes.answerBubble
-      }`}
+      className={` ${checked ? classes.correctAnswer : classes.wrongAnswer}`}
     >
       <Typography variant="body1" className={classes.answerText}>
         {answer}

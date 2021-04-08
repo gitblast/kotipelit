@@ -84,7 +84,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: '15px',
       [theme.breakpoints.down('xs')]: {
         width: '20vw',
-        borderTop: '15px dotted rgb(185 231 229)',
+        borderTop: '15px dotted rgb(185 231 229 16%)',
       },
     },
     topStyle: {

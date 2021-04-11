@@ -1,3 +1,4 @@
+// import { useState } from 'react';
 import { Grid, IconButton, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
@@ -61,6 +62,7 @@ const RTCPlayerControls: React.FC<{
   handleToggleFullscreen: () => void;
 }> = ({ handleToggleFullscreen }) => {
   const classes = useStyles();
+  // const [open, setOpen] = useState<boolean>(false);
   const isWideEnough = useMediaQuery('(min-width:550px)');
   const {
     handleAnswer,
@@ -79,6 +81,13 @@ const RTCPlayerControls: React.FC<{
   };
 
   return (
+    // <>
+    //   <SwipeableDrawer
+    //     anchor="bottom"
+    //     open={open}
+    //     onClose={() => setOpen(false)}
+    //     onOpen={() => {}}
+    //   >
     <Grid container className={classes.controlsContent}>
       <Grid item md={4} sm={12} xs={12} className={classes.controlsItem}>
         <InfoBar />
@@ -111,6 +120,8 @@ const RTCPlayerControls: React.FC<{
         </IconButton>
       </Grid>
     </Grid>
+    //    </SwipeableDrawer>
+    // </>
   );
 };
 

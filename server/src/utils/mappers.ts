@@ -11,6 +11,7 @@ import {
   GameModel,
 } from '../types';
 import mongoose, { Error } from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
 const isString = (text: any): text is string => {
   return typeof text === 'string' || text instanceof String;
@@ -144,7 +145,11 @@ export const toNewUser = (object: any): NewUser => {
     username: parseString(object.username, 'username'),
     password: parseString(object.password, 'password'),
     email: parseString(object.email, 'email'),
-    channelName: parseString(object.channelName, 'channel name'),
+    firstName: parseString(object.firstName, 'firstName'),
+    lastName: parseString(object.lastName, 'lastName'),
+    birthYear: parseNumber(object.birthYear),
+    status: 'pending',
+    confirmationId: uuidv4(),
   };
 };
 

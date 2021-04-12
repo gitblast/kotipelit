@@ -47,11 +47,8 @@ export interface UrlModel extends Document {
   inviteCode: string;
 }
 
-export interface UserModel extends Document {
-  username: string;
-  email: string;
+export interface UserModel extends Omit<NewUser, 'password'>, Document {
   passwordHash: string;
-  channelName: string;
   joinDate: Date;
 }
 
@@ -61,8 +58,12 @@ export interface UserCredentials {
 }
 
 export interface NewUser extends UserCredentials {
-  channelName: string;
   email: string;
+  firstName: string;
+  lastName: string;
+  birthYear: number;
+  status: 'active' | 'pending';
+  confirmationId: string;
 }
 
 export enum GameStatus {

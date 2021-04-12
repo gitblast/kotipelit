@@ -101,21 +101,26 @@ const addDummyUser = async (
   username: string = Date.now().toString(),
   password: string = Date.now().toString(),
   email: string = Date.now().toString(),
-  channelName: string = Date.now().toString()
+  firstName: string = 'firstName',
+  lastName: string = 'lastName',
+  birthYear: number = 1969,
+  status: 'pending' | 'active' = 'pending'
 ): Promise<UserModel> => {
   const newUser: NewUser = {
     username,
     password,
     email,
-    channelName,
+    firstName,
+    lastName,
+    birthYear,
+    status,
+    confirmationId: Date.now().toString(),
   };
 
   const passwordHash = await bcrypt.hash(newUser.password, 10);
 
   const user = new User({
-    username: newUser.username,
-    email: newUser.email,
-    channelName: newUser.channelName,
+    ...newUser,
     passwordHash,
     joinDate: new Date(),
   });

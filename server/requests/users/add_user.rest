@@ -2,8 +2,10 @@ POST http://localhost:3333/api/users
 Content-Type: application/json
 
 {
-  "username": "username",
+  "username": "username12345",
   "password": "password",
-  "email": "email",
-  "channelName": "channel"
+  "email": "email12345",
+  "firstName": "first",
+  "lastName": "last",
+  "birthYear": "1922"
 }

@@ -157,7 +157,7 @@ const RegisterPage = () => {
               disabled={isSubmitting}
               onClick={submitForm}
             >
-              Rekisteröidy
+              Luo tili
             </Button>
           </Form>
         )}

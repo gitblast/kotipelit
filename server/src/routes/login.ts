@@ -15,9 +15,20 @@ router.post('/', async (req, res, next) => {
     const { username, password } = toCredentials(req.body);
 
     const user = await User.findOne({ username });
-    const pwCorrect =
-      user === null ? false : await bcrypt.compare(password, user.passwordHash);
-    if (!user || !pwCorrect) throw new Error('Invalid username or password');
+
+    if (!user) {
+      throw new Error('Invalid username or password');
+    }
+
+    if (user.status !== 'active') {
+      throw new Error('Email not verified');
+    }
+
+    const pwCorrect = await bcrypt.compare(password, user.passwordHash);
+
+    if (!pwCorrect) {
+      throw new Error('Invalid username or password');
+    }
 
     const userForToken = {
       username,

@@ -8,7 +8,7 @@ import ChannelPage from './components/ChannelPage';
 import CompanyInfo from './components/CompanyInfo';
 import Footer from './components/Footer';
 import FrontPage from './components/FrontPage';
-import LoginForm from './components/LoginForm';
+import LoginForm from './components/LoginForm/LoginForm';
 import NotFoundPage from './components/NotFoundPage';
 import QuestionsAnswers from './components/QuestionsAnswers';
 import ScrollToTop from './components/ScrollToTop';
@@ -94,11 +94,13 @@ const App = () => {
             <div>
               <UserControls user={user} />
             </div>
-            <div className={classes.registerLink}>
-              <Link to="/rekisteroidy">
-                <Typography variant="body2">Rekisteröidy</Typography>
-              </Link>
-            </div>
+            {!user.loggedIn && (
+              <div className={classes.registerLink}>
+                <Link to="/rekisteroidy">
+                  <Typography variant="body2">Rekisteröidy</Typography>
+                </Link>
+              </div>
+            )}
           </div>
         </Toolbar>
       </AppBar>

@@ -20,7 +20,8 @@ const errorHandler: ErrorRequestHandler = (error, _request, response, next) => {
   // unauthorized
   if (
     message.startsWith('Unauthorized') ||
-    message === 'Invalid username or password'
+    message === 'Invalid username or password' ||
+    message === 'Email not verified'
   ) {
     return response.status(401).send(message);
   }

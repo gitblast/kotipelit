@@ -104,7 +104,7 @@ const addDummyUser = async (
   firstName: string = 'firstName',
   lastName: string = 'lastName',
   birthYear: number = 1969,
-  status: 'pending' | 'active' = 'pending'
+  status: 'pending' | 'active' = 'active'
 ): Promise<UserModel> => {
   const newUser: NewUser = {
     username,

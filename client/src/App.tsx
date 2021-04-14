@@ -34,9 +34,9 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'black',
     },
     logo: {
-      maxHeight: 60,
+      maxHeight: 52,
       width: 'auto',
-      marginTop: theme.spacing(1),
+      marginTop: theme.spacing(0.5),
     },
     toolbar: {
       display: 'flex',

@@ -12,6 +12,7 @@ const useStyles = makeStyles(() =>
   createStyles({
     video: {
       width: '100%',
+      transform: 'scaleX(-1)',
     },
   })
 );

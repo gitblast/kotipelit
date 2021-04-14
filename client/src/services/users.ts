@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { LoggedUser, HostChannel } from '../types';
+import { LoggedUser, HostChannel, UserToAdd } from '../types';
 
 const baseUrl = '/api/users';
 let token: string | null = null;
@@ -32,12 +32,35 @@ const getAll = async (): Promise<HostChannel[]> => {
   return response.data;
 };
 
+const addNew = async (newUser: UserToAdd) => {
+  const response = await axios.post(baseUrl, newUser);
+
+  return response.data;
+};
+
+const checkAvailability = async (fieldName: string, value: string) => {
+  const response = await axios.get(
+    `${baseUrl}/validate/?${fieldName}=${value}`
+  );
+
+  return response.data;
+};
+
+const verifyConfirmationId = async (confirmationId: string) => {
+  const response = await axios.get(`${baseUrl}/verify/${confirmationId}`);
+
+  return response.data;
+};
+
 const userService = {
+  addNew,
   login,
   setToken,
   getAuthHeader,
   getAll,
   getToken,
+  checkAvailability,
+  verifyConfirmationId,
 };
 
 export default userService;

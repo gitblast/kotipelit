@@ -2437,6 +2437,11 @@
   dependencies:
     "@types/yargs-parser" "*"
 
+"@types/yup@^0.29.11":
+  version "0.29.11"
+  resolved "https://registry.yarnpkg.com/@types/yup/-/yup-0.29.11.tgz#d654a112973f5e004bf8438122bd7e56a8e5cd7e"
+  integrity sha512-9cwk3c87qQKZrT251EDoibiYRILjCmxBvvcb4meofCmx1vdnNcR9gyildy5vOHASpOKMsn42CugxUvcwK5eu1g==
+
 "@typescript-eslint/eslint-plugin@^3.3.0":
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-3.10.1.tgz#7e061338a1383f59edc204c605899f93dc2e2c8f"
@@ -10743,6 +10748,13 @@ react-is@^16.12.0, react-is@^16.13.1, react-is@^16.6.0, react-is@^16.7.0, react-
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.1.tgz#5b3531bd76a645a4c9fb6e693ed36419e3301339"
   integrity sha512-NAnt2iGDXohE5LI7uBnLnqvLQMtzhkiAOLXTmv+qnF9Ky7xAPcX8Up/xWIhxvLVGJvuLiNc4xQLtuqDRzb4fSA==
 
+react-password-strength-bar@^0.3.3:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/react-password-strength-bar/-/react-password-strength-bar-0.3.3.tgz#c6b7278f4ff550f2cd03174526ac5f7a0bc92365"
+  integrity sha512-VYi1LpVORBUgP/8ymnDhMKpRwcymyg0MAzoeGFyyrUo3m8rxzAYDfQyzfflWGKDw5o3XT6WlxWtt+0m8uncJEw==
+  dependencies:
+    zxcvbn "4.4.2"
+
 react-redux@^7.2.0:
   version "7.2.2"
   resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-7.2.2.tgz#03862e803a30b6b9ef8582dadcc810947f74b736"
@@ -13779,3 +13791,8 @@ yup@^0.29.1:
     property-expr "^2.0.2"
     synchronous-promise "^2.0.13"
     toposort "^2.0.2"
+
+zxcvbn@4.4.2:
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/zxcvbn/-/zxcvbn-4.4.2.tgz#28ec17cf09743edcab056ddd8b1b06262cc73c30"
+  integrity sha1-KOwXzwl0PtyrBW3dixsGJizHPDA=

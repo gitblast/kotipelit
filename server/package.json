@@ -10,8 +10,7 @@
     "build": "tsc",
     "lint": "eslint --ext .ts .",
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand --detectOpenHandles",
-    "start": "ts-node scripts/check_client_bundle.ts && cross-env NODE_ENV=production node dist/index.js",
-    "add_user": "ts-node scripts/add_user.ts"
+    "start": "ts-node scripts/check_client_bundle.ts && cross-env NODE_ENV=production node dist/index.js"
   },
   "author": "Jarkko Mämmelä",
   "license": "ISC",

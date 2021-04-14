@@ -1,15 +1,14 @@
+import { io as ioServer } from '../index';
 import {
-  GameModel,
-  RTCGame,
-  NewGame,
+  FilteredRTCGame,
   GameInfo,
+  GameModel,
   GameType,
   InviteInfo,
-  FilteredRTCGame,
+  NewGame,
+  RTCGame,
   RTCGameState,
 } from '../types';
-
-import { io as ioServer } from '../index';
 import UpdateEmittingTimer from './timer';
 
 export const getInitialInfo = (game: NewGame): GameInfo => {

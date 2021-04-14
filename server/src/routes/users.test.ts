@@ -9,6 +9,8 @@ import User from '../models/user';
 import dbConnection from '../utils/connection';
 import testHelpers from '../utils/testHelpers';
 
+jest.setTimeout(10000);
+
 const api = supertest(app);
 
 import { NewUser, Role } from '../types';
@@ -19,7 +21,11 @@ const dummy: NewUser = {
   username: 'user',
   password: 'pass',
   email: 'email',
-  channelName: 'channel',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  birthYear: 1969,
+  status: 'active',
+  confirmationId: Date.now().toString(),
 };
 
 let adminToken: string;
@@ -36,18 +42,6 @@ describe('user router', () => {
 
   beforeEach(async () => {
     await User.deleteMany({});
-  });
-
-  it('should return 401 without valid admin token', async () => {
-    const user = await testHelpers.addDummyUser();
-    const hostToken = testHelpers.getValidToken(user, config.SECRET, Role.HOST);
-
-    await api.post(baseUrl).send(dummy).expect(401);
-    await api
-      .post(baseUrl)
-      .send(dummy)
-      .set('Authorization', `bearer ${hostToken}`)
-      .expect(401);
   });
 
   it('should add a valid user with valid admin token', async () => {
@@ -112,25 +106,10 @@ describe('user router', () => {
     });
   });
 
-  it('should return 400 with invalid user objects using valid token', async () => {
+  it('should return 400 without username', async () => {
     const noUsername = {
       ...dummy,
       username: undefined,
-    };
-
-    const noPassword = {
-      ...dummy,
-      password: undefined,
-    };
-
-    const noEmail = {
-      ...dummy,
-      email: undefined,
-    };
-
-    const noChannelName = {
-      ...dummy,
-      password: undefined,
     };
 
     await api
@@ -138,19 +117,30 @@ describe('user router', () => {
       .send(noUsername)
       .set('Authorization', `bearer ${adminToken}`)
       .expect(400);
+  });
+
+  it('should return 400 without password', async () => {
+    const noPassword = {
+      ...dummy,
+      password: undefined,
+    };
+
     await api
       .post(baseUrl)
       .send(noPassword)
       .set('Authorization', `bearer ${adminToken}`)
       .expect(400);
+  });
+
+  it('should return 400 without email', async () => {
+    const noEmail = {
+      ...dummy,
+      email: undefined,
+    };
+
     await api
       .post(baseUrl)
       .send(noEmail)
-      .set('Authorization', `bearer ${adminToken}`)
-      .expect(400);
-    await api
-      .post(baseUrl)
-      .send(noChannelName)
       .set('Authorization', `bearer ${adminToken}`)
       .expect(400);
   });

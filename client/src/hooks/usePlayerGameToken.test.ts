@@ -23,7 +23,7 @@ describe('usePlayerGameToken hook', () => {
 
     GameServiceMock.getPlayerTokenForGame.mockClear();
 
-    useParamsMock.mockReturnValue({ username: null, playerId: null });
+    useParamsMock.mockReturnValue({ username: null, inviteCode: null });
   });
 
   it('should have null token at start', () => {
@@ -50,7 +50,7 @@ describe('usePlayerGameToken hook', () => {
     act(() => {
       useParamsMock.mockReturnValue({
         username: 'username',
-        playerId: 'playerId',
+        inviteCode: 'inviteCode',
       });
 
       rerender();
@@ -62,7 +62,7 @@ describe('usePlayerGameToken hook', () => {
     expect(GameServiceMock.getPlayerTokenForGame).toHaveBeenCalledTimes(1);
     expect(GameServiceMock.getPlayerTokenForGame).toHaveBeenCalledWith(
       'username',
-      'playerId',
+      'inviteCode',
       true
     );
   });

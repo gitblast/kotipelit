@@ -1,27 +1,29 @@
-import React from 'react';
-
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-
-import { AppBar, Toolbar } from '@material-ui/core';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { checkForUser } from './reducers/user.reducer';
-import { initChannels } from './reducers/channels.reducer';
-
-import FrontPage from './components/FrontPage';
-import LoginForm from './components/LoginForm';
-import UserControls from './components/UserControls';
-import Footer from './components/Footer';
-
-import ChannelPage from './components/ChannelPage';
-import { State, HostChannel } from './types';
-
+import { AppBar, Toolbar, Typography } from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import React, { Suspense, lazy } from 'react';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
 import logoImg from './assets/images/logoTransparent.png';
-import QuestionsAnswers from './components/QuestionsAnswers';
+import ChannelPage from './components/ChannelPage';
 import CompanyInfo from './components/CompanyInfo';
-import ScrollToTop from './components/ScrollToTop';
+import ConfirmationPage from './components/ConfirmationPage';
+import Footer from './components/Footer';
+import FrontPage from './components/FrontPage';
+import LoginForm from './components/LoginForm/LoginForm';
 import NotFoundPage from './components/NotFoundPage';
+import QuestionsAnswers from './components/QuestionsAnswers';
+import ScrollToTop from './components/ScrollToTop';
+import UserControls from './components/UserControls';
+import { initChannels } from './reducers/channels.reducer';
+import { checkForUser } from './reducers/user.reducer';
+import { HostChannel, State } from './types';
+import Loader from './components/Loader';
+
+// lazy load due to size
+
+const RegisterPage = lazy(() =>
+  import('./components/RegisterPage/RegisterPage')
+);
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -47,6 +49,13 @@ const useStyles = makeStyles((theme: Theme) =>
       minHeight: '80vh',
       overflow: 'hidden',
       background: 'rgba(11, 43, 56, 1)',
+    },
+    registerLink: {
+      marginLeft: theme.spacing(1),
+      underline: 'none',
+    },
+    flex: {
+      display: 'flex',
     },
   })
 );
@@ -84,28 +93,47 @@ const App = () => {
           <Link to="/" className={classes.logo}>
             <img className={classes.logo} src={logoImg} alt="Kotipelit" />
           </Link>
-          <UserControls user={user} />
+          <div className={classes.flex}>
+            <div>
+              <UserControls user={user} />
+            </div>
+            {!user.loggedIn && (
+              <div className={classes.registerLink}>
+                <Link to="/rekisteroidy">
+                  <Typography variant="body2">Rekisteröidy</Typography>
+                </Link>
+              </div>
+            )}
+          </div>
         </Toolbar>
       </AppBar>
       <div className={classes.container}>
-        <Switch>
-          {channelRoutes(channels)}
-          <Route path="/kirjaudu">
-            <LoginForm />
-          </Route>
-          <Route path="/kysyttya">
-            <QuestionsAnswers />
-          </Route>
-          <Route path="/yritys">
-            <CompanyInfo />
-          </Route>
-          <Route exact path="/">
-            <FrontPage />
-          </Route>
-          <Route path="*">
-            <NotFoundPage />
-          </Route>
-        </Switch>
+        <Suspense fallback={<Loader msg="Ladataan..." />}>
+          <Switch>
+            {channelRoutes(channels)}
+            <Route path="/rekisteroidy">
+              <RegisterPage />
+            </Route>
+            <Route path="/vahvista/:confirmationId">
+              <ConfirmationPage />
+            </Route>
+            <Route path="/kirjaudu">
+              <LoginForm />
+            </Route>
+            <Route path="/kysyttya">
+              <QuestionsAnswers />
+            </Route>
+            <Route path="/yritys">
+              <CompanyInfo />
+            </Route>
+            <Route exact path="/">
+              <FrontPage />
+            </Route>
+            <Route path="*">
+              <NotFoundPage />
+            </Route>
+          </Switch>
+        </Suspense>
       </div>
 
       <Footer />

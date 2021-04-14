@@ -1,4 +1,4 @@
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
 
 import Zrnic from './assets/fonts/zrnic-rg.ttf';
 import BeautySchoolDropoutII from './assets/fonts/BeautySchoolDropoutII.woff';
@@ -45,7 +45,7 @@ const chicagoNeon = {
     'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2035, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF',
 };
 
-const theme = createMuiTheme({
+let theme = createMuiTheme({
   palette: {
     primary: {
       light: 'rgb(168 164 136)',
@@ -71,7 +71,7 @@ const theme = createMuiTheme({
       main: '#d517df',
     },
     text: {
-      primary: '#d5c44b',
+      primary: '#e6e3c5ff',
       secondary: 'rgb(168 164 136)',
       disabled: 'rgb(96 95 89)',
       hint: 'rgba(135, 56, 43)',
@@ -84,22 +84,21 @@ const theme = createMuiTheme({
     },
     body2: {
       fontSize: '1rem',
-      // primary light
-      color: 'rgb(168 164 136)',
+      // Color hould be defined somewhere else?
+      color: '#e6e3c5ff',
     },
     h1: {
-      fontSize: '2.2rem',
+      fontSize: '1.9rem',
+      color: '#ffea26ff',
     },
     h2: {
       fontSize: '2rem',
-      color: 'rgb(0 225 217)',
     },
     h3: {
-      fontSize: '1.8rem',
+      fontSize: '1.5rem',
     },
     h4: {
       fontSize: '1.6rem',
-      color: 'rgb(0 225 217)',
     },
     h5: {
       fontSize: '1.4rem',
@@ -149,8 +148,8 @@ const theme = createMuiTheme({
     },
     MuiButton: {
       root: {
-        paddingTop: 8,
-        paddingBottom: 8,
+        paddingTop: 7,
+        paddingBottom: 7,
         paddingLeft: 12,
         paddingRight: 12,
         borderRadius: 10,
@@ -159,6 +158,11 @@ const theme = createMuiTheme({
         // Why affects only variant"text" ?
         '&$disabled': {
           color: 'rgb(92 92 92)',
+        },
+      },
+      contained: {
+        '&:hover': {
+          backgroundColor: 'rgb(17 60 77)',
         },
       },
       text: {
@@ -215,6 +219,7 @@ const theme = createMuiTheme({
         borderLeft: '1px solid',
       },
     },
+    // Defines the underline in text-fields
     MuiInputBase: {
       root: {
         minWidth: 240,
@@ -222,12 +227,16 @@ const theme = createMuiTheme({
     },
     MuiSvgIcon: {
       root: {
-        color: 'rgb(168 164 136)',
+        color: '#e6e3c5ff',
       },
     },
     MuiStepIcon: {
       root: {
         color: 'rgb(170 161 85)',
+      },
+      text: {
+        // Removes numbers inside Stepper icons
+        fill: 'none',
       },
     },
     MuiTextField: {
@@ -267,5 +276,7 @@ const theme = createMuiTheme({
     },
   },
 });
+
+theme = responsiveFontSizes(theme);
 
 export default theme;

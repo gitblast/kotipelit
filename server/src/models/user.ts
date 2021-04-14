@@ -26,6 +26,8 @@ userSchema.set('toJSON', {
     delete returnedObject.birthYear;
     delete returnedObject.passwordHash;
     delete returnedObject.confirmationId;
+    delete returnedObject.lastName;
+    delete returnedObject.status;
   },
 });
 

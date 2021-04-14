@@ -6,6 +6,7 @@ import {
   MenuItem,
   Paper,
   Select as MUISelect,
+  Typography,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Field, Form, Formik } from 'formik';
@@ -14,6 +15,8 @@ import { range } from 'lodash';
 import React from 'react';
 import PasswordStrengthBar from 'react-password-strength-bar';
 import * as Yup from 'yup';
+import logger from '../utils/logger';
+import userService from '../services/users';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -41,11 +44,13 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     maxWidth240: {
       maxWidth: 240,
+      margin: 'auto',
     },
   })
 );
 
 interface RegisterFormValues {
+  username: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -64,6 +69,9 @@ const StyledSelect = (props: SelectProps) => {
 const RegisterPage = () => {
   const classes = useStyles();
 
+  const [userAdded, setUserAdded] = React.useState(false);
+  const [error, setError] = React.useState('');
+
   const getBirthDayRange = (startYear = 1920) => {
     return range(new Date().getFullYear(), startYear, -1);
   };
@@ -71,6 +79,11 @@ const RegisterPage = () => {
   const fieldRequiredText = 'Pakollinen kenttä';
 
   const validator = Yup.object({
+    username: Yup.string()
+      .matches(/^\S*$/, 'Välilyöntejä ei sallita')
+      .min(3, 'Vähintään 3 kirjainta')
+      .max(16, 'Korkeintaan 16 kirjainta')
+      .required(fieldRequiredText),
     firstName: Yup.string()
       .matches(/^\S*$/, 'Välilyöntejä ei sallita')
       .max(16, 'Korkeintaan 16 kirjainta')
@@ -83,7 +96,9 @@ const RegisterPage = () => {
       .matches(/^\S*$/, 'Välilyöntejä ei sallita')
       .email('Virheellinen sähköpostiosoite')
       .required(fieldRequiredText),
-    birthYear: Yup.string().required(fieldRequiredText),
+    birthYear: Yup.string()
+      .matches(/^\d+$/, 'Tulee olla numero')
+      .required(fieldRequiredText),
     password: Yup.string()
       .min(8, 'Vähintään 8 merkkiä')
       .required(fieldRequiredText),
@@ -92,100 +107,154 @@ const RegisterPage = () => {
       .required(fieldRequiredText),
   });
 
-  const handleSubmit = (values: RegisterFormValues) => {
-    console.log(values);
+  const handleSubmit = async (values: RegisterFormValues) => {
+    const {
+      username,
+      password,
+      email,
+      birthYear,
+      firstName,
+      lastName,
+    } = values;
+
+    const userToAdd = {
+      username,
+      password,
+      email,
+      birthYear: Number(birthYear),
+      firstName,
+      lastName,
+    };
+
+    logger.log(`adding new user`, userToAdd);
+
+    try {
+      await userService.addNew(userToAdd);
+
+      setUserAdded(true);
+    } catch (e) {
+      logger.error(`error adding user: ${e.response?.data}`);
+
+      setError('Tilin luonti epäonnistui. Yritä myöhemmin uudestaan.');
+    }
+  };
+
+  const successInfo = () => {
+    return (
+      <>
+        <Typography variant="h1" gutterBottom>
+          Tilin luonti onnistui!
+        </Typography>
+        <Typography>
+          Sinun tulee vielä vahvistaa sähköpostiosoitteesi. Vahvistuslinkki
+          lähetettiin antamaasi osoitteeseen.
+        </Typography>
+      </>
+    );
   };
 
   return (
     <div className={classes.container}>
       <Paper elevation={3} className={classes.loginField}>
-        <Formik
-          initialValues={{
-            firstName: '',
-            lastName: '',
-            email: '',
-            birthYear: '',
-            password: '',
-            passwordConfirm: '',
-          }}
-          validationSchema={validator}
-          onSubmit={handleSubmit}
-        >
-          {({ submitForm, isSubmitting, values }) => (
-            <Form>
-              <Field component={TextField} name="firstName" label="Etunimi" />
-              <br />
-              <Field component={TextField} name="lastName" label="Sukunimi" />
-              <br />
-              <Field
-                component={TextField}
-                name="email"
-                type="email"
-                label="Sähköposti"
-              />
-              <br />
-              <FormControl>
-                <InputLabel htmlFor="birthYear">Syntymävuosi</InputLabel>
+        {userAdded ? (
+          successInfo()
+        ) : (
+          <Formik
+            initialValues={{
+              username: '',
+              firstName: '',
+              lastName: '',
+              email: '',
+              birthYear: '',
+              password: '',
+              passwordConfirm: '',
+            }}
+            validationSchema={validator}
+            onSubmit={handleSubmit}
+          >
+            {({ submitForm, isSubmitting, values }) => (
+              <Form>
                 <Field
-                  component={StyledSelect}
-                  name="birthYear"
-                  label="Syntymävuosi"
-                  inputProps={{
-                    id: 'birthYear',
-                    MenuProps: {
-                      classes: { paper: classes.menuPaper },
-                    },
-                  }}
+                  component={TextField}
+                  name="username"
+                  label="Käyttäjänimi"
+                />
+                <br />
+                <Field component={TextField} name="firstName" label="Etunimi" />
+                <br />
+                <Field component={TextField} name="lastName" label="Sukunimi" />
+                <br />
+                <Field
+                  component={TextField}
+                  name="email"
+                  type="email"
+                  label="Sähköposti"
+                />
+                <br />
+                <FormControl>
+                  <InputLabel htmlFor="birthYear">Syntymävuosi</InputLabel>
+                  <Field
+                    component={StyledSelect}
+                    name="birthYear"
+                    label="Syntymävuosi"
+                    inputProps={{
+                      id: 'birthYear',
+                      MenuProps: {
+                        classes: { paper: classes.menuPaper },
+                      },
+                    }}
+                  >
+                    {getBirthDayRange().map((year) => (
+                      <MenuItem key={year} value={year}>
+                        {year}
+                      </MenuItem>
+                    ))}
+                  </Field>
+                </FormControl>
+                <br />
+                <Field
+                  component={TextField}
+                  type="password"
+                  label="Salasana"
+                  name="password"
+                />
+                <div className={classes.maxWidth240}>
+                  <PasswordStrengthBar
+                    password={values.password}
+                    minLength={8}
+                    shortScoreWord={'liian lyhyt'}
+                    scoreWords={[
+                      'heikko',
+                      'heikko',
+                      'kohtalainen',
+                      'hyvä',
+                      'vahva',
+                    ]}
+                  />
+                </div>
+                <Field
+                  component={TextField}
+                  type="password"
+                  label="Salasana uudelleen"
+                  name="passwordConfirm"
+                />
+                {isSubmitting && (
+                  <LinearProgress className={classes.maxWidth240} />
+                )}
+                {error && <Typography color="error">{error}</Typography>}
+                <br />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled={isSubmitting}
+                  onClick={submitForm}
                 >
-                  {getBirthDayRange().map((year) => (
-                    <MenuItem key={year} value={year}>
-                      {year}
-                    </MenuItem>
-                  ))}
-                </Field>
-              </FormControl>
-              <br />
-              <Field
-                component={TextField}
-                type="password"
-                label="Salasana"
-                name="password"
-              />
-
-              <PasswordStrengthBar
-                password={values.password}
-                minLength={8}
-                shortScoreWord={'liian lyhyt'}
-                scoreWords={[
-                  'heikko',
-                  'heikko',
-                  'kohtalainen',
-                  'hyvä',
-                  'vahva',
-                ]}
-                className={classes.maxWidth240}
-              />
-              <Field
-                component={TextField}
-                type="password"
-                label="Salasana uudelleen"
-                name="passwordConfirm"
-              />
-              {isSubmitting && (
-                <LinearProgress className={classes.maxWidth240} />
-              )}
-              <br />
-              <Button
-                variant="contained"
-                color="primary"
-                disabled={isSubmitting}
-                onClick={submitForm}
-              >
-                Luo tili
-              </Button>
-            </Form>
-          )}
-        </Formik>
+                  Luo tili
+                </Button>
+              </Form>
+            )}
+          </Formik>
+        )}
       </Paper>
     </div>
   );

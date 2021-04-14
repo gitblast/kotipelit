@@ -111,6 +111,15 @@ export enum GameStatus {
 
 // USERS & AUTH
 
+export interface UserToAdd {
+  username: string;
+  firstName: string;
+  lastName: string;
+  birthYear: number;
+  email: string;
+  password: string;
+}
+
 export interface BaseUser {
   loggedIn: false;
   socket: null | Socket;

@@ -3,6 +3,7 @@ import { GamesState, Action, RTCGame, ActionType } from '../types';
 import { Dispatch, Reducer } from 'redux';
 
 import gameService from '../services/games';
+import logger from '../utils/logger';
 
 const initialState: GamesState = {
   allGames: [],
@@ -118,6 +119,10 @@ export const initGames = () => {
       const games = await gameService.getAll();
       dispatch(initSuccess(games));
     } catch (error) {
+      logger.error(
+        `error initializing games: ${error.message} ${error.response?.data}`
+      );
+
       dispatch(initFailure());
     }
   };

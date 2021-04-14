@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
 import logoImg from './assets/images/logoTransparent.png';
 import ChannelPage from './components/ChannelPage';
 import CompanyInfo from './components/CompanyInfo';
+import ConfirmationPage from './components/ConfirmationPage';
 import Footer from './components/Footer';
 import FrontPage from './components/FrontPage';
 import LoginForm from './components/LoginForm/LoginForm';
@@ -20,7 +21,9 @@ import Loader from './components/Loader';
 
 // lazy load due to size
 
-const RegisterPage = lazy(() => import('./components/RegisterPage'));
+const RegisterPage = lazy(() =>
+  import('./components/RegisterPage/RegisterPage')
+);
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -110,6 +113,9 @@ const App = () => {
             {channelRoutes(channels)}
             <Route path="/rekisteroidy">
               <RegisterPage />
+            </Route>
+            <Route path="/vahvista/:confirmationId">
+              <ConfirmationPage />
             </Route>
             <Route path="/kirjaudu">
               <LoginForm />

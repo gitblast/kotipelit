@@ -20,6 +20,8 @@ router.post('/', async (req, res, next) => {
       throw new Error('Invalid username or password');
     }
 
+    console.log(user.confirmationId);
+
     if (user.status !== 'active') {
       throw new Error('Email not verified');
     }

@@ -3,9 +3,12 @@ import bcrypt from 'bcryptjs';
 import User from '../models/user';
 import mailService from '../services/mail';
 
-import { toNewUser } from '../utils/mappers';
-import { NewUser } from '../types';
+import { toNewUser, parseString } from '../utils/mappers';
+import { NewUser, Role } from '../types';
 import logger from '../utils/logger';
+import userService from '../services/users';
+import jwt from 'jsonwebtoken';
+import config from '../utils/config';
 
 const router = express.Router();
 
@@ -15,6 +18,68 @@ router.get('/', async (_req, res, next) => {
     res.json(allUsers);
   } catch (error) {
     next(error);
+  }
+});
+
+router.get('/verify/:confirmationId', async (req, res, next) => {
+  try {
+    const confirmationId = parseString(req.params.confirmationId);
+
+    const verifiedUser = await userService.verifyUser(confirmationId);
+
+    logger.log(`verified user '${verifiedUser.username}'`);
+
+    const userForToken = {
+      username: verifiedUser.username,
+      id: verifiedUser._id.toString(),
+      role: Role.HOST,
+    };
+
+    const token = jwt.sign(userForToken, config.SECRET);
+
+    res.json({ token, username: verifiedUser.username });
+  } catch (e) {
+    logger.error(`error verifying email: ${e.message}`);
+
+    next(e);
+  }
+});
+
+router.get('/validate', async (req, res, next) => {
+  try {
+    const username = req.query.username;
+
+    if (username) {
+      const usernameAvailable = await userService.checkUsernameAvailability(
+        username as string
+      );
+
+      if (usernameAvailable) {
+        return res.json(usernameAvailable);
+      } else {
+        return res.status(403).send('username not available');
+      }
+    }
+
+    const email = req.query.email;
+
+    if (email) {
+      const emailAvailable = await userService.checkUsernameAvailability(
+        email as string
+      );
+
+      if (emailAvailable) {
+        return res.json(emailAvailable);
+      } else {
+        return res.status(403).send('email not available');
+      }
+    }
+
+    throw new Error('no params provided to validate');
+  } catch (e) {
+    logger.error(`error validating: ${e.message}`);
+
+    return next(e);
   }
 });
 

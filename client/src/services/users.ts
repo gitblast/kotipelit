@@ -38,6 +38,20 @@ const addNew = async (newUser: UserToAdd) => {
   return response.data;
 };
 
+const checkAvailability = async (fieldName: string, value: string) => {
+  const response = await axios.get(
+    `${baseUrl}/validate/?${fieldName}=${value}`
+  );
+
+  return response.data;
+};
+
+const verifyConfirmationId = async (confirmationId: string) => {
+  const response = await axios.get(`${baseUrl}/verify/${confirmationId}`);
+
+  return response.data;
+};
+
 const userService = {
   addNew,
   login,
@@ -45,6 +59,8 @@ const userService = {
   getAuthHeader,
   getAll,
   getToken,
+  checkAvailability,
+  verifyConfirmationId,
 };
 
 export default userService;

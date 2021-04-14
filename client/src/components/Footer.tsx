@@ -59,7 +59,7 @@ const Footer: React.FC = () => {
             <Typography variant="body2" className={classes.footerHeader}>
               Spektaakkeli Events
             </Typography>
-            <Typography variant="body2" component={Link} to="/yritys">
+            <Typography variant="body2" component={Link} to="/yleista">
               Yleistä
             </Typography>
             <Typography variant="body2">Spektaakkeli.com</Typography>

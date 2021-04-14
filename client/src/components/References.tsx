@@ -15,7 +15,6 @@ const useStyles = makeStyles((theme: Theme) =>
       // This the same as in FrontPage content
       marginTop: theme.spacing(5),
       textAlign: 'center',
-      color: theme.palette.primary.light,
       [theme.breakpoints.down('xs')]: {
         marginTop: 30,
       },

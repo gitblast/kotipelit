@@ -15,7 +15,6 @@ const useStyles = makeStyles((theme: Theme) =>
         margin: theme.spacing(2),
       },
     },
-    companyImages: {},
     spektaakkeliImage: {
       maxWidth: '100%',
     },
@@ -38,14 +37,14 @@ const CompanyInfo = () => {
           ja Lanzarotella.
         </Typography>
         <Grid container spacing={5}>
-          <Grid item md={4} xs={10} className={classes.companyImages}>
+          <Grid item md={4} xs={10}>
             <img
               src={spektaakkeliOneImg}
               alt="spektaakkeli"
               className={classes.spektaakkeliImage}
             />
           </Grid>
-          <Grid item md={4} xs={10} className={classes.companyImages}>
+          <Grid item md={4} xs={10}>
             <img
               src={spektaakkeliTwoImg}
               alt="spektaakkeli"

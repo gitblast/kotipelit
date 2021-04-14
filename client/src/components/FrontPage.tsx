@@ -3,11 +3,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Typography, Grid, Button } from '@material-ui/core';
+import { Typography, Button } from '@material-ui/core';
 
 import logoImg from '../assets/images/logoTransparent.png';
 import gamehostImg from '../assets/images/gamehost.png';
-import gameviewImg from '../assets/images/gameview.png';
 
 import References from './References';
 
@@ -17,19 +16,17 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: theme.spacing(1.5),
       marginRight: theme.spacing(1.5),
     },
-    container: {
-      marginTop: theme.spacing(5),
-      textAlign: 'center',
-    },
     showcase: {
       marginTop: theme.spacing(4),
       display: 'flex',
-      flexDirection: 'column',
+      justifyContent: 'space-around',
       alignItems: 'center',
+      [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column',
+      },
     },
     showcaseImage: {
-      height: 347,
-      marginBottom: theme.spacing(3),
+      height: 270,
       [theme.breakpoints.down('sm')]: {
         maxHeight: 250,
       },
@@ -37,6 +34,19 @@ const useStyles = makeStyles((theme: Theme) =>
         maxHeight: 190,
       },
     },
+    mainInfo: {
+      [theme.breakpoints.down('sm')]: {
+        marginTop: theme.spacing(4),
+        textAlign: 'center',
+      },
+    },
+    subHeader: {
+      fontSize: '1.1rem',
+    },
+    headerBtn: {
+      marginTop: theme.spacing(1),
+    },
+
     sectionStyle: {
       margin: theme.spacing(8),
       // Undefined color (neon)
@@ -45,19 +55,21 @@ const useStyles = makeStyles((theme: Theme) =>
         margin: theme.spacing(5),
       },
     },
-    sectionFlex: {
+
+    userBanner: {
       display: 'flex',
+      alignItems: 'center',
       justifyContent: 'space-around',
-      padding: theme.spacing(4),
-      [theme.breakpoints.down('xs')]: {
+      margin: theme.spacing(4),
+      [theme.breakpoints.down('sm')]: {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: theme.spacing(2),
+        margin: theme.spacing(2),
       },
     },
     sectionInfo: {
-      margin: theme.spacing(5),
+      margin: theme.spacing(6),
       alignSelf: 'center',
       '& > * + *': {
         margin: theme.spacing(2),
@@ -66,17 +78,30 @@ const useStyles = makeStyles((theme: Theme) =>
         margin: 0,
       },
     },
-    headline: {
+    companyBanner: {
+      marginTop: theme.spacing(9),
+      marginBottom: theme.spacing(9),
       display: 'flex',
-      justifyContent: 'center',
+      flexDirection: 'column',
+      textAlign: 'center',
     },
-    neonLight: {
+    neonDivider: {
       height: 3,
       background:
         'linear-gradient(to right, rgb(0 225 217), rgba(11, 43, 56, 1))',
-      width: '11vw',
+      width: '75vw',
       alignSelf: 'center',
       marginTop: '6px',
+    },
+
+    bannerInfo: {
+      margin: theme.spacing(8),
+    },
+    bannerBtn: {
+      backgroundColor: 'rgb(36, 121, 117)',
+      marginTop: theme.spacing(2),
+      // Where does this get its default color without defining?
+      color: theme.palette.text.primary,
     },
     gamehostImage: {
       height: 235,
@@ -91,7 +116,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     sectionBStyle: {
-      padding: theme.spacing(5),
+      margin: theme.spacing(9),
       display: 'flex',
       justifyContent: 'space-around',
       textAlign: 'center',
@@ -100,23 +125,21 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     step: {
-      color: 'black',
       textAlign: 'center',
       width: 34,
       height: 34,
       borderRadius: '50%',
-      backgroundColor: 'rgb(226 205 55)',
     },
-    stepNeon: {
-      borderTop: 'solid 4px rgb(250 227 74)',
-      background: 'rgb(167 203 176)',
-      alignSelf: 'flex-start',
-      width: '12%',
-      marginTop: '15px',
-      [theme.breakpoints.down('xs')]: {
-        display: 'none',
-      },
+    stepFirstLast: {
+      background: 'linear-gradient(to right, rgb(17 240 232), transparent)',
     },
+    stepTwo: {
+      background: 'linear-gradient(to right top, rgb(248 231 23), transparent)',
+    },
+    stepThree: {
+      background: 'linear-gradient(to right, rgb(189 17 198), transparent)',
+    },
+
     stepperContent: {
       display: 'flex',
       flexDirection: 'column',
@@ -129,11 +152,6 @@ const useStyles = makeStyles((theme: Theme) =>
         marginTop: theme.spacing(2),
       },
     },
-    flex: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
   })
 );
 
@@ -143,45 +161,28 @@ const Steps = () => {
     <>
       <section className={classes.sectionBStyle}>
         <div className={classes.stepperContent}>
-          <div className={classes.step}>
-            <Typography variant="h5" color="initial">
-              1
-            </Typography>
-          </div>
-          <Typography variant="body1" color="primary">
+          <div className={`${classes.step} ${classes.stepFirstLast}`}></div>
+          <Typography variant="body1" color="initial">
             Päätä ajankohta
           </Typography>
         </div>
-        <div className={classes.stepNeon}></div>
         <div className={classes.stepperContent}>
-          <div className={classes.step}>
-            <Typography variant="h5" color="initial">
-              2
-            </Typography>
-          </div>
-          <Typography variant="body1" color="primary">
+          <div className={`${classes.step} ${classes.stepTwo}`}></div>
+          <Typography variant="body1" color="initial">
             Valitse pelattava peli
           </Typography>
         </div>
-        <div className={classes.stepNeon}></div>
+
         <div className={classes.stepperContent}>
-          <div className={classes.step}>
-            <Typography variant="h5" color="initial">
-              3
-            </Typography>
-          </div>
-          <Typography variant="body1" color="primary">
-            Aseta halutessasi pelaajille hinta
+          <div className={`${classes.step} ${classes.stepThree}`}></div>
+          <Typography variant="body1" color="initial">
+            Kustomoi
           </Typography>
         </div>
-        <div className={classes.stepNeon}></div>
+
         <div className={classes.stepperContent}>
-          <div className={classes.step}>
-            <Typography variant="h5" color="initial">
-              4
-            </Typography>
-          </div>
-          <Typography variant="body1" color="primary">
+          <div className={`${classes.step} ${classes.stepFirstLast}`}></div>
+          <Typography variant="body1" color="initial">
             Kutsu pelaajat
           </Typography>
         </div>
@@ -198,62 +199,79 @@ const FrontPage: React.FC = () => {
   return (
     <div>
       <div className={classes.mainContainer}>
-        <Grid container className={classes.showcase}>
+        <div className={classes.showcase}>
           <img
             src={logoImg}
             alt="background"
             className={classes.showcaseImage}
           />
-          <Button color="secondary" component={Link} to="/kirjaudu">
-            Järjestä kotipelit
-          </Button>
-        </Grid>
-        <section className={classes.sectionStyle}>
-          <div className={classes.headline}>
-            <div className={classes.neonLight}></div>
-            <Typography variant="h2" color="initial">
-              Ilahduta järjestämällä peli-iltoja
+          <div className={classes.mainInfo}>
+            <Typography variant="h1" color="initial">
+              Haluaisitko olla gameshow- juontaja?
             </Typography>
+            <Typography
+              variant="h2"
+              color="initial"
+              className={classes.subHeader}
+            >
+              Peli-illat etänä pelaamiseen kustomoidulla videopuhelualustalla
+            </Typography>
+            <Button
+              color="secondary"
+              component={Link}
+              to="/kirjaudu"
+              className={classes.headerBtn}
+            >
+              Järjestä kotipelit
+            </Button>
           </div>
-          <div className={classes.sectionFlex}>
-            <div className={classes.sectionInfo}>
-              <Typography variant="body1">
-                Meillä kuka vain voi ryhtyä gameshow- juontajaksi
-              </Typography>
-              <Typography variant="body1" color="initial">
-                ..ja myös tienata samalla!
-              </Typography>
+        </div>
+
+        <section className={classes.companyBanner}>
+          <div className={classes.neonDivider}></div>
+          <div className={classes.bannerInfo}>
+            <Typography variant="h3" color="initial">
+              Etsitkö yrityksellesi peli-iltaa?
+            </Typography>
+            <div>
+              <Button
+                component={Link}
+                to="/yrityksille"
+                className={classes.bannerBtn}
+              >
+                Aloita tästä
+              </Button>
             </div>
-            <img
-              src={gamehostImg}
-              alt="gamehost"
-              className={classes.gamehostImage}
-            />
           </div>
+          <div className={classes.neonDivider}></div>
         </section>
-        <section className={classes.sectionStyle}>
-          <div className={classes.headline}>
-            <div className={classes.neonLight}></div>
-            <Typography variant="h2" color="initial">
-              Pelaamiseen kustomoidulla videopuhelualustalla
+        <div className={classes.userBanner}>
+          <div className={classes.sectionInfo}>
+            <Typography variant="h3" color="initial">
+              Ilahduta järjestämällä tutuillesi peli-iltoja
             </Typography>
-          </div>
-          <div className={classes.sectionFlex}>
-            <div className={classes.sectionInfo}>
-              <Typography variant="body1" color="initial">
-                Tarvitset vain käyttäjätilin ja webkameran
+            <div>
+              <Typography variant="body1">
+                Tarvitset vain käyttäjätilin ja web-kameran
               </Typography>
               <Typography variant="body1" color="initial">
                 ..ja olet valmis!
               </Typography>
             </div>
-            <img
-              src={gameviewImg}
-              alt="gameview"
-              className={classes.gameviewImage}
-            />
+            <div>
+              <Button color="secondary" component={Link} to="/rekisteroidy">
+                Luo tili
+              </Button>
+            </div>
           </div>
-        </section>
+
+          <img
+            src={gamehostImg}
+            alt="gamehost"
+            className={classes.gamehostImage}
+          />
+        </div>
+
         <Steps />
         <References />
       </div>

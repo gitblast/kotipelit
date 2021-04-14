@@ -24,19 +24,6 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       marginLeft: theme.spacing(4),
     },
-    headline: {
-      display: 'flex',
-      justifyContent: 'flex-start',
-      marginTop: theme.spacing(4),
-    },
-    neonLight: {
-      height: 3,
-      background:
-        'linear-gradient(to right, rgb(0 225 217), rgba(11, 43, 56, 1))',
-      width: '11vw',
-      alignSelf: 'center',
-      marginTop: '6px',
-    },
     button: {
       marginTop: theme.spacing(1),
       marginRight: theme.spacing(1),
@@ -149,12 +136,6 @@ const NewGame: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      <div className={classes.headline}>
-        <div className={classes.neonLight}></div>
-        <Typography variant="h4" color="initial">
-          Luo uusi peli
-        </Typography>
-      </div>
       <Stepper
         className={classes.stepperStyle}
         activeStep={activeStep}

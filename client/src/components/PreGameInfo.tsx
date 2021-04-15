@@ -43,12 +43,14 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '3.5rem',
       lineHeight: 0.7,
       color: theme.palette.info.main,
+      fontFamily: 'BeautySchoolDropoutII',
     },
-    tvSubText: {
-      color: theme.palette.success.main,
+    tvGame: {
+      fontFamily: 'BeautySchoolDropoutII',
+      textTransform: 'uppercase',
+      fontSize: '2.3rem',
     },
     gameDescription: {
-      color: 'rgb(185 231 229)',
       display: 'flex',
       alignItems: 'center',
       flexDirection: 'column',
@@ -128,17 +130,16 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
           // Spectator pregame view
           <>
             <div className={classes.spectatorHead}>
-              <Typography variant="subtitle1" className={classes.tvText}>
+              <Typography variant="h1" className={classes.tvText}>
                 Kotipelit-tv
-              </Typography>
-              <Typography variant="body2" className={classes.tvSubText}>
-                Peliviihdeillat oman porukan kesken
               </Typography>
             </div>
             <div className={classes.gameDescription}>
-              <Typography variant="subtitle1">Kotitonni</Typography>
+              <Typography variant="h2" className={classes.tvGame}>
+                Kotitonni
+              </Typography>
               <div className={classes.spectatorHead}>
-                <Typography variant="h5" color="initial">
+                <Typography variant="body1" color="initial">
                   {`Lähetys alkaa ${format(
                     new Date(game.startTime),
                     'd.M. HH:mm',
@@ -151,7 +152,7 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
                   Katsojapaikkoja on rajoitettu määrä
                 </Typography>
               </div>
-              <Typography variant="h5" color="initial">
+              <Typography variant="body1" color="initial">
                 Pelaamassa tänään:
               </Typography>
               <Typography

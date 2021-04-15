@@ -71,7 +71,7 @@ let theme = createMuiTheme({
       main: '#d517df',
     },
     text: {
-      primary: '#e6e3c5ff',
+      primary: '#d5d3bf',
       secondary: 'rgb(168 164 136)',
       disabled: 'rgb(96 95 89)',
       hint: 'rgba(135, 56, 43)',
@@ -91,7 +91,7 @@ let theme = createMuiTheme({
       fontSize: '1.9rem',
     },
     h2: {
-      fontSize: '1.7rem',
+      fontSize: '1.6rem',
     },
     h3: {
       fontSize: '1.5rem',

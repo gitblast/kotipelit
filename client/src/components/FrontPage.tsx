@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.text.primary,
     },
     headerBtn: {
-      marginTop: theme.spacing(1),
+      marginTop: theme.spacing(1.8),
     },
 
     sectionStyle: {
@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
       [theme.breakpoints.down('xs')]: {
         textAlign: 'center',
-        margin: theme.spacing(3),
+        margin: theme.spacing(1),
       },
     },
     companyBanner: {
@@ -87,6 +87,10 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       textAlign: 'center',
+      [theme.breakpoints.down('xs')]: {
+        marginTop: theme.spacing(3),
+        marginBottom: theme.spacing(4),
+      },
     },
     neonDivider: {
       height: 3,

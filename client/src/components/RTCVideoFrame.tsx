@@ -33,8 +33,11 @@ const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
       marginBottom: theme.spacing(2),
       marginTop: theme.spacing(1),
       [theme.breakpoints.down('sm')]: {
-        width: '32%',
-        margin: 3,
+        width: '28%',
+        marginLeft: theme.spacing(0.5),
+        marginRight: theme.spacing(0.5),
+        marginTop: 0,
+        marginBottom: theme.spacing(0.2),
       },
     },
     frame: {

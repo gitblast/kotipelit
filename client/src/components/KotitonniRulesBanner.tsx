@@ -42,7 +42,8 @@ const KotitonniRulesBanner = () => {
   return (
     <Paper elevation={5} className={classes.gameRules}>
       <Typography variant="body1">
-        Kotitonnissa saat kolme sanaa, joihin sinun tulee keksiä vihjeet.
+        Kotitonni on hauska seurapeli, jossa sanallinen luovuus pääsee
+        valloilleen. Saat kolme sanaa, joihin sinun tulee keksiä vihjeet.
         Tavoitteena on, että vain yksi kanssapelaaja arvaa oikean sanan.
       </Typography>
 

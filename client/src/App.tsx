@@ -101,7 +101,7 @@ const App = () => {
             {!user.loggedIn && (
               <div className={classes.registerLink}>
                 <Link to="/rekisteroidy">
-                  <Typography variant="body2">Rekisteröidy</Typography>
+                  <Typography variant="body2">Luo tili</Typography>
                 </Link>
               </div>
             )}

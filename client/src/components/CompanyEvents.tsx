@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       textAlign: 'center',
-      fontSize: '2.2rem',
+      fontSize: '2rem',
       margin: theme.spacing(4),
     },
     neonDivider: {
@@ -43,6 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
       background: 'linear-gradient(to bottom, rgb(32 82 100), rgb(28 47 56))',
       maxWidth: 320,
       padding: theme.spacing(2),
+      borderLeft: 'solid rgb(0 225 217)',
     },
     gameTitleBar: {
       display: 'flex',
@@ -127,7 +128,7 @@ const CompanyEvents = () => {
                 color="initial"
                 className={classes.gameInfoPara}
               >
-                Hinta 80€ per peli
+                Hinta 85€ per peli
               </Typography>
             </div>
           </Paper>

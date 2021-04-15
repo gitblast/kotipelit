@@ -23,7 +23,7 @@ import { RTCGame } from '../../types';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     avatarStyle: {
-      background: theme.palette.secondary.main,
+      background: 'linear-gradient(to right, rgb(189 17 198), transparent)',
     },
   })
 );

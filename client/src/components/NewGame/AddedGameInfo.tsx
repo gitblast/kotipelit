@@ -11,9 +11,6 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       padding: theme.spacing(1),
     },
-    shareLink: {
-      color: theme.palette.success.main,
-    },
     tvLink: {
       fontSize: '2rem',
       color: theme.palette.info.main,
@@ -57,29 +54,18 @@ const AddedGameInfo = ({ addedGame, error }: AddedGameInfoProps) => {
   return (
     <div className={classes.container}>
       <div className={classes.gameInfo}>
-        <Typography variant="subtitle2" color="initial">
-          Kotipelit
+        <Typography variant="h3">
+          Pelaajat pääsevät ilmoittautumaan tästä linkistä:
         </Typography>
         <Typography variant="caption">{`${baseUrl}/${username}/kutsut/${addedGame.id}`}</Typography>
-        <Typography className={classes.shareLink}>
-          Jaa ylläoleva peliaulan linkki kaikille, jotka haluat kutsua
-          pelaamaan.
-        </Typography>
       </div>
       {addedGame.allowedSpectators !== 0 ? (
         <div className={classes.gameInfo}>
-          <Typography
-            variant="subtitle1"
-            color="initial"
-            className={classes.tvLink}
-          >
-            Kotipelit-tv
+          <Typography variant="body1" color="initial">
+            Jaa tämä vain katsojille:
           </Typography>
           <Typography variant="caption">
             {`${baseUrl}/${username}/live/${addedGame.id}`}
-          </Typography>
-          <Typography className={classes.shareLink}>
-            Jaa tämä kaikille, jotka haluat kutsua katsojiksi
           </Typography>
         </div>
       ) : null}

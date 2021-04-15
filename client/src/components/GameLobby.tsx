@@ -26,7 +26,6 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'space-evenly',
       alignItems: 'center',
-      color: theme.palette.primary.light,
       [theme.breakpoints.down('sm')]: {
         flexDirection: 'column',
       },
@@ -36,15 +35,13 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     invitationText: {
       color: theme.palette.info.main,
+      textAlign: 'center',
       [theme.breakpoints.down('sm')]: {
-        textAlign: 'center',
+        marginTop: theme.spacing(3),
       },
     },
     gameInfo: {
       marginTop: theme.spacing(2),
-      '& > * + *': {
-        marginBottom: theme.spacing(2),
-      },
     },
     videocallInfo: {
       margin: theme.spacing(3),
@@ -65,6 +62,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     showcaseImage: {
       height: 325,
+      opacity: 0.5,
       [theme.breakpoints.down('xs')]: {
         maxHeight: 200,
       },
@@ -153,16 +151,13 @@ const GameLobby: React.FC = () => {
               </Typography>
               <div className={classes.gameInfo}>
                 <Typography variant="h5" color="initial">
-                  Pelimuoto: <span> {` ${capitalize(game.type)}`}</span>
+                  {` ${capitalize(game.type)}`}
                 </Typography>
                 <Typography variant="h5">
-                  Ajankohta:{' '}
-                  <span>
-                    {' '}
-                    {`${format(new Date(game.startTime), 'd. MMMM HH:mm', {
-                      locale: fiLocale,
-                    })}`}
-                  </span>
+                  {' '}
+                  {`${format(new Date(game.startTime), 'd. MMMM HH:mm', {
+                    locale: fiLocale,
+                  })}`}
                 </Typography>
                 {game.price !== 0 && (
                   <Typography variant="h5">

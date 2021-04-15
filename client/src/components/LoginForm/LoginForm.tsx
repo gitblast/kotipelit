@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: 'center',
       margin: theme.spacing(2),
     },
-
     maxWidth240: {
       maxWidth: 240,
       marginTop: theme.spacing(1),
@@ -42,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     registerLink: {
       textDecoration: 'none',
-      color: 'rgb(0 225 217)',
+      color: theme.palette.text.primary,
     },
   })
 );

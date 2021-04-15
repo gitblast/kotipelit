@@ -123,7 +123,7 @@ const App = () => {
             <Route path="/kysyttya">
               <QuestionsAnswers />
             </Route>
-            <Route path="/yritys">
+            <Route path="/yleista">
               <CompanyInfo />
             </Route>
             <Route exact path="/">

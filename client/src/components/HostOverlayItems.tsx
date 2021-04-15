@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: 'rgba(0, 0, 0, 0.8)',
       width: '100%',
       justifyContent: 'space-around',
-      padding: theme.spacing(1.9),
+      padding: theme.spacing(1),
       borderTop: 'dotted 3px rgb(0 225 217)',
       clipPath: 'polygon(10% 0, 90% 0, 91% 4%, 100% 100%, 0 100%, 8% 5%)',
       [theme.breakpoints.down('sm')]: {
@@ -23,9 +23,11 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     hostName: {
+      fontFamily: 'chicagoNeon',
       color: theme.palette.info.main,
+      fontSize: '2.1rem',
       [theme.breakpoints.down('sm')]: {
-        fontSize: 18,
+        fontSize: '1.3rem',
       },
       [theme.breakpoints.down('xs')]: {
         fontSize: theme.spacing(4),
@@ -61,7 +63,7 @@ const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({ host }) => {
         <div className={classes.spacer} />
         <div className={classes.flex}>
           <div className={classes.nameBadge}>
-            <Typography variant="subtitle2" className={classes.hostName}>
+            <Typography variant="h3" className={classes.hostName}>
               {host.displayName}
             </Typography>
             <div>

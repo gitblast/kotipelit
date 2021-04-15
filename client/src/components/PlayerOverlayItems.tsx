@@ -66,14 +66,19 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(1),
     },
     playerName: {
-      fontSize: theme.spacing(4.5),
-      color: theme.palette.primary.light,
+      fontFamily: 'beautySchoolDropoutII',
+      textTransform: 'uppercase',
+      fontSize: '2.1rem',
       [theme.breakpoints.down('sm')]: {
-        fontSize: '1.2rem',
+        fontSize: '1.4rem',
       },
     },
+    [theme.breakpoints.down('xs')]: {
+      display: 'none',
+    },
     playerPoints: {
-      fontSize: '2.6rem',
+      fontFamily: 'beautySchoolDropoutII',
+      fontSize: '2.1rem',
       color: 'rgb(0 225 217)',
       [theme.breakpoints.down('sm')]: {
         fontSize: '1.5rem',
@@ -146,11 +151,11 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
         <div className={classes.spacer} />
         <div className={classes.flex}>
           <div className={classes.nameBadge}>
-            <Typography variant="subtitle1" className={classes.playerName}>
+            <Typography variant="h3" className={classes.playerName}>
               {player.name}
             </Typography>
 
-            <Typography variant="subtitle1" className={classes.playerPoints}>
+            <Typography variant="h3" className={classes.playerPoints}>
               {player.points}
             </Typography>
             <div>

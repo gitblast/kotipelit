@@ -92,13 +92,13 @@ let theme = createMuiTheme({
       color: '#ffea26ff',
     },
     h2: {
-      fontSize: '2rem',
+      fontSize: '1.7rem',
     },
     h3: {
       fontSize: '1.5rem',
     },
     h4: {
-      fontSize: '1.6rem',
+      fontSize: '1.5rem',
     },
     h5: {
       fontSize: '1.4rem',
@@ -107,16 +107,10 @@ let theme = createMuiTheme({
     h6: {
       fontSize: '1.2rem',
     },
-    // Used as Kotipelit-tv, KotitonniTitle and player names. Unify fontsize to  eventually most used
     subtitle1: {
-      fontFamily: 'beautySchoolDropoutII',
-      textTransform: 'uppercase',
       fontSize: '3rem',
-      lineHeight: '1',
     },
-    // Used to display the game name and host name in GameRoom
     subtitle2: {
-      fontFamily: 'chicagoNeon',
       fontSize: 36,
       lineHeight: 0.6,
       // info.main
@@ -186,7 +180,7 @@ let theme = createMuiTheme({
     },
     MuiList: {
       root: {
-        backgroundColor: 'rgb(180 178 161)',
+        backgroundColor: '#e6e3c5ff',
         // general background color
         color: 'rgb(11 43 56)',
       },
@@ -207,7 +201,6 @@ let theme = createMuiTheme({
       root: {
         borderColor: 'rgb(0 225 217)',
         borderLeft: '1px solid',
-        color: 'rgb(168 164 136)',
       },
       last: {
         marginLeft: 0,
@@ -222,12 +215,12 @@ let theme = createMuiTheme({
     // Defines the underline in text-fields
     MuiInputBase: {
       root: {
-        minWidth: 240,
+        minWidth: 300,
       },
     },
     MuiSvgIcon: {
       root: {
-        color: '#e6e3c5ff',
+        color: '#e6e3c5ff', // Text primary color
       },
     },
     MuiStepIcon: {
@@ -242,7 +235,7 @@ let theme = createMuiTheme({
     MuiTextField: {
       root: {
         '& > * + *': {
-          marginBottom: 8,
+          marginBottom: 8, // Prevents login fields to be stacked together and adds margin to next element
         },
         '& .MuiOutlinedInput-root': {
           '& fieldset': {
@@ -256,8 +249,7 @@ let theme = createMuiTheme({
     },
     MuiPaper: {
       root: {
-        // Ligth version of background
-        backgroundColor: 'rgb(15 47 60)',
+        backgroundColor: 'rgb(11, 43, 56)', // Same as background
       },
     },
   },

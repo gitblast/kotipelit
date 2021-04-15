@@ -44,14 +44,20 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'space-around',
     },
     kotitonniTitleWait: {
+      textTransform: 'uppercase',
+      fontFamily: 'beautySchoolDropoutII',
       fontSize: '5.2rem',
+      lineHeight: 1,
       color: 'rgb(185, 231, 229, 16%)',
       [theme.breakpoints.down('sm')]: {
         fontSize: '3.8rem',
       },
     },
     kotitonniTitle: {
+      textTransform: 'uppercase',
+      fontFamily: 'beautySchoolDropoutII',
       fontSize: '5.2rem',
+      lineHeight: 1,
       color: 'rgb(185 231 229)',
       [theme.breakpoints.down('sm')]: {
         fontSize: '3.8rem',
@@ -194,7 +200,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
           ></div>
           <div>
             <Typography
-              variant="subtitle1"
+              variant="h1"
               className={`${
                 game.status === GameStatus.RUNNING ||
                 game.status === GameStatus.FINISHED

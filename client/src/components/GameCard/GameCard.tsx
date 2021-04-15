@@ -16,7 +16,6 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(2),
       // Ligth version of background
       backgroundColor: 'rgb(15 47 60)',
-      color: theme.palette.primary.light,
       border: 'solid rgb(0 225 217)',
       [theme.breakpoints.down('sm')]: {
         margin: theme.spacing(0.7),

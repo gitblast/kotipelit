@@ -45,14 +45,14 @@ const References = () => {
 
           <Typography variant="body1">-Teemu</Typography> */}
         <Grid item xs={12}>
-          <Typography variant="h3">
+          <Typography variant="h4">
             Suosikkipeli Kotitonnin koottuja vihjeitä
           </Typography>
         </Grid>
         <Grid item md={4} xs={12}>
           <img className={classes.referenceImg} src={riinaImg} alt="Riina" />
 
-          <Typography variant="h5">
+          <Typography variant="body1">
             {
               '"Tämän sävelessä ei itketä ilosta eikä surusta, vaan muuten vaan."'
             }

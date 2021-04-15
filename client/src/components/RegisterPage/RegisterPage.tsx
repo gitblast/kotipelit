@@ -16,22 +16,33 @@ import React from 'react';
 import PasswordStrengthBar from 'react-password-strength-bar';
 import useRegisterForm from './useRegisterForm';
 import ValidatingTextField from './ValidatingTextField';
+import logoImg from '../../assets/images/logoTransparent.png';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
-      margin: theme.spacing(2),
+      margin: theme.spacing(3),
       display: 'flex',
-      flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: 'center',
+      [theme.breakpoints.down('sm')]: {
+        display: 'initial',
+      },
+      [theme.breakpoints.down('xs')]: {
+        margin: 0,
+      },
     },
     loginField: {
-      padding: theme.spacing(3),
-      maxWidth: 350,
+      paddingLeft: theme.spacing(6),
+      paddingRight: theme.spacing(6),
+      paddingTop: theme.spacing(2),
+      paddingBottom: theme.spacing(2),
       color: theme.palette.primary.light,
       textAlign: 'center',
       margin: theme.spacing(2),
+      [theme.breakpoints.down('xs')]: {
+        padding: theme.spacing(1),
+        margin: theme.spacing(1),
+      },
     },
     menuPaper: {
       maxHeight: 300, // sets max height for birth year popup
@@ -41,9 +52,23 @@ const useStyles = makeStyles((theme: Theme) =>
         borderColor: 'rgb(0 225 217)',
       },
     },
+    recommendation: {
+      fontSize: '0.7rem',
+      color: theme.palette.primary.light,
+    },
     maxWidth240: {
       maxWidth: 240,
       margin: 'auto',
+    },
+    welcomeImg: {
+      opacity: 0.3,
+      [theme.breakpoints.down('sm')]: {
+        display: 'none',
+      },
+    },
+    spacer: {
+      // fills empty space
+      flex: '1 1 auto',
     },
   })
 );
@@ -80,7 +105,7 @@ const RegisterPage = () => {
 
   return (
     <div className={classes.container}>
-      <Paper elevation={3} className={classes.loginField}>
+      <Paper elevation={5} className={classes.loginField}>
         {userAdded ? (
           successInfo()
         ) : (
@@ -99,16 +124,23 @@ const RegisterPage = () => {
           >
             {({ submitForm, isSubmitting, values }) => (
               <Form>
+                <Field component={TextField} name="firstName" label="Etunimi" />
+                <br />
+                <Field component={TextField} name="lastName" label="Sukunimi" />
+                <br />
                 <Field
                   component={ValidatingTextField}
                   name="username"
                   label="Käyttäjänimi"
                 />
-                <br />
-                <Field component={TextField} name="firstName" label="Etunimi" />
-                <br />
-                <Field component={TextField} name="lastName" label="Sukunimi" />
-                <br />
+                <Typography
+                  variant="body2"
+                  color="initial"
+                  className={classes.recommendation}
+                >
+                  Suosittelemme käyttämään nimeä, jolla pelaajat tunnistavat
+                  sinut.
+                </Typography>
                 <Field
                   component={ValidatingTextField}
                   name="email"
@@ -170,7 +202,7 @@ const RegisterPage = () => {
                 <br />
                 <Button
                   variant="contained"
-                  color="primary"
+                  color="secondary"
                   disabled={isSubmitting}
                   onClick={submitForm}
                 >
@@ -181,6 +213,12 @@ const RegisterPage = () => {
           </Formik>
         )}
       </Paper>
+      <div className={classes.spacer} />
+      <div>
+        {' '}
+        <img src={logoImg} alt="background" className={classes.welcomeImg} />
+      </div>
+      <div className={classes.spacer} />
     </div>
   );
 };

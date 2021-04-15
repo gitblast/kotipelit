@@ -75,7 +75,8 @@ const useStyles = makeStyles((theme: Theme) =>
         margin: theme.spacing(2),
       },
       [theme.breakpoints.down('xs')]: {
-        margin: 0,
+        textAlign: 'center',
+        margin: theme.spacing(3),
       },
     },
     companyBanner: {
@@ -230,13 +231,13 @@ const FrontPage: React.FC = () => {
         <section className={classes.companyBanner}>
           <div className={classes.neonDivider}></div>
           <div className={classes.bannerInfo}>
-            <Typography variant="h3" color="initial">
+            <Typography variant="h2" color="initial">
               Etsitkö yrityksellesi peli-iltaa?
             </Typography>
             <div>
               <Button
                 component={Link}
-                to="/yrityksille"
+                to="/yritystapahtumat"
                 className={classes.bannerBtn}
               >
                 Aloita tästä

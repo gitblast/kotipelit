@@ -89,7 +89,6 @@ let theme = createMuiTheme({
     },
     h1: {
       fontSize: '1.9rem',
-      color: '#ffea26ff',
     },
     h2: {
       fontSize: '1.7rem',

@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     mainInfo: {
+      color: '#ffea26ff',
       [theme.breakpoints.down('sm')]: {
         marginTop: theme.spacing(4),
         textAlign: 'center',
@@ -42,6 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     subHeader: {
       fontSize: '1.1rem',
+      color: theme.palette.text.primary,
     },
     headerBtn: {
       marginTop: theme.spacing(1),

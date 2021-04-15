@@ -25,10 +25,10 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: theme.spacing(2),
     },
     pointsBlock: {
-      borderColor: '#0cee9a',
-      border: 'solid 1.5px',
+      borderColor: '#00dfd7',
+      border: 'solid 1px',
       borderRadius: '12%',
-      padding: theme.spacing(0.9),
+      padding: theme.spacing(1.5),
     },
     pointsBlockMinus: {
       borderColor: '#ee2626',

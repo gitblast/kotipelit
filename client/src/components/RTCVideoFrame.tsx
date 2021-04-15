@@ -136,7 +136,7 @@ const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({
 
   return (
     <Card
-      elevation={3}
+      elevation={5}
       className={`${classes.videoWindow} ${
         highlighted
           ? classes.hasTurn

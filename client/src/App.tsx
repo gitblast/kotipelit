@@ -18,6 +18,7 @@ import { initChannels } from './reducers/channels.reducer';
 import { checkForUser } from './reducers/user.reducer';
 import { HostChannel, State } from './types';
 import Loader from './components/Loader';
+import CompanyEvents from './components/CompanyEvents';
 
 // lazy load due to size
 
@@ -125,6 +126,9 @@ const App = () => {
             </Route>
             <Route path="/yleista">
               <CompanyInfo />
+            </Route>
+            <Route path="/yritystapahtumat">
+              <CompanyEvents />
             </Route>
             <Route exact path="/">
               <FrontPage />

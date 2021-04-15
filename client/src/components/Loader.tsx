@@ -64,7 +64,7 @@ const Loader: React.FC<LoaderProps> = ({ msg, spinner, errored }) => {
             Tapahtui virhe
           </Typography>
           <Button color="secondary" onClick={() => window.location.reload()}>
-            Lataa sivu uudelleen
+            Päivitä sivu
           </Button>
         </>
       ) : (

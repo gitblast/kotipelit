@@ -73,7 +73,7 @@ const ErrorDialog = ({
       <DialogActions>
         {enableRefresh && (
           <Button onClick={handleRefreshGame} variant="text" autoFocus>
-            Lataa sivu uudelleen
+            Päivitä sivu
           </Button>
         )}
         <Button onClick={() => setOpen(false)} variant="text" autoFocus>

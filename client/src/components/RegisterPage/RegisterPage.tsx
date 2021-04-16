@@ -56,6 +56,9 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '0.7rem',
       color: theme.palette.primary.light,
       textAlign: 'left',
+      [theme.breakpoints.down('sm')]: {
+        textAlign: 'center',
+      },
     },
     maxWidth240: {
       maxWidth: 240,

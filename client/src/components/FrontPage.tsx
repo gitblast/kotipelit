@@ -255,7 +255,7 @@ const FrontPage: React.FC = () => {
         <div className={classes.userBanner}>
           <div className={classes.sectionInfo}>
             <Typography variant="h3" color="initial">
-              Ilahduta järjestämällä tutuillesi peli-iltoja
+              Ilahduta järjestämällä tutuillesi pelejä
             </Typography>
             <div>
               <Typography variant="body1">

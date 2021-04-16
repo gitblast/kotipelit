@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
       textTransform: 'capitalize',
       color: 'black',
       [theme.breakpoints.down('sm')]: {
-        fontSize: '1.4rem',
+        fontSize: '1.2rem',
       },
     },
     correctAnswer: {

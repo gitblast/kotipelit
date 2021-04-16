@@ -36,6 +36,11 @@ router.put('/lock', async (req, res, next) => {
     const gameId = parseString(req.body.gameId);
     const reservationId = parseString(req.body.reservationId);
     const displayName = parseString(req.body.displayName);
+
+    if (displayName.length > 10) {
+      throw new Error('Invalid request: display name max length is 10');
+    }
+
     const email = parseEmail(req.body.email);
 
     const game = await gameService.getGameById(gameId);

@@ -7,16 +7,12 @@ import RTCGameRoom from './RTCGameRoom';
 import GameLobby from './GameLobby';
 import Dashboard from './Dashboard';
 import { useSelector } from 'react-redux';
-import { Role, State /**BaseUser */ } from '../types';
+import { Role, State } from '../types';
 import TYFPPage from './TYFPPage';
 import NotFoundPage from './NotFoundPage';
 import CancelPage from './CancelPage';
 
-interface ChannelPageProps {
-  labelText: string;
-}
-
-const ChannelPage: React.FC<ChannelPageProps> = () => {
+const ChannelPage: React.FC = () => {
   const user = useSelector((state: State) => state.user);
 
   const basePath = '/:username';

@@ -12,15 +12,15 @@ const router = express.Router();
 
 router.post('/', async (req, res, next) => {
   try {
-    const { username, password } = toCredentials(req.body);
+    const { usernameOrEmail, password } = toCredentials(req.body);
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({
+      $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
+    });
 
     if (!user) {
       throw new Error('Invalid username or password');
     }
-
-    console.log(user.confirmationId);
 
     if (user.status !== 'active') {
       throw new Error('Email not verified');
@@ -33,14 +33,14 @@ router.post('/', async (req, res, next) => {
     }
 
     const userForToken = {
-      username,
+      username: user.username,
       id: user._id.toString(),
       role: Role.HOST,
     };
 
     const token = jwt.sign(userForToken, config.SECRET);
 
-    res.json({ token, username });
+    res.json({ token, username: user.username });
   } catch (error) {
     next(error);
   }

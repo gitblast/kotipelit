@@ -14,9 +14,8 @@ import NotFoundPage from './components/NotFoundPage';
 import QuestionsAnswers from './components/QuestionsAnswers';
 import ScrollToTop from './components/ScrollToTop';
 import UserControls from './components/UserControls';
-import { initChannels } from './reducers/channels.reducer';
 import { checkForUser } from './reducers/user.reducer';
-import { HostChannel, State } from './types';
+import { State } from './types';
 import Loader from './components/Loader';
 import CompanyEvents from './components/CompanyEvents';
 
@@ -67,24 +66,10 @@ const App = () => {
 
   const user = useSelector((state: State) => state.user, shallowEqual);
 
-  const channels = useSelector(
-    (state: State) => state.channels.allChannels,
-    shallowEqual
-  );
-
-  // init channels and check local storage for user
+  // check local storage for user
   React.useEffect(() => {
     dispatch(checkForUser());
-    dispatch(initChannels());
   }, [dispatch]);
-
-  const channelRoutes = (channels: HostChannel[]) => {
-    return channels.map((channel) => (
-      <Route key={channel.username} path={`/${channel.username}`}>
-        <ChannelPage labelText={channel.channelName} />
-      </Route>
-    ));
-  };
 
   return (
     <Router>
@@ -111,7 +96,6 @@ const App = () => {
       <div className={classes.container}>
         <Suspense fallback={<Loader msg="Ladataan..." />}>
           <Switch>
-            {channelRoutes(channels)}
             <Route path="/rekisteroidy">
               <RegisterPage />
             </Route>
@@ -129,6 +113,9 @@ const App = () => {
             </Route>
             <Route path="/yritystapahtumat">
               <CompanyEvents />
+            </Route>
+            <Route path={`/:username`}>
+              <ChannelPage />
             </Route>
             <Route exact path="/">
               <FrontPage />

@@ -2,9 +2,9 @@ POST http://localhost:3333/api/users
 Content-Type: application/json
 
 {
-  "username": "username12345",
+  "username": "username1232",
   "password": "password",
-  "email": "email12345",
+  "email": "email1s5",
   "firstName": "first",
   "lastName": "last",
   "birthYear": "1922"

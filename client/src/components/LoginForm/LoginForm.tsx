@@ -102,7 +102,9 @@ const LoginForm: React.FC = () => {
   }
 
   const validator = Yup.object({
-    username: Yup.string().required('Anna käyttäjänimi'),
+    usernameOrEmail: Yup.string().required(
+      'Anna käyttäjänimi tai sähköpostiosoite'
+    ),
     password: Yup.string().required('Anna salasana'),
   });
 
@@ -113,13 +115,13 @@ const LoginForm: React.FC = () => {
           <ConfirmEmailMessage />
         ) : (
           <Formik
-            initialValues={{ username: '', password: '' }}
+            initialValues={{ usernameOrEmail: '', password: '' }}
             validationSchema={validator}
             onSubmit={async (values, { setStatus }) => {
               try {
-                await handleLogin(values.username, values.password);
+                await handleLogin(values.usernameOrEmail, values.password);
               } catch (e) {
-                setStatus(e.message);
+                setStatus(e.message); // uses status to show error message
               }
             }}
           >
@@ -127,8 +129,8 @@ const LoginForm: React.FC = () => {
               <Form>
                 <Field
                   component={OutlinedTextField}
-                  name="username"
-                  label="Käyttäjätunnus"
+                  name="usernameOrEmail"
+                  label="Käyttäjätunnus tai sähköposti"
                 />
                 <br />
                 <Field

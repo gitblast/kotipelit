@@ -71,11 +71,6 @@ const sendVerification = async (
       }`
     );
   } catch (e) {
-    if (e.response) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      logger.error(`Error sending verification email: ${e.response.data}`);
-    }
-
     throw new Error(`Error sending verification email: ${e.message}`);
   }
 };

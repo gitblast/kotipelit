@@ -53,11 +53,13 @@ export interface UserModel extends Omit<NewUser, 'password'>, Document {
 }
 
 export interface UserCredentials {
-  username: string;
+  usernameOrEmail: string;
   password: string;
 }
 
-export interface NewUser extends UserCredentials {
+export interface NewUser {
+  username: string;
+  password: string;
   email: string;
   firstName: string;
   lastName: string;

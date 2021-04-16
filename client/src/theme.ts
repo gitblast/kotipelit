@@ -137,6 +137,9 @@ let theme = createMuiTheme({
     MuiCssBaseline: {
       '@global': {
         '@font-face': [zrnic, beautySchoolDropoutII, chicagoNeon],
+        a: {
+          textDecoration: 'none',
+        },
       },
     },
     MuiButton: {

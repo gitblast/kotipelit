@@ -3,18 +3,12 @@ import * as React from 'react';
 import { logout } from '../reducers/user.reducer';
 
 import { makeStyles, createStyles } from '@material-ui/core/styles';
-import {
-  Link,
-  Typography,
-  IconButton,
-  Menu,
-  MenuItem,
-} from '@material-ui/core';
+import { Typography, IconButton, Menu, MenuItem } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import { User } from '../types';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -34,20 +28,21 @@ const UserControls: React.FC<UserControlsProps> = ({ user }) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const handleClick = () => {
-    history.push('/kirjaudu');
-  };
-
   const handleLogout = () => {
     dispatch(logout());
 
     history.push('/');
   };
 
-  if (!user.loggedIn)
-    return history.location.pathname !== '/kirjaudu' ? (
-      <Link onClick={handleClick}>Kirjaudu</Link>
-    ) : null;
+  if (!user.loggedIn) {
+    return (
+      <Link to="/kirjaudu">
+        <Typography variant="body2" color="primary">
+          Kirjaudu
+        </Typography>
+      </Link>
+    );
+  }
 
   const UserMenu = () => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);

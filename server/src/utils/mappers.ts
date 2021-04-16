@@ -142,11 +142,11 @@ const parsePlayers = (players: any): GamePlayer[] => {
 
 export const toNewUser = (object: any): NewUser => {
   return {
-    username: parseString(object.username, 'username'),
-    password: parseString(object.password, 'password'),
-    email: parseString(object.email, 'email'),
-    firstName: parseString(object.firstName, 'firstName'),
-    lastName: parseString(object.lastName, 'lastName'),
+    username: parseString(object.username, 'username').trim(),
+    password: parseString(object.password, 'password').trim(),
+    email: parseString(object.email, 'email').toLowerCase().trim(),
+    firstName: parseString(object.firstName, 'firstName').trim(),
+    lastName: parseString(object.lastName, 'lastName').trim(),
     birthYear: parseNumber(object.birthYear),
     status: 'pending',
     confirmationId: uuidv4(),
@@ -200,7 +200,7 @@ export const toAuthenticatedUser = (request: any): DecodedToken => {
 
 export const toCredentials = (object: any): UserCredentials => {
   return {
-    username: parseString(object.username, 'username'),
+    usernameOrEmail: parseString(object.username, 'username / email'),
     password: parseString(object.password, 'password'),
   };
 };

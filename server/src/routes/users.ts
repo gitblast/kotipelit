@@ -64,7 +64,7 @@ router.get('/validate', async (req, res, next) => {
     const email = req.query.email;
 
     if (email) {
-      const emailAvailable = await userService.checkUsernameAvailability(
+      const emailAvailable = await userService.checkEmailAvailability(
         email as string
       );
 

@@ -42,11 +42,9 @@ const useRegisterForm = () => {
       .matches(/^\d+$/, 'Tulee olla numero')
       .required(fieldRequiredText),
     password: Yup.string()
-      .matches(/^\S*$/, 'Välilyöntejä ei sallita')
       .min(8, 'Vähintään 8 merkkiä')
       .required(fieldRequiredText),
     passwordConfirm: Yup.string()
-      .matches(/^\S*$/, 'Välilyöntejä ei sallita')
       .oneOf([Yup.ref('password')], 'Salasanat eivät täsmää')
       .required(fieldRequiredText),
   });

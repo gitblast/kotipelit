@@ -24,7 +24,7 @@ const useRegisterForm = () => {
     username: Yup.string()
       .matches(/^\S*$/, 'Välilyöntejä ei sallita')
       .min(3, 'Vähintään 3 kirjainta')
-      .max(16, 'Korkeintaan 16 kirjainta')
+      .max(12, 'Korkeintaan 12 kirjainta')
       .required(fieldRequiredText),
     firstName: Yup.string()
       .matches(/^\S*$/, 'Välilyöntejä ei sallita')

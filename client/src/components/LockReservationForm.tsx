@@ -45,8 +45,8 @@ const LockReservationForm: React.FC<LockReservationFormProps> = ({
       return setNameError('Nimimerkki ei saa alkaa sanalla "spectator"');
     }
 
-    if (name.length > 16) {
-      return setNameError('Nimen maksimipituus on 16 merkkiä!');
+    if (name.length > 10) {
+      return setNameError('Nimen maksimipituus on 10 merkkiä!');
     }
 
     if (!email) {

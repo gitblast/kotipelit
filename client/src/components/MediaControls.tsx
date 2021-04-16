@@ -1,4 +1,5 @@
 import { IconButton } from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import MicIcon from '@material-ui/icons/Mic';
 import MicOffIcon from '@material-ui/icons/MicOff';
 import VideocamIcon from '@material-ui/icons/Videocam';
@@ -9,11 +10,23 @@ import { useGameData, useMediaMutedStates } from '../context';
 import { Role, RTCParticipant } from '../types';
 import logger from '../utils/logger';
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    // Repeated code from PlayerOverlay!
+    mediaIcon: {
+      [theme.breakpoints.down('sm')]: {
+        fontSize: theme.spacing(2),
+      },
+    },
+  })
+);
+
 interface MediaControlsProps {
   participant: RTCParticipant;
 }
 
 const MediaControls: React.FC<MediaControlsProps> = ({ participant }) => {
+  const classes = useStyles();
   const { socket, self } = useGameData();
 
   const {
@@ -59,7 +72,11 @@ const MediaControls: React.FC<MediaControlsProps> = ({ participant }) => {
         onClick={toggleAudio}
         disabled={!participant.isMe && self.role !== Role.HOST}
       >
-        {mutedMap[participant.id] ? <MicOffIcon color="error" /> : <MicIcon />}
+        {mutedMap[participant.id] ? (
+          <MicOffIcon color="error" className={classes.mediaIcon} />
+        ) : (
+          <MicIcon className={classes.mediaIcon} />
+        )}
       </IconButton>
       {participant.isMe && (
         <IconButton
@@ -68,9 +85,9 @@ const MediaControls: React.FC<MediaControlsProps> = ({ participant }) => {
           disabled={!participant.connection}
         >
           {videoDisabledMap[participant.id] ? (
-            <VideocamOffIcon color="error" />
+            <VideocamOffIcon color="error" className={classes.mediaIcon} />
           ) : (
-            <VideocamIcon />
+            <VideocamIcon className={classes.mediaIcon} />
           )}
         </IconButton>
       )}

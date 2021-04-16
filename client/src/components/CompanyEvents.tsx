@@ -128,7 +128,7 @@ const CompanyEvents = () => {
                 color="initial"
                 className={classes.gameInfoPara}
               >
-                Hinta 85€ per peli
+                Hinta 99€ per peli
               </Typography>
             </div>
           </Paper>

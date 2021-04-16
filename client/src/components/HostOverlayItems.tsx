@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.info.main,
       fontSize: '2.1rem',
       [theme.breakpoints.down('sm')]: {
-        fontSize: '1.3rem',
+        fontSize: '1.1rem',
       },
       [theme.breakpoints.down('xs')]: {
         fontSize: theme.spacing(4),

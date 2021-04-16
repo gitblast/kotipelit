@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme: Theme) =>
       textTransform: 'uppercase',
       fontSize: '2.1rem',
       [theme.breakpoints.down('sm')]: {
-        fontSize: '1.4rem',
+        fontSize: '1.1rem',
       },
     },
     [theme.breakpoints.down('xs')]: {
@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '2.1rem',
       color: 'rgb(0 225 217)',
       [theme.breakpoints.down('sm')]: {
-        fontSize: '1.5rem',
+        fontSize: '1.1rem',
       },
     },
   })

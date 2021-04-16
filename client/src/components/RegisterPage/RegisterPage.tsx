@@ -55,6 +55,7 @@ const useStyles = makeStyles((theme: Theme) =>
     recommendation: {
       fontSize: '0.7rem',
       color: theme.palette.primary.light,
+      textAlign: 'left',
     },
     maxWidth240: {
       maxWidth: 240,
@@ -138,8 +139,7 @@ const RegisterPage = () => {
                   color="initial"
                   className={classes.recommendation}
                 >
-                  Suosittelemme käyttämään nimeä, jolla pelaajat tunnistavat
-                  sinut.
+                  Tämä on nimi, jonka pelaajat näkevät.
                 </Typography>
                 <Field
                   component={ValidatingTextField}

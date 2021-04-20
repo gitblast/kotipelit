@@ -32,13 +32,17 @@ const AnimatedCounter = ({ currentValue }: AnimatedCounterProps) => {
     if (diff !== 0) {
       const incrementDisplayed = currentValue > displayedValue;
 
-      setTimeout(
+      const handle = setTimeout(
         () =>
           setDisplayedValue((current) => {
             return incrementDisplayed ? current + 1 : current - 1;
           }),
         INTERVAL_MS
       );
+
+      return () => {
+        clearInterval(handle);
+      };
     }
   }, [currentValue, displayedValue]);
 

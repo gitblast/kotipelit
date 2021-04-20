@@ -77,6 +77,10 @@ const useStyles = makeStyles((theme: Theme) =>
       textTransform: 'uppercase',
       fontSize: '2.3rem',
     },
+    alv: {
+      margin: 0,
+      color: 'rgb(185 231 229)',
+    },
     orderInfo: {
       margin: theme.spacing(2),
       '& > * + *': {
@@ -128,7 +132,14 @@ const CompanyEvents = () => {
                 color="initial"
                 className={classes.gameInfoPara}
               >
-                Hinta 99€ per peli
+                99€ per peli
+              </Typography>
+              <Typography
+                variant="body2"
+                color="initial"
+                className={classes.alv}
+              >
+                Hintaan lisätään 24% alv
               </Typography>
             </div>
           </Paper>

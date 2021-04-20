@@ -2,13 +2,13 @@ import React from 'react';
 
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 
-// import Loader from './Loader';
 import RTCVideoFrame from './RTCVideoFrame';
 
 import { RTCParticipant } from '../types';
-// import { useGameErrorState } from '../context';
+import { useGameErrorState } from '../context';
 
 import Skeleton from '@material-ui/lab/Skeleton';
+import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -43,7 +43,7 @@ const RTCVideoConference: React.FC<RTCVideoConferenceProps> = ({
 }) => {
   const classes = useStyles();
 
-  // const { errorState } = useGameErrorState();
+  const { errorState } = useGameErrorState();
 
   /**
    * Calculates the order for the video windows, setting host as bottom -center if 6 players
@@ -62,16 +62,16 @@ const RTCVideoConference: React.FC<RTCVideoConferenceProps> = ({
 
   if (!participants) {
     return (
-      <>
-        <div className={classes.skeletonStyles}>
-          <Skeleton variant="rect" className={classes.skeletonBox} />
-          <Skeleton variant="text" className={classes.skeletonText} />
-          {/* Check the browser here latest? + Add message for waiting for host */}
-        </div>
-        {/* <div className={classes.videoConf}>
-          <Loader msg="Ladataan.." spinner errored={!!errorState} />
-        </div> */}
-      </>
+      <div className={classes.skeletonStyles}>
+        {!errorState ? (
+          <>
+            <Skeleton variant="rect" className={classes.skeletonBox} />
+            <Skeleton variant="text" className={classes.skeletonText} />
+          </>
+        ) : (
+          <Typography color="error">Tapahtui virhe</Typography>
+        )}
+      </div>
     );
   }
 

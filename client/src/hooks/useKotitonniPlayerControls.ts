@@ -36,9 +36,11 @@ const useKotitonniPlayerControls = () => {
 
   const handleAnswer = React.useCallback(
     (answer: string, gameInfo: KotitonniInfo) => {
-      if (answer.length) {
+      const trimmedAnswer = answer.trim();
+
+      if (trimmedAnswer.length) {
         const answerObj = {
-          answer,
+          answer: trimmedAnswer,
           info: gameInfo,
         };
 

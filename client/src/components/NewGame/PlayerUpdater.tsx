@@ -35,7 +35,13 @@ const PlayerUpdater: React.FC<PlayerUpdaterProps> = ({
   const handleRefresh = React.useCallback(
     async (playerToUpdateId: string, wordIndex: number): Promise<void> => {
       try {
-        const randomWord = await wordService.getOne();
+        const wordsToExclude = players.reduce(
+          (allWords: string[], nextPlayer) =>
+            allWords.concat(nextPlayer.privateData.words),
+          []
+        );
+
+        const randomWord = await wordService.getOne(wordsToExclude);
 
         const newPlayers = players.map((player) => {
           const newWords = [...player.privateData.words];

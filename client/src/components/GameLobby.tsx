@@ -12,6 +12,7 @@ import Loader from './Loader';
 import LobbyContent from './LobbyContent';
 import References from './References';
 import ReservationConfirmedDialog from './ReservationConfirmedDialog';
+import { getSpectatorUrl } from '../helpers/games';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -120,11 +121,16 @@ const GameLobby: React.FC = () => {
 
   return (
     <div className={classes.container}>
-      {lockedReservationData && (
+      {lockedReservationData && game && (
         <ReservationConfirmedDialog
           open={dialogOpen}
           handleClose={() => setDialogOpen(false)}
           lockedReservationData={lockedReservationData}
+          spectatorUrl={
+            game.allowedSpectators
+              ? getSpectatorUrl(game.id, game.hostName)
+              : undefined
+          }
         />
       )}
       {error && (

@@ -220,8 +220,10 @@ router.get('/lobby/:hostName/:gameId', async (req, res, next) => {
     }
 
     const response = {
+      id: game.id,
       type: game.type,
       price: game.price,
+      allowedSpectators: game.allowedSpectators,
       hostName: hostName,
       startTime: game.startTime,
       players: game.players.map((player) => {

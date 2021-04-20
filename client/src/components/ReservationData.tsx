@@ -25,9 +25,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface ReservatioDataProps {
   data: LobbyGamePlayer;
+  spectatorUrl?: string;
 }
 
-const ReservationData: React.FC<ReservatioDataProps> = ({ data }) => {
+const ReservationData: React.FC<ReservatioDataProps> = ({
+  data,
+  spectatorUrl,
+}) => {
   const classes = useStyles();
 
   const emailString = data.email ? ` ${data.email}` : '.';
@@ -66,10 +70,22 @@ const ReservationData: React.FC<ReservatioDataProps> = ({ data }) => {
     );
   };
 
+  const spectatorInfo = () => {
+    return spectatorUrl ? (
+      <div className={classes.registeringInfo}>
+        <Typography variant="body1" color="initial">
+          Peliä pääsee katsomaan osoitteessa:
+        </Typography>
+        <Typography variant="caption">{spectatorUrl}</Typography>
+      </div>
+    ) : null;
+  };
+
   return (
     <>
       {getWordList(data.privateData?.words)}
       {getGameUrl(data.url)}
+      {spectatorInfo()}
       {/* <Typography variant="subtitle1" className={classes.tvLink}>
         Kotipelit-tv
       </Typography>

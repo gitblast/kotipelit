@@ -3,6 +3,15 @@ import wordService from '../services/words';
 import { GameStatus, RTCGame, RTCKotitonniPlayer, RTCSelf } from '../types';
 import logger from '../utils/logger';
 
+export const getSpectatorUrl = (gameId: string, hostName: string) => {
+  const baseUrl =
+    process && process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3000'
+      : 'https://www.kotipelit.com';
+
+  return `${baseUrl}/${hostName}/live/${gameId}`;
+};
+
 /**
  * Generates initial player objects to be used in state
  * @param playerCount - number of players

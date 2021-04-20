@@ -1,4 +1,4 @@
-import { Card, CardActions, CardContent } from '@material-ui/core';
+import { Card, CardActions, CardContent, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 // Enable when possible to share on social media
 // import ShareIcon from '@material-ui/icons/Share';
@@ -8,6 +8,7 @@ import GameCardHeader from './GameCardHeader';
 import LobbyButton from './LobbyButton';
 import PlayerInfo from './PlayerInfo';
 import StartButton from './StartButton';
+import { getSpectatorUrl } from '../../helpers/games';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -55,14 +56,16 @@ const GameCard: React.FC<GameCardProps> = ({ game, hostName }) => {
             />
           ))}
         </CardContent>
-        {/* <CardContent>
-          <Typography variant="subtitle1" className={classes.tvLink}>
-            Kotipelit-tv
-          </Typography>
-          <Typography variant="caption" color="initial">
-            Tv-linkki tähän
-          </Typography>
-        </CardContent> */}
+        {game.allowedSpectators !== 0 && (
+          <CardContent>
+            <Typography variant="subtitle1" className={classes.tvLink}>
+              Kotipelit-tv
+            </Typography>
+            <Typography variant="caption" color="initial">
+              {getSpectatorUrl(game.id, game.host.displayName)}
+            </Typography>
+          </CardContent>
+        )}
         <CardActions disableSpacing className={classes.actions}>
           {game.status !== GameStatus.FINISHED && (
             <>

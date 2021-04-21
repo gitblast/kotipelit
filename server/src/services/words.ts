@@ -1,8 +1,27 @@
 import Word from '../models/word';
-import { WordModel } from '../types';
+import logger from '../utils/logger';
 
-const getRandomWords = async (amount: number) => {
-  const wordModels = await Word.aggregate<WordModel>().sample(amount);
+const getRandomWords = async (amount: number, excludedWords: string[] = []) => {
+  const pipeline = [
+    {
+      $match: {
+        word: {
+          $nin: excludedWords,
+        },
+      },
+    },
+    {
+      $sample: {
+        size: amount,
+      },
+    },
+  ];
+
+  logger.log(
+    `fetching ${amount} random words, excluding ${excludedWords.length} from search`
+  );
+
+  const wordModels = await Word.aggregate(pipeline);
 
   return wordModels.map((word) => word.word);
 };

@@ -8,6 +8,7 @@ import AnswerBubble from './AnswerBubble';
 import DevItems from './DevItems';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import MediaControls from './MediaControls';
+import AnimatedCounter from './AnimatedCounter';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -154,10 +155,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
             <Typography variant="h3" className={classes.playerName}>
               {player.name}
             </Typography>
-
-            <Typography variant="h3" className={classes.playerPoints}>
-              {player.points}
-            </Typography>
+            <AnimatedCounter currentValue={player.points} />
             <div>
               <MediaControls participant={participant} />
             </div>

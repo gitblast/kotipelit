@@ -26,12 +26,14 @@ interface ReservationConfirmedDialogProps {
   open: boolean;
   handleClose: () => void;
   lockedReservationData: LobbyGamePlayer;
+  spectatorUrl?: string;
 }
 
 const ReservationConfirmedDialog: React.FC<ReservationConfirmedDialogProps> = ({
   open,
   handleClose,
   lockedReservationData,
+  spectatorUrl,
 }) => {
   const classes = useStyles();
   return (
@@ -43,7 +45,10 @@ const ReservationConfirmedDialog: React.FC<ReservationConfirmedDialogProps> = ({
           </Typography>
         </DialogTitle>
         <DialogContent>
-          <ReservationData data={lockedReservationData} />
+          <ReservationData
+            data={lockedReservationData}
+            spectatorUrl={spectatorUrl}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} variant="text" autoFocus>

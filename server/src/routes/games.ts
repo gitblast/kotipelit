@@ -220,8 +220,10 @@ router.get('/lobby/:hostName/:gameId', async (req, res, next) => {
     }
 
     const response = {
+      id: game.id,
       type: game.type,
       price: game.price,
+      allowedSpectators: game.allowedSpectators,
       hostName: hostName,
       startTime: game.startTime,
       players: game.players.map((player) => {
@@ -323,11 +325,13 @@ router.delete('/:id', async (req, res, next) => {
 });
 
 /** random words */
-router.get('/words/:amount', async (req, res, next) => {
+router.post('/words/:amount', async (req, res, next) => {
   try {
     const amount = toPositiveInteger(req.params.amount);
 
-    const words = await wordService.getRandomWords(amount);
+    const excludedWords: string[] = req.body.excludedWords ?? [];
+
+    const words = await wordService.getRandomWords(amount, excludedWords);
 
     res.json(words);
   } catch (error) {

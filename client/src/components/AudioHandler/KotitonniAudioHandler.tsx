@@ -13,10 +13,12 @@ import TenPoints from '../../assets/audio/ktTenpoints.mp3';
 import MinusFiftyPoints from '../../assets/audio/ktMinusFiftypoints.mp3';
 import AnswerRecieved from '../../assets/audio/ktAnswer.mp3';
 import Winner from '../../assets/audio/ktWinner.mp3';
+import TenSeconds from '../../assets/audio/ktTenSeconds.mp3';
 
 import { GameStatus, Role } from '../../types';
 import { useGameData } from '../../context';
 import { getAnswerCount, selfIsWinner } from '../../helpers/games';
+import useAudioOnTimerValue from './useAudioOnTimerValue';
 
 const KotitonniAudioHandler: React.FC = () => {
   const { game, self } = useGameData();
@@ -67,6 +69,8 @@ const KotitonniAudioHandler: React.FC = () => {
     answerCount
   );
 
+  const tenSecondsRef = useAudioOnTimerValue(React.useRef(null));
+
   /* answer correct audio:
 
   
@@ -101,6 +105,8 @@ const KotitonniAudioHandler: React.FC = () => {
       <audio src={ThirtyPoints} ref={thirtyPointsRef} />
       <audio src={TenPoints} ref={tenPointsRef} />
       <audio src={MinusFiftyPoints} ref={minusFiftyPointsRef} />
+
+      <audio src={TenSeconds} ref={tenSecondsRef} />
 
       {isHost && (
         <>

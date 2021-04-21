@@ -102,9 +102,9 @@ const useNewGameRoom = (token: string | null, role: Role) => {
     if (gameEnded) {
       logger.log('redirecting to thank you page');
 
-      history.push({ pathname: `/${hostName}/kiitos`, state: { game } });
+      history.push({ pathname: `/${hostName}/kiitos`, state: { game, role } });
     }
-  }, [gameEnded, history, hostName, game]);
+  }, [gameEnded, history, hostName, game, role]);
 
   const handleJoinCall = React.useCallback(
     (dev?: boolean) => {

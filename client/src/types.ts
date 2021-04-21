@@ -78,6 +78,8 @@ export interface ReservationData {
 }
 
 export interface LobbyGame extends BaseGame {
+  id: string;
+  allowedSpectators: number;
   players: LobbyGamePlayer[];
   hostName: string;
 }

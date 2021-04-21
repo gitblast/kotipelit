@@ -5,6 +5,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Typography, Paper, Button } from '@material-ui/core';
 import logger from '../utils/logger';
 import { RTCGame } from '../../../server/src/types';
+import { Role } from '../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,6 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface LocationState {
   game: RTCGame | undefined;
+  role: Role | undefined;
 }
 
 const TYFPPage: React.FC = () => {
@@ -42,6 +44,7 @@ const TYFPPage: React.FC = () => {
   const location = useLocation<LocationState | undefined>();
 
   const game = location.state?.game;
+  const role = location.state?.role;
 
   React.useEffect(() => {
     if (game) {
@@ -70,17 +73,32 @@ const TYFPPage: React.FC = () => {
     });
   };
 
-  return (
-    <div className={classes.container}>
-      <Paper elevation={3} className={classes.resultsPaper}>
-        <Typography variant="h5">Peli on päättynyt!</Typography>
-        <div className={classes.results}>{showPoints()}</div>
-      </Paper>
-      <Button color="secondary" component={Link} to="/kirjaudu">
-        Järjestä kotipelit
-      </Button>
-    </div>
-  );
+  switch (role) {
+    // can add role specific content here, for example:
+
+    /* case Role.SPECTATOR: {
+      return <div>spectator content</div>
+    }
+    case Role.HOST: {
+      return <div>host content</div>
+    }
+    case Role.PLAYER: {
+      return <div>player content</div>
+    } */
+    default: {
+      return (
+        <div className={classes.container}>
+          <Paper elevation={3} className={classes.resultsPaper}>
+            <Typography variant="h5">Peli on päättynyt!</Typography>
+            <div className={classes.results}>{showPoints()}</div>
+          </Paper>
+          <Button color="secondary" component={Link} to="/kirjaudu">
+            Järjestä kotipelit
+          </Button>
+        </div>
+      );
+    }
+  }
 };
 
 export default TYFPPage;

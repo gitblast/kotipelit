@@ -54,12 +54,12 @@ const AddedGameInfo = ({ addedGame, error }: AddedGameInfoProps) => {
   return (
     <div className={classes.container}>
       <div className={classes.gameInfo}>
-        <Typography variant="h3">
-          Pelaajat pääsevät ilmoittautumaan tästä linkistä:
+        <Typography variant="body1">
+          Jaa tämä peliaulan linkki kaikille, jotka haluat kutsua pelaamaan:
         </Typography>
         <Typography variant="caption">{`${baseUrl}/${username}/kutsut/${addedGame.id}`}</Typography>
       </div>
-      {addedGame.allowedSpectators !== 0 ? (
+      {/* {addedGame.allowedSpectators !== 0 ? (
         <div className={classes.gameInfo}>
           <Typography variant="body1" color="initial">
             Jaa tämä vain katsojille:
@@ -68,7 +68,7 @@ const AddedGameInfo = ({ addedGame, error }: AddedGameInfoProps) => {
             {`${baseUrl}/${username}/live/${addedGame.id}`}
           </Typography>
         </div>
-      ) : null}
+      ) : null} */}
     </div>
   );
 };

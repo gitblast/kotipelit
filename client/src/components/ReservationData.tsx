@@ -5,6 +5,8 @@ import logger from '../utils/logger';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
+import InfoTooltip from '../components/GameCard/InfoTooltip';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     emailConfText: {
@@ -17,8 +19,9 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: theme.spacing(2),
     },
     tvLink: {
-      fontSize: '2rem',
-      color: theme.palette.info.main,
+      fontSize: '1.5rem',
+      fontFamily: 'BeautySchoolDropoutII',
+      textTransform: 'uppercase',
     },
   })
 );
@@ -73,9 +76,17 @@ const ReservationData: React.FC<ReservatioDataProps> = ({
   const spectatorInfo = () => {
     return spectatorUrl ? (
       <div className={classes.registeringInfo}>
-        <Typography variant="body1" color="initial">
-          Peliä pääsee katsomaan osoitteessa:
+        <Typography variant="body1" color="initial" className={classes.tvLink}>
+          Kotipelit-TV
+          <span>
+            <InfoTooltip
+              text={
+                'Tätä peliä on mahdollista seurata livenä. Jos haluat pyytää ystäviäsi katsojiksi, jaa alla oleva linkki. Vain he, joille pelaajat ja juontaja jakavat linkin, näkevät pelin.'
+              }
+            />
+          </span>
         </Typography>
+
         <Typography variant="caption">{spectatorUrl}</Typography>
       </div>
     ) : null;

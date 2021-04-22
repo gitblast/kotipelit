@@ -10,7 +10,6 @@ const useStyles = makeStyles((theme: Theme) =>
     registeredInfo: {
       padding: theme.spacing(2),
       marginTop: theme.spacing(2),
-      color: theme.palette.primary.light,
       [theme.breakpoints.down('xs')]: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),

@@ -9,6 +9,7 @@ import LobbyButton from './LobbyButton';
 import PlayerInfo from './PlayerInfo';
 import StartButton from './StartButton';
 import { getSpectatorUrl } from '../../helpers/games';
+import InfoTooltip from './InfoTooltip';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,8 +24,10 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     tvLink: {
-      fontSize: '2rem',
+      fontSize: '1.8rem',
       color: theme.palette.info.main,
+      fontFamily: 'BeautySchoolDropoutII',
+      textTransform: 'uppercase',
     },
     actions: {
       display: 'flex',
@@ -58,9 +61,17 @@ const GameCard: React.FC<GameCardProps> = ({ game, hostName }) => {
         </CardContent>
         {game.allowedSpectators !== 0 && (
           <CardContent>
-            <Typography variant="subtitle1" className={classes.tvLink}>
+            <Typography variant="h3" className={classes.tvLink}>
               Kotipelit-tv
+              <span>
+                <InfoTooltip
+                  text={
+                    'Jaa tämä linkki kaikille, jotka haluat kutsua katsomaan peliä livenä.'
+                  }
+                />
+              </span>
             </Typography>
+
             <Typography variant="caption" color="initial">
               {getSpectatorUrl(game.id, game.host.displayName)}
             </Typography>

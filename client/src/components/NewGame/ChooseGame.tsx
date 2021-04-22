@@ -24,6 +24,11 @@ const useStyles = makeStyles((theme: Theme) =>
         marginLeft: 0,
       },
     },
+    kotitonniTitle: {
+      fontFamily: 'BeautySchoolDropoutII',
+      textTransform: 'uppercase',
+      fontSize: '2.4rem',
+    },
     kotitonniImage: {
       height: 100,
     },
@@ -56,7 +61,9 @@ const ChooseGame: React.FC<ChooseGameProps> = ({ handleSelect }) => {
       >
         <CardActionArea>
           <CardContent>
-            <Typography variant="subtitle1">Kotitonni</Typography>
+            <Typography variant="h2" className={classes.kotitonniTitle}>
+              Kotitonni
+            </Typography>
             <CardMedia>
               <img
                 src={kotitonniImg}

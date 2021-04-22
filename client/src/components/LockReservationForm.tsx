@@ -102,7 +102,7 @@ const LockReservationForm: React.FC<LockReservationFormProps> = ({
             helperText={emailError}
           />
           <Typography variant="body2" className={classes.disclaimers}>
-            Saat pelin tiedot sähköpostiisi, emme käytä tietojasi
+            Saat pelin tiedot sähköpostiisi. Emme käytä tietojasi
             markkinointiin. Ilmottautumalla hyväksyt, että pelin aikana
             käytetään videopuheluyhteyttä.
           </Typography>

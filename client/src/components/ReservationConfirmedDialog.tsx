@@ -14,7 +14,6 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       background: 'linear-gradient(to bottom, rgb(32 82 100), rgb(14 25 30))',
-      border: 'dotted 3px rgb(0 225 217)',
     },
     dialogHighlights: {
       color: theme.palette.info.main,
@@ -40,7 +39,7 @@ const ReservationConfirmedDialog: React.FC<ReservationConfirmedDialogProps> = ({
     <Dialog open={open} onClose={handleClose}>
       <div className={classes.root}>
         <DialogTitle>
-          <Typography variant="body1" className={classes.dialogHighlights}>
+          <Typography variant="h1" className={classes.dialogHighlights}>
             Varaus onnistui!
           </Typography>
         </DialogTitle>

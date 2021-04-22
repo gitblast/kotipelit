@@ -40,10 +40,11 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: theme.spacing(3),
     },
     tvText: {
-      fontSize: '3.5rem',
+      fontSize: '3rem',
       lineHeight: 0.7,
       color: theme.palette.info.main,
       fontFamily: 'BeautySchoolDropoutII',
+      textTransform: 'uppercase',
     },
     tvGame: {
       fontFamily: 'BeautySchoolDropoutII',
@@ -84,21 +85,16 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
         {role !== Role.SPECTATOR ? (
           <>
             <div className={classes.infoContent}>
+              <HeadsetIcon></HeadsetIcon>
               <Typography variant="body1">
-                <span>
-                  <HeadsetIcon></HeadsetIcon>
-                </span>
-                Käytä kuulokkeita, niin pelin äänet eivät kuulu muille läpi.
+                Jos mahdollista, käytä kuulokkeita niin pelin äänet eivät kuulu
+                muille läpi.
               </Typography>
               {role === Role.HOST && (
                 <>
                   <Typography variant="body1" color="initial">
                     Voit hiljentää pelaajan kaikilta, jos taustalta kuuluu
                     melua.
-                  </Typography>
-                  <Typography variant="body1" color="initial">
-                    Ohjelma ehdottaa oikeaa vastausta, mutta voit hyväksyä
-                    vastauksen myös klikkaamalla sitä.
                   </Typography>
                 </>
               )}
@@ -135,9 +131,6 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
               </Typography>
             </div>
             <div className={classes.gameDescription}>
-              <Typography variant="h2" className={classes.tvGame}>
-                Kotitonni
-              </Typography>
               <div className={classes.spectatorHead}>
                 <Typography variant="body1" color="initial">
                   {`Lähetys alkaa ${format(
@@ -152,6 +145,9 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
                   Katsojapaikkoja on rajoitettu määrä
                 </Typography>
               </div>
+              <Typography variant="h2" className={classes.tvGame}>
+                Kotitonni
+              </Typography>
               <Typography variant="body1" color="initial">
                 Pelaamassa tänään:
               </Typography>

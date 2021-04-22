@@ -156,17 +156,17 @@ const GameLobby: React.FC = () => {
                 kutsui sinut pelaamaan!
               </Typography>
               <div className={classes.gameInfo}>
-                <Typography variant="h5" color="initial">
+                <Typography variant="body1" color="initial">
                   {` ${capitalize(game.type)}`}
                 </Typography>
-                <Typography variant="h5">
+                <Typography variant="body1">
                   {' '}
                   {`${format(new Date(game.startTime), 'd. MMMM HH:mm', {
                     locale: fiLocale,
                   })}`}
                 </Typography>
                 {game.price !== 0 && (
-                  <Typography variant="h5">
+                  <Typography variant="body1">
                     Pelin hinta on{' '}
                     <span
                       className={classes.highlighted}

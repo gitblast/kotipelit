@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     mainInfo: {
-      color: '#ffea26ff',
+      color: theme.palette.info.main,
       [theme.breakpoints.down('sm')]: {
         marginTop: theme.spacing(4),
         textAlign: 'center',

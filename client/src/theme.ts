@@ -64,7 +64,7 @@ let theme = createMuiTheme({
     },
     // Used in important information, like in gamelobby invitation
     info: {
-      main: '#d5c44b',
+      main: '#ffea26ff',
     },
     // Used in highlighted information, i.e. Host name in Gamelobby
     success: {
@@ -166,11 +166,10 @@ let theme = createMuiTheme({
         paddingBottom: 8,
         paddingLeft: 12,
         paddingRight: 12,
-        border: 0,
+        border: '1 solid',
         color: '#d6d6d6',
-        background: '#143340',
         '&:hover': {
-          color: 'rgb(168 164 136)',
+          color: 'rgb(135 135 135)',
         },
       },
     },

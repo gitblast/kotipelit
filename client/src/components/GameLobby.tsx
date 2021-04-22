@@ -149,24 +149,24 @@ const GameLobby: React.FC = () => {
               />
             </div>
             <div className={classes.invitationText}>
-              <Typography variant="h3" color="initial">
+              <Typography variant="h1" color="initial">
                 <span
                   className={classes.highlighted}
                 >{`${game.hostName} `}</span>
                 kutsui sinut pelaamaan!
               </Typography>
               <div className={classes.gameInfo}>
-                <Typography variant="body1" color="initial">
+                <Typography variant="h2" color="initial">
                   {` ${capitalize(game.type)}`}
                 </Typography>
-                <Typography variant="body1">
+                <Typography variant="h2">
                   {' '}
                   {`${format(new Date(game.startTime), 'd. MMMM HH:mm', {
                     locale: fiLocale,
                   })}`}
                 </Typography>
                 {game.price !== 0 && (
-                  <Typography variant="body1">
+                  <Typography variant="h2">
                     Pelin hinta on{' '}
                     <span
                       className={classes.highlighted}

@@ -39,7 +39,7 @@ const ReservationConfirmedDialog: React.FC<ReservationConfirmedDialogProps> = ({
     <Dialog open={open} onClose={handleClose}>
       <div className={classes.root}>
         <DialogTitle>
-          <Typography variant="h1" className={classes.dialogHighlights}>
+          <Typography variant="h3" className={classes.dialogHighlights}>
             Varaus onnistui!
           </Typography>
         </DialogTitle>

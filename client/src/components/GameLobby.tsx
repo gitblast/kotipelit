@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     showcaseImage: {
       height: 325,
-      opacity: 0.5,
+      opacity: 0.8,
       [theme.breakpoints.down('xs')]: {
         maxHeight: 200,
       },

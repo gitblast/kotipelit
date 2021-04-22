@@ -63,7 +63,7 @@ const Footer: React.FC = () => {
               Yleistä
             </Typography>
             <Typography variant="body2">Spektaakkeli.com</Typography>
-            <Typography variant="body2">Kotiluennot.com</Typography>
+            {/* <Typography variant="body2">Kotiluennot.com</Typography> */}
           </Grid>
           <Grid item md={4} xs={12} className={classes.footerBlock}>
             <Typography variant="body2" className={classes.footerHeader}>

@@ -92,6 +92,7 @@ const RTCHostControls = ({
     timerValue,
     timerIsRunning,
     toggleTimer,
+    atHistory,
   } = useKotitonniHostControls();
   const classes = useStyles();
   const isWideEnough = useMediaQuery('(min-width:960px)');
@@ -100,9 +101,17 @@ const RTCHostControls = ({
     return null;
   }
 
-  const answeringOpen = timerIsRunning
-    ? !everyoneHasAnswered
-    : timerValue !== 0;
+  const mainBtnDisabled = () => {
+    if (game.status !== GameStatus.RUNNING) {
+      return false;
+    }
+
+    if (atHistory) {
+      return false;
+    }
+
+    return timerIsRunning ? !everyoneHasAnswered : timerValue !== 0;
+  };
 
   return (
     <Grid container className={classes.controlsContent}>
@@ -129,7 +138,7 @@ const RTCHostControls = ({
         )}
         <MainKotitonniButton
           gameStatus={game.status}
-          disabled={GameStatus.RUNNING ? answeringOpen : false}
+          disabled={mainBtnDisabled()}
           handleStart={handleStart}
           handleFinish={handleFinish}
           handlePointUpdate={() => handlePointUpdate(game)}

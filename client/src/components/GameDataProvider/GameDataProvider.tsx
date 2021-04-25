@@ -3,6 +3,7 @@ import { GameData, GameType } from '../../types';
 import useKotitonniClickMap from './useKotitonniClickMap';
 import { KotitonniDataProvider, BaseGameDataProvider } from '../../context';
 import TimerProvider from '../TimerProvider/TimerProvider';
+import GameHistoryProvider from '../GameHistory/GameHistoryProvider';
 
 interface ComponentWithChildren {
   children: React.ReactNode;
@@ -12,11 +13,13 @@ const KotitonniLocalDataProvider = ({ children }: ComponentWithChildren) => {
   const clickMapData = useKotitonniClickMap();
 
   return (
-    <TimerProvider>
-      <KotitonniDataProvider value={clickMapData}>
-        {children}
-      </KotitonniDataProvider>
-    </TimerProvider>
+    <GameHistoryProvider>
+      <TimerProvider>
+        <KotitonniDataProvider value={clickMapData}>
+          {children}
+        </KotitonniDataProvider>
+      </TimerProvider>
+    </GameHistoryProvider>
   );
 };
 

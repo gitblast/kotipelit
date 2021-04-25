@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useInGameTimer, useKotitonniData, useGameData } from '../context';
 import { getPointAddition, getNextRoundAndTurn } from '../helpers/games';
-import { Role, RTCKotitonniPlayer } from '../types';
+import { Role, RTCKotitonniPlayer, GameStatus } from '../types';
 import logger from '../utils/logger';
 import useGameHistory from './useGameHistory';
 
@@ -42,22 +42,29 @@ const useCorrectAnswerSetter = (
 };
 
 const useKotitonniOverlayItems = (playerId: string) => {
-  const { clickedMap } = useKotitonniData();
-  const { timerValue } = useInGameTimer();
+  const { clickedMap, resetClicks } = useKotitonniData();
+  const { timerValue, resetTimer, timerIsRunning } = useInGameTimer();
   const { game, self, socket } = useGameData();
-  const { setHistory } = useGameHistory();
+  const { setHistory, setAtHistory } = useGameHistory();
   const player = React.useMemo(
     () => game.players.find((p) => p.id === playerId),
     [game.players, playerId]
   );
 
   const skipPlayer = React.useCallback(() => {
+    if (timerIsRunning) {
+      logger.error('cannot skip when timer is running');
+
+      return;
+    }
+
     setHistory(game);
 
     const { round, turn } = getNextRoundAndTurn(game);
 
     const updatedGame = {
       ...game,
+      status: round > 3 ? GameStatus.FINISHED : game.status,
       info: {
         ...game.info,
         round,
@@ -68,7 +75,19 @@ const useKotitonniOverlayItems = (playerId: string) => {
     logger.log('updating game with', updatedGame);
 
     socket.emit('update-game', updatedGame);
-  }, [socket, game, setHistory]);
+
+    resetTimer();
+    resetClicks();
+    setAtHistory(false);
+  }, [
+    socket,
+    game,
+    setHistory,
+    resetTimer,
+    resetClicks,
+    timerIsRunning,
+    setAtHistory,
+  ]);
 
   const showPointAddition = React.useMemo(() => {
     if (timerValue === 0) {

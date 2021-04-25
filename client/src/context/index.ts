@@ -1,4 +1,5 @@
 import React from 'react';
+import { RTCGame } from '../types';
 import {
   InGameTimerData,
   MediaMutedStates,
@@ -36,3 +37,10 @@ export const [useGameData, BaseGameDataProvider] = createCtx<GameData>();
 export const [useGameErrorState, GameErrorStateProvider] = createCtx<
   GameErrorState
 >();
+
+export const [useInGameHistory, InGameHistoryProvider] = createCtx<{
+  history: RTCGame | null;
+  setHistory: React.Dispatch<React.SetStateAction<RTCGame | null>>;
+  atHistory: boolean;
+  setAtHistory: React.Dispatch<React.SetStateAction<boolean>>;
+}>();

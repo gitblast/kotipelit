@@ -15,7 +15,13 @@ const useKotitonniHostControls = () => {
   } = useInGameTimer();
   const { socket, game } = useGameData();
   const { clickedMap, resetClicks } = useKotitonniData();
-  const { setHistory, returnToPrevious, noHistorySet } = useGameHistory();
+  const {
+    setHistory,
+    returnToPrevious,
+    noHistorySet,
+    atHistory,
+    setAtHistory,
+  } = useGameHistory();
 
   const handleUpdate = React.useCallback(
     (newGame: RTCGame) => socket.emit('update-game', newGame),
@@ -52,8 +58,9 @@ const useKotitonniHostControls = () => {
 
       resetTimer();
       resetClicks();
+      setAtHistory(false);
     },
-    [socket, clickedMap, resetTimer, resetClicks, setHistory]
+    [socket, clickedMap, resetTimer, resetClicks, setHistory, setAtHistory]
   );
 
   const everyoneHasAnswered = React.useMemo(() => {
@@ -83,6 +90,7 @@ const useKotitonniHostControls = () => {
     timerValue,
     timerIsRunning,
     toggleTimer,
+    atHistory,
   };
 };
 

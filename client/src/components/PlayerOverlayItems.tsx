@@ -48,7 +48,6 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(0.5),
       display: 'flex',
       justifyContent: 'center',
-      position: 'absolute',
       color: 'rgb(0 225 217)',
       [theme.breakpoints.down('sm')]: {
         display: 'none',
@@ -130,21 +129,6 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
   if (game.type === GameType.KOTITONNI) {
     return (
       <div className={classes.flexCol}>
-        <DevItems
-          forHost={forHost}
-          hostName={game.host.displayName}
-          isMe={participant.isMe}
-          inviteCode={player?.privateData?.inviteCode}
-        />
-        {forHost &&
-          game.status === GameStatus.RUNNING &&
-          player.hasTurn &&
-          (!participant.connection ||
-            participant.connection.state === 'disconnected') && (
-            <div className={classes.skipBtn}>
-              <Button onClick={skipPlayer}>Skippaa</Button>
-            </div>
-          )}
         {forHost && showPointAddition && pointAddition !== 0 && (
           <div className={classes.pointsAddition}>
             <Typography variant="body2" className={classes.pointsEV}>
@@ -155,6 +139,15 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
             </Typography>
           </div>
         )}
+        {forHost &&
+          game.status === GameStatus.RUNNING &&
+          player.hasTurn &&
+          (!participant.connection ||
+            participant.connection.state === 'disconnected') && (
+            <div className={classes.skipBtn}>
+              <Button onClick={skipPlayer}>Skippaa</Button>
+            </div>
+          )}
         {forHost && answer && isWideEnough && (
           <AnswerBubble answer={answer} playerId={participant.id} />
         )}
@@ -166,6 +159,13 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
         )}
 
         <div className={classes.spacer} />
+
+        <DevItems
+          forHost={forHost}
+          hostName={game.host.displayName}
+          isMe={participant.isMe}
+          inviteCode={player?.privateData?.inviteCode}
+        />
         <div className={classes.flex}>
           <div className={classes.nameBadge}>
             <Typography variant="h3" className={classes.playerName}>

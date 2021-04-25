@@ -102,7 +102,7 @@ const RTCHostControls = ({
 
   const answeringOpen = timerIsRunning
     ? !everyoneHasAnswered
-    : timerValue !== 0 && timerValue !== 60;
+    : timerValue !== 0;
 
   return (
     <Grid container className={classes.controlsContent}>

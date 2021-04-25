@@ -1,7 +1,7 @@
 // GAMES
 
 import { Socket } from 'socket.io-client';
-import { Participant } from 'twilio-video';
+import { RemoteParticipant, LocalParticipant } from 'twilio-video';
 
 export interface ErrorState {
   error: Error;
@@ -399,10 +399,20 @@ export interface IceServers {
   credential: string;
 }
 
-export interface RTCParticipant {
+export interface RemoteRTCParticipant {
   id: string;
   isHost?: boolean;
-  connection: Participant | null;
-  isMe: boolean;
+  connection: RemoteParticipant | null;
+  isMe: false;
   displayName: string;
 }
+
+export interface LocalRTCParticipant {
+  id: string;
+  isHost?: boolean;
+  connection: LocalParticipant | null;
+  isMe: true;
+  displayName: string;
+}
+
+export type RTCParticipant = RemoteRTCParticipant | LocalRTCParticipant;

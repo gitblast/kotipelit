@@ -16,7 +16,7 @@ const DevItems: React.FC<DevItemsProps> = ({
   inviteCode,
 }) => {
   return process && process.env.NODE_ENV === 'development' ? (
-    <div style={{ position: 'absolute' }}>
+    <div>
       {forHost && inviteCode && (
         <Typography
           component="div"

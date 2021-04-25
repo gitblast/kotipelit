@@ -6,7 +6,7 @@ import logger from '../utils/logger';
 
 import useParticipants from './useParticipants';
 import useLocalTracks from './useLocalTracks';
-import { RTCGame } from '../types';
+import { RTCGame, RTCParticipant } from '../types';
 
 import {
   getMockRoom,
@@ -65,7 +65,10 @@ const useTwilioRoom = (
 
           return previous.map((oldParticipant) => {
             return participant.identity.startsWith(oldParticipant.id)
-              ? { ...oldParticipant, connection: participant }
+              ? ({
+                  ...oldParticipant,
+                  connection: participant,
+                } as RTCParticipant)
               : oldParticipant;
           });
         });

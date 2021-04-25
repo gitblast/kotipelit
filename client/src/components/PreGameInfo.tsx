@@ -171,12 +171,16 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
             </div>
           </>
         )}
-        {canJoin ? (
+        {
           <>
+            <Typography variant="body2">
+              Odotetaan, että pelin juontaja käynnistää pelin...
+            </Typography>
             <Button
               color="secondary"
               onClick={() => handleJoinCall()}
               id="start"
+              disabled={!canJoin}
             >
               {role !== Role.SPECTATOR ? `Käynnistä peli` : `Siirry katsomaan`}
             </Button>
@@ -185,18 +189,13 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
                 color="secondary"
                 onClick={() => handleJoinCall(true)}
                 id="start-dev"
+                disabled={!canJoin}
               >
                 Käynnistä yhdistämättä Twilioon
               </Button>
             )}
           </>
-        ) : (
-          <>
-            <Typography variant="body2">
-              Odotetaan, että pelin juontaja käynnistää pelin..
-            </Typography>
-          </>
-        )}
+        }
       </>
     </div>
   );

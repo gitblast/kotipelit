@@ -2,9 +2,10 @@ import React from 'react';
 
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Button, IconButton } from '@material-ui/core';
+import { Button, IconButton, Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { RTCGame } from '../../types';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -15,6 +16,34 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+const useNotify = (delay: number = 2500) => {
+  const [text, setText] = React.useState<string | null>(null);
+
+  const handleRef = React.useRef<undefined | number>(undefined);
+
+  React.useEffect(() => {
+    if (handleRef.current) {
+      return () => {
+        clearTimeout(handleRef.current);
+      };
+    }
+  }, []);
+
+  const notify = React.useCallback(
+    (msg: string) => {
+      setText(msg);
+
+      handleRef.current = window.setTimeout(() => setText(null), delay);
+    },
+    [delay]
+  );
+
+  return {
+    notification: text,
+    notify,
+  };
+};
+
 interface LobbyButtonProps {
   game: RTCGame;
   hostName: string;
@@ -22,6 +51,18 @@ interface LobbyButtonProps {
 
 const LobbyButton = ({ game, hostName }: LobbyButtonProps) => {
   const classes = useStyles();
+
+  const { notification, notify } = useNotify();
+
+  const baseUrl =
+    // eslint-disable-next-line no-undef
+    process && process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3000'
+      : 'https://www.kotipelit.com';
+
+  const getLobbyLink = () => {
+    return `${baseUrl}/${hostName}/live/${game.id}`;
+  };
 
   return (
     <div>
@@ -33,10 +74,17 @@ const LobbyButton = ({ game, hostName }: LobbyButtonProps) => {
       >
         Peliaula
       </Button>
-      <IconButton className={classes.actionIcon} aria-label="copy">
-        {/* This should copy output of getLobbyLink() */}
-        <FileCopyIcon />
-      </IconButton>
+      <CopyToClipboard text={getLobbyLink()} onCopy={() => notify('Kopioitu')}>
+        <IconButton className={classes.actionIcon} aria-label="copy">
+          <FileCopyIcon />
+        </IconButton>
+      </CopyToClipboard>
+      <Typography variant="caption">Kopioi aulalinkki</Typography>
+      {notification && (
+        <Typography color="primary" variant="body2">
+          {notification}
+        </Typography>
+      )}
     </div>
   );
 };

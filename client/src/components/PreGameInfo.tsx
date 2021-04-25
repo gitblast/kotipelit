@@ -173,9 +173,11 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
         )}
         {
           <>
-            <Typography variant="body2">
-              Odotetaan, että pelin juontaja käynnistää pelin...
-            </Typography>
+            {!canJoin && (
+              <Typography variant="body2">
+                Odotetaan, että pelin juontaja käynnistää pelin...
+              </Typography>
+            )}
             <Button
               color="secondary"
               onClick={() => handleJoinCall()}

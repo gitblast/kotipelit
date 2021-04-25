@@ -6,16 +6,22 @@ interface DevItemsProps {
   forHost?: boolean;
   isMe?: boolean;
   inviteCode?: string;
+  hostName: string;
 }
 
-const DevItems: React.FC<DevItemsProps> = ({ forHost, isMe, inviteCode }) => {
+const DevItems: React.FC<DevItemsProps> = ({
+  forHost,
+  isMe,
+  hostName,
+  inviteCode,
+}) => {
   return process && process.env.NODE_ENV === 'development' ? (
     <div style={{ position: 'absolute' }}>
       {forHost && inviteCode && (
         <Typography
           component="div"
           variant="caption"
-        >{`http://localhost:3000/username/${inviteCode}`}</Typography>
+        >{`http://localhost:3000/${hostName}/${inviteCode}`}</Typography>
       )}
 
       {isMe && (

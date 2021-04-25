@@ -1,8 +1,10 @@
 import React from 'react';
 
 import { useInGameTimer, useKotitonniData, useGameData } from '../context';
-import { getPointAddition } from '../helpers/games';
+import { getPointAddition, getNextRoundAndTurn } from '../helpers/games';
 import { Role, RTCKotitonniPlayer } from '../types';
+import logger from '../utils/logger';
+import useGameHistory from './useGameHistory';
 
 const useCorrectAnswerSetter = (
   playerId: string,
@@ -42,11 +44,31 @@ const useCorrectAnswerSetter = (
 const useKotitonniOverlayItems = (playerId: string) => {
   const { clickedMap } = useKotitonniData();
   const { timerValue } = useInGameTimer();
-  const { game, self } = useGameData();
+  const { game, self, socket } = useGameData();
+  const { setHistory } = useGameHistory();
   const player = React.useMemo(
     () => game.players.find((p) => p.id === playerId),
     [game.players, playerId]
   );
+
+  const skipPlayer = React.useCallback(() => {
+    setHistory(game);
+
+    const { round, turn } = getNextRoundAndTurn(game);
+
+    const updatedGame = {
+      ...game,
+      info: {
+        ...game.info,
+        round,
+        turn,
+      },
+    };
+
+    logger.log('updating game with', updatedGame);
+
+    socket.emit('update-game', updatedGame);
+  }, [socket, game, setHistory]);
 
   const showPointAddition = React.useMemo(() => {
     if (timerValue === 0) {
@@ -91,6 +113,7 @@ const useKotitonniOverlayItems = (playerId: string) => {
     player,
     showPointAddition,
     forHost: self.role === Role.HOST,
+    skipPlayer,
   };
 };
 

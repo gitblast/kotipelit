@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core';
+import { Typography, Button } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 import useKotitonniOverlayItems from '../hooks/useKotitonniOverlayItems';
@@ -85,6 +85,11 @@ const useStyles = makeStyles((theme: Theme) =>
         fontSize: '1.1rem',
       },
     },
+    skipBtn: {
+      display: 'flex',
+      justifyContent: 'center',
+      marginTop: theme.spacing(2),
+    },
   })
 );
 
@@ -105,6 +110,7 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
     answer,
     showPointAddition,
     forHost,
+    skipPlayer,
   } = useKotitonniOverlayItems(participant.id);
 
   if (!player) {
@@ -126,9 +132,19 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
       <div className={classes.flexCol}>
         <DevItems
           forHost={forHost}
+          hostName={game.host.displayName}
           isMe={participant.isMe}
           inviteCode={player?.privateData?.inviteCode}
         />
+        {forHost &&
+          game.status === GameStatus.RUNNING &&
+          player.hasTurn &&
+          (!participant.connection ||
+            participant.connection.state === 'disconnected') && (
+            <div className={classes.skipBtn}>
+              <Button onClick={skipPlayer}>Skippaa</Button>
+            </div>
+          )}
         {forHost && showPointAddition && pointAddition !== 0 && (
           <div className={classes.pointsAddition}>
             <Typography variant="body2" className={classes.pointsEV}>

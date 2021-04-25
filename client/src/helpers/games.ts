@@ -76,26 +76,14 @@ export const getPointAddition = (
   return correctAnswers;
 };
 
-export const getNextKotitonniState = (
-  game: RTCGame,
-  clickMap: Record<string, boolean>
-) => {
+export const getNextRoundAndTurn = (game: RTCGame) => {
   const playerInTurn = game.players.find((player) => player.hasTurn);
 
   if (!playerInTurn) {
     logger.error('no player with turn set when trying to update');
 
-    return;
+    throw new Error('no player with turn set when trying to update');
   }
-
-  const newPlayers = game.players.map((player) => {
-    return {
-      ...player,
-      points:
-        player.points +
-        getPointAddition(game, clickMap, player.id, !!player.hasTurn),
-    };
-  });
 
   const playerInTurnIndex = game.players.indexOf(playerInTurn);
   let round: number;
@@ -108,6 +96,24 @@ export const getNextKotitonniState = (
     round = game.info.round;
     turn = game.players[playerInTurnIndex + 1].id;
   }
+
+  return { round, turn };
+};
+
+export const getNextKotitonniState = (
+  game: RTCGame,
+  clickMap: Record<string, boolean>
+) => {
+  const newPlayers = game.players.map((player) => {
+    return {
+      ...player,
+      points:
+        player.points +
+        getPointAddition(game, clickMap, player.id, !!player.hasTurn),
+    };
+  });
+
+  const { round, turn } = getNextRoundAndTurn(game);
 
   const updatedGame: RTCGame = {
     ...game,

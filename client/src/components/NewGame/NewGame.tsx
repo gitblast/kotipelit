@@ -67,7 +67,7 @@ const NewGame: React.FC = () => {
   const [activeStep, setActiveStep] = React.useState(0);
   const [settings, setSettings] = React.useState({
     price: 0,
-    allowedSpectators: 40,
+    allowedSpectators: 0,
   });
   const steps = React.useMemo(
     () => ['Ajankohta', 'Pelimuoto', 'Asetukset', 'Kutsu pelaajat'],

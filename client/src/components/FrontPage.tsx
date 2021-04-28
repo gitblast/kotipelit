@@ -3,12 +3,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Typography, Button } from '@material-ui/core';
+import { Typography, Button, Grid } from '@material-ui/core';
 
 import logoImg from '../assets/images/logoTransparent.png';
-import gamehostImg from '../assets/images/gamehost.png';
 
-import References from './References';
+import VimeoMedia from './VimeoMedia';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -71,7 +70,6 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     sectionInfo: {
-      margin: theme.spacing(6),
       alignSelf: 'center',
       '& > * + *': {
         margin: theme.spacing(2),
@@ -252,8 +250,9 @@ const FrontPage: React.FC = () => {
           </div>
           <div className={classes.neonDivider}></div>
         </section>
-        <div className={classes.userBanner}>
-          <div className={classes.sectionInfo}>
+        <Grid container>
+          <Grid item md sm></Grid>
+          <Grid item md={5} sm={5} xs={12} className={classes.sectionInfo}>
             <Typography variant="h3" color="initial">
               Ilahduta järjestämällä tutuillesi pelejä
             </Typography>
@@ -270,17 +269,13 @@ const FrontPage: React.FC = () => {
                 Luo tili
               </Button>
             </div>
-          </div>
-
-          <img
-            src={gamehostImg}
-            alt="gamehost"
-            className={classes.gamehostImage}
-          />
-        </div>
-
+          </Grid>
+          <Grid item md={5} sm={5} xs={12}>
+            <VimeoMedia />
+          </Grid>
+          <Grid item md sm></Grid>
+        </Grid>
         <Steps />
-        <References />
       </div>
     </div>
   );

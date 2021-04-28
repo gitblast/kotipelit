@@ -75,8 +75,8 @@ const ChoosePrice: React.FC<ChoosePriceProps> = ({ price, setPrice }) => {
             value={5}
             disabled
             control={<Radio />}
-            label="Maksullinen (tulossa)"
-          />
+            label="Maksullinen"
+          />{' '}
         </div>
       </RadioGroup>
     </FormControl>

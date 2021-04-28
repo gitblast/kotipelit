@@ -1,4 +1,4 @@
-import { Typography, Button } from '@material-ui/core';
+import { Typography, IconButton } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 import useKotitonniOverlayItems from '../hooks/useKotitonniOverlayItems';
@@ -9,6 +9,7 @@ import DevItems from './DevItems';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import MediaControls from './MediaControls';
 import AnimatedCounter from './AnimatedCounter';
+import ForwardIcon from '@material-ui/icons/Forward';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -86,8 +87,13 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     skipBtn: {
       display: 'flex',
-      justifyContent: 'center',
-      marginTop: theme.spacing(2),
+      justifyContent: 'flex-end',
+    },
+    skipIcon: {
+      color: '#b22458',
+      fontSize: theme.spacing(6),
+      border: 'solid 2px',
+      borderRadius: '40%',
     },
   })
 );
@@ -145,7 +151,9 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
           (!participant.connection ||
             participant.connection.state === 'disconnected') && (
             <div className={classes.skipBtn}>
-              <Button onClick={skipPlayer}>Skippaa</Button>
+              <IconButton onClick={skipPlayer}>
+                <ForwardIcon className={classes.skipIcon}></ForwardIcon>
+              </IconButton>
             </div>
           )}
         {forHost && answer && isWideEnough && (

@@ -16,6 +16,9 @@ const useStyles = makeStyles((theme: Theme) =>
         width: '90%',
       },
     },
+    registerButton: {
+      margin: theme.spacing(2),
+    },
   })
 );
 
@@ -36,7 +39,11 @@ const LobbyContent: React.FC<LobbyContentProps> = ({
 
   if (!lockedReservationData && !unlockedReservationData) {
     return (
-      <Button onClick={handleReserve} color="secondary">
+      <Button
+        onClick={handleReserve}
+        color="secondary"
+        className={classes.registerButton}
+      >
         Ilmoittaudu peliin
       </Button>
     );

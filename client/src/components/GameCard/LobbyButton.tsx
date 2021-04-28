@@ -67,19 +67,22 @@ const LobbyButton = ({ game, hostName }: LobbyButtonProps) => {
   return (
     <div>
       <Button
-        variant="contained"
+        variant="text"
         color="primary"
         component={Link}
         to={`/${hostName}/kutsut/${game.id}`}
       >
         Peliaula
       </Button>
-      <CopyToClipboard text={getLobbyLink()} onCopy={() => notify('Kopioitu')}>
+      <CopyToClipboard
+        text={getLobbyLink()}
+        onCopy={() => notify('Kopioitu leikepöydälle')}
+      >
         <IconButton className={classes.actionIcon} aria-label="copy">
           <FileCopyIcon />
         </IconButton>
       </CopyToClipboard>
-      <Typography variant="caption">Kopioi aulalinkki</Typography>
+      <Typography variant="caption">Kopioi</Typography>
       {notification && (
         <Typography color="primary" variant="body2">
           {notification}

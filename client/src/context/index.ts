@@ -1,5 +1,5 @@
 import React from 'react';
-import { RTCGame } from '../types';
+import { RTCGame, AppUser } from '../types';
 import {
   InGameTimerData,
   MediaMutedStates,
@@ -43,4 +43,12 @@ export const [useInGameHistory, InGameHistoryProvider] = createCtx<{
   setHistory: React.Dispatch<React.SetStateAction<RTCGame | null>>;
   atHistory: boolean;
   setAtHistory: React.Dispatch<React.SetStateAction<boolean>>;
+}>();
+
+export const [useUser, UserContextProvider] = createCtx<{
+  user: AppUser;
+  setUser: React.Dispatch<React.SetStateAction<AppUser>>;
+  logout: () => void;
+  loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }>();

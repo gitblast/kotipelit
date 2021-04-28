@@ -1,17 +1,16 @@
 import React from 'react';
-
-import { useDispatch } from 'react-redux';
-import { loginSuccess } from '../../reducers/user.reducer';
+import { useUser } from '../../context';
 import userService from '../../services/users';
 import logger from '../../utils/logger';
 
 const useLogin = () => {
-  const dispatch = useDispatch();
-
   const [emailNotVerified, setEmailNotVerified] = React.useState(false);
+  const { setUser, setLoading } = useUser();
 
   const handleLogin = React.useCallback(
     async (username: string, password: string) => {
+      setLoading(true);
+
       try {
         const user = await userService.login(username, password);
 
@@ -19,6 +18,7 @@ const useLogin = () => {
 
         const loggedUser = {
           ...user,
+          loggedIn: true,
         };
 
         window.localStorage.setItem(
@@ -26,7 +26,7 @@ const useLogin = () => {
           JSON.stringify(loggedUser)
         );
 
-        dispatch(loginSuccess(loggedUser));
+        setUser(loggedUser);
       } catch (err) {
         const errBody = 'error logging in: ';
 
@@ -51,9 +51,11 @@ const useLogin = () => {
             );
           }
         }
+      } finally {
+        setLoading(false);
       }
     },
-    [dispatch]
+    [setUser, setLoading]
   );
 
   return {

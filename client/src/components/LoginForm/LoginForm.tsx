@@ -10,10 +10,9 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Field, Form, Formik } from 'formik';
 import { fieldToTextField, TextFieldProps } from 'formik-material-ui';
 import React from 'react';
-import { shallowEqual, useSelector } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 import * as Yup from 'yup';
-import { State } from '../../types';
+import { useUser } from '../../context';
 import useLogin from './useLogin';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -95,7 +94,7 @@ const LoginForm: React.FC = () => {
 
   const { handleLogin, emailNotVerified } = useLogin();
 
-  const user = useSelector((state: State) => state.user, shallowEqual);
+  const { user, loading } = useUser();
 
   if (user.loggedIn) {
     return <Redirect to={`/${user.username}`} />;
@@ -160,7 +159,7 @@ const LoginForm: React.FC = () => {
                   onClick={submitForm}
                   className={classes.submitBtn}
                 >
-                  {user.loggingIn ? <CircularProgress /> : 'Kirjaudu'}
+                  {loading ? <CircularProgress /> : 'Kirjaudu'}
                 </Button>
               </Form>
             )}

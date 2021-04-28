@@ -1,14 +1,11 @@
-import React from 'react';
-
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import Loader from './Loader';
 import { Paper, Typography } from '@material-ui/core';
-import { useParams } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { State } from '../types';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import React from 'react';
 import { useHistory } from 'react-router';
+import { useParams } from 'react-router-dom';
+import { useUser } from '../context';
 import userService from '../services/users';
-import { loginSuccess } from '../reducers/user.reducer';
+import Loader from './Loader';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,11 +22,9 @@ const ConfirmationPage = () => {
   const [error, setError] = React.useState('');
   const [loading, setLoading] = React.useState(false);
 
+  const { user, setUser } = useUser();
+
   const history = useHistory();
-
-  const dispatch = useDispatch();
-
-  const user = useSelector((state: State) => state.user);
 
   const { confirmationId } = useParams<{ confirmationId: string }>();
 
@@ -44,7 +39,10 @@ const ConfirmationPage = () => {
 
         userService.setToken(verifiedUser.token);
 
-        dispatch(loginSuccess(verifiedUser));
+        setUser({
+          ...verifiedUser,
+          loggedIn: true,
+        });
       } catch (e) {
         setError(e.response?.data);
       } finally {
@@ -55,7 +53,7 @@ const ConfirmationPage = () => {
     if (!user.loggedIn) {
       confirmUser();
     }
-  }, [confirmationId, user.loggedIn, dispatch]);
+  }, [confirmationId, user.loggedIn, setUser]);
 
   const getContent = () => {
     if (error) {

@@ -111,8 +111,6 @@ export enum GameStatus {
   FINISHED = 'Finished',
 }
 
-// USERS & AUTH
-
 export interface UserToAdd {
   username: string;
   firstName: string;
@@ -121,28 +119,17 @@ export interface UserToAdd {
   email: string;
   password: string;
 }
-
-export interface BaseUser {
-  loggedIn: false;
-  socket: null | Socket;
-  jitsiRoom: null | string;
-  displayName: null | string;
-  loggingIn: boolean;
-}
-
-export interface LoggedUser {
+export interface LoggedInUser {
   username: string;
   loggedIn: true;
   token: string;
-  jitsiToken: string | null;
-  socket: null | Socket;
-  jitsiRoom: null | string;
-  loggingIn: boolean;
 }
 
-export interface LoggingUser extends Omit<BaseUser, 'loggingIn'> {
-  loggingIn: true;
+export interface DefaultUser {
+  loggedIn: false;
 }
+
+export type AppUser = DefaultUser | LoggedInUser;
 
 export interface HostChannel {
   username: string;
@@ -153,7 +140,6 @@ export interface HostChannel {
 
 export interface State {
   games: GamesState;
-  user: User;
   channels: ChannelsState;
   alert: AlertState;
 }
@@ -169,8 +155,6 @@ export interface ChannelsState {
   allChannels: HostChannel[];
   loading: boolean;
 }
-
-export type User = LoggedUser | LoggingUser | BaseUser;
 
 export enum ActionType {
   // GAME ACTIONS
@@ -282,21 +266,6 @@ export type Action =
     }
   | {
       type: ActionType.INIT_CHANNELS_FAILURE;
-    }
-
-  // LOGIN & USER
-  | {
-      type: ActionType.LOGIN_REQUEST;
-    }
-  | {
-      type: ActionType.LOGIN_SUCCESS;
-      payload: Pick<LoggedUser, 'username' | 'token'>;
-    }
-  | {
-      type: ActionType.LOGIN_FAILURE;
-    }
-  | {
-      type: ActionType.LOGOUT;
     }
 
   // ERRORS

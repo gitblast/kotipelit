@@ -1,14 +1,11 @@
 import * as React from 'react';
 
-import { logout } from '../reducers/user.reducer';
-
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import { Typography, IconButton, Menu, MenuItem } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
-import { User } from '../types';
-import { useDispatch } from 'react-redux';
 import { useHistory, Link } from 'react-router-dom';
+import { useUser } from '../context';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -19,17 +16,14 @@ const useStyles = makeStyles(() =>
   })
 );
 
-interface UserControlsProps {
-  user: User;
-}
-
-const UserControls: React.FC<UserControlsProps> = ({ user }) => {
+const UserControls = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
   const history = useHistory();
 
+  const { user, logout } = useUser();
+
   const handleLogout = () => {
-    dispatch(logout());
+    logout();
 
     history.push('/');
   };

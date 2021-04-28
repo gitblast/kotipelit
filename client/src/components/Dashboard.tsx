@@ -8,7 +8,7 @@ import { Button, Typography } from '@material-ui/core';
 
 import GameCard from './GameCard/GameCard';
 
-import { State, LoggedUser, GameStatus } from '../types';
+import { State, LoggedInUser, GameStatus } from '../types';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { initGames } from '../reducers/games.reducer';
@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface DashboardProps {
-  user: LoggedUser;
+  user: LoggedInUser;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ user }) => {

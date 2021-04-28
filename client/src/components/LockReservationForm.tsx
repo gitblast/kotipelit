@@ -5,18 +5,17 @@ import { TextField, Typography, Button } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    seatLock: {
+      marginTop: theme.spacing(2),
+      textAlign: 'left',
+    },
     lockBtn: {
       margin: theme.spacing(4),
-    },
-    seatLock: {
-      padding: theme.spacing(2),
-      [theme.breakpoints.down('xs')]: {
-        flexWrap: 'wrap',
-      },
+      textAlign: 'center',
     },
     disclaimers: {
       fontSize: '0.85rem',
-      textAlign: 'left',
+
       color: theme.palette.primary.light,
       maxWidth: 300,
     },
@@ -81,31 +80,33 @@ const LockReservationForm: React.FC<LockReservationFormProps> = ({
   };
 
   return (
-    <div className={classes.seatLock}>
-      <div>
+    <>
+      <div className={classes.seatLock}>
         <div>
-          <TextField
-            variant="standard"
-            value={name}
-            onChange={handleNameChange}
-            label="Nimimerkki"
-            error={nameError !== ''}
-            helperText={nameError}
-          />
-        </div>
-        <div>
-          <TextField
-            value={email}
-            onChange={handleEmailChange}
-            label="Sähköpostiosoite"
-            error={emailError !== ''}
-            helperText={emailError}
-          />
-          <Typography variant="body2" className={classes.disclaimers}>
-            Saat pelin tiedot sähköpostiisi. Emme käytä tietojasi
-            markkinointiin. Ilmottautumalla hyväksyt, että pelin aikana
-            käytetään videopuheluyhteyttä.
-          </Typography>
+          <div>
+            <TextField
+              variant="standard"
+              value={name}
+              onChange={handleNameChange}
+              label="Nimimerkki"
+              error={nameError !== ''}
+              helperText={nameError}
+            />
+          </div>
+          <div>
+            <TextField
+              value={email}
+              onChange={handleEmailChange}
+              label="Sähköpostiosoite"
+              error={emailError !== ''}
+              helperText={emailError}
+            />
+            <Typography variant="body2" className={classes.disclaimers}>
+              Saat pelin tiedot sähköpostiisi. Emme käytä tietojasi
+              markkinointiin. Ilmottautumalla hyväksyt, että pelin aikana
+              käytetään videopuheluyhteyttä.
+            </Typography>
+          </div>
         </div>
       </div>
       <Button
@@ -116,7 +117,7 @@ const LockReservationForm: React.FC<LockReservationFormProps> = ({
       >
         Vahvista varaus
       </Button>
-    </div>
+    </>
   );
 };
 

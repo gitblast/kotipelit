@@ -107,7 +107,18 @@ const GameSettings: React.FC<GameSettingsProps> = ({
         />
       </div>
       <div className={classes.pricesBlock}>
-        <Typography>Pelin hinta pelaajille</Typography>
+        <Typography>
+          Pelin hinta pelaajille{' '}
+          <span>
+            {' '}
+            <InfoTooltip
+              text={
+                'Jos haluat veloittaa peli-illoistasi, ota yhteyttä info@kotipelit.com'
+              }
+            />
+          </span>
+        </Typography>
+
         <ChoosePrice price={settings.price} setPrice={handlePriceChange} />
       </div>
       <Typography>Pelin sanat</Typography>

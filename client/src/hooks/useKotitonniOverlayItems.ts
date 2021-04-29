@@ -15,30 +15,30 @@ const useCorrectAnswerSetter = (
 
   const { setClicked } = useKotitonniData();
 
-  // correct answers as a joint string, eg. tunneli-palaveri-liipasin
-  const correctAnwersAsString = React.useMemo(
-    () =>
+  const correctAnwersArray = React.useMemo(() => {
+    return (
       players
         .find((p) => p.hasTurn)
-        ?.privateData?.words.join('-')
-        .toLowerCase(),
-    [players]
-  );
+        ?.privateData?.words.map((w) => w.toLowerCase()) ?? []
+    );
+  }, [players]);
+
+  const correctAnswerString = correctAnwersArray.join('').toLowerCase();
 
   React.useEffect(() => {
     if (
       !handled &&
       answer &&
-      correctAnwersAsString?.includes(answer.toLowerCase())
+      correctAnwersArray.includes(answer.toLowerCase())
     ) {
       setClicked(playerId, true);
       setHandled(true);
     }
-  }, [playerId, answer, correctAnwersAsString, setClicked, handled]);
+  }, [playerId, answer, correctAnwersArray, setClicked, handled]);
 
   React.useEffect(() => {
     setHandled(false);
-  }, [correctAnwersAsString]);
+  }, [correctAnswerString]);
 };
 
 const useKotitonniOverlayItems = (playerId: string) => {

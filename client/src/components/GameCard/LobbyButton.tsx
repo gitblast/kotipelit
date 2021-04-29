@@ -61,7 +61,7 @@ const LobbyButton = ({ game, hostName }: LobbyButtonProps) => {
       : 'https://www.kotipelit.com';
 
   const getLobbyLink = () => {
-    return `${baseUrl}/${hostName}/live/${game.id}`;
+    return `${baseUrl}/${hostName}/kutsut/${game.id}`;
   };
 
   return (

@@ -3,6 +3,7 @@ import logger from '../../utils/logger';
 
 import gameService from '../../services/games';
 import { GameStatus, GameType, RTCGame, RTCKotitonniPlayer } from '../../types';
+import { useGames } from '../../context';
 
 interface GameToAdd {
   startTime: Date;
@@ -17,26 +18,32 @@ interface GameToAdd {
 const useSaveGame = () => {
   const [addedGame, setAddedGame] = React.useState<RTCGame | null>(null);
   const [loading, setLoading] = React.useState(false);
-
+  const { setGames } = useGames();
   const [error, setError] = React.useState<string | null>(null);
 
-  const saveGame = React.useCallback(async (gameToAdd: GameToAdd) => {
-    setLoading(true);
+  const saveGame = React.useCallback(
+    async (gameToAdd: GameToAdd) => {
+      setLoading(true);
 
-    logger.log(`adding new game`, gameToAdd);
+      logger.log(`adding new game`, gameToAdd);
 
-    try {
-      const added = await gameService.addNew(gameToAdd);
+      try {
+        const added = await gameService.addNew(gameToAdd);
 
-      setAddedGame(added);
-    } catch (e) {
-      logger.error(`error adding game: ${e.message}`);
+        setAddedGame(added);
 
-      setError(e.message);
-    }
+        // app-wide games
+        setGames((games) => games.concat(added));
+      } catch (e) {
+        logger.error(`error adding game: ${e.message}`);
 
-    setLoading(false);
-  }, []);
+        setError(e.message);
+      }
+
+      setLoading(false);
+    },
+    [setGames]
+  );
 
   return {
     saveGame,

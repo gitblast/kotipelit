@@ -56,6 +56,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, hostName }) => {
               player={player}
               gameStatus={game.status}
               hostName={hostName}
+              gameId={game.id}
             />
           ))}
         </CardContent>

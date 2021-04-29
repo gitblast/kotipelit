@@ -1,23 +1,18 @@
-import React from 'react';
-
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-
-import fiLocale from 'date-fns/locale/fi';
-
-import { useDispatch } from 'react-redux';
-import { deleteGame } from '../../reducers/games.reducer';
-
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
-  CardHeader,
   Avatar,
+  capitalize,
+  CardHeader,
   IconButton,
   Menu,
   MenuItem,
   Typography,
-  capitalize,
 } from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { format } from 'date-fns';
+import fiLocale from 'date-fns/locale/fi';
+import React from 'react';
+import { useGames } from '../../context';
 import { RTCGame } from '../../types';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -35,7 +30,7 @@ interface GameCardHeaderProps {
 const GameCardHeader = ({ game }: GameCardHeaderProps) => {
   const classes = useStyles();
 
-  const dispatch = useDispatch();
+  const { deleteGame } = useGames();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -46,7 +41,7 @@ const GameCardHeader = ({ game }: GameCardHeaderProps) => {
   const handleRemove = (): void => {
     const agree = window.confirm('Poistetaanko peli?');
 
-    if (agree) dispatch(deleteGame(game.id));
+    if (agree) deleteGame(game.id);
   };
 
   const handleClose = (): void => setAnchorEl(null);

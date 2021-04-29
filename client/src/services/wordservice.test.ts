@@ -16,6 +16,8 @@ const response: AxiosResponse = {
 
 const token = 'test token';
 
+const excludedWords = ['words', 'excluded'];
+
 describe('word service', () => {
   beforeAll(() => {
     userService.setToken(token);
@@ -23,25 +25,29 @@ describe('word service', () => {
 
   describe('get one', () => {
     it('should return a string', async () => {
-      mockedAxios.get.mockResolvedValueOnce({ ...response, data: ['random'] });
+      mockedAxios.post.mockResolvedValueOnce({ ...response, data: ['random'] });
 
       const word = await wordService.getOne();
 
       expect(typeof word).toBe('string');
     });
 
-    it('should send get request to /api/games/words/1', async () => {
-      mockedAxios.get.mockResolvedValueOnce({ ...response, data: ['random'] });
+    it('should send post request to /api/games/words/1', async () => {
+      mockedAxios.post.mockResolvedValueOnce({ ...response, data: ['random'] });
 
-      await wordService.getOne();
+      await wordService.getOne(excludedWords);
 
-      expect(mockedAxios.get).toHaveBeenLastCalledWith('/api/games/words/1', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      expect(mockedAxios.post).toHaveBeenLastCalledWith(
+        '/api/games/words/1',
+        { excludedWords },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
     });
 
     it('should throw error if response is not an array', async () => {
-      mockedAxios.get.mockResolvedValueOnce({ ...response, data: 'word' });
+      mockedAxios.post.mockResolvedValueOnce({ ...response, data: 'word' });
 
       try {
         await wordService.getOne();
@@ -55,7 +61,7 @@ describe('word service', () => {
 
   describe('get many', () => {
     it('should return array of words with length given as parameter', async () => {
-      mockedAxios.get.mockResolvedValueOnce(response);
+      mockedAxios.post.mockResolvedValueOnce(response);
 
       const words = await wordService.getMany(3);
 
@@ -64,15 +70,16 @@ describe('word service', () => {
       words.forEach((word) => expect(typeof word).toBe('string'));
     });
 
-    it('should send get request to /api/games/words/:amount', async () => {
-      mockedAxios.get.mockResolvedValueOnce(response);
+    it('should send post request to /api/games/words/:amount', async () => {
+      mockedAxios.post.mockResolvedValueOnce(response);
 
       const amount = 3;
 
-      await wordService.getMany(amount);
+      await wordService.getMany(amount, excludedWords);
 
-      expect(mockedAxios.get).toHaveBeenLastCalledWith(
+      expect(mockedAxios.post).toHaveBeenLastCalledWith(
         `/api/games/words/${amount}`,
+        { excludedWords },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -86,7 +93,7 @@ describe('word service', () => {
         expect(error.message).toBe('Amount must be positive');
       }
 
-      mockedAxios.get.mockResolvedValueOnce({ ...response, data: 'word' });
+      mockedAxios.post.mockResolvedValueOnce({ ...response, data: 'word' });
 
       try {
         await wordService.getMany(3);

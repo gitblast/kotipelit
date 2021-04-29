@@ -257,6 +257,23 @@ router.get('/', async (req, res, next) => {
   }
 });
 
+router.get('/:gameId', async (req, res, next) => {
+  try {
+    const gameId = toID(req.params.gameId);
+    const user = toAuthenticatedUser(req);
+
+    const game = await gameService.getGameById(gameId);
+
+    if (game.host.id.toString() !== user.id) {
+      throw new Error('game host id and user id not matching');
+    }
+
+    res.json(game);
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.post('/', async (req, res, next) => {
   try {
     const user = toAuthenticatedUser(req);

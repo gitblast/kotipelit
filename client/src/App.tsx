@@ -14,6 +14,7 @@ import QuestionsAnswers from './components/QuestionsAnswers';
 import ScrollToTop from './components/ScrollToTop';
 import TopBar from './components/TopBar';
 import UserProvider from './components/UserProvider';
+import GamesProvider from './components/GamesProvider';
 
 // lazy load due to size
 
@@ -36,47 +37,49 @@ const App = () => {
   const classes = useStyles();
 
   return (
-    <UserProvider>
-      <Router>
-        <ScrollToTop />
-        <TopBar />
-        <div className={classes.container}>
-          <Suspense fallback={<Loader msg="Ladataan..." />}>
-            <Switch>
-              <Route path="/rekisteroidy">
-                <RegisterPage />
-              </Route>
-              <Route path="/vahvista/:confirmationId">
-                <ConfirmationPage />
-              </Route>
-              <Route path="/kirjaudu">
-                <LoginForm />
-              </Route>
-              <Route path="/kysyttya">
-                <QuestionsAnswers />
-              </Route>
-              <Route path="/yleista">
-                <CompanyInfo />
-              </Route>
-              <Route path="/yritystapahtumat">
-                <CompanyEvents />
-              </Route>
-              <Route path={`/:username`}>
-                <ChannelPage />
-              </Route>
-              <Route exact path="/">
-                <FrontPage />
-              </Route>
-              <Route path="*">
-                <NotFoundPage />
-              </Route>
-            </Switch>
-          </Suspense>
-        </div>
+    <GamesProvider>
+      <UserProvider>
+        <Router>
+          <ScrollToTop />
+          <TopBar />
+          <div className={classes.container}>
+            <Suspense fallback={<Loader msg="Ladataan..." />}>
+              <Switch>
+                <Route path="/rekisteroidy">
+                  <RegisterPage />
+                </Route>
+                <Route path="/vahvista/:confirmationId">
+                  <ConfirmationPage />
+                </Route>
+                <Route path="/kirjaudu">
+                  <LoginForm />
+                </Route>
+                <Route path="/kysyttya">
+                  <QuestionsAnswers />
+                </Route>
+                <Route path="/yleista">
+                  <CompanyInfo />
+                </Route>
+                <Route path="/yritystapahtumat">
+                  <CompanyEvents />
+                </Route>
+                <Route path={`/:username`}>
+                  <ChannelPage />
+                </Route>
+                <Route exact path="/">
+                  <FrontPage />
+                </Route>
+                <Route path="*">
+                  <NotFoundPage />
+                </Route>
+              </Switch>
+            </Suspense>
+          </div>
 
-        <Footer />
-      </Router>
-    </UserProvider>
+          <Footer />
+        </Router>
+      </UserProvider>
+    </GamesProvider>
   );
 };
 

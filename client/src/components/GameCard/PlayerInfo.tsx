@@ -9,6 +9,7 @@ import gameService from '../../services/games';
 
 import ClearIcon from '@material-ui/icons/Clear';
 import InfoTooltip from './InfoTooltip';
+import { useGames } from '../../context';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,23 +29,35 @@ interface PlayerInfoProps {
   player: RTCKotitonniPlayer;
   gameStatus: GameStatus;
   hostName: string;
+  gameId: string;
 }
 
-const PlayerInfo = ({ player, gameStatus, hostName }: PlayerInfoProps) => {
+const PlayerInfo = ({
+  player,
+  gameStatus,
+  hostName,
+  gameId,
+}: PlayerInfoProps) => {
   const classes = useStyles();
+
+  const { setGames } = useGames();
 
   const handleCancel = async (inviteCode: string) => {
     const agree = window.confirm('Perutaanko varaus?');
 
     if (!agree) return;
 
-    const success = await gameService.cancelReservation(hostName, inviteCode);
+    try {
+      await gameService.cancelReservation(hostName, inviteCode);
 
-    if (success) {
       logger.log('cancel succesful');
 
-      console.log('todo: update ui');
-    } else {
+      const updatedGame = await gameService.getGame(gameId);
+
+      setGames((currentGames) =>
+        currentGames.map((game) => (game.id === gameId ? updatedGame : game))
+      );
+    } catch (error) {
       logger.log('cancel failed');
     }
   };
@@ -60,9 +73,11 @@ const PlayerInfo = ({ player, gameStatus, hostName }: PlayerInfoProps) => {
         <Typography variant="body2">
           {player.privateData.words.join(', ')}
         </Typography>
+
         {gameStatus !== GameStatus.FINISHED ? (
           <IconButton
             className={classes.actionIcon}
+            disabled={gameStatus !== GameStatus.UPCOMING}
             onClick={() => handleCancel(player.privateData.inviteCode)}
           >
             <ClearIcon fontSize="small" />

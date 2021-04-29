@@ -95,6 +95,16 @@ const lockSpotForGame = async (
   return response.data;
 };
 
+const getGame = async (gameId: string): Promise<RTCGame> => {
+  const config = {
+    headers: { Authorization: userService.getAuthHeader() },
+  };
+
+  const response = await axios.get(`${baseUrl}/${gameId}`, config);
+
+  return response.data;
+};
+
 const getLobbyGame = async (
   hostName: string,
   id: string
@@ -119,6 +129,7 @@ const gameService = {
   getLobbyGame,
   lockSpotForGame,
   cancelReservation,
+  getGame,
 };
 
 export default gameService;

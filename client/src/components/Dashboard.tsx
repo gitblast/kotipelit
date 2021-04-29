@@ -1,17 +1,11 @@
-import React from 'react';
-
-import { Link } from 'react-router-dom';
-// import Rating from '@material-ui/lab/Rating';
-
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Button, Typography } from '@material-ui/core';
-
+// import Rating from '@material-ui/lab/Rating';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useGames } from '../context';
+import { GameStatus, LoggedInUser } from '../types';
 import GameCard from './GameCard/GameCard';
-
-import { State, LoggedInUser, GameStatus } from '../types';
-import { useSelector, useDispatch } from 'react-redux';
-
-import { initGames } from '../reducers/games.reducer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -70,14 +64,11 @@ interface DashboardProps {
 const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   const classes = useStyles();
 
-  const dispatch = useDispatch();
+  const { games, initGames } = useGames();
 
   React.useEffect(() => {
-    // todo: handle changes in socket.io callbacks to not fetch all games every time dashboard renders
-    dispatch(initGames());
-  }, [dispatch]);
-
-  const games = useSelector((state: State) => state.games.allGames);
+    initGames();
+  }, [initGames]);
 
   const filterGamesByStatus = (label: string, status: GameStatus) => {
     const filtered = games.filter((game) => game.status === status);

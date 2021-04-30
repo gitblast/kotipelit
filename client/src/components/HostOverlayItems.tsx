@@ -37,7 +37,63 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%',
       display: 'flex',
       flexDirection: 'column',
+      position: 'relative',
     },
+    // Corner ribbon styles
+    // ribbon: {
+    //   position: 'absolute',
+    //   right: -5,
+    //   top: -5,
+    //   zIndex: 1,
+    //   overflow: 'hidden',
+    //   width: 75,
+    //   height: 75,
+    //   textAlign: 'right',
+    //   [theme.breakpoints.down('sm')]: {
+    //     display: 'none',
+    //   },
+    // },
+    // spanText: {
+    //   fontSize: 11,
+    //   color: 'white',
+    //   textTransform: 'uppercase',
+    //   textAlign: 'center',
+    //   fontWeight: 'bold',
+    //   lineHeight: 2,
+    //   transform: 'rotate(45deg)',
+    //   width: 100,
+    //   display: 'block',
+    //   background: 'linear-gradient(rgb(0 225 217), black)',
+    //   boxShadow: '0 3px 10px -5px rgba(0, 0, 0, 1)',
+    //   position: 'absolute',
+    //   top: 20,
+    //   right: -20,
+    //   '&::before': {
+    //     content: '""',
+    //     position: 'absolute',
+    //     left: 0,
+    //     top: '100%',
+    //     zIndex: -1,
+    //     borderLeft: '3px solid #79A70A',
+    //     borderRight: '3px solid transparent',
+    //     borderBottom: '3px solid transparent',
+    //     borderTop: '3px solid #79A70A',
+    //   },
+    //   '&::after': {
+    //     content: '""',
+    //     position: 'absolute',
+    //     right: '0%',
+    //     top: '100%',
+    //     zIndex: -1,
+    //     borderRight: '3px solid #79A70A',
+    //     borderLeft: '3px solid transparent',
+    //     borderBottom: '3px solid transparent',
+    //     borderTop: '3px solid #79A70A',
+    //   },
+    //   [theme.breakpoints.down('sm')]: {
+    //     display: 'none',
+    //   },
+    // },
     flex: {
       display: 'flex',
     },
@@ -60,15 +116,16 @@ const HostOverlayItems: React.FC<HostOverlayItemsProps> = ({ host }) => {
   if (game.type === GameType.KOTITONNI) {
     return (
       <div className={classes.flexCol}>
+        {/* <div className={classes.ribbon}>
+          <span className={classes.spanText}>Kotijuontaja</span>
+        </div> */}
         <div className={classes.spacer} />
-        <div className={classes.flex}>
-          <div className={classes.nameBadge}>
-            <Typography variant="h3" className={classes.hostName}>
-              {host.displayName}
-            </Typography>
-            <div>
-              <MediaControls participant={host} />
-            </div>
+        <div className={classes.nameBadge}>
+          <Typography variant="h3" className={classes.hostName}>
+            {host.displayName}
+          </Typography>
+          <div>
+            <MediaControls participant={host} />
           </div>
         </div>
       </div>

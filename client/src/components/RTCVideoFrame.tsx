@@ -58,6 +58,7 @@ const useStyles = makeStyles<Theme, PropStyles>((theme: Theme) =>
       },
     },
     hostStyle: {
+      border: '2px solid rgb(0 225 217)',
       [theme.breakpoints.down('xs')]: {
         order: '-2 !important',
         width: '95%',

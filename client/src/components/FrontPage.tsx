@@ -212,14 +212,14 @@ const FrontPage: React.FC = () => {
           />
           <div className={classes.mainInfo}>
             <Typography variant="h1" color="initial">
-              Haluaisitko olla gameshow- juontaja?
+              Miksi katsoa TV-visailuja kun voit luoda omasi?
             </Typography>
             <Typography
               variant="h2"
               color="initial"
               className={classes.subHeader}
             >
-              Peli-illat etänä pelaamiseen kustomoidulla videopuhelualustalla
+              Peli-illat pelaamiseen kustomoidulla videopuhelualustalla
             </Typography>
             <Button
               color="secondary"
@@ -236,7 +236,7 @@ const FrontPage: React.FC = () => {
           <div className={classes.neonDivider}></div>
           <div className={classes.bannerInfo}>
             <Typography variant="h2" color="initial">
-              Etsitkö yrityksellesi peli-iltaa?
+              Etsitkö yrityksellesi juonnettua peli-iltaa?
             </Typography>
             <div>
               <Button
@@ -254,7 +254,7 @@ const FrontPage: React.FC = () => {
           <Grid item md sm></Grid>
           <Grid item md={5} sm={5} xs={12} className={classes.sectionInfo}>
             <Typography variant="h3" color="initial">
-              Ilahduta järjestämällä tutuillesi pelejä
+              Ilahduta juontamalla tutuillesi pelejä
             </Typography>
             <div>
               <Typography variant="body1">

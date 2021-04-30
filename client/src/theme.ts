@@ -88,7 +88,7 @@ let theme = createMuiTheme({
       color: '#e6e3c5ff',
     },
     h1: {
-      fontSize: '1.9rem',
+      fontSize: '1.8rem',
     },
     h2: {
       fontSize: '1.6rem',
@@ -187,7 +187,6 @@ let theme = createMuiTheme({
       },
     },
     MuiLinearProgress: {
-      /// Undefined color (neon)
       barColorPrimary: {
         background: 'linear-gradient(to right, rgb(185 231 229), transparent)',
         backgroundColor: 'transparent',

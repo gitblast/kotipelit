@@ -156,7 +156,9 @@ const RTCHostControls = ({
         )}
       </Grid>
       <Grid item md={4} className={classes.controlsIcons}>
-        {isWideEnough && <SpectatorCount count={spectatorCount} />}
+        {isWideEnough && game.allowedSpectators !== 0 && (
+          <SpectatorCount count={spectatorCount} />
+        )}
 
         <IconButton
           className={classes.controlBarIcons}

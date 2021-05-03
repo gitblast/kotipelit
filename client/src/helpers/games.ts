@@ -156,9 +156,9 @@ export const selfIsWinner = (game: RTCGame, self: RTCSelf) => {
     return false;
   }
 
-  const playersSortedByPoints = game.players.sort(
-    (a, b) => b.points - a.points
-  );
+  const playersSortedByPoints = game.players
+    .concat()
+    .sort((a, b) => b.points - a.points);
 
   return playersSortedByPoints[0].points === playerSelf.points;
 };

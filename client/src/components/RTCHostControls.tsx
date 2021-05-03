@@ -110,7 +110,11 @@ const RTCHostControls = ({
       return false;
     }
 
-    return timerIsRunning ? !everyoneHasAnswered : timerValue !== 0;
+    if (everyoneHasAnswered) {
+      return false;
+    }
+
+    return timerValue !== 0;
   };
 
   return (
@@ -126,6 +130,7 @@ const RTCHostControls = ({
           <Fab
             size="large"
             color={timerIsRunning ? 'primary' : 'secondary'}
+            disabled={everyoneHasAnswered}
             onClick={() => {
               toggleTimer();
               fetchLatestGameStatus();

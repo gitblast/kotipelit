@@ -11,6 +11,7 @@ const useKotitonniHostControls = () => {
     timerValue,
     timerIsRunning,
     toggleTimer,
+    stopTimer,
     resetTimer,
   } = useInGameTimer();
   const { socket, game } = useGameData();
@@ -76,6 +77,12 @@ const useKotitonniHostControls = () => {
       );
     });
   }, [game]);
+
+  React.useEffect(() => {
+    if (timerIsRunning && everyoneHasAnswered) {
+      stopTimer();
+    }
+  }, [timerIsRunning, everyoneHasAnswered, stopTimer]);
 
   return {
     game,

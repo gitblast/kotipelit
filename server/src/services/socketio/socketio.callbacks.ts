@@ -18,8 +18,14 @@ import urlService from '../urls';
 
 // RTC
 
+const logRecievedMsg = (event: string, socket: SocketWithToken): void => {
+  logger.log(
+    `recieved '${event}' from ${socket.decodedToken.username} (${socket.id})`
+  );
+};
+
 export const joinRTCRoom = async (socket: SocketWithToken): Promise<void> => {
-  logger.log(`recieved 'join-gameroom' from ${socket.decodedToken.username}`);
+  logRecievedMsg('join-gameroom', socket);
 
   try {
     const { gameId } = socket.decodedToken;
@@ -68,7 +74,7 @@ export const socketDisconnected = (
 };
 
 export const leaveRTCRoom = (socket: SocketWithToken): void => {
-  logger.log(`recieved leave-room from ${socket.decodedToken.username}`);
+  logRecievedMsg('leave-room', socket);
 
   const { id, gameId } = socket.decodedToken;
 
@@ -78,7 +84,7 @@ export const leaveRTCRoom = (socket: SocketWithToken): void => {
 };
 
 export const startRTCGame = async (socket: SocketWithToken): Promise<void> => {
-  logger.log(`recieved 'start' from ${socket.decodedToken.username}`);
+  logRecievedMsg('start', socket);
 
   try {
     const { gameId } = socket.decodedToken;
@@ -105,7 +111,7 @@ export const launchRTCGame = async (
   socket: SocketWithToken,
   setToken: (token: string) => void
 ): Promise<void> => {
-  logger.log(`recieved 'launch' from ${socket.decodedToken.username}`);
+  logRecievedMsg('launch', socket);
 
   try {
     const { gameId, id } = socket.decodedToken;
@@ -162,9 +168,7 @@ export const getTwilioToken = (
   socket: SocketWithToken,
   setToken: (token: string) => void
 ): void => {
-  logger.log(
-    `recieved 'get-twilio-token' from ${socket.decodedToken.username}`
-  );
+  logRecievedMsg('get-twilio-token', socket);
 
   try {
     const { gameId, id, role } = socket.decodedToken;
@@ -191,7 +195,7 @@ export const updateRTCGame = async (
   socket: SocketWithToken,
   newGame: RTCGame
 ): Promise<void> => {
-  logger.log(`recieved 'update-game' from ${socket.decodedToken.username}`);
+  logRecievedMsg('update-game', socket);
 
   try {
     const { gameId } = socket.decodedToken;
@@ -235,7 +239,7 @@ export const updateRTCGame = async (
 };
 
 export const endRTCGame = async (socket: SocketWithToken): Promise<void> => {
-  logger.log(`recieved 'end' from ${socket.decodedToken.username}`);
+  logRecievedMsg('end', socket);
 
   try {
     const { gameId } = socket.decodedToken;
@@ -283,10 +287,6 @@ export const getRoomState = (socket: SocketWithToken) => {
   }
 };
 
-const logRecievedMsg = (event: string, socket: SocketWithToken): void => {
-  logger.log(`recieved '${event}' from ${socket.decodedToken.username}`);
-};
-
 export const getRoomGame = async (socket: SocketWithToken): Promise<void> => {
   logRecievedMsg('get-room-game', socket);
 
@@ -307,7 +307,7 @@ export const handleAnswer = async (
   socket: SocketWithToken,
   answer: Answer
 ): Promise<void> => {
-  logger.log(`recieved 'answer' from ${socket.decodedToken.username}`);
+  logRecievedMsg('answer', socket);
 
   try {
     const { id, gameId } = socket.decodedToken;
@@ -464,7 +464,7 @@ const emitUpdatedGame = (socket: SocketWithToken, game: GameModel): void => {
             .to(socketId)
             .emit('game-updated', filterGameForUser(gameAsObject, player.id));
         } else {
-          didNotEmit.push(player.name);
+          didNotEmit.push(`${player.name} (${socketId})`);
         }
       });
 

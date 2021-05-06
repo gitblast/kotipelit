@@ -36,7 +36,10 @@ const useNewGameRoom = (token: string | null, role: Role) => {
     if (socket) {
       logger.log('attaching socket io listeners');
 
-      socket.emit('join-room');
+      /** TEST */
+      socket.on('testing', (data: string) => {
+        console.log('got message:', data);
+      });
 
       socket.on('game-updated', (updatedGame: RTCGame) => {
         logger.log('game-updated', updatedGame);
@@ -68,6 +71,12 @@ const useNewGameRoom = (token: string | null, role: Role) => {
 
         setMuted(id, muted);
       });
+
+      // set listeners before connecting
+
+      logger.log('connecting socket');
+
+      socket.connect();
     }
   }, [socket, setError, setMuted]);
 

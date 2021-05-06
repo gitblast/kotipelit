@@ -23,6 +23,7 @@ const useAuthSocket = (
         process?.env.NODE_ENV === 'development' ? 'http://localhost:3333' : '/';
 
       const socket = socketIOClient(path, {
+        autoConnect: false,
         transports: ['websocket'],
         upgrade: false,
         auth: {
@@ -56,9 +57,9 @@ const useAuthSocket = (
 
       socket.on(CommonEvent.CONNECT, () => {
         logger.log('socketio connected');
-
-        setSocketClient(socket);
       });
+
+      setSocketClient(socket);
     };
 
     if (token && !socketClient) {

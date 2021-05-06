@@ -10,6 +10,7 @@ import * as callbacks from './socketio.callbacks';
 
 import { SocketWithToken, Role, RTCGame, Answer } from '../../types';
 import { TimerData } from '../../utils/timer';
+import { setupChangeStreams } from '../changeStream';
 
 const attachRTCListeners = (socket: SocketWithToken) => {
   logger.log('attaching listeners');
@@ -85,6 +86,8 @@ const handler = (io: Server): void => {
     })
   );
 
+  setupChangeStreams(io);
+
   io.of('/').on('connection', (socket: SocketWithToken) => {
     logger.log(
       `user connected ${socket.decodedToken.username} with socket id '${socket.id}'`
@@ -95,9 +98,11 @@ const handler = (io: Server): void => {
     if (type === 'rtc') {
       logger.log(`joining channel ${gameId}`);
 
+      attachRTCListeners(socket);
+
       socket.join(gameId);
 
-      attachRTCListeners(socket);
+      void callbacks.joinRTCRoom(socket);
     } else {
       logger.error('socket type not recognized');
     }

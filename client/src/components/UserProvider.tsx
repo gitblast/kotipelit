@@ -8,22 +8,24 @@ interface UserProviderProps {
   children: React.ReactNode;
 }
 
-const UserProvider = ({ children }: UserProviderProps) => {
-  const [user, setUser] = React.useState<AppUser>(DEFAULT_USER);
-  const [loading, setLoading] = React.useState(false);
-
+const getInitialUser = () => {
   // check local storage for user
-  React.useEffect(() => {
-    const loggedUser = window.localStorage.getItem('kotipelitUser');
+  const loggedUser = window.localStorage.getItem('kotipelitUser');
 
-    if (loggedUser) {
-      const parsedUser: LoggedInUser = JSON.parse(loggedUser);
+  if (loggedUser) {
+    const parsedUser: LoggedInUser = JSON.parse(loggedUser);
 
-      userService.setToken(parsedUser.token);
+    userService.setToken(parsedUser.token);
 
-      setUser(parsedUser);
-    }
-  }, []);
+    return parsedUser;
+  }
+
+  return DEFAULT_USER;
+};
+
+const UserProvider = ({ children }: UserProviderProps) => {
+  const [user, setUser] = React.useState<AppUser>(getInitialUser);
+  const [loading, setLoading] = React.useState(false);
 
   const logout = React.useCallback(() => {
     window.localStorage.removeItem('kotipelitUser');

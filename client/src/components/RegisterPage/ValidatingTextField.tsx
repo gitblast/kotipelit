@@ -18,6 +18,10 @@ const ValidatingTextField = (props: TextFieldProps) => {
     (event) => {
       handleBlur(event);
 
+      if (!values[name].length) {
+        return;
+      }
+
       if (!errors[name]) {
         setLoading(true);
 
@@ -66,16 +70,14 @@ const ValidatingTextField = (props: TextFieldProps) => {
   };
 
   return (
-    <>
-      <MUITextField
-        {...fieldToTextField(props)}
-        onBlur={onBlur}
-        onChange={onChange}
-        InputProps={{
-          endAdornment: getAdornment(),
-        }}
-      />
-    </>
+    <MUITextField
+      {...fieldToTextField(props)}
+      onBlur={onBlur}
+      onChange={onChange}
+      InputProps={{
+        endAdornment: getAdornment(),
+      }}
+    />
   );
 };
 

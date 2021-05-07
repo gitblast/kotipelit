@@ -25,7 +25,7 @@ export const initTimer = async (game: GameModel) => {
 
   const { value, isRunning } = game.info.timer;
 
-  const tickInterval = process.env.NODE_ENV === 'development' ? 500 : 1000;
+  const tickInterval = process.env.NODE_ENV === 'development' ? 100 : 1000;
 
   const timer = new DBUpdatingTimer(gameId, value, isRunning, tickInterval);
 
@@ -127,13 +127,20 @@ export default class DBUpdatingTimer {
     }
   }
 
-  reset(initialValue = 60) {
+  reset(noUpdate = true, initialValue = 60) {
     if (this.timeOutHandle) {
       clearTimeout(this.timeOutHandle);
 
       this.timeOutHandle = null;
     }
 
-    this.setState(false, initialValue);
+    if (noUpdate) {
+      /** do not update database */
+
+      this.value = initialValue;
+      this.isRunning = false;
+    } else {
+      this.setState(false, initialValue);
+    }
   }
 }

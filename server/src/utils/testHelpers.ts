@@ -71,9 +71,8 @@ const addDummyGame = async (user: UserModel): Promise<GameModel> => {
     ],
     startTime: new Date(),
     host: {
-      id: user._id,
+      id: user._id.toString(),
       displayName: 'hostname',
-      privateData: null,
     },
     status: GameStatus.UPCOMING,
     rounds: 3,
@@ -98,7 +97,7 @@ const addDummyGame = async (user: UserModel): Promise<GameModel> => {
 };
 
 const addDummyUser = async (
-  username: string = Date.now().toString(),
+  username: string = Date.now().toString().substring(0, 12),
   password: string = Date.now().toString(),
   email: string = Date.now().toString(),
   firstName: string = 'firstName',

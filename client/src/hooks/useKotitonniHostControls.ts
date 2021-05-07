@@ -1,10 +1,10 @@
 import React from 'react';
 import { useGameData, useKotitonniData } from '../context';
-import { getNextKotitonniState } from '../helpers/games';
-import { RTCGame } from '../types';
+import { RTCGame, GameType, KotitonniUpdate } from '../types';
 import logger from '../utils/logger';
 import useGameHistory from './useGameHistory';
 import { useInGameTimer } from '../context/index';
+import { getPointAddition } from '../helpers/games';
 
 const useKotitonniHostControls = () => {
   const {
@@ -12,7 +12,6 @@ const useKotitonniHostControls = () => {
     timerIsRunning,
     toggleTimer,
     stopTimer,
-    resetTimer,
   } = useInGameTimer();
   const { socket, game } = useGameData();
   const { clickedMap, resetClicks } = useKotitonniData();
@@ -51,17 +50,35 @@ const useKotitonniHostControls = () => {
     (game: RTCGame) => {
       setHistory(game);
 
-      const updatedGame = getNextKotitonniState(game, clickedMap);
+      const pointMap: Record<string, number> = {};
 
-      logger.log('updating game with', updatedGame);
+      game.players.forEach((player) => {
+        const newPoints =
+          player.points +
+          getPointAddition(
+            game,
+            clickedMap,
+            player.id,
+            player.id === game.info.turn
+          );
 
-      socket.emit('update-game', updatedGame);
+        pointMap[player.id] = newPoints;
+      });
 
-      resetTimer();
+      const update: KotitonniUpdate = {
+        gameType: GameType.KOTITONNI,
+        data: pointMap,
+        fromHistory: atHistory,
+      };
+
+      logger.log('updating with:', update);
+
+      socket.emit('update-game', update);
+
       resetClicks();
       setAtHistory(false);
     },
-    [socket, clickedMap, resetTimer, resetClicks, setHistory, setAtHistory]
+    [socket, clickedMap, resetClicks, setHistory, setAtHistory, atHistory]
   );
 
   const everyoneHasAnswered = React.useMemo(() => {

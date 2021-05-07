@@ -133,7 +133,7 @@ describe('games router', () => {
     it('should throw error if host not found or not matching game host', async () => {
       await api.get(`${baseUrl}/lobby/INVALID_FOR_TESTS/${gameId}`).expect(400);
 
-      const newUser = await testHelpers.addDummyUser('DIFFERENT USERNAME');
+      const newUser = await testHelpers.addDummyUser('DIFFERENT');
 
       await api
         .get(`${baseUrl}/lobby/${newUser.username}/${gameId}`)
@@ -206,7 +206,7 @@ describe('games router', () => {
       lockReqBody = {
         gameId,
         reservationId: 'INVALID_reservation',
-        displayName: 'TestDisplayName',
+        displayName: 'TestName',
         email: 'testEmailAddress@validish.io',
       };
     });
@@ -416,7 +416,6 @@ describe('games router', () => {
         username: player.name,
         id: player.id,
         gameId: gameId,
-        type: 'rtc',
         role: Role.PLAYER,
       };
 
@@ -587,22 +586,22 @@ describe('games router', () => {
 
     it('should return 400 with non positive or non integer param', async () => {
       await api
-        .get(`${baseUrl}/words/0`)
+        .post(`${baseUrl}/words/0`)
         .set('Authorization', `bearer ${token}`)
         .expect(400);
       await api
-        .get(`${baseUrl}/words/1.1`)
+        .post(`${baseUrl}/words/1.1`)
         .set('Authorization', `bearer ${token}`)
         .expect(400);
       await api
-        .get(`${baseUrl}/words/-1`)
+        .post(`${baseUrl}/words/-1`)
         .set('Authorization', `bearer ${token}`)
         .expect(400);
     });
 
     it('should return an array of words with length given as parameter', async () => {
       const response1 = await api
-        .get(`${baseUrl}/words/1`)
+        .post(`${baseUrl}/words/1`)
         .set('Authorization', `bearer ${token}`)
         .expect(200);
 
@@ -610,7 +609,7 @@ describe('games router', () => {
       expect(response1.body.length).toBe(1);
 
       const response2 = await api
-        .get(`${baseUrl}/words/3`)
+        .post(`${baseUrl}/words/3`)
         .set('Authorization', `bearer ${token}`)
         .expect(200);
 
@@ -618,7 +617,7 @@ describe('games router', () => {
       expect(response2.body.length).toBe(3);
 
       const response3 = await api
-        .get(`${baseUrl}/words/5`)
+        .post(`${baseUrl}/words/5`)
         .set('Authorization', `bearer ${token}`)
         .expect(200);
 

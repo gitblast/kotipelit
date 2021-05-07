@@ -12,7 +12,7 @@ setDebug(true);
 
 const server = http.createServer(app);
 
-export const io = new socketIoServer(server, {
+const io = new socketIoServer(server, {
   pingTimeout: 20000,
   pingInterval: 25000,
   allowUpgrades: false,

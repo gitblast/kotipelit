@@ -2,6 +2,21 @@ import { Document, ObjectId } from 'mongoose';
 import { Socket } from 'socket.io';
 import UpdateEmittingTimer from './utils/timer';
 
+export type GameUpdate = KotitonniUpdate;
+
+export interface BaseGameUpdate {
+  gameType: GameType;
+}
+
+export interface KotitonniUpdate extends BaseGameUpdate {
+  data: KotitonniUpdateData;
+  fromHistory: boolean;
+}
+
+export type UpdateData = KotitonniUpdateData;
+
+export type KotitonniUpdateData = Record<string, number>;
+
 export interface RTCGameHost {
   id: ObjectId;
   displayName: string;

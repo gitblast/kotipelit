@@ -45,8 +45,10 @@ export const setupChangeStreams = (io: Server) => {
 
       const changes = data.updateDescription.updatedFields;
 
+      const isTimerUpdate = !!changes['info.timer'];
+
       /** fixes issue with mongodb returning "info.timer" instead of { info: { timer: ... } } when modifying subfields only */
-      if (changes['info.timer']) {
+      if (isTimerUpdate) {
         changes.info = {
           ...game.info,
         };
@@ -84,9 +86,15 @@ export const setupChangeStreams = (io: Server) => {
       } else {
         /** emit changes to everyone in the room if players did not change */
 
-        logger.log('emitting changes');
+        if (!isTimerUpdate) {
+          /** suppress timer change logs */
 
-        io.of(GAME_NAMESPACE).to(gameId).emit('game-changed', changes);
+          logger.log('emitting changes');
+        }
+
+        io.of(GAME_NAMESPACE)
+          .to(gameId)
+          .emit('game-changed', changes, isTimerUpdate);
       }
     }
   });

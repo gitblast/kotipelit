@@ -3,6 +3,21 @@
 import { Socket } from 'socket.io-client';
 import { RemoteParticipant, LocalParticipant } from 'twilio-video';
 
+export type GameUpdate = KotitonniUpdate;
+
+export interface BaseGameUpdate {
+  gameType: GameType;
+}
+
+export interface KotitonniUpdate extends BaseGameUpdate {
+  data: KotitonniUpdateData;
+  fromHistory: boolean;
+}
+
+export type UpdateData = KotitonniUpdateData;
+
+export type KotitonniUpdateData = Record<string, number>;
+
 export interface ErrorState {
   error: Error;
   explanationMsg: string;

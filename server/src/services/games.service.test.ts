@@ -10,6 +10,7 @@ import {
 import gameService from './games';
 import Game from '../models/game';
 import { getInitialInfo } from '../utils/helpers';
+import { KotitonniInfo } from '../types';
 
 jest.mock('../models/game', () => ({
   findById: jest.fn(),
@@ -57,9 +58,13 @@ describe('games service', () => {
           players: [mockPlayer],
         } as unknown) as GameModel;
 
-        const expectedInfo = {
+        const expectedInfo: KotitonniInfo = {
           round: 1,
           turn: mockPlayer.id,
+          timer: {
+            value: 60,
+            isRunning: false,
+          },
         };
 
         expect(getInitialInfo(mockGame)).toEqual(expectedInfo);

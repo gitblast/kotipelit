@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { useInGameTimer, useKotitonniData, useGameData } from '../context';
-import { getPointAddition, getNextRoundAndTurn } from '../helpers/games';
-import { Role, RTCKotitonniPlayer, GameStatus } from '../types';
+import { getPointAddition } from '../helpers/games';
+import { Role, RTCKotitonniPlayer, KotitonniUpdate, GameType } from '../types';
 import logger from '../utils/logger';
 import useGameHistory from './useGameHistory';
 
@@ -43,9 +43,9 @@ const useCorrectAnswerSetter = (
 
 const useKotitonniOverlayItems = (playerId: string) => {
   const { clickedMap, resetClicks } = useKotitonniData();
-  const { timerValue, resetTimer, timerIsRunning } = useInGameTimer();
+  const { timerValue, timerIsRunning } = useInGameTimer();
   const { game, self, socket } = useGameData();
-  const { setHistory, setAtHistory } = useGameHistory();
+  const { setHistory, setAtHistory, atHistory } = useGameHistory();
   const player = React.useMemo(
     () => game.players.find((p) => p.id === playerId),
     [game.players, playerId]
@@ -60,33 +60,32 @@ const useKotitonniOverlayItems = (playerId: string) => {
 
     setHistory(game);
 
-    const { round, turn } = getNextRoundAndTurn(game);
+    const pointMap: Record<string, number> = {};
 
-    const updatedGame = {
-      ...game,
-      status: round > 3 ? GameStatus.FINISHED : game.status,
-      info: {
-        ...game.info,
-        round,
-        turn,
-      },
+    game.players.forEach((player) => {
+      pointMap[player.id] = player.points;
+    });
+
+    const update: KotitonniUpdate = {
+      gameType: GameType.KOTITONNI,
+      data: pointMap,
+      fromHistory: atHistory,
     };
 
-    logger.log('updating game with', updatedGame);
+    logger.log('updating with:', update);
 
-    socket.emit('update-game', updatedGame);
+    socket.emit('update-game', update);
 
-    resetTimer();
     resetClicks();
     setAtHistory(false);
   }, [
     socket,
     game,
     setHistory,
-    resetTimer,
     resetClicks,
     timerIsRunning,
     setAtHistory,
+    atHistory,
   ]);
 
   const showPointAddition = React.useMemo(() => {

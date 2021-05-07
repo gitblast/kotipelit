@@ -4,8 +4,8 @@ import {
   GameModel,
   GameStatus,
   Role,
-  RTCGame,
   SocketWithToken,
+  GameType,
 } from '../../types';
 import {
   filterGameForSpectator,
@@ -18,6 +18,8 @@ import twilioService from '../twilio';
 import urlService from '../urls';
 import { shuffle } from 'lodash';
 import { getTimer, initTimer, gamesThatUseTimer } from '../../utils/timer';
+import { GameUpdate } from '../../types';
+import { saveNextKotitonniState } from '../../utils/helpers';
 
 const logRecievedEvent = (
   event: string,
@@ -138,7 +140,7 @@ export const getTwilioToken = (
 
 export const updateRTCGame = async (
   socket: SocketWithToken,
-  newGame: RTCGame
+  update: GameUpdate
 ): Promise<void> => {
   logRecievedEvent('update-game', socket);
 
@@ -147,39 +149,23 @@ export const updateRTCGame = async (
 
     const game = await gameService.getGameById(gameId);
 
-    // update only players' points
-    game.players = game.players.map((player) => {
-      const matching = newGame.players.find(
-        (oldPlayer) => oldPlayer.id === player.id
+    if (update.gameType === GameType.KOTITONNI) {
+      /** calculate and save next state */
+
+      const updated = await saveNextKotitonniState(
+        game,
+        update.data,
+        update.fromHistory
       );
 
-      if (!matching) {
-        logger.error(
-          `unexpected: no matching player found for id '${player.id}' when updating game`
-        );
+      /** reset timer */
+      const timer = await getTimer(gameId);
 
-        return player;
-      }
+      timer.reset();
 
-      return {
-        ...player,
-        points: matching.points,
-      };
-    });
-
-    // update status
-    game.status = newGame.status;
-
-    /** update turn and round. do not update possible timer */
-    game.info = {
-      ...game.info,
-      turn: newGame.info.turn,
-      round: newGame.info.round,
-    };
-
-    console.log('GAMEN INFIO ON', game.info.timer);
-
-    await game.save();
+      /** This makes sure host's ui updates if there are no changes to current game state. only possible if update comes from history */
+      socket.emit('game-updated', updated);
+    }
   } catch (e) {
     logger.error();
 

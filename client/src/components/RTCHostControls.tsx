@@ -130,7 +130,7 @@ const RTCHostControls = ({
           <Fab
             size="large"
             color={timerIsRunning ? 'primary' : 'secondary'}
-            disabled={everyoneHasAnswered}
+            disabled={atHistory || timerValue === 0 || everyoneHasAnswered}
             onClick={() => {
               toggleTimer();
               fetchLatestGameStatus();
@@ -153,7 +153,7 @@ const RTCHostControls = ({
             size="medium"
             color="secondary"
             onClick={returnToPrevious}
-            disabled={noHistorySet}
+            disabled={noHistorySet || timerValue !== 60}
             className={classes.returnPoints}
           >
             <UndoIcon className={classes.undoArrow} />

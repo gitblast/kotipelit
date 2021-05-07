@@ -37,8 +37,6 @@ const useNewGameRoom = (token: string | null, role: Role) => {
       logger.log('attaching socket io listeners');
 
       socket.on('game-changed', (changes: Partial<RTCGame>) => {
-        logger.log('game changed', changes);
-
         setGame((currentGame) => {
           if (!currentGame) {
             logger.log('no game was set when game changed. emitting get game');

@@ -1,15 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-
 import { Server } from 'socket.io';
 import { authorize } from '@thream/socketio-jwt';
 import config from '../../utils/config';
 import logger from '../../utils/logger';
 import * as callbacks from './socketio.callbacks';
 
-import { SocketWithToken, Role, RTCGame, Answer } from '../../types';
+import { SocketWithToken, Role, Answer } from '../../types';
 import { setupChangeStreams } from '../changeStream';
+import { GameUpdate } from '../../../../client/src/types';
 
 const attachRTCListeners = (socket: SocketWithToken) => {
   logger.log('attaching listeners');
@@ -47,8 +44,8 @@ const attachRTCListeners = (socket: SocketWithToken) => {
       void callbacks.endRTCGame(socket);
     });
 
-    socket.on('update-game', (game: RTCGame) => {
-      void callbacks.updateRTCGame(socket, game);
+    socket.on('update-game', (update: GameUpdate) => {
+      void callbacks.updateRTCGame(socket, update);
     });
 
     socket.on('handle-timer', (command: 'start' | 'stop' | 'reset') => {

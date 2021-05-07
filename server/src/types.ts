@@ -1,6 +1,11 @@
-import { Document } from 'mongoose';
+import { Document, ObjectId } from 'mongoose';
 import { Socket } from 'socket.io';
 import UpdateEmittingTimer from './utils/timer';
+
+export interface RTCGameHost {
+  id: ObjectId;
+  displayName: string;
+}
 
 export interface GameModel extends NewGame, Document {
   createDate: Date;
@@ -20,20 +25,12 @@ export interface BaseRTCGame {
 export interface RTCGame extends BaseRTCGame {
   id: string;
   players: GamePlayer[];
-  host: {
-    id: string;
-    displayName: string;
-    privateData: null;
-  };
+  host: RTCGameHost;
 }
 
 export interface NewGame extends Omit<BaseRTCGame, 'info'> {
   players: GamePlayer[];
-  host: {
-    id: UserModel['_id'];
-    displayName: string;
-    privateData: null;
-  };
+  host: RTCGameHost;
 }
 
 export interface WordModel extends Document {
@@ -131,7 +128,6 @@ export interface SocketIOAuthToken {
   username: string;
   role: Role;
   gameId: string;
-  type: 'rtc';
 }
 
 export interface SocketWithToken extends Socket {
@@ -153,11 +149,7 @@ export interface KotitonniGameState {
 }
 
 export interface FilteredRTCGame extends BaseRTCGame {
-  host: {
-    id: string;
-    displayName: string;
-    privateData: null;
-  };
+  host: RTCGameHost;
   players: FilteredGamePlayer[];
 }
 

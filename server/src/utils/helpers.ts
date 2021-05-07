@@ -67,6 +67,13 @@ export const getInviteMailData = (
   }
 };
 
+export const getGameAsObject = (game: GameModel): RTCGame => {
+  return {
+    ...game.toObject(),
+    id: game._id.toString(),
+  };
+};
+
 export const filterGameForSpectator = (game: RTCGame): FilteredRTCGame => {
   const filtered = {
     ...game,

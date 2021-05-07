@@ -3,6 +3,7 @@ import { GameModel, GameStatus, NewGame, RTCGame } from '../types';
 import shortid from 'shortid';
 import { getInitialInfo } from '../utils/helpers';
 import { shuffle } from 'lodash';
+import { v4 as uuidv4 } from 'uuid';
 
 const getAllGamesByUser = async (userId: string) => {
   return await Game.find({ 'host.id': userId });
@@ -18,13 +19,6 @@ const getGameById = async (gameId: string): Promise<GameModel> => {
   return gameInDB;
 };
 
-const getGameAsObject = (game: GameModel): RTCGame => {
-  return {
-    ...game.toObject(),
-    id: game._id.toString(),
-  };
-};
-
 const addGame = async (newGame: NewGame) => {
   const gameWithoutInfo = {
     ...newGame,
@@ -32,7 +26,7 @@ const addGame = async (newGame: NewGame) => {
     players: newGame.players.map((player) => {
       return {
         ...player,
-        id: shortid.generate(),
+        id: uuidv4(),
         reservedFor: null,
         privateData: {
           ...player.privateData,
@@ -89,5 +83,4 @@ export default {
   getAllGamesByUser,
   addGame,
   shufflePlayers,
-  getGameAsObject,
 };

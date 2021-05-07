@@ -10,7 +10,7 @@ import {
   GameStatus,
   GameModel,
 } from '../types';
-import mongoose, { Error } from 'mongoose';
+import { Error, ObjectId } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 
 const isString = (text: any): text is string => {
@@ -162,7 +162,6 @@ export const toNewGame = (object: any, user: DecodedToken): NewGame => {
     host: {
       id: user.id,
       displayName: user.username,
-      privateData: null,
     },
     rounds: parseRounds(object.rounds),
     price: parseNumber(object.price),
@@ -181,7 +180,7 @@ export const toPositiveInteger = (object: any): number => {
 
 interface DecodedToken {
   username: string;
-  id: mongoose.Types.ObjectId;
+  id: ObjectId;
 }
 
 export const toAuthenticatedUser = (request: any): DecodedToken => {

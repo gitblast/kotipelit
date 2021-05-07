@@ -64,7 +64,7 @@ const useTwilioRoom = (
           if (!previous) return previous;
 
           return previous.map((oldParticipant) => {
-            return participant.identity.startsWith(oldParticipant.id)
+            return participant.identity === oldParticipant.id
               ? ({
                   ...oldParticipant,
                   connection: participant,
@@ -88,7 +88,7 @@ const useTwilioRoom = (
           if (!previous) return previous;
 
           return previous.map((oldParticipant) => {
-            return participant.identity.startsWith(oldParticipant.id)
+            return participant.identity === oldParticipant.id
               ? { ...oldParticipant, connection: null }
               : oldParticipant;
           });

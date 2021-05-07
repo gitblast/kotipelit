@@ -22,7 +22,7 @@ import userService from '../services/users';
 import wordService from '../services/words';
 import lobbyService from '../services/lobby';
 
-import { Role } from '../types';
+import { Role, SocketIOAuthToken } from '../types';
 import { onlyForRole } from '../utils/middleware';
 import { getInviteMailData } from '../utils/helpers';
 import logger from '../utils/logger';
@@ -45,7 +45,7 @@ router.put('/lock', async (req, res, next) => {
 
     const game = await gameService.getGameById(gameId);
 
-    const host = await userService.getUserById(game.host.id);
+    const host = await userService.getUserById(game.host.id.toString());
 
     const playerReservationToLock = game.players.find((player) => {
       return player.reservedFor?.id === reservationId;
@@ -158,12 +158,11 @@ router.get('/spectate/:gameId', async (req, res, next) => {
 
     const spectatorId = `spectator-${Date.now()}`;
 
-    const payload = {
+    const payload: SocketIOAuthToken = {
       username: spectatorId,
       id: spectatorId,
       role: Role.SPECTATOR,
       gameId,
-      type: 'rtc',
     };
 
     const token = jwt.sign(payload, config.SECRET, { expiresIn: '10h' });
@@ -186,12 +185,11 @@ router.get('/join/:hostName/:inviteCode', async (req, res, next) => {
     const game = await gameService.getGameById(gameId);
     const player = validateGamePlayer(game, inviteCode);
 
-    const payload = {
+    const payload: SocketIOAuthToken = {
       username: player.name,
       id: player.id,
       role: Role.PLAYER,
       gameId,
-      type: 'rtc',
     };
 
     const token = jwt.sign(payload, config.SECRET, { expiresIn: '10h' });
@@ -264,7 +262,7 @@ router.get('/:gameId', async (req, res, next) => {
 
     const game = await gameService.getGameById(gameId);
 
-    if (game.host.id.toString() !== user.id) {
+    if (game.host.id.toString() !== user.id.toString()) {
       throw new Error('game host id and user id not matching');
     }
 
@@ -297,20 +295,17 @@ router.get('/token/:id', async (req, res, next) => {
 
     const user = toAuthenticatedUser(req);
 
-    if (!user.id === game.host.id) {
-      console.error('invalid host', game.host, user.id);
-
+    if (user.id.toString() !== game.host.id.toString()) {
       throw new Error(
         `Invalid request: game host id and request user id not matching`
       );
     }
 
-    const payload = {
+    const payload: SocketIOAuthToken = {
       username: user.username,
-      id: user.id,
+      id: user.id.toString(),
       role: Role.HOST,
       gameId,
-      type: 'rtc',
     };
 
     const token = jwt.sign(payload, config.SECRET);

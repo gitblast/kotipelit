@@ -3,12 +3,16 @@ import {
   Answer,
   GameModel,
   GameStatus,
-  GameType,
+  // GameType,
   Role,
   RTCGame,
   SocketWithToken,
 } from '../../types';
-import { filterGameForSpectator, filterGameForUser } from '../../utils/helpers';
+import {
+  filterGameForSpectator,
+  filterGameForUser,
+  getGameAsObject,
+} from '../../utils/helpers';
 import logger from '../../utils/logger';
 import { TimerData } from '../../utils/timer';
 import gameService from '../games';
@@ -99,7 +103,7 @@ export const startRTCGame = async (socket: SocketWithToken): Promise<void> => {
 
     await game.save();
 
-    emitUpdatedGame(socket, game);
+    // emitUpdatedGame(socket, game);
   } catch (e) {
     logger.error(`error starting game: ${e.message}`);
 
@@ -148,7 +152,7 @@ export const launchRTCGame = async (
       logger.log(`game with id ${gameId} already launched`);
     }
 
-    emitUpdatedGame(socket, game);
+    // emitUpdatedGame(socket, game);
 
     // access token for host
     const hostToken = twilioService.getVideoAccessToken(
@@ -230,7 +234,7 @@ export const updateRTCGame = async (
 
     await game.save();
 
-    emitUpdatedGame(socket, game);
+    // emitUpdatedGame(socket, game);
   } catch (e) {
     logger.error();
 
@@ -341,9 +345,7 @@ export const handleAnswer = async (
     const hostSocketId = room.socketMap.get(game.host.id.toString());
 
     if (hostSocketId) {
-      socket
-        .to(hostSocketId)
-        .emit('game-updated', gameService.getGameAsObject(game));
+      socket.to(hostSocketId).emit('game-updated', getGameAsObject(game));
     } else {
       logger.error('no host socket found when delivering answer');
     }
@@ -437,8 +439,8 @@ export const handleMute = (
   }
 };
 
-const emitUpdatedGame = (socket: SocketWithToken, game: GameModel): void => {
-  const gameAsObject = gameService.getGameAsObject(game);
+/* const emitUpdatedGame = (socket: SocketWithToken, game: GameModel): void => {
+  const gameAsObject = getGameAsObject(game);
 
   const room = roomService.getRoom(gameAsObject.id);
 
@@ -483,12 +485,12 @@ const emitUpdatedGame = (socket: SocketWithToken, game: GameModel): void => {
       logger.log(`players who had no socket set: ${didNotEmit.join(' / ')}`);
     }
   }
-};
+}; */
 
 const emitUpdatedGameToOne = (socket: SocketWithToken, game: GameModel) => {
   const { role, id } = socket.decodedToken;
 
-  const gameAsObject = gameService.getGameAsObject(game);
+  const gameAsObject = getGameAsObject(game);
 
   if (role === Role.HOST) {
     socket.emit('game-updated', gameAsObject);

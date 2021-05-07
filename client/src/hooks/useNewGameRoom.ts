@@ -36,9 +36,33 @@ const useNewGameRoom = (token: string | null, role: Role) => {
     if (socket) {
       logger.log('attaching socket io listeners');
 
-      /** TEST */
-      socket.on('testing', (data: string) => {
-        console.log('got message:', data);
+      socket.on('game-changed', (changes: Partial<RTCGame>) => {
+        logger.log('game changed', changes);
+
+        setGame((currentGame) => {
+          if (!currentGame) {
+            logger.log('no game was set when game changed. emitting get game');
+
+            socket.emit('get-room-game');
+
+            return currentGame;
+          }
+
+          const newGame = {
+            ...currentGame,
+            ...changes,
+          };
+
+          const mappedPlayers = newGame.players.map((player) => ({
+            ...player,
+            hasTurn: player.id === newGame.info.turn,
+          }));
+
+          return {
+            ...newGame,
+            players: mappedPlayers,
+          };
+        });
       });
 
       socket.on('game-updated', (updatedGame: RTCGame) => {

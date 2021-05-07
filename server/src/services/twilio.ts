@@ -12,7 +12,7 @@ const getVideoAccessToken = (identity: string, roomName: string): string => {
     config.TWILIO_API_SECRET
   );
 
-  token.identity = `${identity}-${Date.now()}`;
+  token.identity = identity;
 
   const grant = new VideoGrant({ room: roomName });
 

@@ -89,23 +89,23 @@ const handler = (io: Server): void => {
   setupChangeStreams(io);
 
   io.of('/').on('connection', (socket: SocketWithToken) => {
-    logger.log(
-      `user connected ${socket.decodedToken.username} with socket id '${socket.id}'`
-    );
+    const { id, gameId, role, username } = socket.decodedToken;
 
-    const { type, gameId } = socket.decodedToken;
+    logger.log(`[${role}] '${username}' connected (${id})`);
 
-    if (type === 'rtc') {
-      logger.log(`joining channel ${gameId}`);
+    attachRTCListeners(socket);
 
-      attachRTCListeners(socket);
+    /** This makes it easy to send updates to given user */
 
-      socket.join(gameId);
+    socket.join(id);
 
-      void callbacks.joinRTCRoom(socket);
-    } else {
-      logger.error('socket type not recognized');
-    }
+    socket.join(gameId);
+
+    /** this makes it easy to send different stuff to host/players/spectators without knowing their socket id:s */
+
+    socket.join(`${gameId}/${role}`);
+
+    void callbacks.getRoomGame(socket);
   });
 };
 

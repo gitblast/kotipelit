@@ -45,6 +45,15 @@ export const setupChangeStreams = (io: Server) => {
 
       const changes = data.updateDescription.updatedFields;
 
+      /** fixes issue with mongodb returning "info.timer" instead of { info: { timer: ... } } when modifying subfields only */
+      if (changes['info.timer']) {
+        changes.info = {
+          ...game.info,
+        };
+
+        delete changes['info.timer'];
+      }
+
       if (changes.players) {
         /** hide player's private data from other players and spectators */
 

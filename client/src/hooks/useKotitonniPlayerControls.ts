@@ -57,7 +57,7 @@ const useKotitonniPlayerControls = () => {
       socket.connect();
     }
 
-    socket.emit('get-room-game');
+    socket.emit('get-game');
   }, [socket]);
 
   return {

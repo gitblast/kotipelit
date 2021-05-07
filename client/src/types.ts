@@ -162,9 +162,15 @@ export interface RTCSelf {
 
 export type GamePlayer = RTCKotitonniPlayer; // handle other game types here
 
+export interface TimerData {
+  value: number;
+  isRunning: boolean;
+}
+
 export interface KotitonniInfo {
   round: number;
   turn: string; // player id
+  timer: TimerData;
 }
 
 export interface InGameTimerData {

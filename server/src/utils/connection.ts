@@ -7,6 +7,7 @@ const connect = async (MONGODB_URI: string): Promise<void> => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
+      useFindAndModify: false,
     });
 
     if (process.env.NODE_ENV !== 'test') logger.log('Connected to MongoDB');

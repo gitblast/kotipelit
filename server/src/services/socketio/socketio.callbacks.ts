@@ -3,7 +3,6 @@ import {
   Answer,
   GameModel,
   GameStatus,
-  // GameType,
   Role,
   RTCGame,
   SocketWithToken,
@@ -14,81 +13,32 @@ import {
   getGameAsObject,
 } from '../../utils/helpers';
 import logger from '../../utils/logger';
-import { TimerData } from '../../utils/timer';
 import gameService from '../games';
-import roomService from '../rooms';
 import twilioService from '../twilio';
 import urlService from '../urls';
+import { shuffle } from 'lodash';
+import { getTimer, initTimer, gamesThatUseTimer } from '../../utils/timer';
 
-// RTC
+const logRecievedEvent = (
+  event: string,
+  socket: SocketWithToken,
+  additionalLog: string = ''
+): void => {
+  const { username, id, role } = socket.decodedToken;
 
-const logRecievedMsg = (event: string, socket: SocketWithToken): void => {
   logger.log(
-    `recieved '${event}' from ${socket.decodedToken.username} (${socket.id})`
+    `recieved '${event}' from [${role}] '${username}' (ID: ${id}, SOCKET: ${socket.id}) ${additionalLog}`
   );
 };
-
-export const joinRTCRoom = async (socket: SocketWithToken): Promise<void> => {
-  logRecievedMsg('join-gameroom', socket);
-
-  try {
-    const { gameId } = socket.decodedToken;
-
-    const game = await gameService.getGameById(gameId);
-
-    const existingRoom = roomService.getRooms().get(gameId);
-
-    if (!existingRoom) {
-      if (game.status === GameStatus.FINISHED) {
-        throw new Error('cannot join, game status is finished!');
-      }
-
-      roomService.createRoom(game);
-    }
-
-    roomService.joinRoom(socket);
-
-    emitUpdatedGameToOne(socket, game);
-  } catch (e) {
-    logger.error(`Error joining room: ${e.message}`);
-
-    socket.emit('rtc-error', e.message);
-  }
-};
-
 export const socketDisconnected = (
   socket: SocketWithToken,
   reason: string
 ): void => {
-  logger.log(
-    `recieved disconnect from ${socket.decodedToken.username}. reason: ${reason}. socket id: ${socket.id}`
-  );
-
-  const { id, gameId, role } = socket.decodedToken;
-
-  if (role === Role.SPECTATOR) {
-    logger.log('removing spectator socket from room');
-
-    roomService.leaveRoom(socket);
-
-    socket.to(gameId).emit('user-left', id);
-  }
-
-  socket.to(gameId).emit('user-socket-disconnected', id);
-};
-
-export const leaveRTCRoom = (socket: SocketWithToken): void => {
-  logRecievedMsg('leave-room', socket);
-
-  const { id, gameId } = socket.decodedToken;
-
-  roomService.leaveRoom(socket);
-
-  socket.to(gameId).emit('user-left', id);
+  logRecievedEvent('disconnect', socket, `disconnect reason: ${reason}`);
 };
 
 export const startRTCGame = async (socket: SocketWithToken): Promise<void> => {
-  logRecievedMsg('start', socket);
+  logRecievedEvent('start', socket);
 
   try {
     const { gameId } = socket.decodedToken;
@@ -102,8 +52,6 @@ export const startRTCGame = async (socket: SocketWithToken): Promise<void> => {
     game.status = GameStatus.RUNNING;
 
     await game.save();
-
-    // emitUpdatedGame(socket, game);
   } catch (e) {
     logger.error(`error starting game: ${e.message}`);
 
@@ -115,7 +63,7 @@ export const launchRTCGame = async (
   socket: SocketWithToken,
   setToken: (token: string) => void
 ): Promise<void> => {
-  logRecievedMsg('launch', socket);
+  logRecievedEvent('launch', socket);
 
   try {
     const { gameId, id } = socket.decodedToken;
@@ -133,8 +81,15 @@ export const launchRTCGame = async (
       );
     }
 
-    // do not update state if game has already been launched
+    if (gamesThatUseTimer.includes(game.type)) {
+      await initTimer(game);
+    }
+
+    // only update state if game has not been launched
     if (game.status === GameStatus.UPCOMING) {
+      // shuffle player order
+      game.players = shuffle(game.players);
+
       game.status = GameStatus.WAITING;
 
       // set turn for correct player
@@ -143,16 +98,10 @@ export const launchRTCGame = async (
         turn: game.players[0].id,
       };
 
-      logger.log(
-        `setting turn to player '${game.players[0].name}' (id: ${game.players[0].id})`
-      );
-
       await game.save();
     } else {
       logger.log(`game with id ${gameId} already launched`);
     }
-
-    // emitUpdatedGame(socket, game);
 
     // access token for host
     const hostToken = twilioService.getVideoAccessToken(
@@ -172,18 +121,10 @@ export const getTwilioToken = (
   socket: SocketWithToken,
   setToken: (token: string) => void
 ): void => {
-  logRecievedMsg('get-twilio-token', socket);
+  logRecievedEvent('get-twilio-token', socket);
 
   try {
-    const { gameId, id, role } = socket.decodedToken;
-
-    if (role === Role.SPECTATOR) {
-      const room = roomService.getRoom(gameId);
-
-      if (!room.spectatorSockets.includes(socket.id)) {
-        throw new Error('socket id not in allowed spectators');
-      }
-    }
+    const { gameId, id } = socket.decodedToken;
 
     const token = twilioService.getVideoAccessToken(id, `kotipelit-${gameId}`);
 
@@ -199,7 +140,7 @@ export const updateRTCGame = async (
   socket: SocketWithToken,
   newGame: RTCGame
 ): Promise<void> => {
-  logRecievedMsg('update-game', socket);
+  logRecievedEvent('update-game', socket);
 
   try {
     const { gameId } = socket.decodedToken;
@@ -229,12 +170,16 @@ export const updateRTCGame = async (
     // update status
     game.status = newGame.status;
 
-    // update info
-    game.info = newGame.info;
+    /** update turn and round. do not update possible timer */
+    game.info = {
+      ...game.info,
+      turn: newGame.info.turn,
+      round: newGame.info.round,
+    };
+
+    console.log('GAMEN INFIO ON', game.info.timer);
 
     await game.save();
-
-    // emitUpdatedGame(socket, game);
   } catch (e) {
     logger.error();
 
@@ -243,7 +188,7 @@ export const updateRTCGame = async (
 };
 
 export const endRTCGame = async (socket: SocketWithToken): Promise<void> => {
-  logRecievedMsg('end', socket);
+  logRecievedEvent('end', socket);
 
   try {
     const { gameId } = socket.decodedToken;
@@ -264,12 +209,6 @@ export const endRTCGame = async (socket: SocketWithToken): Promise<void> => {
 
     // delete game urls
     await urlService.deleteGameUrls(gameId);
-
-    logger.log(`deleting room... `);
-
-    const success = roomService.deleteRoom(gameId);
-
-    logger.log(success ? 'delete succesful' : 'delete failed');
   } catch (e) {
     logger.error(e.message);
 
@@ -277,22 +216,8 @@ export const endRTCGame = async (socket: SocketWithToken): Promise<void> => {
   }
 };
 
-export const getRoomState = (socket: SocketWithToken) => {
-  try {
-    const { gameId } = socket.decodedToken;
-
-    const state = roomService.getRoomState(gameId);
-
-    socket.emit('room-state', state);
-  } catch (e) {
-    logger.error(e.message);
-
-    socket.emit('rtc-error', e.message);
-  }
-};
-
-export const getRoomGame = async (socket: SocketWithToken): Promise<void> => {
-  logRecievedMsg('get-room-game', socket);
+export const getGame = async (socket: SocketWithToken): Promise<void> => {
+  logRecievedEvent('get-game', socket);
 
   try {
     const { gameId } = socket.decodedToken;
@@ -311,12 +236,10 @@ export const handleAnswer = async (
   socket: SocketWithToken,
   answer: Answer
 ): Promise<void> => {
-  logRecievedMsg('answer', socket);
+  logRecievedEvent('answer', socket);
 
   try {
     const { id, gameId } = socket.decodedToken;
-
-    const room = roomService.getRoom(gameId);
 
     const game = await gameService.getGameById(gameId);
 
@@ -342,14 +265,12 @@ export const handleAnswer = async (
 
     await game.save();
 
-    const hostSocketId = room.socketMap.get(game.host.id.toString());
+    // emit to host
+    socket
+      .to(`${gameId}/${Role.HOST}`)
+      .emit('game-updated', getGameAsObject(game));
 
-    if (hostSocketId) {
-      socket.to(hostSocketId).emit('game-updated', getGameAsObject(game));
-    } else {
-      logger.error('no host socket found when delivering answer');
-    }
-
+    // emit to self
     emitUpdatedGameToOne(socket, game);
   } catch (e) {
     logger.error(`error answering: ${e.message}`);
@@ -358,16 +279,16 @@ export const handleAnswer = async (
   }
 };
 
-export const handleTimer = (
+export const handleTimer = async (
   socket: SocketWithToken,
   command: 'start' | 'stop' | 'reset'
-): void => {
-  logRecievedMsg('handle-timer', socket);
+) => {
+  logRecievedEvent('handle-timer', socket);
 
   try {
     const { gameId } = socket.decodedToken;
 
-    const { timer } = roomService.getRoomState(gameId);
+    const timer = await getTimer(gameId);
 
     switch (command) {
       case 'start':
@@ -390,102 +311,21 @@ export const handleTimer = (
   }
 };
 
-export const getTimerState = (
-  socket: SocketWithToken,
-  callback: (data: TimerData) => void
-): void => {
-  logRecievedMsg('get-timer-state', socket);
-
-  try {
-    const { gameId } = socket.decodedToken;
-
-    const state = roomService.getRoomState(gameId);
-
-    if (!state.timer) {
-      throw new Error('no timer set, check game type');
-    }
-
-    callback(state.timer.getState());
-  } catch (e) {
-    logger.error(e.message);
-
-    socket.emit('rtc-error', e.message);
-  }
-};
-
 export const handleMute = (
   socket: SocketWithToken,
   playerId: string,
   muted: boolean
 ) => {
-  logRecievedMsg('set-player-muted', socket);
+  logRecievedEvent('set-player-muted', socket);
 
   try {
-    const { gameId } = socket.decodedToken;
-
-    const room = roomService.getRoom(gameId);
-
-    const socketId = room.socketMap.get(playerId);
-
-    if (!socketId) {
-      throw new Error(`No socket found for player id '${playerId}'`);
-    }
-
-    socket.to(socketId).emit('set-audio-muted', playerId, muted);
+    socket.to(playerId).emit('set-audio-muted', playerId, muted);
   } catch (e) {
     logger.error(`Error trying to mute player: ${e.message}`);
 
     socket.emit('rtc-error', `Error trying to mute player: ${e.message}`);
   }
 };
-
-/* const emitUpdatedGame = (socket: SocketWithToken, game: GameModel): void => {
-  const gameAsObject = getGameAsObject(game);
-
-  const room = roomService.getRoom(gameAsObject.id);
-
-  const { role } = socket.decodedToken;
-  logger.log(`emitting game-updated`);
-
-  // handle game types here
-  if (gameAsObject.type === GameType.KOTITONNI) {
-    const emittedTo: string[] = []; // for debugging
-    const didNotEmit: string[] = [];
-
-    if (role === Role.HOST) {
-      socket.emit('game-updated', gameAsObject);
-
-      // doesn't send other players' words
-      gameAsObject.players.forEach((player) => {
-        const socketId = room.socketMap.get(player.id);
-
-        if (socketId) {
-          emittedTo.push(`${player.name} (${socketId})`);
-
-          socket
-            .to(socketId)
-            .emit('game-updated', filterGameForUser(gameAsObject, player.id));
-        } else {
-          didNotEmit.push(`${player.name} (${socketId})`);
-        }
-      });
-
-      room.spectatorSockets.forEach((socketId) =>
-        socket
-          .to(socketId)
-          .emit('game-updated', filterGameForSpectator(gameAsObject))
-      );
-    }
-
-    if (emittedTo.length) {
-      logger.log(`emitted update to: ${emittedTo.join(' / ')}`);
-    }
-
-    if (didNotEmit.length) {
-      logger.log(`players who had no socket set: ${didNotEmit.join(' / ')}`);
-    }
-  }
-}; */
 
 const emitUpdatedGameToOne = (socket: SocketWithToken, game: GameModel) => {
   const { role, id } = socket.decodedToken;

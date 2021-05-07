@@ -1,42 +1,87 @@
-import { Server } from 'socket.io';
 import logger from './logger';
+import { GameModel, GameType, TimerData } from '../types';
+import Game from '../models/game';
+import gameService from '../services/games';
 
-export interface TimerData {
-  value: number;
-  isRunning: boolean;
-}
+export const gamesThatUseTimer = [GameType.KOTITONNI];
 
-export default class UpdateEmittingTimer {
-  private ioServer: Server;
-  private roomId: string;
+const timerCache = new Map<string, DBUpdatingTimer>();
+
+export const initTimer = async (game: GameModel) => {
+  logger.log('initializing timer');
+
+  const gameId = game._id.toString();
+
+  const existing = timerCache.get(gameId);
+
+  /** check cache first */
+  if (existing) {
+    return existing;
+  }
+
+  if (!game.info.timer) {
+    throw new Error(`game info has no timer property`);
+  }
+
+  const { value, isRunning } = game.info.timer;
+
+  const tickInterval = process.env.NODE_ENV === 'development' ? 500 : 1000;
+
+  const timer = new DBUpdatingTimer(gameId, value, isRunning, tickInterval);
+
+  timerCache.set(gameId, timer);
+
+  return timer;
+};
+
+export const getTimer = async (gameId: string) => {
+  const existing = timerCache.get(gameId);
+
+  if (existing) {
+    return existing;
+  }
+
+  const game = await gameService.getGameById(gameId);
+
+  return await initTimer(game);
+};
+
+export default class DBUpdatingTimer {
   private timeOutHandle: null | NodeJS.Timeout;
+
+  gameId: string;
   value: number;
   isRunning: boolean;
   tickInterval: number;
 
   constructor(
-    ioServer: Server,
-    roomId: string,
+    gameId: string,
     initialValue = 60,
+    initialRunning = false,
     tickInterval = 1000
   ) {
-    this.ioServer = ioServer;
-    this.roomId = roomId;
+    this.gameId = gameId;
     this.value = initialValue;
-    this.isRunning = false;
+    this.isRunning = initialRunning;
     this.timeOutHandle = null;
     this.tickInterval = tickInterval;
+
+    if (initialRunning) {
+      this.start();
+    }
   }
 
-  private emitUpdates() {
-    this.ioServer.to(this.roomId).emit('timer-updated', this.getState());
+  private async saveState() {
+    await Game.findByIdAndUpdate(this.gameId, {
+      $set: { 'info.timer': this.getState() },
+    });
   }
 
   private setState(newIsRunning?: boolean, newValue?: number) {
     this.isRunning = newIsRunning ?? this.isRunning;
     this.value = newValue ?? this.value;
 
-    this.emitUpdates();
+    this.saveState();
   }
 
   private tick() {

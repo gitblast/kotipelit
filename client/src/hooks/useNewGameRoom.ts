@@ -43,7 +43,7 @@ const useNewGameRoom = (token: string | null, role: Role) => {
           if (!currentGame) {
             logger.log('no game was set when game changed. emitting get game');
 
-            socket.emit('get-room-game');
+            socket.emit('get-game');
 
             return currentGame;
           }

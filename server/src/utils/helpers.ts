@@ -1,4 +1,3 @@
-import { io as ioServer } from '../index';
 import {
   FilteredRTCGame,
   GameInfo,
@@ -9,7 +8,7 @@ import {
   RTCGame,
   RTCGameState,
 } from '../types';
-import UpdateEmittingTimer from './timer';
+import DBUpdatingTimer from './timer';
 
 export const getInitialInfo = (game: NewGame): GameInfo => {
   /** handle different game types here */
@@ -23,6 +22,10 @@ export const getInitialInfo = (game: NewGame): GameInfo => {
       return {
         round: 1,
         turn: playerWithTurn.id,
+        timer: {
+          value: 60,
+          isRunning: false,
+        },
       };
     }
     default: {
@@ -126,10 +129,10 @@ export const getInitialGameState = (game: GameModel): RTCGameState => {
       const initialValue = 60;
 
       return {
-        timer: new UpdateEmittingTimer(
-          ioServer,
-          game.id,
+        timer: new DBUpdatingTimer(
+          game._id.toString(),
           initialValue,
+          false,
           tickInterval
         ),
       };

@@ -1,34 +1,11 @@
 import React from 'react';
 
 import { useGameData } from '../../context';
-import logger from '../../utils/logger';
-
-interface TimerData {
-  value: number;
-  isRunning: boolean;
-}
 
 const useServerSideTimer = () => {
-  const { socket } = useGameData();
-  const [timerData, setTimerData] = React.useState<TimerData | null>(null);
+  const { socket, game } = useGameData();
 
-  React.useEffect(() => {
-    logger.log('adding listener for timer');
-
-    socket.emit('get-timer-state', setTimerData);
-
-    const handler = (data: TimerData) => {
-      setTimerData({ value: data.value, isRunning: data.isRunning });
-    };
-
-    socket.on('timer-updated', handler);
-
-    return () => {
-      logger.log('removing listener for timer');
-
-      socket.off('timer-updated', handler);
-    };
-  }, [socket]);
+  const timer = React.useMemo(() => game.info.timer, [game.info.timer]);
 
   const startTimer = React.useCallback(() => {
     socket.emit('handle-timer', 'start');
@@ -43,16 +20,16 @@ const useServerSideTimer = () => {
   }, [socket]);
 
   const toggleTimer = React.useCallback(() => {
-    if (timerData?.isRunning) {
+    if (timer.isRunning) {
       stopTimer();
     } else {
       startTimer();
     }
-  }, [startTimer, stopTimer, timerData?.isRunning]);
+  }, [startTimer, stopTimer, timer.isRunning]);
 
   return {
-    timerValue: timerData?.value ?? null,
-    timerIsRunning: timerData?.isRunning ?? null,
+    timerValue: timer.value,
+    timerIsRunning: timer.isRunning,
     startTimer,
     stopTimer,
     resetTimer,

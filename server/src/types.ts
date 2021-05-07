@@ -110,9 +110,15 @@ export interface FilteredGamePlayer extends BaseGamePlayer {
   privateData: PrivateData | null;
 }
 
+export interface TimerData {
+  value: number;
+  isRunning: boolean;
+}
+
 export interface KotitonniInfo {
   round: number;
   turn: string; // player id
+  timer: TimerData;
 }
 
 export type GameInfo = KotitonniInfo;

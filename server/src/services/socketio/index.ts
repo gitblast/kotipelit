@@ -4,9 +4,8 @@ import config from '../../utils/config';
 import logger from '../../utils/logger';
 import * as callbacks from './socketio.callbacks';
 
-import { SocketWithToken, Role, Answer } from '../../types';
+import { SocketWithToken, Role, Answer, GameUpdate } from '../../types';
 import { setupChangeStreams } from '../changeStream';
-import { GameUpdate } from '../../../../client/src/types';
 
 const attachRTCListeners = (socket: SocketWithToken) => {
   logger.log('attaching listeners');

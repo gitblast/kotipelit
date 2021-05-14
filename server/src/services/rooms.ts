@@ -1,4 +1,4 @@
-import { Role, RTCGameRoom, RTCGameState, SocketWithToken } from '../types';
+import { Role, RTCGameRoom, RTCGameState, SocketWithGameToken } from '../types';
 import { RoomNotFoundError } from '../utils/errors';
 import { getInitialGameState } from '../utils/helpers';
 import logger from '../utils/logger';
@@ -35,7 +35,7 @@ const setRoom = (id: string, updatedRoom: Omit<RTCGameRoom, 'lastUpdated'>) => {
   rooms.set(id, timeStampedRoom);
 };
 
-const joinRoom = (socket: SocketWithToken) => {
+const joinRoom = (socket: SocketWithGameToken) => {
   const { role, gameId, id, username } = socket.decodedToken;
 
   const room = rooms.get(gameId);
@@ -113,7 +113,7 @@ const createRoom = (game: GameModel): void => {
   setRoom(game.id, newRoom);
 };
 
-const leaveRoom = (socket: SocketWithToken): void => {
+const leaveRoom = (socket: SocketWithGameToken): void => {
   const { role, gameId, id, username } = socket.decodedToken;
 
   const room = rooms.get(gameId);

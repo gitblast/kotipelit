@@ -21,6 +21,7 @@ import mailService from '../services/mail';
 import userService from '../services/users';
 import wordService from '../services/words';
 import lobbyService from '../services/lobby';
+import twilioService from '../services/twilio';
 
 import { Role, SocketIOAuthToken } from '../types';
 import { onlyForRole } from '../utils/middleware';
@@ -154,7 +155,24 @@ router.get('/spectate/:gameId', async (req, res, next) => {
     const gameId = toID(req.params.gameId);
 
     // check that game exists
-    await gameService.getGameById(gameId);
+    const game = await gameService.getGameById(gameId);
+
+    if (game.allowedSpectators === 0) {
+      throw new Error('Invalid request: game allows no spectators');
+    }
+
+    // check if there is room
+    const participants = await twilioService.getParticipantList(gameId);
+
+    logger.log(
+      `${participants.length} participants connected to game id '${gameId}'`
+    );
+
+    if (participants.length - 6 >= game.allowedSpectators) {
+      // -6 because 1 host, 5 players
+
+      throw new Error('Invalid request: max spectator count full');
+    }
 
     const spectatorId = `spectator-${Date.now()}`;
 

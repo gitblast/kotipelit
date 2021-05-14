@@ -21,6 +21,19 @@ const getVideoAccessToken = (identity: string, roomName: string): string => {
   return token.toJwt();
 };
 
+const getParticipantList = async (gameId: string) => {
+  const client = Twilio(config.TWILIO_API_KEY, config.TWILIO_API_SECRET, {
+    accountSid: config.TWILIO_ACCOUNT_SID,
+  });
+
+  const participants = await client.video
+    .rooms(`kotipelit-${gameId}`)
+    .participants.list();
+
+  return participants;
+};
+
 export default {
   getVideoAccessToken,
+  getParticipantList,
 };

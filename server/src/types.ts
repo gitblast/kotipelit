@@ -144,15 +144,22 @@ export enum Role {
   SPECTATOR = 'SPECTATOR',
 }
 
-export interface SocketIOAuthToken {
+export interface UserToken {
   id: string;
   username: string;
   role: Role;
+}
+
+export interface SocketIOGameToken extends UserToken {
   gameId: string;
 }
 
 export interface SocketWithToken extends Socket {
-  decodedToken: SocketIOAuthToken;
+  decodedToken: UserToken;
+}
+
+export interface SocketWithGameToken extends Socket {
+  decodedToken: SocketIOGameToken;
 }
 
 export interface RTCGameRoom {

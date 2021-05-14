@@ -4,10 +4,16 @@ import config from '../../utils/config';
 import logger from '../../utils/logger';
 import * as callbacks from './socketio.callbacks';
 
-import { SocketWithToken, Role, Answer, GameUpdate } from '../../types';
+import {
+  SocketWithGameToken,
+  Role,
+  Answer,
+  GameUpdate,
+  SocketWithToken,
+} from '../../types';
 import { setupChangeStreams } from '../changeStream';
 
-const attachRTCListeners = (socket: SocketWithToken) => {
+const attachRTCListeners = (socket: SocketWithGameToken) => {
   logger.log('attaching listeners');
 
   // can handle game types here
@@ -58,19 +64,34 @@ const attachRTCListeners = (socket: SocketWithToken) => {
 };
 
 const handler = (io: Server): void => {
-  // authenticate
-  io.of('/').use(
+  setupChangeStreams(io);
+
+  // authenticate dashboard
+  io.of('/dash').use(
     authorize({
       secret: config.SECRET,
     })
   );
 
-  setupChangeStreams(io);
+  io.of('/dash').on('connection', (socket: SocketWithToken) => {
+    const { id, role, username } = socket.decodedToken;
 
-  io.of('/').on('connection', (socket: SocketWithToken) => {
+    logger.log(`[${role}] '${username}' connected to /dash (${id})`);
+
+    socket.join(id);
+  });
+
+  // authenticate games
+  io.of('/games').use(
+    authorize({
+      secret: config.SECRET,
+    })
+  );
+
+  io.of('/games').on('connection', (socket: SocketWithGameToken) => {
     const { id, gameId, role, username } = socket.decodedToken;
 
-    logger.log(`[${role}] '${username}' connected (${id})`);
+    logger.log(`[${role}] '${username}' connected to /games (${id})`);
 
     attachRTCListeners(socket);
 

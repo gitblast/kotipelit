@@ -20,7 +20,9 @@ const useAuthSocket = (
 
       const path =
         // eslint-disable-next-line no-undef
-        process?.env.NODE_ENV === 'development' ? 'http://localhost:3333' : '/';
+        process?.env.NODE_ENV === 'development'
+          ? 'http://localhost:3333/games'
+          : '/games';
 
       const socket = socketIOClient(path, {
         autoConnect: false,

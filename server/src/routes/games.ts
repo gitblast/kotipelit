@@ -23,7 +23,7 @@ import wordService from '../services/words';
 import lobbyService from '../services/lobby';
 import twilioService from '../services/twilio';
 
-import { Role, SocketIOAuthToken } from '../types';
+import { Role, SocketIOGameToken } from '../types';
 import { onlyForRole } from '../utils/middleware';
 import { getInviteMailData } from '../utils/helpers';
 import logger from '../utils/logger';
@@ -176,7 +176,7 @@ router.get('/spectate/:gameId', async (req, res, next) => {
 
     const spectatorId = `spectator-${Date.now()}`;
 
-    const payload: SocketIOAuthToken = {
+    const payload: SocketIOGameToken = {
       username: spectatorId,
       id: spectatorId,
       role: Role.SPECTATOR,
@@ -203,7 +203,7 @@ router.get('/join/:hostName/:inviteCode', async (req, res, next) => {
     const game = await gameService.getGameById(gameId);
     const player = validateGamePlayer(game, inviteCode);
 
-    const payload: SocketIOAuthToken = {
+    const payload: SocketIOGameToken = {
       username: player.name,
       id: player.id,
       role: Role.PLAYER,
@@ -319,7 +319,7 @@ router.get('/token/:id', async (req, res, next) => {
       );
     }
 
-    const payload: SocketIOAuthToken = {
+    const payload: SocketIOGameToken = {
       username: user.username,
       id: user.id.toString(),
       role: Role.HOST,

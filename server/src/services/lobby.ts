@@ -128,9 +128,6 @@ const reserveIfSpotOpen = async (
     `reserved a spot for player id '${reservedPlayer.id}' (reservation id: ${reservationId})`
   );
 
-  logger.log('shuffling players');
-  await gameService.shufflePlayers(gameId);
-
   return {
     playerId: reservedPlayer.id,
     expiresAt: expiryTime,

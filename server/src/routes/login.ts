@@ -6,7 +6,7 @@ import config from '../utils/config';
 import { toCredentials } from '../utils/mappers';
 
 import User from '../models/user';
-import { Role } from '../types';
+import { Role, UserToken } from '../types';
 
 const router = express.Router();
 
@@ -32,7 +32,7 @@ router.post('/', async (req, res, next) => {
       throw new Error('Invalid username or password');
     }
 
-    const userForToken = {
+    const userForToken: UserToken = {
       username: user.username,
       id: user._id.toString(),
       role: Role.HOST,

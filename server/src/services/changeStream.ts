@@ -25,23 +25,38 @@ const filterChanges = (
   return filtered;
 };
 
-const GAME_NAMESPACE = '/';
+const GAME_NAMESPACE = '/games';
+const DASHBOARD_NAMESPACE = '/dash';
 
 export const setupChangeStreams = (io: Server) => {
   const gameChangeStream = Game.watch([], { fullDocument: 'updateLookup' });
 
   gameChangeStream.on('change', (data) => {
     if (data.operationType === 'update') {
-      const game = data.fullDocument as GameModel;
-      const gameId = game._id.toString();
+      const gameObj = data.fullDocument as GameModel;
 
-      if (!game) {
+      if (!gameObj) {
         logger.error(
           'unexpected: fullDocument was not defined on change stream'
         );
 
         return;
       }
+
+      const gameId = gameObj._id.toString();
+
+      delete gameObj._id;
+      delete gameObj.__v;
+
+      const game = {
+        ...gameObj,
+        id: gameId,
+      };
+
+      /** emit updated document to dashboard */
+      io.of(DASHBOARD_NAMESPACE)
+        .to(game.host.id.toString())
+        .emit('game-has-updated', game);
 
       const changes = data.updateDescription.updatedFields;
 

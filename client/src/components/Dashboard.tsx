@@ -4,8 +4,9 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useGames } from '../context';
-import { GameStatus, LoggedInUser } from '../types';
+import { GameStatus, LoggedInUser, RTCGame } from '../types';
 import GameCard from './GameCard/GameCard';
+import { io as socketIOClient, Socket } from 'socket.io-client';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -57,6 +58,58 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+const useDashboardSocket = (
+  authToken: string,
+  setGames: React.Dispatch<React.SetStateAction<RTCGame[]>>
+) => {
+  const [socket, setSocket] = React.useState<null | Socket>();
+
+  React.useEffect(() => {
+    if (!socket) {
+      const path =
+        // eslint-disable-next-line no-undef
+        process?.env.NODE_ENV === 'development'
+          ? 'http://localhost:3333/dash'
+          : '/dash';
+
+      const client = socketIOClient(path, {
+        autoConnect: false,
+        transports: ['websocket'],
+        upgrade: false,
+        auth: {
+          token: `Bearer ${authToken}`,
+        },
+      });
+
+      client.on('game-has-updated', (updatedGame: RTCGame) => {
+        setGames((currentGames: RTCGame[]) => {
+          let updated = false;
+
+          const updatedGames = currentGames.map((game) => {
+            if (game.id === updatedGame.id) {
+              updated = true;
+
+              return updatedGame;
+            }
+
+            return game;
+          });
+
+          if (updated) {
+            return updatedGames;
+          }
+
+          return currentGames.concat(updatedGame);
+        });
+      });
+
+      client.connect();
+
+      setSocket(client);
+    }
+  }, [authToken, socket, setGames]);
+};
+
 interface DashboardProps {
   user: LoggedInUser;
 }
@@ -64,7 +117,9 @@ interface DashboardProps {
 const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   const classes = useStyles();
 
-  const { games, initGames } = useGames();
+  const { games, initGames, setGames } = useGames();
+
+  useDashboardSocket(user.token, setGames);
 
   React.useEffect(() => {
     initGames();

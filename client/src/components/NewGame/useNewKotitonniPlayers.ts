@@ -13,17 +13,17 @@ const useNewKotitonniPlayers = () => {
 
   React.useEffect(() => {
     const init = async () => {
-      const initialPlayers = await initializePlayers(5, 3);
-      setPlayers(initialPlayers);
+      try {
+        const initialPlayers = await initializePlayers(5, 3);
+        setPlayers(initialPlayers);
+      } catch (error) {
+        logger.error('error initializing players for new game:', error.message);
+
+        setError(error.message);
+      }
     };
 
-    try {
-      init();
-    } catch (error) {
-      logger.error('error initializing players for new game:', error.message);
-
-      setError(error.message);
-    }
+    init();
   }, []);
 
   return { players, setPlayers, error };

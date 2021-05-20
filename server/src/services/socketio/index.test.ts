@@ -33,7 +33,7 @@ describe('socket.io', () => {
       httpServerAddr.port.toString()
     );
 
-    path = optionsObj.path;
+    path = optionsObj.path + '/games';
     options = optionsObj.options;
 
     ioServer = new Server(httpServer);
@@ -68,7 +68,7 @@ describe('socket.io', () => {
   });
 
   it('should connect with a valid token', (done) => {
-    const token = jwt.sign({ test: true }, config.SECRET);
+    const token = jwt.sign({ id: 'test' }, config.SECRET);
 
     socket = ioClient(path, {
       ...options,

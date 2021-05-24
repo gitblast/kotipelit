@@ -32,7 +32,7 @@ const userSchema: Schema = new Schema(
 );
 
 userSchema.set('toJSON', {
-  transform: (_document: unknown, returnedObject: UserModel) => {
+  transform: (_document: unknown, returnedObject: Partial<UserModel>) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;

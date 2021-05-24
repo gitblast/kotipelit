@@ -1,13 +1,39 @@
 import { InviteInfo, InviteMailContent, GameType } from '../types';
 import { format } from 'date-fns';
 
-export const getVerificationMailContent = (confirmationId: string) => {
-  const baseUrl =
-    process.env.NODE_ENV === 'development'
-      ? 'http://localhost:3000/vahvista'
-      : 'https://www.kotipelit.com/vahvista';
+const baseUrl =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3000'
+    : 'https://www.kotipelit.com';
 
-  const confirmationUrl = `${baseUrl}/${confirmationId}`;
+export const getPasswordChangeConfirmationContent = (username: string) => {
+  return {
+    text: `Hei ${username},
+
+Salasanasi vaihdettiin onnistuneesti!`,
+    html: `<h1>Hei ${username}</h1><br/><br/>
+    <p>Salasanasi vaihdettiin onnistuneesti!</p>`,
+  };
+};
+
+export const getPasswordResetMailContent = (
+  resetToken: string,
+  username: string,
+  userId: string
+) => {
+  const resetUrl = `${baseUrl}/vaihdasalasana?token=${resetToken}&userId=${userId}`;
+
+  return {
+    text: `Hei ${username},
+
+pääset vahvistamaan sähköpostiosoitteesi tästä linkistä: ${resetUrl}`,
+    html: `<h1>Hei ${username}</h1><br/><br/>
+    <p><span>Voit vaihtaa salasanasi klikkaamalla </span><a href=${resetUrl}>tästä</a></p>`,
+  };
+};
+
+export const getVerificationMailContent = (confirmationId: string) => {
+  const confirmationUrl = `/vahvista/${baseUrl}/${confirmationId}`;
 
   return {
     text: `Hei,

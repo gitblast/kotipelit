@@ -1,3 +1,4 @@
+import { getPasswordChangeConfirmationContent } from './../utils/mailContent';
 import sgMail from '@sendgrid/mail';
 import { InviteInfo } from '../types';
 import config from '../utils/config';
@@ -7,6 +8,7 @@ import { format } from 'date-fns';
 import {
   getInviteMailContent,
   getVerificationMailContent,
+  getPasswordResetMailContent,
 } from '../utils/mailContent';
 
 sgMail.setApiKey(config.SENDGRID_API_KEY);
@@ -75,7 +77,64 @@ const sendVerification = async (
   }
 };
 
+const sendPasswordResetEmail = async (
+  recipientEmail: string,
+  username: string,
+  userId: string,
+
+  resetToken: string
+) => {
+  try {
+    const { text, html } = getPasswordResetMailContent(
+      resetToken,
+      username,
+      userId
+    );
+
+    const msg = {
+      to: recipientEmail,
+      from: 'info@kotipelit.com',
+      subject: 'Kotipelit.com unohtunut salasana',
+      text,
+      html,
+    };
+
+    await sgMail.send(msg);
+
+    logger.log(`password reset mail sent to '${recipientEmail}'`);
+  } catch (error) {
+    throw new Error(`Error sending password reset email: ${error.message}`);
+  }
+};
+
+const sendPasswordChangeConfirmation = async (
+  recipientEmail: string,
+  username: string
+) => {
+  try {
+    const { text, html } = getPasswordChangeConfirmationContent(username);
+
+    const msg = {
+      to: recipientEmail,
+      from: 'info@kotipelit.com',
+      subject: 'Kotipelit.com salasanan vaihto',
+      text,
+      html,
+    };
+
+    await sgMail.send(msg);
+
+    logger.log(`password change confirmation mail sent to '${recipientEmail}'`);
+  } catch (error) {
+    throw new Error(
+      `Error sending password change confirmation email: ${error.message}`
+    );
+  }
+};
+
 export default {
   sendInvite,
   sendVerification,
+  sendPasswordResetEmail,
+  sendPasswordChangeConfirmation,
 };

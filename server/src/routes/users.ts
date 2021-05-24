@@ -2,6 +2,7 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import User from '../models/user';
 import mailService from '../services/mail';
+import authService from '../services/auth';
 
 import { toNewUser, parseString } from '../utils/mappers';
 import { NewUser, Role } from '../types';
@@ -108,6 +109,35 @@ router.post('/', async (req, res, next) => {
     );
   } catch (error) {
     next(error);
+  }
+});
+
+router.post('/requestPasswordReset', async (req, res, next) => {
+  try {
+    const email = parseString(req.body.email, 'email');
+
+    await authService.requestPasswordReset(email);
+
+    res.status(204).send();
+  } catch (e) {
+    logger.error(`error with password reset request: ${e.message}`);
+    next(e);
+  }
+});
+
+router.post('/resetPassword', async (req, res, next) => {
+  try {
+    const userId = parseString(req.body.userId, 'userId');
+    const token = parseString(req.body.token, 'resetToken');
+    const newPassword = parseString(req.body.password, 'newPassword');
+
+    await authService.resetPassword(userId, token, newPassword);
+
+    res.status(204).send();
+  } catch (e) {
+    logger.error(`error reseting password: ${e.message}`);
+
+    next(e);
   }
 });
 

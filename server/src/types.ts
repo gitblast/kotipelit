@@ -59,6 +59,12 @@ export interface UrlModel extends Document {
   inviteCode: string;
 }
 
+export interface TokenModel extends Document {
+  userId: string;
+  token: string;
+  createdAt: Date;
+}
+
 export interface UserModel extends Omit<NewUser, 'password'>, Document {
   passwordHash: string;
   joinDate: Date;

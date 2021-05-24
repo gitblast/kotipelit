@@ -12,7 +12,7 @@ const connect = async (MONGODB_URI: string): Promise<void> => {
 
     if (process.env.NODE_ENV !== 'test') logger.log('Connected to MongoDB');
   } catch (error) {
-    logger.log('Error connecting to MongoDB:', error);
+    throw new Error(`Error connecting to MongoDB: ${error.message}`);
   }
 };
 

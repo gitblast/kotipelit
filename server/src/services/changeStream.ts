@@ -74,7 +74,7 @@ export const setupChangeStreams = (io: Server) => {
       if (changes.players) {
         /** hide player's private data from other players and spectators */
 
-        logger.log('emitting filtered changes');
+        // logger.log('emitting filtered changes');
 
         /** emit unfiltered changes to host */
         io.of(GAME_NAMESPACE)
@@ -103,8 +103,7 @@ export const setupChangeStreams = (io: Server) => {
 
         if (!isTimerUpdate) {
           /** suppress timer change logs */
-
-          logger.log('emitting changes');
+          // logger.log('emitting changes');
         }
 
         io.of(GAME_NAMESPACE)

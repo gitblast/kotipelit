@@ -143,7 +143,7 @@ const parsePlayers = (players: any): GamePlayer[] => {
 export const toNewUser = (object: any): NewUser => {
   return {
     username: parseString(object.username, 'username').trim(),
-    password: parseString(object.password, 'password').trim(),
+    password: parseString(object.password, 'password'),
     email: parseString(object.email, 'email').toLowerCase().trim(),
     firstName: parseString(object.firstName, 'firstName').trim(),
     lastName: parseString(object.lastName, 'lastName').trim(),

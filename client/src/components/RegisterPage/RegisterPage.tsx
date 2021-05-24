@@ -60,8 +60,8 @@ const useStyles = makeStyles((theme: Theme) =>
         textAlign: 'center',
       },
     },
-    maxWidth240: {
-      maxWidth: 240,
+    maxWidth300: {
+      maxWidth: 300,
       margin: 'auto',
     },
     welcomeImg: {
@@ -178,7 +178,7 @@ const RegisterPage = () => {
                   label="Salasana"
                   name="password"
                 />
-                <div className={classes.maxWidth240}>
+                <div className={classes.maxWidth300}>
                   <PasswordStrengthBar
                     password={values.password}
                     minLength={8}
@@ -199,7 +199,7 @@ const RegisterPage = () => {
                   name="passwordConfirm"
                 />
                 {isSubmitting && (
-                  <LinearProgress className={classes.maxWidth240} />
+                  <LinearProgress className={classes.maxWidth300} />
                 )}
                 {error && <Typography color="error">{error}</Typography>}
                 <br />

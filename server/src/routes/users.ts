@@ -112,17 +112,17 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-router.post('/requestPasswordReset', async (req, res, next) => {
+router.post('/requestPasswordReset', async (req, res) => {
   try {
     const email = parseString(req.body.email, 'email');
 
     await authService.requestPasswordReset(email);
-
-    res.status(204).send();
   } catch (e) {
     logger.error(`error with password reset request: ${e.message}`);
-    next(e);
   }
+
+  /** send same result whether succesful or not */
+  res.status(204).send();
 });
 
 router.post('/resetPassword', async (req, res, next) => {

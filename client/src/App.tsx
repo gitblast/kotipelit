@@ -22,6 +22,10 @@ const RegisterPage = lazy(() =>
   import('./components/RegisterPage/RegisterPage')
 );
 
+const ResetPasswordPage = lazy(() =>
+  import('./components/ResetPasswordPage/ResetPasswordPage')
+);
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
@@ -45,6 +49,9 @@ const App = () => {
           <div className={classes.container}>
             <Suspense fallback={<Loader msg="Ladataan..." />}>
               <Switch>
+                <Route path="/vaihdasalasana">
+                  <ResetPasswordPage />
+                </Route>
                 <Route path="/rekisteroidy">
                   <RegisterPage />
                 </Route>

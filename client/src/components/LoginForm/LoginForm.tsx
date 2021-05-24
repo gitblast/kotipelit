@@ -13,6 +13,7 @@ import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useUser } from '../../context';
+import ForgotPasswordDialog from './ForgotPasswordDialog';
 import useLogin from './useLogin';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -41,6 +42,9 @@ const useStyles = makeStyles((theme: Theme) =>
     registerLink: {
       textDecoration: 'none',
       color: theme.palette.text.primary,
+    },
+    forgotPassword: {
+      cursor: 'pointer',
     },
   })
 );
@@ -92,6 +96,10 @@ const ConfirmEmailMessage = () => {
 const LoginForm: React.FC = () => {
   const classes = useStyles();
 
+  const [showForgotPasswordForm, setShowForgotPasswordForm] = React.useState(
+    false
+  );
+
   const { handleLogin, emailNotVerified } = useLogin();
 
   const { user, loading } = useUser();
@@ -109,6 +117,10 @@ const LoginForm: React.FC = () => {
 
   return (
     <div className={classes.container}>
+      <ForgotPasswordDialog
+        open={showForgotPasswordForm}
+        handleClose={() => setShowForgotPasswordForm(false)}
+      />
       <Paper elevation={3} className={classes.loginField}>
         {emailNotVerified ? (
           <ConfirmEmailMessage />
@@ -149,6 +161,15 @@ const LoginForm: React.FC = () => {
                   <Link to="/rekisteroidy" className={classes.registerLink}>
                     Ei vielä tiliä? Rekisteröidy
                   </Link>
+                </div>
+                <div>
+                  <Typography
+                    variant="caption"
+                    onClick={() => setShowForgotPasswordForm(true)}
+                    className={classes.forgotPassword}
+                  >
+                    Unohtunut salasana
+                  </Typography>
                 </div>
                 {isSubmitting && (
                   <LinearProgress className={classes.maxWidth240} />

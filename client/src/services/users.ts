@@ -1,14 +1,11 @@
 import axios from 'axios';
 
-import { LoggedUser, HostChannel, UserToAdd } from '../types';
+import { UserToAdd } from '../types';
 
 const baseUrl = '/api/users';
 let token: string | null = null;
 
-const login = async (
-  username: string,
-  password: string
-): Promise<Pick<LoggedUser, 'username' | 'token'>> => {
+const login = async (username: string, password: string) => {
   const credentials = { username, password };
 
   const response = await axios.post('/api/login', credentials);
@@ -27,7 +24,7 @@ const getAuthHeader = (): string => {
   return `Bearer ${token}`;
 };
 
-const getAll = async (): Promise<HostChannel[]> => {
+const getAll = async () => {
   const response = await axios.get(baseUrl);
   return response.data;
 };
@@ -52,6 +49,24 @@ const verifyConfirmationId = async (confirmationId: string) => {
   return response.data;
 };
 
+const resetPassword = async (
+  newPassword: string,
+  token: string,
+  userId: string
+) => {
+  const data = {
+    password: newPassword,
+    token,
+    userId,
+  };
+
+  await axios.post(`${baseUrl}/resetPassword`, data);
+};
+
+const requestPasswordReset = async (email: string) => {
+  await axios.post(`${baseUrl}/requestPasswordReset`, { email });
+};
+
 const userService = {
   addNew,
   login,
@@ -61,6 +76,8 @@ const userService = {
   getToken,
   checkAvailability,
   verifyConfirmationId,
+  resetPassword,
+  requestPasswordReset,
 };
 
 export default userService;

@@ -28,7 +28,7 @@ export const getPasswordResetMailContent = (
 
 pääset vahvistamaan sähköpostiosoitteesi tästä linkistä: ${resetUrl}`,
     html: `<h1>Hei ${username}</h1><br/><br/>
-    <p><span>Voit vaihtaa salasanasi klikkaamalla </span><a href=${resetUrl}>tästä</a></p>`,
+    <p>Voit vaihtaa salasanasi klikkaamalla <a href=${resetUrl}>tästä</a></p>`,
   };
 };
 

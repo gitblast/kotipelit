@@ -1,15 +1,18 @@
+import { onlyForRole } from '../utils/middleware';
+
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import User from '../models/user';
 import mailService from '../services/mail';
 import authService from '../services/auth';
 
-import { toNewUser, parseString } from '../utils/mappers';
+import { toAuthenticatedUser, toNewUser, parseString } from '../utils/mappers';
 import { NewUser, Role } from '../types';
 import logger from '../utils/logger';
 import userService from '../services/users';
 import jwt from 'jsonwebtoken';
 import config from '../utils/config';
+import expressJwt from 'express-jwt';
 
 const router = express.Router();
 
@@ -136,6 +139,24 @@ router.post('/resetPassword', async (req, res, next) => {
     res.status(204).send();
   } catch (e) {
     logger.error(`error reseting password: ${e.message}`);
+
+    next(e);
+  }
+});
+
+/** token only */
+router.use(expressJwt({ secret: config.SECRET }), onlyForRole(Role.HOST));
+
+router.post('/changePassword', async (req, res, next) => {
+  try {
+    const user = toAuthenticatedUser(req);
+    const newPassword = parseString(req.body.password, 'newPassword');
+
+    await authService.changePassword(user.id.toString(), newPassword);
+
+    res.status(204).send();
+  } catch (e) {
+    logger.error(`error changing password: ${e.message}`);
 
     next(e);
   }

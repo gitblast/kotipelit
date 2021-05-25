@@ -66,7 +66,7 @@ const requestPasswordReset = async (email: string) => {
     createdAt: Date.now(),
   }).save();
 
-  mailService.sendPasswordResetEmail(
+  await mailService.sendPasswordResetEmail(
     user.email,
     user.username,
     userId,
@@ -107,11 +107,30 @@ const resetPassword = async (
 
   logger.log(`password reset for user '${user.username}' succesful`);
 
-  mailService.sendPasswordChangeConfirmation(user.email, user.username);
+  await mailService.sendPasswordChangeConfirmation(user.email, user.username);
+};
+
+const changePassword = async (userId: string, newPassword: string) => {
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new Error(`Invalid request: no user found`);
+  }
+
+  const newHash = await bcrypt.hash(newPassword, 10);
+
+  user.passwordHash = newHash;
+
+  await user.save();
+
+  logger.log(`password change for user '${user.username}' succesful`);
+
+  await mailService.sendPasswordChangeConfirmation(user.email, user.username);
 };
 
 export default {
   login,
   requestPasswordReset,
   resetPassword,
+  changePassword,
 };

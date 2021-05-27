@@ -5,7 +5,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import NewGame from './NewGame/NewGame';
 import RTCGameRoom from './RTCGameRoom';
 import GameLobby from './GameLobby';
-import Dashboard from './Dashboard';
+import Dashboard from './Dashboard/Dashboard';
 import { Role } from '../types';
 import TYFPPage from './TYFPPage';
 import NotFoundPage from './NotFoundPage';

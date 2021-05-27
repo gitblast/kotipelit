@@ -6,8 +6,9 @@ import logoImg from '../assets/images/logoTransparent.png';
 import { AppBar, Toolbar, Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
-import UserControls from './UserControls';
+import UserControls from './UserControls/UserControls';
 import { useUser } from '../context';
+import LanguageSelect from './LanguageSelect';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -52,9 +53,8 @@ const TopBar = () => {
           <img className={classes.logo} src={logoImg} alt="Kotipelit" />
         </Link>
         <div className={classes.flex}>
-          <div>
-            <UserControls />
-          </div>
+          <LanguageSelect />
+          <UserControls />
           {!user.loggedIn && (
             <div className={classes.registerLink}>
               <Link to="/rekisteroidy">

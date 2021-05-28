@@ -23,7 +23,7 @@ const RegisterPage = lazy(() =>
 );
 
 const ResetPasswordPage = lazy(() =>
-  import('./components/ResetPasswordPage/ResetPasswordPage')
+  import('./components/PasswordChange/ResetPasswordPage')
 );
 
 const useStyles = makeStyles((theme: Theme) =>

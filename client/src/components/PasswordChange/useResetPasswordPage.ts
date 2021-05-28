@@ -1,6 +1,5 @@
 import { useLocation } from 'react-router-dom';
 import React from 'react';
-import * as Yup from 'yup';
 
 import userService from '../../services/users';
 import logger from '../../utils/logger';
@@ -17,7 +16,11 @@ const useResetPasswordPage = () => {
 
   const handleSubmit = React.useCallback(
     async (values: { password: string; passwordConfirm: string }) => {
-      const { password } = values;
+      const { password, passwordConfirm } = values;
+
+      if (password !== passwordConfirm) {
+        return;
+      }
 
       try {
         const token = query.get('token');
@@ -44,22 +47,7 @@ const useResetPasswordPage = () => {
     [query]
   );
 
-  const fieldRequiredText = 'Pakollinen kenttä';
-
-  const validator = React.useMemo(
-    () =>
-      Yup.object({
-        password: Yup.string()
-          .min(8, 'Vähintään 8 merkkiä')
-          .required(fieldRequiredText),
-        passwordConfirm: Yup.string()
-          .oneOf([Yup.ref('password')], 'Salasanat eivät täsmää')
-          .required(fieldRequiredText),
-      }),
-    []
-  );
-
-  return { validator, handleSubmit, error, passwordChanged };
+  return { handleSubmit, error, passwordChanged };
 };
 
 export default useResetPasswordPage;

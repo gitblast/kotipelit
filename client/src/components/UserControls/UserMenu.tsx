@@ -20,11 +20,6 @@ const UserMenu = ({ user }: UserMenuProps) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleProfileRedirect = () => {
-    // So far hard coded routing to profile
-    history.push(`/${user.username}`);
-  };
-
   const handleLogout = () => {
     logout();
 
@@ -33,7 +28,13 @@ const UserMenu = ({ user }: UserMenuProps) => {
 
   const handleMenuClick = () => {
     // So far hard coded routing to profile
-    handleProfileRedirect();
+
+    history.push(`/${user.username}`);
+    setAnchorEl(null);
+  };
+
+  const handleSettingsClick = () => {
+    history.push(`/${user.username}/asetukset`);
     setAnchorEl(null);
   };
 
@@ -55,6 +56,7 @@ const UserMenu = ({ user }: UserMenuProps) => {
         onClose={() => setAnchorEl(null)}
       >
         <MenuItem onClick={handleMenuClick}>Profiili</MenuItem>
+        <MenuItem onClick={handleSettingsClick}>Asetukset</MenuItem>
         <MenuItem onClick={handleLogout}>
           <Typography variant="body1">Kirjaudu ulos</Typography>
         </MenuItem>

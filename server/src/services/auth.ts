@@ -107,14 +107,28 @@ const resetPassword = async (
 
   logger.log(`password reset for user '${user.username}' succesful`);
 
-  await mailService.sendPasswordChangeConfirmation(user.email, user.username);
+  mailService
+    .sendPasswordChangeConfirmation(user.email, user.username)
+    .catch((e) => {
+      logger.error(e.message);
+    }); // catch and do nothing;
 };
 
-const changePassword = async (userId: string, newPassword: string) => {
+const changePassword = async (
+  userId: string,
+  oldPassword: string,
+  newPassword: string
+) => {
   const user = await User.findById(userId);
 
   if (!user) {
     throw new Error(`Invalid request: no user found`);
+  }
+
+  const isValid = await bcrypt.compare(oldPassword, user.passwordHash);
+
+  if (!isValid) {
+    throw new Error('Invalid request: incorrect password');
   }
 
   const newHash = await bcrypt.hash(newPassword, 10);
@@ -125,7 +139,11 @@ const changePassword = async (userId: string, newPassword: string) => {
 
   logger.log(`password change for user '${user.username}' succesful`);
 
-  await mailService.sendPasswordChangeConfirmation(user.email, user.username);
+  mailService
+    .sendPasswordChangeConfirmation(user.email, user.username)
+    .catch((e) => {
+      logger.error(e.message);
+    }); // catch and do nothing
 };
 
 export default {

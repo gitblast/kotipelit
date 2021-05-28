@@ -67,6 +67,18 @@ const requestPasswordReset = async (email: string) => {
   await axios.post(`${baseUrl}/requestPasswordReset`, { email });
 };
 
+const changePassword = async (newPassword: string, oldPassword: string) => {
+  const config = {
+    headers: { Authorization: getAuthHeader() },
+  };
+
+  await axios.post(
+    `${baseUrl}/changePassword`,
+    { newPassword, oldPassword },
+    config
+  );
+};
+
 const userService = {
   addNew,
   login,
@@ -78,6 +90,7 @@ const userService = {
   verifyConfirmationId,
   resetPassword,
   requestPasswordReset,
+  changePassword,
 };
 
 export default userService;

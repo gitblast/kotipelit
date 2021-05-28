@@ -150,9 +150,14 @@ router.use(expressJwt({ secret: config.SECRET }), onlyForRole(Role.HOST));
 router.post('/changePassword', async (req, res, next) => {
   try {
     const user = toAuthenticatedUser(req);
-    const newPassword = parseString(req.body.password, 'newPassword');
+    const newPassword = parseString(req.body.newPassword, 'newPassword');
+    const oldPassword = parseString(req.body.oldPassword, 'oldPassword');
 
-    await authService.changePassword(user.id.toString(), newPassword);
+    await authService.changePassword(
+      user.id.toString(),
+      oldPassword,
+      newPassword
+    );
 
     res.status(204).send();
   } catch (e) {

@@ -53,11 +53,18 @@ const useRegisterForm = () => {
     const {
       username,
       password,
+      passwordConfirm,
       email,
       birthYear,
       firstName,
       lastName,
     } = values;
+
+    if (password !== passwordConfirm) {
+      logger.error('passwords do not match');
+
+      return;
+    }
 
     const userToAdd = {
       username,

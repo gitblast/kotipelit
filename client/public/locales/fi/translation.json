@@ -1,5 +1,17 @@
 {
   "dashboard": {
-    "newgameButton": "Uusi peli"
+    "newgameButton": "Uusi peli",
+    "upcomingGamesLabel": "Tulevat pelit",
+    "pastGamesLabel": "Menneet pelit"
+  },
+  "gameCard": {
+    "confirmCancel": "Perutaanko varaus?",
+    "startButton": "Käynnistä",
+    "joinButton": "Liity",
+    "removeGame": "Poista peli",
+    "copyToClipboard": "Kopioi",
+    "copiedToClipboard": "Kopioitu leikepöydälle",
+    "gameLobby": "Peliaula",
+    "inviteCodeTooltip": "Pelaajat saavat sähköpostiinsa linkin, jolla pääsevät peliin. Jos ylläoleva pelaaja hukkaa linkkinsä, jaa tämä hänelle."
   }
 }

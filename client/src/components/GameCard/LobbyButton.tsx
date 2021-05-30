@@ -6,6 +6,7 @@ import { Button, IconButton, Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { RTCGame } from '../../types';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -52,6 +53,8 @@ interface LobbyButtonProps {
 const LobbyButton = ({ game, hostName }: LobbyButtonProps) => {
   const classes = useStyles();
 
+  const { t } = useTranslation();
+
   const { notification, notify } = useNotify();
 
   const baseUrl =
@@ -72,17 +75,17 @@ const LobbyButton = ({ game, hostName }: LobbyButtonProps) => {
         component={Link}
         to={`/${hostName}/kutsut/${game.id}`}
       >
-        Peliaula
+        {t('gameCard.gameLobby')}
       </Button>
       <CopyToClipboard
         text={getLobbyLink()}
-        onCopy={() => notify('Kopioitu leikepöydälle')}
+        onCopy={() => notify(t('gameCard.copiedToClipboard'))}
       >
         <IconButton className={classes.actionIcon} aria-label="copy">
           <FileCopyIcon />
         </IconButton>
       </CopyToClipboard>
-      <Typography variant="caption">Kopioi</Typography>
+      <Typography variant="caption">{t('gameCard.copyToClipboard')}</Typography>
       {notification && (
         <Typography color="primary" variant="body2">
           {notification}

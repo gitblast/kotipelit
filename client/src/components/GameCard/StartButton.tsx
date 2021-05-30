@@ -4,6 +4,7 @@ import { RTCGame, GameStatus } from '../../types';
 import Button from '@material-ui/core/Button/Button';
 import { Link } from 'react-router-dom';
 import useDisabledStatus from './useDisabledStatus';
+import { useTranslation } from 'react-i18next';
 
 interface StartButtonProps {
   game: RTCGame;
@@ -12,8 +13,12 @@ interface StartButtonProps {
 
 const StartButton = ({ game, hostName }: StartButtonProps) => {
   const isDisabled = useDisabledStatus(game.startTime);
+  const { t } = useTranslation();
 
-  const label = game.status === GameStatus.UPCOMING ? 'Käynnistä' : 'Liity';
+  const label =
+    game.status === GameStatus.UPCOMING
+      ? t('gameCard.startButton')
+      : t('gameCard.joinButton');
 
   return (
     <Button

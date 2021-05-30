@@ -1,5 +1,17 @@
 {
   "dashboard": {
-    "newgameButton": "New game"
+    "newgameButton": "New game",
+    "upcomingGamesLabel": "Upcoming games",
+    "pastGamesLabel": "Past games"
+  },
+  "gameCard": {
+    "confirmCancel": "Cancel reservation?",
+    "startButton": "Start",
+    "joinButton": "Join",
+    "removeGame": "Remove game",
+    "copyToClipboard": "Copy",
+    "copiedToClipboard": "Copied to clipboard",
+    "gameLobby": "Game lobby",
+    "inviteCodeTooltip": "Players recieve a link that allows them to join the game in their email. If the player loses their link, share this link to them."
   }
 }

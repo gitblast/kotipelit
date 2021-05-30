@@ -10,6 +10,7 @@ import gameService from '../../services/games';
 import ClearIcon from '@material-ui/icons/Clear';
 import InfoTooltip from './InfoTooltip';
 import { useGames } from '../../context';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,24 +43,37 @@ const PlayerInfo = ({
 
   const { setGames } = useGames();
 
-  const handleCancel = async (inviteCode: string) => {
-    const agree = window.confirm('Perutaanko varaus?');
+  const { t, i18n } = useTranslation();
 
-    if (!agree) return;
+  const handleCancel = React.useCallback(
+    async (inviteCode: string) => {
+      const agree = window.confirm(t('gameCard.confirmCancel'));
 
-    try {
-      await gameService.cancelReservation(hostName, inviteCode);
+      if (!agree) return;
 
-      logger.log('cancel succesful');
+      try {
+        await gameService.cancelReservation(hostName, inviteCode);
 
-      const updatedGame = await gameService.getGame(gameId);
+        logger.log('cancel succesful');
 
-      setGames((currentGames) =>
-        currentGames.map((game) => (game.id === gameId ? updatedGame : game))
-      );
-    } catch (error) {
-      logger.log('cancel failed');
+        const updatedGame = await gameService.getGame(gameId);
+
+        setGames((currentGames) =>
+          currentGames.map((game) => (game.id === gameId ? updatedGame : game))
+        );
+      } catch (error) {
+        logger.log('cancel failed');
+      }
+    },
+    [gameId, setGames, hostName, t]
+  );
+
+  const getName = (name: string) => {
+    if (i18n.language === 'en' && name === 'Avoinna') {
+      return 'Open';
     }
+
+    return name;
   };
 
   return (
@@ -67,7 +81,7 @@ const PlayerInfo = ({
       <div className={classes.playerRow}>
         <div>
           <Typography variant="body1" color="initial">
-            {player.name}
+            {getName(player.name)}
           </Typography>
         </div>
         <Typography variant="body2">
@@ -93,11 +107,7 @@ const PlayerInfo = ({
           ? 'http://localhost:3000'
           : 'https://www.kotipelit.com'
       }/${hostName}/${player.privateData.inviteCode}`}</Typography>
-      <InfoTooltip
-        text={
-          'Pelaajat saavat sähköpostiinsa linkin, jolla pääsevät peliin. Jos ylläoleva pelaaja hukkaa linkkinsä, jaa tämä hänelle.'
-        }
-      />
+      <InfoTooltip text={t('gameCard.inviteCodeTooltip')} />
     </div>
   );
 };

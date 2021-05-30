@@ -91,6 +91,10 @@ router.post('/', async (req, res, next) => {
   try {
     const newUser: NewUser = toNewUser(req.body);
 
+    if (newUser.password.length < 8) {
+      throw new Error('Invalid request: password too short');
+    }
+
     const passwordHash = await bcrypt.hash(newUser.password, 10);
 
     const user = new User({
@@ -134,6 +138,10 @@ router.post('/resetPassword', async (req, res, next) => {
     const token = parseString(req.body.token, 'resetToken');
     const newPassword = parseString(req.body.password, 'newPassword');
 
+    if (newPassword.length < 8) {
+      throw new Error('Invalid request: password too short');
+    }
+
     await authService.resetPassword(userId, token, newPassword);
 
     res.status(204).send();
@@ -152,6 +160,10 @@ router.post('/changePassword', async (req, res, next) => {
     const user = toAuthenticatedUser(req);
     const newPassword = parseString(req.body.newPassword, 'newPassword');
     const oldPassword = parseString(req.body.oldPassword, 'oldPassword');
+
+    if (newPassword.length < 8) {
+      throw new Error('Invalid request: password too short');
+    }
 
     await authService.changePassword(
       user.id.toString(),

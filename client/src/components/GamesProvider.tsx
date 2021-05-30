@@ -1,8 +1,9 @@
 import React from 'react';
 import { RTCGame, GameToAdd } from '../types';
-import { AllGamesProvider } from '../context';
+import { AllGamesProvider, useUser } from '../context';
 import gameService from '../services/games';
 import logger from '../utils/logger';
+import axios, { AxiosError } from 'axios';
 
 interface GamesProviderProps {
   children: React.ReactNode;
@@ -10,7 +11,15 @@ interface GamesProviderProps {
 const GamesProvider = ({ children }: GamesProviderProps) => {
   const [games, setGames] = React.useState<RTCGame[]>([]);
   const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState<Error | null>(null);
+  const [error, setError] = React.useState<Error | null | AxiosError>(null);
+  const { logout } = useUser();
+
+  React.useEffect(() => {
+    // if error type is unauthorized, logout user
+    if (error && axios.isAxiosError(error) && error.response?.status === 401) {
+      logout();
+    }
+  }, [error, logout]);
 
   const initGames = React.useCallback(async () => {
     setLoading(true);

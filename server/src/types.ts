@@ -68,6 +68,14 @@ export interface TokenModel extends Document {
 export interface UserModel extends Omit<NewUser, 'password'>, Document {
   passwordHash: string;
   joinDate: Date;
+  updatedAt?: Date;
+}
+
+export interface DecodedToken {
+  username: string;
+  id: ObjectId;
+  role: Role;
+  iat: number;
 }
 
 export interface UserCredentials {

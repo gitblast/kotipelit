@@ -12,7 +12,7 @@ import logger from '../utils/logger';
 import userService from '../services/users';
 import jwt from 'jsonwebtoken';
 import config from '../utils/config';
-import expressJwt from 'express-jwt';
+import { verifyToken } from '../utils/middleware';
 
 const router = express.Router();
 
@@ -145,7 +145,7 @@ router.post('/resetPassword', async (req, res, next) => {
 });
 
 /** token only */
-router.use(expressJwt({ secret: config.SECRET }), onlyForRole(Role.HOST));
+router.use(verifyToken, onlyForRole(Role.HOST));
 
 router.post('/changePassword', async (req, res, next) => {
   try {

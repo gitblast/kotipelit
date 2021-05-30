@@ -28,6 +28,7 @@ const userSchema: Schema = new Schema(
       locale: 'fi',
       strength: 2,
     },
+    timestamps: true,
   }
 );
 

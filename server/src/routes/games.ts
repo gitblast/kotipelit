@@ -11,7 +11,6 @@ import {
   parseEmail,
 } from '../utils/mappers';
 
-import expressJwt from 'express-jwt';
 import jwt from 'jsonwebtoken';
 import config from '../utils/config';
 
@@ -24,7 +23,7 @@ import lobbyService from '../services/lobby';
 import twilioService from '../services/twilio';
 
 import { Role, SocketIOGameToken } from '../types';
-import { onlyForRole } from '../utils/middleware';
+import { onlyForRole, verifyToken } from '../utils/middleware';
 import { getInviteMailData } from '../utils/helpers';
 import logger from '../utils/logger';
 
@@ -258,7 +257,7 @@ router.get('/lobby/:hostName/:gameId', async (req, res, next) => {
 });
 
 /** token protected routes */
-router.use(expressJwt({ secret: config.SECRET }), onlyForRole(Role.HOST));
+router.use(verifyToken, onlyForRole(Role.HOST));
 
 router.get('/', async (req, res, next) => {
   /** return all games where host id matches user token id */

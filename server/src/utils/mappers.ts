@@ -9,8 +9,9 @@ import {
   GamePlayer,
   GameStatus,
   GameModel,
+  DecodedToken,
 } from '../types';
-import { Error, ObjectId } from 'mongoose';
+import { Error } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 
 const isString = (text: any): text is string => {
@@ -177,11 +178,6 @@ export const toPositiveInteger = (object: any): number => {
 
   return number;
 };
-
-interface DecodedToken {
-  username: string;
-  id: ObjectId;
-}
 
 export const toAuthenticatedUser = (request: any): DecodedToken => {
   if (

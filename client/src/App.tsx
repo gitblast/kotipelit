@@ -42,9 +42,9 @@ const App = () => {
 
   return (
     <Suspense fallback="Loading...">
-      <GamesProvider>
+      <Router>
         <UserProvider>
-          <Router>
+          <GamesProvider>
             <ScrollToTop />
             <TopBar />
             <div className={classes.container}>
@@ -85,9 +85,9 @@ const App = () => {
             </div>
 
             <Footer />
-          </Router>
+          </GamesProvider>
         </UserProvider>
-      </GamesProvider>
+      </Router>
     </Suspense>
   );
 };

@@ -3,7 +3,9 @@
     "loading": "Ladataan...",
     "kotitonni": "Kotitonni",
     "login": "Kirjaudu",
-    "register": "Luo tili"
+    "register": "Luo tili",
+    "answer": "Vastaus",
+    "answerVerb": "Vastaa"
   },
   "dashboard": {
     "newgameButton": "Uusi peli",
@@ -44,5 +46,16 @@
     "micLabel": "Mikrofoni",
     "camLabel": "Kamera"
   },
-  "game": {}
+  "game": {
+    "mainBtn": {
+      "update": "Päivitä pisteet",
+      "finish": "Poistu",
+      "startIntro": "Aloita intro"
+    },
+    "waitingForPlayer": "Odotetaan pelaajaa...",
+    "info": {
+      "upNow": "Vuorossa",
+      "yourTurn": "Sinun vuorosi!"
+    }
+  }
 }

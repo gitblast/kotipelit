@@ -1,6 +1,7 @@
 import { Card, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGameData, useMediaMutedStates } from '../context';
 import useParticipantTracks from '../hooks/useParticipantTracks';
 import { GameStatus, RTCParticipant } from '../types';
@@ -114,6 +115,7 @@ const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({
   participant,
   order,
 }) => {
+  const { t } = useTranslation();
   const [videoTrack, audioTrack] = useParticipantTracks(participant);
   const { mutedMap } = useMediaMutedStates();
   const classes = useStyles({ order });
@@ -160,7 +162,9 @@ const RTCVideoFrame: React.FC<RTCVideoFrameProps> = ({
         </VideoWithOverlay>
       ) : (
         <div>
-          <ErrorMsg text={'Odotetaan pelaajaa..'}>{overlayContent()}</ErrorMsg>
+          <ErrorMsg text={t('game.waitingForPlayer')}>
+            {overlayContent()}
+          </ErrorMsg>
         </div>
       )}
     </Card>

@@ -2,7 +2,9 @@
   "common": {
     "loading": "Loading...",
     "login": "Log in",
-    "register": "Register"
+    "register": "Register",
+    "answer": "Answer",
+    "answerVerb": "Answer"
   },
   "dashboard": {
     "newgameButton": "New game",
@@ -43,5 +45,16 @@
     "micLabel": "Microphone",
     "camLabel": "Camera"
   },
-  "game": {}
+  "game": {
+    "mainBtn": {
+      "update": "Update points",
+      "finish": "Finish",
+      "startIntro": "Start intro"
+    },
+    "waitingForPlayer": "Waiting for player...",
+    "info": {
+      "upNow": "Up now",
+      "yourTurn": "Your turn!"
+    }
+  }
 }

@@ -4,6 +4,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { GameStatus, Role } from '../types';
 import { Typography } from '@material-ui/core';
 import { useGameData } from '../context';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,6 +32,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const InfoBar: React.FC = () => {
   const classes = useStyles();
+
+  const { t } = useTranslation();
 
   const { game, self } = useGameData();
 
@@ -61,8 +64,8 @@ const InfoBar: React.FC = () => {
       <div className={classes.infoBarText}>
         <Typography variant="body1" className={classes.nextUpText}>
           {playerWithTurn.id === self?.id
-            ? `Sinun vuorosi!`
-            : `Vuorossa: ${playerWithTurn.name}`}
+            ? t('game.info.yourTurn')
+            : `${t('game.info.upNow')}: ${playerWithTurn.name}`}
         </Typography>
         {(self.role === Role.HOST || playerWithTurn.id === self.id) && (
           <Typography

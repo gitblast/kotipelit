@@ -3,6 +3,7 @@ import { createStyles, makeStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { GameStatus } from '../types';
 import MusicNoteIcon from '@material-ui/icons/MusicNote';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -38,6 +39,8 @@ const MainKotitonniButton: React.FC<MainKotitonniButtonProps> = ({
 }) => {
   const classes = useStyles();
 
+  const { t } = useTranslation();
+
   const getMainButtonClickHandler = (status: GameStatus) => {
     switch (status) {
       case GameStatus.RUNNING:
@@ -52,16 +55,16 @@ const MainKotitonniButton: React.FC<MainKotitonniButtonProps> = ({
   const getMainButtonLabel = (status: GameStatus) => {
     switch (status) {
       case GameStatus.RUNNING:
-        return 'Päivitä pisteet';
+        return t('game.mainBtn.update');
       case GameStatus.FINISHED:
-        return 'Poistu';
+        return t('game.mainBtn.finish');
       default:
         return (
           <>
             <MusicNoteIcon className={classes.musicIcon}></MusicNoteIcon>
             <MusicNoteIcon className={classes.musicIcon}></MusicNoteIcon>
             <Typography variant="body1" color="initial">
-              Aloita intro
+              {t('game.mainBtn.startIntro')}
             </Typography>
           </>
         );

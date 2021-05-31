@@ -1,6 +1,7 @@
 import { Fab, TextField, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -40,6 +41,7 @@ const AnswerForm: React.FC<AnswerFormProps> = ({
   handleAnswer,
 }) => {
   const classes = useStyles();
+  const { t } = useTranslation();
   const [answer, setAnswer] = React.useState<string>('');
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -67,7 +69,7 @@ const AnswerForm: React.FC<AnswerFormProps> = ({
       <div className={classes.answerField}>
         <TextField
           variant="filled"
-          label="Vastaus.."
+          label={`${t('common.answer')}...`}
           value={answer}
           onChange={({ target }) => setAnswer(target.value)}
           disabled={answeringDisabled}
@@ -81,7 +83,7 @@ const AnswerForm: React.FC<AnswerFormProps> = ({
         variant="extended"
         disabled={answeringDisabled}
       >
-        <Typography variant="body1">Vastaa</Typography>
+        <Typography variant="body1">{t('common.answerVerb')}</Typography>
       </Fab>
     </form>
   );

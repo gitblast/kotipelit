@@ -1,4 +1,10 @@
 {
+  "common": {
+    "loading": "Ladataan...",
+    "kotitonni": "Kotitonni",
+    "login": "Kirjaudu",
+    "register": "Luo tili"
+  },
   "dashboard": {
     "newgameButton": "Uusi peli",
     "upcomingGamesLabel": "Tulevat pelit",
@@ -13,5 +19,30 @@
     "copiedToClipboard": "Kopioitu leikepöydälle",
     "gameLobby": "Peliaula",
     "inviteCodeTooltip": "Pelaajat saavat sähköpostiinsa linkin, jolla pääsevät peliin. Jos ylläoleva pelaaja hukkaa linkkinsä, jaa tämä hänelle."
-  }
+  },
+  "preGameInfo": {
+    "useHeadphones": "Jos mahdollista, käytä kuulokkeita niin pelin äänet eivät kuulu muille läpi.",
+    "canSilence": "Voit hiljentää pelaajan kaikilta, jos taustalta kuuluu melua.",
+    "browserAlert": {
+      "title": "Palvelu ei välttämättä toimi käyttämälläsi selaimella",
+      "info": "Jos peliin yhdistäminen ei onnistu, kokeile toista selainta. Näet tukemamme selaimet ",
+      "link": "täältä"
+    },
+    "waiting": "Odotetaan, että pelin juontaja käynnistää pelin...",
+    "startGame": "Käynnistä peli",
+    "spectate": "Siirry katsomaan",
+    "spectator": {
+      "broadcastStarts": "Lähetys alkaa",
+      "limited": "Katsojapaikkoja on rajoitettu määrä",
+      "playing": "Pelaamassa tänään:",
+      "hosting": "Pelin juontaa:"
+    }
+  },
+  "mediaTest": {
+    "stop": "Lopeta testi",
+    "start": "Testaa kamera ja mikrofoni",
+    "micLabel": "Mikrofoni",
+    "camLabel": "Kamera"
+  },
+  "game": {}
 }

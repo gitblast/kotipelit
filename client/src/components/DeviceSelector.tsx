@@ -2,6 +2,7 @@ import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -26,6 +27,8 @@ const DeviceSelector: React.FC<DeviceSelectorProps> = ({
   mediaType,
 }) => {
   const classes = useStyles();
+  const { t } = useTranslation();
+
   const [selected, setSelected] = React.useState<string>(currentDeviceId ?? '');
 
   React.useEffect(() => {
@@ -46,7 +49,9 @@ const DeviceSelector: React.FC<DeviceSelectorProps> = ({
   return (
     <FormControl className={classes.formControl}>
       <InputLabel id={`${mediaType}-device-select`}>
-        {mediaType === 'audio' ? 'Mikrofoni' : 'Kamera'}
+        {mediaType === 'audio'
+          ? t('mediaTest.micLabel')
+          : t('mediaTest.camLabel')}
       </InputLabel>
       <Select
         labelId={`${mediaType}-device-select`}

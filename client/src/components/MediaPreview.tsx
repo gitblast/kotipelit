@@ -14,6 +14,7 @@ import {
 } from '../constants';
 import useDevices from '../hooks/useDevices';
 import Loader from './Loader';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -26,6 +27,8 @@ const useStyles = makeStyles(() =>
 
 const MediaPreview: React.FC = () => {
   const classes = useStyles();
+
+  const { t } = useTranslation();
 
   const {
     localVideoTrack,
@@ -73,7 +76,7 @@ const MediaPreview: React.FC = () => {
   ) {
     return (
       <div className={classes.container}>
-        <Loader msg={'Ladataan...'} spinner />
+        <Loader msg={t('common.loading')} spinner />
       </div>
     );
   }

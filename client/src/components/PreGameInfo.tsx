@@ -4,6 +4,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import { format } from 'date-fns';
 import fiLocale from 'date-fns/locale/fi';
+import enLocale from 'date-fns/locale/en-US';
 import { isSupported } from 'twilio-video';
 
 import HeadsetIcon from '@material-ui/icons/Headset';
@@ -14,6 +15,7 @@ import Alert from '@material-ui/lab/Alert';
 import { Link } from '@material-ui/core';
 import { AlertTitle } from '@material-ui/lab';
 import { Role, RTCGame, GameStatus } from '../types';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -74,6 +76,9 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
   role,
 }) => {
   const classes = useStyles();
+
+  const { t, i18n } = useTranslation();
+
   const [previewOpen, setPreviewOpen] = React.useState(false);
   const [alertOpen, setAlertOpen] = React.useState(!isSupported);
 
@@ -87,16 +92,12 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
             <div className={classes.infoContent}>
               <HeadsetIcon></HeadsetIcon>
               <Typography variant="body1">
-                Jos mahdollista, käytä kuulokkeita niin pelin äänet eivät kuulu
-                muille läpi.
+                {t('preGameInfo.useHeadphones')}
               </Typography>
               {role === Role.HOST && (
-                <>
-                  <Typography variant="body1" color="initial">
-                    Voit hiljentää pelaajan kaikilta, jos taustalta kuuluu
-                    melua.
-                  </Typography>
-                </>
+                <Typography variant="body1" color="initial">
+                  {t('preGameInfo.canSilence')}
+                </Typography>
               )}
             </div>
             {previewOpen && (
@@ -106,17 +107,14 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
             )}
 
             <Button variant="text" onClick={() => setPreviewOpen(!previewOpen)}>
-              {previewOpen ? 'Lopeta testi' : 'Testaa kamera ja mikrofoni'}
+              {previewOpen ? t('mediaTest.stop') : t('mediaTest.start')}
             </Button>
             {!isSupported && alertOpen && (
               <Alert severity="info" onClose={() => setAlertOpen(false)}>
-                <AlertTitle>
-                  Palvelu ei välttämättä toimi käyttämälläsi selaimella
-                </AlertTitle>
-                Jos peliin yhdistäminen ei onnistu, kokeile toista selainta.
-                Näet tukemamme selaimet{' '}
+                <AlertTitle>{t('preGameInfo.browserAlert.title')}</AlertTitle>
+                {t('preGameInfo.browserAlert.info')}
                 <Link href="https://www.twilio.com/docs/video/javascript#supported-browsers">
-                  täältä
+                  {t('preGameInfo.browserAlert.link')}
                 </Link>
                 .
               </Alert>
@@ -133,23 +131,23 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
             <div className={classes.gameDescription}>
               <div className={classes.spectatorHead}>
                 <Typography variant="body1" color="initial">
-                  {`Lähetys alkaa ${format(
+                  {`${t('preGameInfo.spectator.broadcastStarts')} ${format(
                     new Date(game.startTime),
                     'd.M. HH:mm',
                     {
-                      locale: fiLocale,
+                      locale: i18n.language === 'en' ? enLocale : fiLocale,
                     }
                   )}`}
                 </Typography>
                 <Typography variant="body2" color="initial">
-                  Katsojapaikkoja on rajoitettu määrä
+                  {t('preGameInfo.spectator.limited')}
                 </Typography>
               </div>
               <Typography variant="h2" className={classes.tvGame}>
-                Kotitonni
+                {t('common.kotitonni')}
               </Typography>
               <Typography variant="body1" color="initial">
-                Pelaamassa tänään:
+                {t('preGameInfo.spectator.playing')}
               </Typography>
               <Typography
                 variant="h5"
@@ -159,7 +157,7 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
                 {game.players.map((p) => p.name).join(', ')}
               </Typography>
               <Typography variant="h5" color="initial">
-                Pelin juontaa:
+                {t('preGameInfo.spectator.hosting')}
               </Typography>
               <Typography
                 variant="h5"
@@ -175,7 +173,7 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
           <>
             {!canJoin && (
               <Typography variant="body2">
-                Odotetaan, että pelin juontaja käynnistää pelin...
+                {t('preGameInfo.waiting')}
               </Typography>
             )}
             <Button
@@ -184,7 +182,9 @@ const PreGameInfo: React.FC<PreGameInfoProps> = ({
               id="start"
               disabled={!canJoin}
             >
-              {role !== Role.SPECTATOR ? `Käynnistä peli` : `Siirry katsomaan`}
+              {role !== Role.SPECTATOR
+                ? t('preGameInfo.startGame')
+                : t('preGameInfo.spectate')}
             </Button>
             {process.env.NODE_ENV === 'development' && (
               <Button

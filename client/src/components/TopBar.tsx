@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import UserControls from './UserControls/UserControls';
 import { useUser } from '../context';
 import LanguageSelect from './LanguageSelect';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,6 +47,8 @@ const TopBar = () => {
 
   const { user } = useUser();
 
+  const { t } = useTranslation();
+
   return (
     <AppBar position="static" className={classes.navbar}>
       <Toolbar className={classes.toolbar}>
@@ -58,7 +61,7 @@ const TopBar = () => {
           {!user.loggedIn && (
             <div className={classes.registerLink}>
               <Link to="/rekisteroidy">
-                <Typography variant="body2">Luo tili</Typography>
+                <Typography variant="body2">{t('common.register')}</Typography>
               </Link>
             </div>
           )}

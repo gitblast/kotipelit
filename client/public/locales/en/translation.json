@@ -1,4 +1,9 @@
 {
+  "common": {
+    "loading": "Loading...",
+    "login": "Log in",
+    "register": "Register"
+  },
   "dashboard": {
     "newgameButton": "New game",
     "upcomingGamesLabel": "Upcoming games",
@@ -13,5 +18,30 @@
     "copiedToClipboard": "Copied to clipboard",
     "gameLobby": "Game lobby",
     "inviteCodeTooltip": "Players recieve a link that allows them to join the game in their email. If the player loses their link, share this link to them."
-  }
+  },
+  "preGameInfo": {
+    "useHeadphones": "If possible, use headphones to avoid bothering other players with your game audio.",
+    "canSilence": "You can mute a player if there is too much background noice.",
+    "browserAlert": {
+      "title": "The service might not work properly with your browser",
+      "info": "If the connection fails, try using another browser. You can see the supported browsers ",
+      "link": "here"
+    },
+    "waiting": "Waiting for the host to start the game...",
+    "startGame": "Start game",
+    "spectate": "Spectate game",
+    "spectator": {
+      "broadcastStarts": "Broadcast starts",
+      "limited": "The amount of spectators is limited",
+      "playing": "Playing today:",
+      "hosting": "Hosted by:"
+    }
+  },
+  "mediaTest": {
+    "stop": "Stop test",
+    "start": "Test camera and microphone",
+    "micLabel": "Microphone",
+    "camLabel": "Camera"
+  },
+  "game": {}
 }

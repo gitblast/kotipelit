@@ -35,7 +35,7 @@ const login = async (usernameOrEmail: string, password: string) => {
     role: Role.HOST,
   };
 
-  const token = jwt.sign(userForToken, config.SECRET);
+  const token = jwt.sign(userForToken, config.SECRET, { expiresIn: '14d' });
 
   return { token, username: user.username };
 };

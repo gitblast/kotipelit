@@ -5,7 +5,9 @@
     "login": "Kirjaudu",
     "register": "Luo tili",
     "answer": "Vastaus",
-    "answerVerb": "Vastaa"
+    "answerVerb": "Vastaa",
+    "reserved": "Varattu",
+    "open": "Vapaa"
   },
   "dashboard": {
     "newgameButton": "Uusi peli",
@@ -57,5 +59,8 @@
       "upNow": "Vuorossa",
       "yourTurn": "Sinun vuorosi!"
     }
+  },
+  "lobby": {
+    "reservedForYou": "Varattu sinulle {{time}} asti"
   }
 }

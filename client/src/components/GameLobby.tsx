@@ -1,17 +1,21 @@
-import { Typography, Grid } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { format } from 'date-fns';
 import fiLocale from 'date-fns/locale/fi';
+
+import enLocale from 'date-fns/locale/en-US';
 import { capitalize } from 'lodash';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { getSpectatorUrl } from '../helpers/games';
 import useLobbySystem from '../hooks/useLobbySystem';
 import { LobbyGamePlayer } from '../types';
+import KotitonniLobbyInfo from './KotitonniLobbyInfo';
+import KotitonniPointsInfo from './KotitonniPointsInfo';
 import Loader from './Loader';
 import LobbyContent from './LobbyContent';
 import References from './References';
 import ReservationConfirmedDialog from './ReservationConfirmedDialog';
-import { getSpectatorUrl } from '../helpers/games';
-import VimeoMedia from './VimeoMedia';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -61,40 +65,12 @@ const useStyles = makeStyles((theme: Theme) =>
         marginTop: theme.spacing(3),
       },
     },
-    kotitonniSection: {
-      display: 'flex',
-      justifyContent: 'space-around',
-      alignItems: 'center',
-    },
+
     availableSeat: {
       color: 'rgb(104 122 106)',
     },
     bookedText: {
       color: theme.palette.error.main,
-    },
-    ruleComment: {
-      textAlign: 'center',
-    },
-    // Points explanation section
-    pointsRow: {
-      display: 'flex',
-      justifyContent: 'space-around',
-      [theme.breakpoints.down('sm')]: {
-        flexDirection: 'column',
-      },
-    },
-    pointBlock: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-    },
-    points: {
-      fontFamily: 'BeautySchoolDropoutII',
-      fontSize: '3rem',
-      color: 'rgb(41 174 170)',
-    },
-    pointsWrong: {
-      color: 'rgb(171 34 186)',
     },
     errorMsg: {
       padding: theme.spacing(2),
@@ -105,6 +81,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const GameLobby: React.FC = () => {
   const classes = useStyles();
+
+  const { t, i18n } = useTranslation();
 
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
@@ -127,7 +105,7 @@ const GameLobby: React.FC = () => {
     const playerReservation = player.reservedFor;
 
     if (!playerReservation) {
-      return <span className={classes.availableSeat}>Vapaa</span>;
+      return <span className={classes.availableSeat}>{t('common.open')}</span>;
     }
 
     if (playerReservation.locked) {
@@ -135,19 +113,15 @@ const GameLobby: React.FC = () => {
     }
 
     if (player.reservedForMe) {
-      return (
-        <span>{`Varattu sinulle ${format(
-          new Date(playerReservation.expires),
-          'HH:mm',
-          {
-            locale: fiLocale,
-          }
-        )} asti`}</span>
-      );
+      const timeString = format(new Date(playerReservation.expires), 'HH:mm', {
+        locale: i18n.language === 'en' ? enLocale : fiLocale,
+      });
+
+      return <span>{t('lobby.reservedForYou', { time: timeString })}</span>;
     }
 
     if (playerReservation.expires > Date.now()) {
-      return <span className={classes.bookedText}>Varattu</span>;
+      return <span className={classes.bookedText}>{t('common.reserved')}</span>;
     }
   };
 
@@ -221,90 +195,8 @@ const GameLobby: React.FC = () => {
             </div>
           </div>
 
-          <Grid container spacing={2} className={classes.kotitonniSection}>
-            <Grid item md={1}></Grid>
-            <Grid item md={5} xs={12}>
-              <Typography
-                variant="body1"
-                color="initial"
-                className={classes.ruleComment}
-              >
-                Kotitonni on hauska seurapeli, jossa sanallinen luovuus pääsee
-                valloilleen.
-              </Typography>
-            </Grid>
-            <Grid item md={5} xs={12}>
-              <VimeoMedia />
-            </Grid>
-            <Grid item md={1}></Grid>
-          </Grid>
-
-          <Typography
-            variant="body1"
-            color="initial"
-            className={classes.ruleComment}
-          >
-            Saat ilmottautuessasi kolme sanaa, joihin sinun tulee keksiä
-            vihjeet.
-          </Typography>
-
-          <Typography
-            variant="body1"
-            color="initial"
-            className={classes.ruleComment}
-          >
-            Tavoitteena, että vain yksi kanssapelaaja arvaa oikean sanan!
-          </Typography>
-          <div className={classes.pointsRow}>
-            <div className={classes.pointBlock}>
-              <Typography variant="body1" color="initial">
-                1 oikein:
-              </Typography>
-              <Typography
-                variant="body1"
-                color="initial"
-                className={classes.points}
-              >
-                100
-              </Typography>
-            </div>
-            <div className={classes.pointBlock}>
-              <Typography variant="body1" color="initial">
-                2 oikein:
-              </Typography>
-              <Typography
-                variant="body1"
-                color="initial"
-                className={classes.points}
-              >
-                30
-              </Typography>
-            </div>
-            <div className={classes.pointBlock}>
-              <Typography variant="body1" color="initial">
-                3 oikein:
-              </Typography>
-              <Typography
-                variant="body1"
-                color="initial"
-                className={classes.points}
-              >
-                10
-              </Typography>
-            </div>
-            <div className={classes.pointBlock}>
-              <Typography variant="body1" color="initial">
-                0 tai kaikki oikein:
-              </Typography>
-              <Typography
-                variant="body1"
-                color="initial"
-                className={`${classes.points} ${classes.pointsWrong}`}
-              >
-                -50
-              </Typography>
-            </div>
-          </div>
+          <KotitonniLobbyInfo />
+          <KotitonniPointsInfo />
           <References />
         </>
       ) : (

@@ -1,6 +1,7 @@
 import { Paper, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { lazy, Suspense } from 'react';
+import { useTranslation } from 'react-i18next';
 import Loader from '../Loader';
 import useChangePasswordPage from './useChangePasswordPage';
 
@@ -20,6 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const ChangePasswordPage = () => {
+  const { t } = useTranslation();
   const classes = useStyles();
 
   const { handleSubmit, error, passwordChanged } = useChangePasswordPage();
@@ -28,10 +30,12 @@ const ChangePasswordPage = () => {
     <div className={classes.container}>
       <Paper elevation={5} className={classes.formContainer}>
         <Typography align="center">
-          {passwordChanged ? 'Salasanan vaihto onnistui!' : 'Vaihda salasana'}
+          {passwordChanged
+            ? t('changePwForm.success')
+            : t('changePwForm.changePw')}
         </Typography>
         {!passwordChanged && (
-          <Suspense fallback={<Loader msg="Ladataan..." />}>
+          <Suspense fallback={<Loader msg={t('common.loading')} />}>
             <PasswordChangeForm
               isReset={false}
               handleSubmit={handleSubmit}

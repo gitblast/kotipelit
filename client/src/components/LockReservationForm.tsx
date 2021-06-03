@@ -2,6 +2,7 @@ import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { TextField, Typography, Button } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,6 +30,7 @@ interface LockReservationFormProps {
 const LockReservationForm: React.FC<LockReservationFormProps> = ({
   handleLock,
 }) => {
+  const { t } = useTranslation();
   const classes = useStyles();
   const [name, setName] = React.useState('');
   const [nameError, setNameError] = React.useState('');
@@ -37,7 +39,7 @@ const LockReservationForm: React.FC<LockReservationFormProps> = ({
 
   const handleClick = () => {
     if (!name) {
-      return setNameError('Anna nimimerkkisi!');
+      return setNameError(t('validation.requiredField'));
     }
 
     if (name.startsWith('spectator')) {
@@ -45,11 +47,11 @@ const LockReservationForm: React.FC<LockReservationFormProps> = ({
     }
 
     if (name.length > 10) {
-      return setNameError('Nimen maksimipituus on 10 merkkiä!');
+      return setNameError(t('validation.maxLength', { maxLength: 10 }));
     }
 
     if (!email) {
-      return setEmailError('Anna sähköpostiosoite!');
+      return setEmailError(t('validation.requiredField'));
     }
 
     if (
@@ -57,7 +59,11 @@ const LockReservationForm: React.FC<LockReservationFormProps> = ({
         /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
       )
     ) {
-      return setEmailError('Tarkista sähköpostiosoite!');
+      return setEmailError(
+        t('validation.invalidField', {
+          fieldName: t('common.email').toLowerCase(),
+        })
+      );
     }
 
     handleLock(name.trim(), email);
@@ -88,7 +94,7 @@ const LockReservationForm: React.FC<LockReservationFormProps> = ({
               variant="standard"
               value={name}
               onChange={handleNameChange}
-              label="Nimimerkki"
+              label={t('common.alias')}
               error={nameError !== ''}
               helperText={nameError}
             />
@@ -97,14 +103,12 @@ const LockReservationForm: React.FC<LockReservationFormProps> = ({
             <TextField
               value={email}
               onChange={handleEmailChange}
-              label="Sähköpostiosoite"
+              label={t('common.email')}
               error={emailError !== ''}
               helperText={emailError}
             />
             <Typography variant="body2" className={classes.disclaimers}>
-              Saat pelin tiedot sähköpostiisi. Emme käytä tietojasi
-              markkinointiin. Ilmottautumalla hyväksyt, että pelin aikana
-              käytetään videopuheluyhteyttä.
+              {t('lobby.disclaimer')}
             </Typography>
           </div>
         </div>
@@ -115,7 +119,7 @@ const LockReservationForm: React.FC<LockReservationFormProps> = ({
         onClick={handleClick}
         disabled={!name || !email}
       >
-        Vahvista varaus
+        {t('lobby.confirmBtn')}
       </Button>
     </>
   );

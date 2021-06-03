@@ -6,7 +6,36 @@
     "answer": "Answer",
     "answerVerb": "Answer",
     "reserved": "Reserved",
-    "open": "Open"
+    "open": "Open",
+    "alias": "Alias",
+    "username": "Username",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "birthYear": "Birth year",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+
+    "email": "Email",
+    "okay": "Okay",
+    "profile": "Profile",
+    "settings": "Settings",
+    "signOut": "Sign out"
+  },
+  "changePwForm": {
+    "oldPw": "Old password",
+    "newPw": "New password",
+    "repeatNewPw": "Repeat new password",
+    "success": "Password change successful",
+    "changePw": "Change password",
+    "changeBtn": "Change",
+    "changeFailed": "Password change failed. Try again later."
+  },
+  "registerForm": {
+    "success": "Account created succesfully!",
+    "confirmEmail": "You still need to verify your email address. The verification link was sent to your email address.",
+    "usernameInfo": "This is the name the players will see",
+    "createBtn": "Create account",
+    "creationFailed": "Account creation failed. Try again later."
   },
   "dashboard": {
     "newgameButton": "New game",
@@ -25,7 +54,7 @@
   },
   "preGameInfo": {
     "useHeadphones": "If possible, use headphones to avoid bothering other players with your game audio.",
-    "canSilence": "You can mute a player if there is too much background noice.",
+    "canSilence": "You can mute a player if there is too much background noise.",
     "browserAlert": {
       "title": "The service might not work properly with your browser",
       "info": "If the connection fails, try using another browser. You can see the supported browsers ",
@@ -60,6 +89,40 @@
     }
   },
   "lobby": {
-    "reservedForYou": "Reserved for you until {{time}}"
+    "reservedForYou": "Reserved for you until {{time}}",
+    "invitedYouToPlay": " invited you to play!",
+    "gamePrice": "Pelin hinta on {{price}} €",
+    "registeredPlayers": "Registered players:",
+    "registerBtn": "Register",
+    "errors": {
+      "lockingFailed": "Registration failed. Make sure the email address you provided is valid.",
+      "reservationFailed": "Reservation failed.",
+      "registrationEnded": "Registration has ended!"
+    },
+    "disclaimer": "Information about the game will be sent to your email. We will not use your data for promotional purposes. By registering to the game you accept using a video call.",
+    "confirmBtn": "Confirm registration",
+    "reservationData": {
+      "success": "Registration successful!",
+      "yourWords": "Here are your words for the game:",
+      "joinUrlLabel": "You can join the game at:",
+      "spectatorInfo": "This game can be spectated live. If you want to invite your friends to spectate, share the below link with them. Spectating is possible only through this link.",
+      "didNotGetEmail": "If you did not recieve an email to {{email}}, write down this information."
+    }
+  },
+  "validation": {
+    "noSpaces": "Spaces are not allowed",
+    "mustBeNumber": "Must be a number",
+    "requiredField": "Required field",
+    "minLength": "Minimum length {{minLength}} characters",
+    "maxLength": "Maximum length {{maxLength}} characters",
+    "invalidField": "Invalid {{fieldName}}",
+    "passwordsDontMatch": "Passwords do not match",
+    "passwordScore": {
+      "tooShort": "too short",
+      "weak": "weak",
+      "moderate": "moderate",
+      "good": "good",
+      "strong": "strong"
+    }
   }
 }

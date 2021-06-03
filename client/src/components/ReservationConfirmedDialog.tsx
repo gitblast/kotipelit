@@ -9,6 +9,7 @@ import ReservationData from './ReservationData';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { LobbyGamePlayer } from '../types';
 import Typography from '@material-ui/core/Typography';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,13 +35,14 @@ const ReservationConfirmedDialog: React.FC<ReservationConfirmedDialogProps> = ({
   lockedReservationData,
   spectatorUrl,
 }) => {
+  const { t } = useTranslation();
   const classes = useStyles();
   return (
     <Dialog open={open} onClose={handleClose}>
       <div className={classes.root}>
         <DialogTitle>
           <Typography variant="body1" className={classes.dialogHighlights}>
-            Varaus onnistui!
+            {t('lobby.reservationData.success')}
           </Typography>
         </DialogTitle>
         <DialogContent>
@@ -51,7 +53,7 @@ const ReservationConfirmedDialog: React.FC<ReservationConfirmedDialogProps> = ({
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} variant="text" autoFocus>
-            Selvä
+            {t('common.okay')}
           </Button>
         </DialogActions>
       </div>

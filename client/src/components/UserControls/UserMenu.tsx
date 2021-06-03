@@ -1,6 +1,7 @@
 import { IconButton, Menu, MenuItem, Typography } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { useUser } from '../../context';
 import { LoggedInUser } from '../../types';
@@ -10,6 +11,8 @@ interface UserMenuProps {
 }
 
 const UserMenu = ({ user }: UserMenuProps) => {
+  const { t } = useTranslation();
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const { logout } = useUser();
@@ -55,10 +58,12 @@ const UserMenu = ({ user }: UserMenuProps) => {
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
       >
-        <MenuItem onClick={handleMenuClick}>Profiili</MenuItem>
-        <MenuItem onClick={handleSettingsClick}>Asetukset</MenuItem>
+        <MenuItem onClick={handleMenuClick}>{t('common.profile')}</MenuItem>
+        <MenuItem onClick={handleSettingsClick}>
+          {t('common.settings')}
+        </MenuItem>
         <MenuItem onClick={handleLogout}>
-          <Typography variant="body1">Kirjaudu ulos</Typography>
+          <Typography variant="body1">{t('common.signOut')}</Typography>
         </MenuItem>
       </Menu>
     </div>

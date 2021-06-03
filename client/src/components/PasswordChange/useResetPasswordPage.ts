@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import React from 'react';
 
@@ -9,6 +10,7 @@ function useQuery() {
 }
 
 const useResetPasswordPage = () => {
+  const { t } = useTranslation();
   const [error, setError] = React.useState('');
   const [passwordChanged, setPasswordChanged] = React.useState(false);
 
@@ -37,14 +39,14 @@ const useResetPasswordPage = () => {
       } catch (e) {
         const info = e.response?.data;
 
-        const errorMsg = info
-          ? `Salasanan vaihto epäonnistui: ${info}`
-          : 'Salasanan vaihto epäonnistui. Yritä myöhemmin uudelleen.';
+        if (info) {
+          logger.error(info);
+        }
 
-        setError(errorMsg);
+        setError(t('changePwForm.changeFailed'));
       }
     },
-    [query]
+    [query, t]
   );
 
   return { handleSubmit, error, passwordChanged };

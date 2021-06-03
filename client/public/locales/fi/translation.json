@@ -7,7 +7,36 @@
     "answer": "Vastaus",
     "answerVerb": "Vastaa",
     "reserved": "Varattu",
-    "open": "Vapaa"
+    "open": "Vapaa",
+    "alias": "Nimimerkki",
+    "username": "Käyttäjänimi",
+    "firstName": "Etunimi",
+    "lastName": "Sukunimi",
+    "birthYear": "Syntymävuosi",
+    "password": "Salasana",
+    "confirmPassword": "Salasana uudelleen",
+
+    "email": "Sähköposti",
+    "okay": "Selvä",
+    "profile": "Profiili",
+    "settings": "Asetukset",
+    "signOut": "Kirjaudu ulos"
+  },
+  "changePwForm": {
+    "oldPw": "Vanha salasana",
+    "newPw": "Uusi salasana",
+    "repeatNewPw": "Uusi salasana uudelleen",
+    "success": "Salasanan vaihto onnistui!",
+    "changePw": "Vaihda salasana",
+    "changeBtn": "Vaihda",
+    "changeFailed": "Salasanan vaihto epäonnistui. Yritä myöhemmin uudelleen."
+  },
+  "registerForm": {
+    "success": "Tilin luonti onnistui!",
+    "confirmEmail": "Sinun tulee vielä vahvistaa sähköpostiosoitteesi. Vahvistuslinkki lähetettiin antamaasi osoitteeseen.",
+    "usernameInfo": "Tämä on nimi, jonka pelaajat näkevät.",
+    "createBtn": "Luo tili",
+    "creationFailed": "Tilin luonti epäonnistui. Yritä myöhemmin uudestaan."
   },
   "dashboard": {
     "newgameButton": "Uusi peli",
@@ -61,6 +90,41 @@
     }
   },
   "lobby": {
-    "reservedForYou": "Varattu sinulle {{time}} asti"
+    "reservedForYou": "Varattu sinulle {{time}} asti",
+    "invitedYouToPlay": " kutsui sinut pelaamaan!",
+    "gamePrice": "The price of the game is {{price}} €",
+    "registeredPlayers": "Ilmoittautuneet pelaajat:",
+    "registerBtn": "Ilmoitaudu peliin",
+
+    "errors": {
+      "lockingFailed": "Paikan lukitseminen epäonnistui. Varmista, että kirjoitit sähköpostisi oikein.",
+      "reservationFailed": "Paikan varaaminen epäonnistui.",
+      "registrationEnded": "Registration has ended!"
+    },
+    "disclaimer": "Saat pelin tiedot sähköpostiisi. Emme käytä tietojasi markkinointiin. Ilmottautumalla hyväksyt, että pelin aikana käytetään videopuheluyhteyttä.",
+    "confirmBtn": "Vahvista varaus",
+    "reservationData": {
+      "success": "Varaus onnistui!",
+      "yourWords": "Tässä ovat pelin sanasi:",
+      "joinUrlLabel": "Peliin pääset liittymään osoitteessa:",
+      "spectatorInfo": "Tätä peliä on mahdollista seurata livenä. Jos haluat pyytää ystäviäsi katsojiksi, jaa alla oleva linkki. Vain he, joille pelaajat ja juontaja jakavat linkin, näkevät pelin.",
+      "didNotGetEmail": "Jos et saanut viestiä osoitteeseen {{email}}, kirjoita itsellesi ylläolevat tiedot muistiin."
+    }
+  },
+  "validation": {
+    "noSpaces": "Välilyöntejä ei sallita",
+    "mustBeNumber": "Tulee olla numbero",
+    "requiredField": "Vaadittu kenttä",
+    "minLength": "Vähintään {{minLength}} merkkiä",
+    "maxLength": "Enintään {{maxLength}} merkkiä",
+    "invalidField": "Epäkelpo {{fieldName}}",
+    "passwordsDontMatch": "Salasanat eivät täsmää",
+    "passwordScore": {
+      "tooShort": "liian lyhyt",
+      "weak": "heikko",
+      "moderate": "kohtalainen",
+      "good": "hyvä",
+      "strong": "vahva"
+    }
   }
 }

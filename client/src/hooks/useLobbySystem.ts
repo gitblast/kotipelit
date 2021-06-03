@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 
 import { v4 as uuidv4 } from 'uuid';
@@ -13,6 +14,8 @@ interface ParamTypes {
 }
 
 const useLobbySystem = () => {
+  const { t } = useTranslation();
+
   const { username, gameID } = useParams<ParamTypes>();
   const reservationId = React.useMemo(() => uuidv4(), []);
   const [error, setError] = React.useState<string | null>(null);
@@ -74,14 +77,14 @@ const useLobbySystem = () => {
           setGame(fetchedGame);
         }
       } catch (e) {
-        setError('Ilmoittautuminen on päättynyt!');
+        setError(t('lobby.errors.registrationEnded'));
       }
     };
 
     if (!game && gameID && username) {
       fetchGame(username, gameID);
     }
-  }, [gameID, game, username]);
+  }, [gameID, game, username, t]);
 
   const lockSpot = React.useCallback(
     async (displayName: string, email: string) => {
@@ -133,12 +136,10 @@ const useLobbySystem = () => {
 
         setGame(newGame);
       } catch (e) {
-        setError(
-          'Paikan lukitseminen epäonnistui. Varmista, että kirjoitit sähköpostisi oikein.'
-        );
+        setError(t('lobby.errors.lockingFailed'));
       }
     },
-    [reservationId, gameID, game, username]
+    [reservationId, gameID, game, username, t]
   );
 
   const reserveSpot = React.useCallback(async () => {
@@ -173,9 +174,9 @@ const useLobbySystem = () => {
 
       setGame(newGame);
     } catch (e) {
-      setError('Paikan varaaminen epäonnistui');
+      setError(t('lobby.errors.reservationFailed'));
     }
-  }, [reservationId, gameID, game]);
+  }, [reservationId, gameID, game, t]);
 
   const returnValue = React.useMemo(() => {
     return {

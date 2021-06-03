@@ -1,6 +1,7 @@
 import { Button, Paper } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { LobbyGamePlayer } from '../types';
 import LockReservationForm from './LockReservationForm';
 import ReservationData from './ReservationData';
@@ -35,6 +36,7 @@ const LobbyContent: React.FC<LobbyContentProps> = ({
   unlockedReservationData,
   lockedReservationData,
 }) => {
+  const { t } = useTranslation();
   const classes = useStyles();
 
   if (!lockedReservationData && !unlockedReservationData) {
@@ -44,7 +46,7 @@ const LobbyContent: React.FC<LobbyContentProps> = ({
         color="secondary"
         className={classes.registerButton}
       >
-        Ilmoittaudu peliin
+        {t('lobby.registerBtn')}
       </Button>
     );
   }

@@ -6,6 +6,7 @@ import logger from '../utils/logger';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 import InfoTooltip from '../components/GameCard/InfoTooltip';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,6 +37,7 @@ const ReservationData: React.FC<ReservatioDataProps> = ({
   spectatorUrl,
 }) => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   const emailString = data.email ? ` ${data.email}` : '.';
 
@@ -48,7 +50,9 @@ const ReservationData: React.FC<ReservatioDataProps> = ({
 
     return (
       <div className={classes.registeringInfo}>
-        <Typography variant="body1">Tässä ovat pelin sanasi:</Typography>
+        <Typography variant="body1">
+          {t('lobby.reservationData.yourWords')}
+        </Typography>
         <Typography variant="body1" className={classes.dialogHighlights}>
           {words.join(', ')}
         </Typography>
@@ -66,7 +70,7 @@ const ReservationData: React.FC<ReservatioDataProps> = ({
     return (
       <div className={classes.registeringInfo}>
         <Typography variant="body1" color="initial">
-          Peliin pääset liittymään osoitteessa:
+          {t('lobby.reservationData.joinUrlLabel')}
         </Typography>
         <Typography variant="caption">{url}</Typography>
       </div>
@@ -79,11 +83,7 @@ const ReservationData: React.FC<ReservatioDataProps> = ({
         <Typography variant="body1" color="initial" className={classes.tvLink}>
           Kotipelit-TV
           <span>
-            <InfoTooltip
-              text={
-                'Tätä peliä on mahdollista seurata livenä. Jos haluat pyytää ystäviäsi katsojiksi, jaa alla oleva linkki. Vain he, joille pelaajat ja juontaja jakavat linkin, näkevät pelin.'
-              }
-            />
+            <InfoTooltip text={t('lobby.reservationData.spectatorInfo')} />
           </span>
         </Typography>
 
@@ -105,7 +105,7 @@ const ReservationData: React.FC<ReservatioDataProps> = ({
       </Typography> */}
       {/** peruuta varaus-nappi? */}
       <Typography variant="body2" className={classes.emailConfText}>
-        {`Jos et saanut viestiä osoitteeseen ${emailString}, kirjoita itsellesi ylläolevat tiedot muistiin.`}
+        {t('lobby.reservationData.didNotGetEmail', { email: emailString })}
         {/** Lähetä uudestaan -nappi, vaihda sposti-toiminto? */}
       </Typography>
     </>

@@ -17,6 +17,7 @@ import PasswordStrengthBar from 'react-password-strength-bar';
 import useRegisterForm from './useRegisterForm';
 import ValidatingTextField from './ValidatingTextField';
 import logoImg from '../../assets/images/logoTransparent.png';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -85,6 +86,7 @@ const StyledSelect = (props: SelectProps) => {
 };
 
 const RegisterPage = () => {
+  const { t } = useTranslation();
   const classes = useStyles();
 
   const { handleSubmit, validator, error, userAdded } = useRegisterForm();
@@ -97,12 +99,9 @@ const RegisterPage = () => {
     return (
       <>
         <Typography variant="h1" gutterBottom>
-          Tilin luonti onnistui!
+          {t('registerForm.success')}
         </Typography>
-        <Typography>
-          Sinun tulee vielä vahvistaa sähköpostiosoitteesi. Vahvistuslinkki
-          lähetettiin antamaasi osoitteeseen.
-        </Typography>
+        <Typography>{t('registerForm.confirmEmail')}</Typography>
       </>
     );
   };
@@ -128,35 +127,45 @@ const RegisterPage = () => {
           >
             {({ submitForm, isSubmitting, values }) => (
               <Form>
-                <Field component={TextField} name="firstName" label="Etunimi" />
+                <Field
+                  component={TextField}
+                  name="firstName"
+                  label={t('common.firstName')}
+                />
                 <br />
-                <Field component={TextField} name="lastName" label="Sukunimi" />
+                <Field
+                  component={TextField}
+                  name="lastName"
+                  label={t('common.lastName')}
+                />
                 <br />
                 <Field
                   component={ValidatingTextField}
                   name="username"
-                  label="Käyttäjänimi"
+                  label={t('common.username')}
                 />
                 <Typography
                   variant="body2"
                   color="initial"
                   className={classes.recommendation}
                 >
-                  Tämä on nimi, jonka pelaajat näkevät.
+                  {t('registerForm.usernameInfo')}
                 </Typography>
                 <Field
                   component={ValidatingTextField}
                   name="email"
                   type="email"
-                  label="Sähköposti"
+                  label={t('common.email')}
                 />
                 <br />
                 <FormControl>
-                  <InputLabel htmlFor="birthYear">Syntymävuosi</InputLabel>
+                  <InputLabel htmlFor="birthYear">
+                    {t('common.birthYear')}
+                  </InputLabel>
                   <Field
                     component={StyledSelect}
                     name="birthYear"
-                    label="Syntymävuosi"
+                    label={t('common.birthYear')}
                     inputProps={{
                       id: 'birthYear',
                       MenuProps: {
@@ -175,27 +184,27 @@ const RegisterPage = () => {
                 <Field
                   component={TextField}
                   type="password"
-                  label="Salasana"
+                  label={t('common.password')}
                   name="password"
                 />
                 <div className={classes.maxWidth300}>
                   <PasswordStrengthBar
                     password={values.password}
                     minLength={8}
-                    shortScoreWord={'liian lyhyt'}
+                    shortScoreWord={t('validation.passwordScore.tooShort')}
                     scoreWords={[
-                      'heikko',
-                      'heikko',
-                      'kohtalainen',
-                      'hyvä',
-                      'vahva',
+                      t('validation.passwordScore.weak'),
+                      t('validation.passwordScore.weak'),
+                      t('validation.passwordScore.moderate'),
+                      t('validation.passwordScore.good'),
+                      t('validation.passwordScore.strong'),
                     ]}
                   />
                 </div>
                 <Field
                   component={TextField}
                   type="password"
-                  label="Salasana uudelleen"
+                  label={t('common.confirmPassword')}
                   name="passwordConfirm"
                 />
                 {isSubmitting && (
@@ -209,7 +218,7 @@ const RegisterPage = () => {
                   disabled={isSubmitting}
                   onClick={submitForm}
                 >
-                  Luo tili
+                  {t('registerForm.createBtn')}
                 </Button>
               </Form>
             )}

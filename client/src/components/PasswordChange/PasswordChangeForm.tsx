@@ -6,6 +6,7 @@ import { Typography, LinearProgress, Button } from '@material-ui/core';
 import { Form, Formik, Field } from 'formik';
 import { TextField } from 'formik-material-ui';
 import PasswordStrengthBar from 'react-password-strength-bar';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,18 +43,19 @@ const PasswordChangeForm = ({
   handleSubmit,
   error,
 }: PasswordChangeFormProps) => {
+  const { t } = useTranslation();
   const classes = useStyles();
 
   const validator = Yup.object({
     oldPassword: !isReset
-      ? Yup.string().required('Pakollinen kenttä')
+      ? Yup.string().required(t('validation.requiredField'))
       : Yup.string(),
     password: Yup.string()
-      .min(8, 'Vähintään 8 merkkiä')
-      .required('Pakollinen kenttä'),
+      .min(8, t('validation.minLength', { minLength: 8 }))
+      .required(t('validation.requiredField')),
     passwordConfirm: Yup.string()
-      .oneOf([Yup.ref('password')], 'Salasanat eivät täsmää')
-      .required('Pakollinen kenttä'),
+      .oneOf([Yup.ref('password')], t('validation.passwordsDontMatch'))
+      .required(t('validation.requiredField')),
   });
 
   return (
@@ -73,7 +75,7 @@ const PasswordChangeForm = ({
               <Field
                 component={TextField}
                 type="password"
-                label="Vanha salasana"
+                label={t('changePwForm.oldPw')}
                 name="oldPassword"
               />
               <br />
@@ -82,7 +84,7 @@ const PasswordChangeForm = ({
           <Field
             component={TextField}
             type="password"
-            label="Uusi salasana"
+            label={t('changePwForm.newPw')}
             name="password"
           />
           <div>
@@ -90,14 +92,20 @@ const PasswordChangeForm = ({
               className={classes.maxWidth300}
               password={values.password}
               minLength={8}
-              shortScoreWord={'liian lyhyt'}
-              scoreWords={['heikko', 'heikko', 'kohtalainen', 'hyvä', 'vahva']}
+              shortScoreWord={t('validation.passwordScore.tooShort')}
+              scoreWords={[
+                t('validation.passwordScore.weak'),
+                t('validation.passwordScore.weak'),
+                t('validation.passwordScore.moderate'),
+                t('validation.passwordScore.good'),
+                t('validation.passwordScore.strong'),
+              ]}
             />
           </div>
           <Field
             component={TextField}
             type="password"
-            label="Uusi salasana uudelleen"
+            label={t('changePwForm.repeatNewPw')}
             name="passwordConfirm"
           />
           {isSubmitting && <LinearProgress />}
@@ -113,7 +121,7 @@ const PasswordChangeForm = ({
             disabled={isSubmitting}
             onClick={submitForm}
           >
-            Vaihda
+            {t('changePwForm.changeBtn')}
           </Button>
         </Form>
       )}

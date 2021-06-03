@@ -4,7 +4,6 @@ import { format } from 'date-fns';
 import fiLocale from 'date-fns/locale/fi';
 
 import enLocale from 'date-fns/locale/en-US';
-import { capitalize } from 'lodash';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { getSpectatorUrl } from '../helpers/games';
@@ -149,10 +148,8 @@ const GameLobby: React.FC = () => {
           <div className={classes.centerAlign}>
             <div className={classes.invitationText}>
               <Typography variant="h1" color="initial">
-                <span
-                  className={classes.highlighted}
-                >{`${game.hostName} `}</span>
-                kutsui sinut pelaamaan!
+                <span className={classes.highlighted}>{game.hostName}</span>
+                {t('lobby.invitedYouToPlay')}
               </Typography>
               <div className={classes.gameInfo}>
                 <Typography
@@ -160,17 +157,16 @@ const GameLobby: React.FC = () => {
                   color="initial"
                   className={classes.gameKotitonni}
                 >
-                  {` ${capitalize(game.type)}`}
+                  {game.type}
                 </Typography>
                 <Typography variant="h2">
-                  {' '}
                   {`${format(new Date(game.startTime), 'd. MMMM HH:mm', {
-                    locale: fiLocale,
+                    locale: i18n.language === 'en' ? enLocale : fiLocale,
                   })}`}
                 </Typography>
                 {game.price !== 0 && (
                   <Typography variant="h2">
-                    Pelin hinta on <span>{`${game.price} €`}</span>
+                    {t('lobby.gamePrice', { price: game.price })}
                   </Typography>
                 )}
                 <LobbyContent
@@ -182,7 +178,7 @@ const GameLobby: React.FC = () => {
               </div>
             </div>
             <div className={classes.registeredPlayers}>
-              <Typography>Ilmoittautuneet pelaajat:</Typography>
+              <Typography>{t('lobby.registeredPlayers')}</Typography>
               {game.players.map((player, index) => {
                 return (
                   <Typography key={index}>
@@ -200,8 +196,8 @@ const GameLobby: React.FC = () => {
           <References />
         </>
       ) : (
-        !error?.startsWith('Ilmoittautuminen on päättynyt') && ( // not showing spinner if lobby is no longer open
-          <Loader msg={'Ladataan..'} spinner />
+        !error?.startsWith(t('lobby.errors.registrationEnded')) && ( // not showing spinner if lobby is no longer open
+          <Loader msg={t('common.loading')} spinner />
         )
       )}
     </div>

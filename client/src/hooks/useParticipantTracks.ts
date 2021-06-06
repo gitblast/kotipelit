@@ -17,6 +17,25 @@ import { useMediaMutedStates } from '../context';
 type LocalVideoSetter = (track: LocalVideoTrack) => void;
 type LocalAudioSetter = (track: LocalAudioTrack) => void;
 
+const attachSubscribeListeners = (participant: RemoteParticipant) => {
+  participant.tracks.forEach((publication) => {
+    publication.on('subscribed', (track) => {
+      logger.log(`subscribed to track ${track.sid} (${track.kind}))`);
+    });
+
+    publication.on('unsubscribed', (track) => {
+      logger.log(`unsubscribed to track ${track.sid} (${track.kind}))`);
+    });
+
+    publication.on('subscriptionFailed', (error) => {
+      logger.log(
+        `failed to subscribe to track ${publication.trackSid}:`,
+        error
+      );
+    });
+  });
+};
+
 const useParticipantLocalTracks = (
   videoSet: boolean,
   audioSet: boolean,
@@ -63,6 +82,21 @@ const useParticipantRemoteTracks = (
 ) => {
   React.useEffect(() => {
     if (remoteParticipant && !videoSet) {
+      attachSubscribeListeners(remoteParticipant);
+
+      const videoPublication = Array.from(
+        remoteParticipant.videoTracks.values()
+      )[0];
+
+      if (videoPublication?.isSubscribed && videoPublication.track) {
+        logger.log(
+          'setting (already subscribed) remote video',
+          videoPublication.track
+        );
+
+        setVideoTrack(videoPublication.track);
+      }
+
       remoteParticipant.on('trackSubscribed', (track: RemoteTrack) => {
         if (track.kind === 'video') {
           logger.log('setting remote video', track);
@@ -75,6 +109,24 @@ const useParticipantRemoteTracks = (
 
   React.useEffect(() => {
     if (remoteParticipant && !audioSet) {
+      attachSubscribeListeners(remoteParticipant);
+
+      const audioPublication = Array.from(
+        remoteParticipant.audioTracks.values()
+      )[0];
+
+      if (audioPublication?.isSubscribed && audioPublication.track) {
+        logger.log(
+          'setting (already subscribed) remote audio',
+          audioPublication.track
+        );
+
+        audioPublication.track.on('disabled', () => handleMute(true));
+        audioPublication.track.on('enabled', () => handleMute(false));
+
+        setAudioTrack(audioPublication.track);
+      }
+
       remoteParticipant.on('trackSubscribed', (track: RemoteTrack) => {
         if (track.kind === 'audio') {
           logger.log('setting remote audio', track);

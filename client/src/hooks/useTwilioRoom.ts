@@ -2,6 +2,8 @@ import React from 'react';
 
 import * as Video from 'twilio-video';
 
+import { isMobile } from 'react-device-detect';
+
 import logger from '../utils/logger';
 
 import useParticipants from './useParticipants';
@@ -30,11 +32,13 @@ const useTwilioRoom = (
   const [spectatorCount, setSpectatorCount] = React.useState(
     isSpectator ? 1 : 0
   );
+
   const {
     localVideoTrack,
     localAudioTrack,
     shutDownLocalTracks,
   } = useLocalTracks(onCall && !isSpectator);
+
   const localTracks = React.useMemo<
     [Video.LocalVideoTrack, Video.LocalAudioTrack] | null
   >(() => {
@@ -44,6 +48,7 @@ const useTwilioRoom = (
   }, [localVideoTrack, localAudioTrack]);
 
   const { setError } = useGameErrorState();
+
   const [participants, setParticipants] = useParticipants(
     game,
     ownId,
@@ -106,7 +111,13 @@ const useTwilioRoom = (
       tracks: Video.LocalTrack[] | null
     ) => {
       try {
-        const baseConfig = {};
+        const baseConfig: Video.ConnectOptions = {
+          bandwidthProfile: {
+            video: { mode: 'grid' },
+            ...(isMobile && { maxSubscriptionBitrate: 2500000 }),
+          },
+          networkQuality: { local: 1, remote: 1 },
+        };
 
         const config: Video.ConnectOptions = tracks
           ? {

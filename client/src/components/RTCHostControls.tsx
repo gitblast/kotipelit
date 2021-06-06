@@ -12,6 +12,8 @@ import MainKotitonniButton from './MainKotitonniButton';
 import SpectatorCount from './SpectatorCount';
 
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import NetworkQualityLevel from './NetworkQualityLevel/NetworkQualityLevel';
+import { LocalParticipant, RemoteParticipant } from 'twilio-video';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -74,11 +76,13 @@ const useStyles = makeStyles((theme: Theme) =>
 interface RTCHostControlsProps {
   handleToggleFullscreen: () => void;
   spectatorCount: number;
+  participant: LocalParticipant | RemoteParticipant | null;
 }
 
 const RTCHostControls = ({
   handleToggleFullscreen,
   spectatorCount,
+  participant,
 }: RTCHostControlsProps) => {
   const {
     game,
@@ -171,6 +175,7 @@ const RTCHostControls = ({
         >
           <FullscreenIcon fontSize="large"></FullscreenIcon>
         </IconButton>
+        <NetworkQualityLevel participant={participant} />
       </Grid>
     </Grid>
   );

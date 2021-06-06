@@ -130,6 +130,9 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
     handleJoinCall,
   } = useNewGameRoom(token, role);
 
+  const localParticipant =
+    participants?.find((p) => p.isMe)?.connection ?? null;
+
   const { errorState } = useGameErrorState();
 
   React.useEffect(() => {
@@ -237,11 +240,13 @@ const GameRoom: React.FC<GameRoomProps> = ({ token, role }) => {
           <RTCHostControls
             spectatorCount={spectatorCount}
             handleToggleFullscreen={handleToggleFullscreen}
+            participant={localParticipant}
           />
         ) : (
           game.status === GameStatus.RUNNING && (
             <RTCPlayerControls
               handleToggleFullscreen={handleToggleFullscreen}
+              participant={localParticipant}
             />
           )
         )}

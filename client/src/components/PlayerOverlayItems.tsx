@@ -10,6 +10,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import MediaControls from './MediaControls';
 import AnimatedCounter from './AnimatedCounter';
 import ForwardIcon from '@material-ui/icons/Forward';
+import NetworkQualityLevel from './NetworkQualityLevel/NetworkQualityLevel';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -180,8 +181,11 @@ const PlayerOverlayItems: React.FC<PlayerOverlayItemsProps> = ({
               {player.name}
             </Typography>
             <AnimatedCounter currentValue={player.points} />
-            <div>
+            <div className={classes.flex}>
               <MediaControls participant={participant} />
+              {forHost && (
+                <NetworkQualityLevel participant={participant.connection} />
+              )}
             </div>
           </div>
         </div>

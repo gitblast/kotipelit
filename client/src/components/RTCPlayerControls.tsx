@@ -7,6 +7,8 @@ import useKotitonniPlayerControls from '../hooks/useKotitonniPlayerControls';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import AnswerForm from './AnswerForm';
 import InfoBar from './InfoBar';
+import { LocalParticipant, RemoteParticipant } from 'twilio-video';
+import NetworkQualityLevel from './NetworkQualityLevel/NetworkQualityLevel';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -58,9 +60,15 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const RTCPlayerControls: React.FC<{
+interface RTCPlayerControlsProps {
   handleToggleFullscreen: () => void;
-}> = ({ handleToggleFullscreen }) => {
+  participant: LocalParticipant | RemoteParticipant | null;
+}
+
+const RTCPlayerControls = ({
+  handleToggleFullscreen,
+  participant,
+}: RTCPlayerControlsProps) => {
   const classes = useStyles();
   // const [open, setOpen] = useState<boolean>(false);
   const isWideEnough = useMediaQuery('(min-width:550px)');
@@ -118,6 +126,7 @@ const RTCPlayerControls: React.FC<{
         <IconButton className={classes.fsIcon} onClick={handleToggleFullscreen}>
           <FullscreenIcon fontSize="large"></FullscreenIcon>
         </IconButton>
+        <NetworkQualityLevel participant={participant} />
       </Grid>
     </Grid>
     //    </SwipeableDrawer>
